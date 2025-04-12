@@ -417,17 +417,17 @@ public class DeclarativeAttributeTests
     }
 
     [Fact]
-    public void VersionAttribute_ReturnOK()
+    public void HttpVersionAttribute_ReturnOK()
     {
-        var attributeUsage = typeof(VersionAttribute).GetCustomAttribute<AttributeUsageAttribute>();
+        var attributeUsage = typeof(HttpVersionAttribute).GetCustomAttribute<AttributeUsageAttribute>();
         Assert.NotNull(attributeUsage);
         Assert.Equal(AttributeTargets.Method | AttributeTargets.Interface, attributeUsage.ValidOn);
         Assert.False(attributeUsage.AllowMultiple);
 
-        var attribute = new VersionAttribute(null);
+        var attribute = new HttpVersionAttribute(null);
         Assert.Null(attribute.Version);
 
-        var attribute2 = new VersionAttribute("1.2");
+        var attribute2 = new HttpVersionAttribute("1.2");
         Assert.Equal("1.2", attribute2.Version);
     }
 

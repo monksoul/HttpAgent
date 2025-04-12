@@ -8,13 +8,13 @@ namespace HttpAgent;
 ///     HTTP 声明式 HTTP 版本特性
 /// </summary>
 [AttributeUsage(AttributeTargets.Method | AttributeTargets.Interface)]
-public sealed class VersionAttribute : Attribute
+public sealed class HttpVersionAttribute : Attribute
 {
     /// <summary>
-    ///     <inheritdoc cref="VersionAttribute" />
+    ///     <inheritdoc cref="HttpVersionAttribute" />
     /// </summary>
     /// <param name="version">HTTP 版本</param>
-    public VersionAttribute(string? version) => Version = version;
+    public HttpVersionAttribute(string? version) => Version = version;
 
     /// <summary>
     ///     HTTP 版本

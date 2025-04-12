@@ -4,15 +4,15 @@
 
 namespace HttpAgent.Tests;
 
-public class VersionDeclarativeExtractorTests
+public class HttpVersionDeclarativeExtractorTests
 {
     [Fact]
     public void New_ReturnOK()
     {
         Assert.True(
-            typeof(IHttpDeclarativeExtractor).IsAssignableFrom(typeof(VersionDeclarativeExtractor)));
+            typeof(IHttpDeclarativeExtractor).IsAssignableFrom(typeof(HttpVersionDeclarativeExtractor)));
 
-        var extractor = new VersionDeclarativeExtractor();
+        var extractor = new HttpVersionDeclarativeExtractor();
         Assert.NotNull(extractor);
     }
 
@@ -24,7 +24,7 @@ public class VersionDeclarativeExtractorTests
                 nameof(IVersionDeclarativeExtractorTest1.Test1))!;
         var context1 = new HttpDeclarativeExtractorContext(method1, []);
         var httpRequestBuilder1 = HttpRequestBuilder.Get("http://localhost");
-        new VersionDeclarativeExtractor().Extract(httpRequestBuilder1, context1);
+        new HttpVersionDeclarativeExtractor().Extract(httpRequestBuilder1, context1);
         Assert.Null(httpRequestBuilder1.Version);
 
         var method2 =
@@ -32,7 +32,7 @@ public class VersionDeclarativeExtractorTests
                 nameof(IVersionDeclarativeExtractorTest2.Test1))!;
         var context2 = new HttpDeclarativeExtractorContext(method2, []);
         var httpRequestBuilder2 = HttpRequestBuilder.Get("http://localhost");
-        new VersionDeclarativeExtractor().Extract(httpRequestBuilder2, context2);
+        new HttpVersionDeclarativeExtractor().Extract(httpRequestBuilder2, context2);
         Assert.NotNull(httpRequestBuilder2.Version);
         Assert.Equal("1.2", httpRequestBuilder2.Version.ToString());
 
@@ -41,7 +41,7 @@ public class VersionDeclarativeExtractorTests
                 nameof(IVersionDeclarativeExtractorTest2.Test2))!;
         var context3 = new HttpDeclarativeExtractorContext(method3, []);
         var httpRequestBuilder3 = HttpRequestBuilder.Get("http://localhost");
-        new VersionDeclarativeExtractor().Extract(httpRequestBuilder3, context3);
+        new HttpVersionDeclarativeExtractor().Extract(httpRequestBuilder3, context3);
         Assert.NotNull(httpRequestBuilder3.Version);
         Assert.Equal("1.1", httpRequestBuilder3.Version.ToString());
     }
@@ -53,13 +53,13 @@ public interface IVersionDeclarativeExtractorTest1 : IHttpDeclarative
     Task Test1();
 }
 
-[Version("1.2")]
+[HttpVersion("1.2")]
 public interface IVersionDeclarativeExtractorTest2 : IHttpDeclarative
 {
     [Post("api/test")]
     Task Test1();
 
-    [Version("1.1")]
+    [HttpVersion("1.1")]
     [Post("api/test2")]
     Task Test2();
 }

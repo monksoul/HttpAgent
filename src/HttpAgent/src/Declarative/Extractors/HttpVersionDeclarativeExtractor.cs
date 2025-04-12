@@ -5,15 +5,15 @@
 namespace HttpAgent;
 
 /// <summary>
-///     HTTP 声明式 <see cref="VersionAttribute" /> 特性提取器
+///     HTTP 声明式 <see cref="HttpVersionAttribute" /> 特性提取器
 /// </summary>
-internal sealed class VersionDeclarativeExtractor : IHttpDeclarativeExtractor
+internal sealed class HttpVersionDeclarativeExtractor : IHttpDeclarativeExtractor
 {
     /// <inheritdoc />
     public void Extract(HttpRequestBuilder httpRequestBuilder, HttpDeclarativeExtractorContext context)
     {
-        // 检查方法或接口是否贴有 [Version] 特性
-        if (!context.IsMethodDefined<VersionAttribute>(out var versionAttribute, true))
+        // 检查方法或接口是否贴有 [HttpVersion] 特性
+        if (!context.IsMethodDefined<HttpVersionAttribute>(out var versionAttribute, true))
         {
             return;
         }

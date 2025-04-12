@@ -4632,6 +4632,22 @@
                 <see cref="T:System.Net.Http.HttpClient" /> 实例的配置名称
             </summary>
         </member>
+        <member name="T:HttpAgent.HttpVersionAttribute">
+            <summary>
+                HTTP 声明式 HTTP 版本特性
+            </summary>
+        </member>
+        <member name="M:HttpAgent.HttpVersionAttribute.#ctor(System.String)">
+            <summary>
+                <inheritdoc cref="T:HttpAgent.HttpVersionAttribute" />
+            </summary>
+            <param name="version">HTTP 版本</param>
+        </member>
+        <member name="P:HttpAgent.HttpVersionAttribute.Version">
+            <summary>
+                HTTP 版本
+            </summary>
+        </member>
         <member name="T:HttpAgent.DeleteAttribute">
             <summary>
                 HTTP 声明式 DELETE 请求方式特性
@@ -5158,22 +5174,6 @@
                 跟踪标识
             </summary>
         </member>
-        <member name="T:HttpAgent.VersionAttribute">
-            <summary>
-                HTTP 声明式 HTTP 版本特性
-            </summary>
-        </member>
-        <member name="M:HttpAgent.VersionAttribute.#ctor(System.String)">
-            <summary>
-                <inheritdoc cref="T:HttpAgent.VersionAttribute" />
-            </summary>
-            <param name="version">HTTP 版本</param>
-        </member>
-        <member name="P:HttpAgent.VersionAttribute.Version">
-            <summary>
-                HTTP 版本
-            </summary>
-        </member>
         <member name="T:HttpAgent.HttpDeclarativeBuilder">
             <summary>
                 HTTP 声明式远程请求构建器
@@ -5372,6 +5372,14 @@
         <member name="P:HttpAgent.HttpRequestBuilderDeclarativeExtractor.Order">
             <inheritdoc />
         </member>
+        <member name="T:HttpAgent.HttpVersionDeclarativeExtractor">
+            <summary>
+                HTTP 声明式 <see cref="T:HttpAgent.HttpVersionAttribute" /> 特性提取器
+            </summary>
+        </member>
+        <member name="M:HttpAgent.HttpVersionDeclarativeExtractor.Extract(HttpAgent.HttpRequestBuilder,HttpAgent.HttpDeclarativeExtractorContext)">
+            <inheritdoc />
+        </member>
         <member name="T:HttpAgent.IFrozenHttpDeclarativeExtractor">
             <summary>
                 HTTP 声明式提取器排序（冻结）
@@ -5566,14 +5574,6 @@
             </param>
             <param name="value">参数的值</param>
             <exception cref="T:System.ComponentModel.DataAnnotations.ValidationException"></exception>
-        </member>
-        <member name="T:HttpAgent.VersionDeclarativeExtractor">
-            <summary>
-                HTTP 声明式 <see cref="T:HttpAgent.VersionAttribute" /> 特性提取器
-            </summary>
-        </member>
-        <member name="M:HttpAgent.VersionDeclarativeExtractor.Extract(HttpAgent.HttpRequestBuilder,HttpAgent.HttpDeclarativeExtractorContext)">
-            <inheritdoc />
         </member>
         <member name="T:HttpAgent.HttpDeclarativeDispatchProxy">
             <summary>
