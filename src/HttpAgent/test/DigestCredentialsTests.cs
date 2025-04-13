@@ -109,14 +109,14 @@ public class DigestCredentialsTests
     {
         Assert.Throws<ArgumentNullException>(() =>
             DigestCredentials.GetDigestCredentials(null!, null!, null!, null!));
-        Assert.Throws<ArgumentException>(
-            () => DigestCredentials.GetDigestCredentials(string.Empty, null!, null!, null!));
+        Assert.Throws<ArgumentException>(() =>
+            DigestCredentials.GetDigestCredentials(string.Empty, null!, null!, null!));
         Assert.Throws<ArgumentException>(() => DigestCredentials.GetDigestCredentials(" ", null!, null!, null!));
 
         Assert.Throws<ArgumentNullException>(() =>
             DigestCredentials.GetDigestCredentials("http://localhost:5000/test", null!, null!, null!));
-        Assert.Throws<ArgumentException>(
-            () => DigestCredentials.GetDigestCredentials("http://localhost:5000/test", string.Empty, null!, null!));
+        Assert.Throws<ArgumentException>(() =>
+            DigestCredentials.GetDigestCredentials("http://localhost:5000/test", string.Empty, null!, null!));
         Assert.Throws<ArgumentException>(() =>
             DigestCredentials.GetDigestCredentials("http://localhost:5000/test", "  ", null!, null!));
 

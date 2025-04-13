@@ -11,16 +11,14 @@ public class HttpFileUploadBuilderTests
     {
         Assert.Throws<ArgumentNullException>(() => new HttpFileUploadBuilder(null!, null, null!, null!));
         Assert.Throws<ArgumentNullException>(() => new HttpFileUploadBuilder(HttpMethod.Post, null, null!, null!));
-        Assert.Throws<ArgumentException>(
-            () => new HttpFileUploadBuilder(HttpMethod.Post, null, string.Empty, null!));
-        Assert.Throws<ArgumentException>(
-            () => new HttpFileUploadBuilder(HttpMethod.Post, null, " ", null!));
-        Assert.Throws<ArgumentNullException>(
-            () => new HttpFileUploadBuilder(HttpMethod.Post, null, @"C:\Workspaces\index.html", null!));
-        Assert.Throws<ArgumentException>(
-            () => new HttpFileUploadBuilder(HttpMethod.Post, null, @"C:\Workspaces\index.html", string.Empty));
-        Assert.Throws<ArgumentException>(
-            () => new HttpFileUploadBuilder(HttpMethod.Post, null, @"C:\Workspaces\index.html", " "));
+        Assert.Throws<ArgumentException>(() => new HttpFileUploadBuilder(HttpMethod.Post, null, string.Empty, null!));
+        Assert.Throws<ArgumentException>(() => new HttpFileUploadBuilder(HttpMethod.Post, null, " ", null!));
+        Assert.Throws<ArgumentNullException>(() =>
+            new HttpFileUploadBuilder(HttpMethod.Post, null, @"C:\Workspaces\index.html", null!));
+        Assert.Throws<ArgumentException>(() =>
+            new HttpFileUploadBuilder(HttpMethod.Post, null, @"C:\Workspaces\index.html", string.Empty));
+        Assert.Throws<ArgumentException>(() =>
+            new HttpFileUploadBuilder(HttpMethod.Post, null, @"C:\Workspaces\index.html", " "));
     }
 
     [Fact]

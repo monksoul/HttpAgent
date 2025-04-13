@@ -196,7 +196,7 @@ public sealed partial class HttpRequestBuilder
     /// <summary>
     ///     <inheritdoc cref="HttpMultipartFormDataBuilder" />
     /// </summary>
-    internal HttpMultipartFormDataBuilder? MultipartFormDataBuilder { get; private set; }
+    public HttpMultipartFormDataBuilder? MultipartFormDataBuilder { get; private set; }
 
     /// <summary>
     ///     如果 HTTP 响应的 <c>IsSuccessStatusCode</c> 属性是 <c>false</c>，则引发异常。

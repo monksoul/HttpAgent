@@ -135,6 +135,14 @@ public class HttpMultipartFormDataBuilderTests
         Assert.Equal("application/json", builder3._partContents[0].ContentType);
         Assert.Null(builder3._partContents[0].ContentEncoding);
         Assert.Equal("{\"id\":1,\"name\":\"furion\"}", builder3._partContents[0].RawContent);
+
+        var builder4 = new HttpMultipartFormDataBuilder(HttpRequestBuilder.Get("http://localhost"));
+        builder4.AddJson(null, "obj");
+        Assert.Single(builder4._partContents);
+        Assert.Equal("obj", builder4._partContents[0].Name);
+        Assert.Equal("application/json", builder4._partContents[0].ContentType);
+        Assert.Null(builder4._partContents[0].ContentEncoding);
+        Assert.Null(builder4._partContents[0].RawContent);
     }
 
     [Fact]
@@ -350,8 +358,7 @@ public class HttpMultipartFormDataBuilderTests
 
         // name 为空
         Assert.Throws<ArgumentNullException>(() => builder.AddFileFromBase64String(base64String, null!));
-        Assert.Throws<ArgumentException>(
-            () => builder.AddFileFromBase64String(base64String, string.Empty));
+        Assert.Throws<ArgumentException>(() => builder.AddFileFromBase64String(base64String, string.Empty));
         Assert.Throws<ArgumentException>(() => builder.AddFileFromBase64String(base64String, " "));
     }
 
@@ -451,8 +458,7 @@ public class HttpMultipartFormDataBuilderTests
         var filePathNotFound = Path.Combine(AppContext.BaseDirectory, "not-found.txt");
 
         // filePath 为空
-        Assert.Throws<ArgumentNullException>(
-            () => builder.AddFileWithProgressAsStream(null!, null!, null!));
+        Assert.Throws<ArgumentNullException>(() => builder.AddFileWithProgressAsStream(null!, null!, null!));
         Assert.Throws<ArgumentException>(() =>
             builder.AddFileWithProgressAsStream(string.Empty, null!, null!));
         Assert.Throws<ArgumentException>(() => builder.AddFileWithProgressAsStream(" ", null!, null!));

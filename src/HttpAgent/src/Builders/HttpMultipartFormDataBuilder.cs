@@ -107,12 +107,9 @@ public sealed class HttpMultipartFormDataBuilder
     ///     <see cref="HttpMultipartFormDataBuilder" />
     /// </returns>
     /// <exception cref="JsonException"></exception>
-    public HttpMultipartFormDataBuilder AddJson(object rawJson, string? name = null, Encoding? contentEncoding = null,
+    public HttpMultipartFormDataBuilder AddJson(object? rawJson, string? name = null, Encoding? contentEncoding = null,
         string? contentType = null)
     {
-        // 空检查
-        ArgumentNullException.ThrowIfNull(rawJson);
-
         // 检查是否配置表单名或不是字符串类型
         if (!string.IsNullOrWhiteSpace(name) || rawJson is not string rawString)
         {

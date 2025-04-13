@@ -469,4 +469,180 @@ public class HttpRequestBuilderStaticMethodsTests
         Assert.Equal(method, httpDeclarativeBuilder.Method);
         Assert.Equal([], httpDeclarativeBuilder.Args);
     }
+
+    [Fact]
+    public void FromJson_Invalid_Parameters()
+    {
+        Assert.Throws<ArgumentNullException>(() => HttpRequestBuilder.FromJson(null!));
+        Assert.Throws<ArgumentException>(() => HttpRequestBuilder.FromJson(string.Empty));
+        Assert.Throws<ArgumentException>(() => HttpRequestBuilder.FromJson(" "));
+
+        var exception = Assert.Throws<ArgumentException>(() => HttpRequestBuilder.FromJson("{}"));
+        Assert.Equal("Missing required `method` in JSON.", exception.Message);
+
+        var exception2 = Assert.Throws<ArgumentException>(() => HttpRequestBuilder.FromJson("""{"method": null}"""));
+        Assert.Equal("Missing required `method` in JSON.", exception2.Message);
+
+        var exception3 = Assert.Throws<ArgumentException>(() => HttpRequestBuilder.FromJson("""{"method": "POST"}"""));
+        Assert.Equal("Missing required `url` in JSON.", exception3.Message);
+
+        var exception4 = Assert.Throws<InvalidOperationException>(() =>
+            HttpRequestBuilder.FromJson("""{"method": "POST","url":null,"data":{}}"""));
+        Assert.Equal("The `contentType` key is required when `data` is present.", exception4.Message);
+
+        var exception5 = Assert.Throws<InvalidOperationException>(() =>
+            HttpRequestBuilder.FromJson("""{"method": "POST","url":null,"data":{},"contentType":null}"""));
+        Assert.Equal("The `contentType` key is required when `data` is present.", exception5.Message);
+
+        var exception6 = Assert.Throws<InvalidOperationException>(() =>
+            HttpRequestBuilder.FromJson("""{"method": "POST","url":null,"multipart":[]}"""));
+        Assert.Equal("The node must be of type 'JsonObject'.", exception6.Message);
+    }
+
+    [Fact]
+    public void FromJson_SetRequiredFields_ReturnOK()
+    {
+        var httpRequestBuilder = HttpRequestBuilder.FromJson("""
+                                                             {
+                                                                 "url": "/user",
+                                                                 "method": "POST",
+                                                             }
+                                                             """);
+        Assert.NotNull(httpRequestBuilder.HttpMethod);
+        Assert.Equal("POST", httpRequestBuilder.HttpMethod.Method);
+        Assert.NotNull(httpRequestBuilder.RequestUri);
+        Assert.Equal("/user", httpRequestBuilder.RequestUri.ToString());
+
+        var httpRequestBuilder2 = HttpRequestBuilder.FromJson("""
+                                                              {
+                                                                  "url": null,
+                                                                  "method": "POST",
+                                                              }
+                                                              """);
+        Assert.Null(httpRequestBuilder2.RequestUri);
+    }
+
+    [Fact]
+    public void FromJson_SetOptionalFields_ReturnOK()
+    {
+        var httpRequestBuilder = HttpRequestBuilder.FromJson("""
+                                                             {
+                                                                 "url": "/user",
+                                                                 "method": "POST",
+                                                                 "baseAddress": "https://furion.net",
+                                                                 "headers": {
+                                                                     "User-Agent": "HttpAgent/1.0.0",
+                                                                     "Authorization": "Bearer xxxx"
+                                                                 },
+                                                                 "queries": {
+                                                                     "id": 1,
+                                                                     "name": "Furion"
+                                                                 },
+                                                                 "cookies": {
+                                                                     "sessionId": "abcdefg123456",
+                                                                     "userid": "monksoul"
+                                                                 },
+                                                                 "timeout": 20000,
+                                                                 "client": "furion",
+                                                                 "profiler": true
+                                                             }
+                                                             """);
+
+        Assert.Equal("https://furion.net/", httpRequestBuilder.BaseAddress?.ToString());
+
+        Assert.NotNull(httpRequestBuilder.Headers);
+        Assert.Equal(2, httpRequestBuilder.Headers.Count);
+        Assert.Equal("HttpAgent/1.0.0", httpRequestBuilder.Headers["User-Agent"].First());
+        Assert.Equal("Bearer xxxx", httpRequestBuilder.Headers["Authorization"].First());
+
+        Assert.NotNull(httpRequestBuilder.QueryParameters);
+        Assert.Equal(2, httpRequestBuilder.QueryParameters.Count);
+        Assert.Equal("1", httpRequestBuilder.QueryParameters["id"].First());
+        Assert.Equal("Furion", httpRequestBuilder.QueryParameters["name"].First());
+
+        Assert.NotNull(httpRequestBuilder.Cookies);
+        Assert.Equal(2, httpRequestBuilder.Cookies.Count);
+        Assert.Equal("abcdefg123456", httpRequestBuilder.Cookies["sessionId"]);
+        Assert.Equal("monksoul", httpRequestBuilder.Cookies["userid"]);
+
+        Assert.Equal(20000, httpRequestBuilder.Timeout!.Value.TotalMilliseconds);
+        Assert.Equal("furion", httpRequestBuilder.HttpClientName);
+        Assert.True(httpRequestBuilder.ProfilerEnabled);
+    }
+
+    [Fact]
+    public void FromJson_SetContent_ReturnOK()
+    {
+        var httpRequestBuilder = HttpRequestBuilder.FromJson("""
+                                                             {
+                                                                 "url": "/user",
+                                                                 "method": "POST",
+                                                                 "contentType": "application/json",
+                                                                 "encoding": "utf-8",
+                                                                 "data": {
+                                                                     "id": 1,
+                                                                     "name": "百小僧",
+                                                                     "age": 30
+                                                                 }
+                                                             }
+                                                             """);
+
+
+        Assert.Equal("application/json", httpRequestBuilder.ContentType);
+        Assert.Equal("utf-8", httpRequestBuilder.ContentEncoding?.BodyName);
+        Assert.Equal("{\"id\":1,\"name\":\"百小僧\",\"age\":30}", httpRequestBuilder.RawContent);
+    }
+
+    [Fact]
+    public void FromJson_SetMultipartContent_ReturnOK()
+    {
+        var httpRequestBuilder = HttpRequestBuilder.FromJson("""
+                                                             {
+                                                                 "url": "/user",
+                                                                 "method": "POST",
+                                                                 "multipart": {
+                                                                     "id": 1,
+                                                                     "name": "furion",
+                                                                 }
+                                                             }
+                                                             """);
+
+
+        var multipartBuilder = httpRequestBuilder.MultipartFormDataBuilder;
+        Assert.NotNull(multipartBuilder);
+
+        Assert.Equal(2, multipartBuilder._partContents.Count);
+        Assert.Equal("id", multipartBuilder._partContents[0].Name);
+        Assert.Equal("text/plain", multipartBuilder._partContents[0].ContentType);
+        Assert.Null(multipartBuilder._partContents[0].ContentEncoding);
+        Assert.Equal("1", multipartBuilder._partContents[0].RawContent?.ToString());
+        Assert.Equal("name", multipartBuilder._partContents[1].Name);
+        Assert.Equal("text/plain", multipartBuilder._partContents[1].ContentType);
+        Assert.Null(multipartBuilder._partContents[1].ContentEncoding);
+        Assert.Equal("furion", multipartBuilder._partContents[1].RawContent?.ToString());
+        Assert.NotNull(multipartBuilder._httpRequestBuilder.Disposables);
+        Assert.Single(multipartBuilder._httpRequestBuilder.Disposables);
+        Assert.True(multipartBuilder._httpRequestBuilder.Disposables.First() is JsonDocument);
+    }
+
+    [Fact]
+    public void HandleJsonNode_Invalid_Parameters()
+    {
+        Assert.Throws<ArgumentNullException>(() => HttpRequestBuilder.HandleJsonNode(null!, null!, null!));
+
+        var jsonObject = JsonNode.Parse("""{"id":1,"name":"furion"}""")!.AsObject();
+        Assert.Throws<ArgumentNullException>(() => HttpRequestBuilder.HandleJsonNode(jsonObject, null!, null!));
+        Assert.Throws<ArgumentNullException>(() => HttpRequestBuilder.HandleJsonNode(jsonObject, "id", null!));
+    }
+
+    [Fact]
+    public void HandleJsonNode_ReturnOK()
+    {
+        var jsonObject = JsonNode.Parse("""{"id":1,"name":"furion"}""")!.AsObject();
+
+        HttpRequestBuilder.HandleJsonNode(jsonObject, "id", node =>
+        {
+            Assert.Equal(1, node.GetValue<int>());
+        });
+    }
 }

@@ -605,4 +605,116 @@ public sealed partial class HttpRequestBuilder
     /// </returns>
     public static HttpDeclarativeBuilder Declarative(MethodInfo method, object?[] args) =>
         new(method, args);
+
+    /// <summary>
+    ///     从 JSON 中创建 <see cref="HttpRequestBuilder" /> 实例
+    /// </summary>
+    /// <param name="json">JSON 字符串</param>
+    /// <param name="configure">自定义配置委托</param>
+    /// <returns>
+    ///     <see cref="HttpRequestBuilder" />
+    /// </returns>
+    /// <exception cref="ArgumentException"></exception>
+    /// <exception cref="InvalidOperationException"></exception>
+    public static HttpRequestBuilder FromJson(string json, Action<HttpRequestBuilder>? configure = null)
+    {
+        // 空检查
+        ArgumentException.ThrowIfNullOrWhiteSpace(json);
+
+        /*
+         * 手动解析 JSON 字符串
+         *
+         * 不采用 JSON 反序列化的原因如下：
+         *  1. HttpRequestBuilder 的属性设计为只读，无法直接通过反序列化赋值。
+         *  2. 避免引入 [JsonInclude] 特性对 System.Text.Json 的强耦合，保持依赖解耦。
+         *  3. 简化 JSON 字符串的结构定义，无需严格遵循 HttpRequestBuilder 的属性定义，从而省略 [JsonPropertyName] 等自定义映射。
+         *  4. 精确控制需要解析的键，减少不必要的自定义 JsonConverter 操作，提升性能与可维护性。
+         */
+        var jsonObject = JsonNode.Parse(json, new JsonNodeOptions { PropertyNameCaseInsensitive = true },
+            new JsonDocumentOptions { AllowTrailingCommas = true })?.AsObject();
+
+        // 空检查
+        ArgumentNullException.ThrowIfNull(jsonObject);
+
+        // 验证必填字段
+        if (!jsonObject.TryGetPropertyValue("method", out var methodNode) || methodNode is not JsonValue methodValue)
+        {
+            throw new ArgumentException("Missing required `method` in JSON.");
+        }
+
+        // 允许 "url" 为 null，但必须定义
+        if (!jsonObject.ContainsKey("url"))
+        {
+            throw new ArgumentException("Missing required `url` in JSON.");
+        }
+
+        // 初始化 HttpRequestBuilder 实例
+        var httpRequestBuilder = Create(methodValue.ToString(), jsonObject["url"]?.GetValue<string?>());
+
+        // 处理可选字段
+        HandleJsonNode(jsonObject, "baseAddress", node => httpRequestBuilder.SetBaseAddress(node.GetValue<string>()));
+        HandleJsonNode(jsonObject, "headers", node => httpRequestBuilder.WithHeaders(node));
+        HandleJsonNode(jsonObject, "queries", node => httpRequestBuilder.WithQueryParameters(node));
+        HandleJsonNode(jsonObject, "cookies", node => httpRequestBuilder.WithCookies(node));
+        HandleJsonNode(jsonObject, "timeout", node => httpRequestBuilder.SetTimeout(node.GetValue<double>()));
+        HandleJsonNode(jsonObject, "client", node => httpRequestBuilder.SetHttpClientName(node.GetValue<string?>()));
+        HandleJsonNode(jsonObject, "profiler", node => httpRequestBuilder.Profiler(node.GetValue<bool>()));
+
+        // 处理请求内容
+        if (jsonObject.TryGetPropertyValue("data", out var dataNode))
+        {
+            // "data" 和 "contentType" 必须同时存在或同时不存在
+            if (!jsonObject.TryGetPropertyValue("contentType", out var contentTypeNode) ||
+                contentTypeNode is not JsonValue contentTypeValue)
+            {
+                throw new InvalidOperationException("The `contentType` key is required when `data` is present.");
+            }
+
+            // 设置请求内容
+            httpRequestBuilder
+                .SetContent(
+                    dataNode?.ToJsonString(new JsonSerializerOptions
+                    {
+                        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+                    }), contentTypeValue.ToString()).AddStringContentForFormUrlEncodedContentProcessor();
+
+            // 设置内容编码
+            HandleJsonNode(jsonObject, "encoding",
+                node => httpRequestBuilder.SetContentEncoding(node.GetValue<string>()));
+        }
+
+        // 处理多部分表单
+        if (jsonObject.TryGetPropertyValue("multipart", out var multipartNode))
+        {
+            // 设置多部分表单内容
+            httpRequestBuilder.SetMultipartContent(multipart => multipart.AddJson(multipartNode?.AsObject()
+                .ToJsonString(new JsonSerializerOptions { Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping })));
+        }
+
+        // 调用自定义配置委托
+        configure?.Invoke(httpRequestBuilder);
+
+        return httpRequestBuilder;
+    }
+
+    /// <summary>
+    ///     处理 <see cref="JsonNode" />
+    /// </summary>
+    /// <param name="jsonObject">
+    ///     <see cref="JsonObject" />
+    /// </param>
+    /// <param name="propertyName">属性名</param>
+    /// <param name="action">自定义操作</param>
+    internal static void HandleJsonNode(JsonObject jsonObject, string propertyName, Action<JsonNode> action)
+    {
+        // 空检查
+        ArgumentNullException.ThrowIfNull(jsonObject);
+        ArgumentNullException.ThrowIfNull(propertyName);
+        ArgumentNullException.ThrowIfNull(action);
+
+        if (jsonObject.TryGetPropertyValue(propertyName, out var node) && node is not null)
+        {
+            action(node);
+        }
+    }
 }

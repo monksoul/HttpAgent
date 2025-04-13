@@ -18,8 +18,7 @@ public class ProgressFileStreamTests(ITestOutputHelper output)
         Assert.Throws<ArgumentException>(() =>
             new ProgressFileStream(fileStream, string.Empty, null!));
         Assert.Throws<ArgumentException>(() => new ProgressFileStream(fileStream, " ", null!));
-        Assert.Throws<ArgumentNullException>(
-            () => new ProgressFileStream(fileStream, filePath, null!));
+        Assert.Throws<ArgumentNullException>(() => new ProgressFileStream(fileStream, filePath, null!));
     }
 
     [Fact]

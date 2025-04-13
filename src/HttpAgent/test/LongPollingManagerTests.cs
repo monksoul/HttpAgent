@@ -425,8 +425,8 @@ public class LongPollingManagerTests
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpLongPollingBuilder =
-            new HttpLongPollingBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test")).SetOnDataReceived(
-                async (_, _) =>
+            new HttpLongPollingBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"))
+                .SetOnDataReceived(async (_, _) =>
                 {
                     i++;
                     await Task.CompletedTask;
@@ -477,8 +477,8 @@ public class LongPollingManagerTests
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpLongPollingBuilder =
-            new HttpLongPollingBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test")).SetOnDataReceived(
-                async (_, _) =>
+            new HttpLongPollingBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"))
+                .SetOnDataReceived(async (_, _) =>
                 {
                     i++;
                     await Task.CompletedTask;
@@ -536,8 +536,8 @@ public class LongPollingManagerTests
         var (httpRemoteService, serviceProvider) =
             Helpers.CreateHttpRemoteService(longPollingEventHandler: customLongPollingEventHandler);
         var httpLongPollingBuilder =
-            new HttpLongPollingBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test")).SetOnDataReceived(
-                async (_, _) =>
+            new HttpLongPollingBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"))
+                .SetOnDataReceived(async (_, _) =>
                 {
                     i++;
                     await Task.CompletedTask;
@@ -590,8 +590,8 @@ public class LongPollingManagerTests
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpLongPollingBuilder =
-            new HttpLongPollingBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test")).SetOnDataReceived(
-                async (_, _) =>
+            new HttpLongPollingBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"))
+                .SetOnDataReceived(async (_, _) =>
                 {
                     i++;
                     await Task.CompletedTask;
@@ -639,8 +639,8 @@ public class LongPollingManagerTests
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpLongPollingBuilder =
-            new HttpLongPollingBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test")).SetOnDataReceived(
-                async (_, _) =>
+            new HttpLongPollingBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"))
+                .SetOnDataReceived(async (_, _) =>
                 {
                     i++;
                     await Task.CompletedTask;
@@ -690,8 +690,8 @@ public class LongPollingManagerTests
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpLongPollingBuilder =
-            new HttpLongPollingBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test")).SetOnDataReceived(
-                async (_, _) =>
+            new HttpLongPollingBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"))
+                .SetOnDataReceived(async (_, _) =>
                 {
                     i++;
                     await Task.CompletedTask;
@@ -744,8 +744,8 @@ public class LongPollingManagerTests
         var (httpRemoteService, serviceProvider) =
             Helpers.CreateHttpRemoteService(longPollingEventHandler: customLongPollingEventHandler);
         var httpLongPollingBuilder =
-            new HttpLongPollingBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test")).SetOnDataReceived(
-                async (_, _) =>
+            new HttpLongPollingBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"))
+                .SetOnDataReceived(async (_, _) =>
                 {
                     i++;
                     await Task.CompletedTask;
@@ -797,8 +797,8 @@ public class LongPollingManagerTests
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpLongPollingBuilder =
-            new HttpLongPollingBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test")).SetOnDataReceived(
-                async (_, _) =>
+            new HttpLongPollingBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"))
+                .SetOnDataReceived(async (_, _) =>
                 {
                     i++;
                     await Task.CompletedTask;
@@ -845,8 +845,8 @@ public class LongPollingManagerTests
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpLongPollingBuilder =
-            new HttpLongPollingBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test")).SetOnDataReceived(
-                async (_, _) =>
+            new HttpLongPollingBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"))
+                .SetOnDataReceived(async (_, _) =>
                 {
                     i++;
                     await Task.CompletedTask;
@@ -894,8 +894,8 @@ public class LongPollingManagerTests
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpLongPollingBuilder =
-            new HttpLongPollingBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test")).SetOnDataReceived(
-                async (_, _) =>
+            new HttpLongPollingBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"))
+                .SetOnDataReceived(async (_, _) =>
                 {
                     i++;
                     await Task.CompletedTask;

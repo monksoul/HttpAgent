@@ -866,8 +866,8 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var httpRequestBuilder =
-            new HttpRequestBuilder(HttpMethod.Post, new Uri($"http://localhost:{port}/test")).SetMultipartContent(
-                mBuilder =>
+            new HttpRequestBuilder(HttpMethod.Post, new Uri($"http://localhost:{port}/test"))
+                .SetMultipartContent(mBuilder =>
                 {
                     mBuilder.AddFileAsStream(filePath);
                 });
