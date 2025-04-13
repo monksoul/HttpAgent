@@ -497,6 +497,9 @@ public class HttpRequestBuilderStaticMethodsTests
         var exception6 = Assert.Throws<InvalidOperationException>(() =>
             HttpRequestBuilder.FromJson("""{"method": "POST","url":null,"multipart":[]}"""));
         Assert.Equal("The node must be of type 'JsonObject'.", exception6.Message);
+        
+        var exception7 = Assert.Throws<InvalidOperationException>(() => HttpRequestBuilder.FromJson("[]"));
+        Assert.Equal("The node must be of type 'JsonObject'.", exception7.Message);
     }
 
     [Fact]
