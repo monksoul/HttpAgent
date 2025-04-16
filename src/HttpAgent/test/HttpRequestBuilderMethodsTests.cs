@@ -452,7 +452,7 @@ public class HttpRequestBuilderMethodsTests
         httpRequestBuilder.Headers.Clear();
 
         var dateNow = new DateTime(2024, 08, 30, 23, 59, 59, 999, DateTimeKind.Local);
-        httpRequestBuilder.WithHeaders(new { date = dateNow }, false, CultureInfo.InvariantCulture);
+        httpRequestBuilder.WithHeaders(new { date = dateNow }, culture: CultureInfo.InvariantCulture);
         Assert.Equal("2024-08-30T23:59:59.9990000+08:00", httpRequestBuilder.Headers["date"].First());
 
         httpRequestBuilder.Headers.Clear();
@@ -462,7 +462,7 @@ public class HttpRequestBuilderMethodsTests
 
         var httpRequestBuilder2 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
 
-        httpRequestBuilder2.WithHeaders(new { name = "furion" }, comparer: StringComparer.OrdinalIgnoreCase);
+        httpRequestBuilder2.WithHeaders(new { name = "furion" });
         Assert.Equal("furion", httpRequestBuilder2.Headers!["name"].First());
         Assert.Equal("furion", httpRequestBuilder2.Headers!["Name"].First());
 
@@ -708,7 +708,7 @@ public class HttpRequestBuilderMethodsTests
         httpRequestBuilder.QueryParameters.Clear();
 
         var dateNow = new DateTime(2024, 08, 30, 23, 59, 59, 999, DateTimeKind.Local);
-        httpRequestBuilder.WithQueryParameters(new { date = dateNow }, null, false, CultureInfo.InvariantCulture);
+        httpRequestBuilder.WithQueryParameters(new { date = dateNow }, culture: CultureInfo.InvariantCulture);
         Assert.Equal("2024-08-30T23:59:59.9990000+08:00", httpRequestBuilder.QueryParameters["date"].First());
 
         httpRequestBuilder.QueryParameters.Clear();
@@ -719,7 +719,7 @@ public class HttpRequestBuilderMethodsTests
 
         var httpRequestBuilder2 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
 
-        httpRequestBuilder2.WithQueryParameters(new { name = "furion" }, comparer: StringComparer.OrdinalIgnoreCase);
+        httpRequestBuilder2.WithQueryParameters(new { name = "furion" });
         Assert.Equal("furion", httpRequestBuilder2.QueryParameters!["name"].First());
         Assert.Equal("furion", httpRequestBuilder2.QueryParameters!["Name"].First());
 
@@ -863,7 +863,7 @@ public class HttpRequestBuilderMethodsTests
 
         var httpRequestBuilder2 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
 
-        httpRequestBuilder2.WithPathParameters(new { name = "furion" }, comparer: StringComparer.OrdinalIgnoreCase);
+        httpRequestBuilder2.WithPathParameters(new { name = "furion" });
         Assert.Equal("furion", httpRequestBuilder2.PathParameters!["name"]);
         Assert.Equal("furion", httpRequestBuilder2.PathParameters!["Name"]);
 
@@ -1000,7 +1000,7 @@ public class HttpRequestBuilderMethodsTests
 
         var httpRequestBuilder2 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
 
-        httpRequestBuilder2.WithCookies(new { name = "furion" }, comparer: StringComparer.OrdinalIgnoreCase);
+        httpRequestBuilder2.WithCookies(new { name = "furion" });
         Assert.Equal("furion", httpRequestBuilder2.Cookies!["name"]);
         Assert.Equal("furion", httpRequestBuilder2.Cookies!["Name"]);
 
@@ -1194,7 +1194,7 @@ public class HttpRequestBuilderMethodsTests
         });
         Assert.NotNull(httpRequestBuilder.OnPreSetContent);
 
-        httpRequestBuilder.OnPreSetContent.Invoke(null);
+        httpRequestBuilder.OnPreSetContent.Invoke(null!);
         Assert.Equal(2, i);
     }
 
@@ -1463,7 +1463,7 @@ public class HttpRequestBuilderMethodsTests
         Assert.NotNull(httpRequestBuilder.Headers);
         Assert.Single(httpRequestBuilder.Headers);
         Assert.Equal(
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36 Edg/133.0.0.0",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0",
             httpRequestBuilder.Headers["User-Agent"].First());
 
         httpRequestBuilder.SimulateBrowser(true);
@@ -1471,7 +1471,7 @@ public class HttpRequestBuilderMethodsTests
         Assert.NotNull(httpRequestBuilder.Headers);
         Assert.Single(httpRequestBuilder.Headers);
         Assert.Equal(
-            "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Mobile Safari/537.36 Edg/133.0.0.0",
+            "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Mobile Safari/537.36 Edg/135.0.0.0",
             httpRequestBuilder.Headers["User-Agent"].First());
     }
 
@@ -1486,7 +1486,7 @@ public class HttpRequestBuilderMethodsTests
         Assert.Single(httpRequestBuilder.Headers);
         Assert.Single(httpRequestBuilder.Headers["User-Agent"]);
         Assert.Equal(
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36 Edg/133.0.0.0",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0",
             httpRequestBuilder.Headers["User-Agent"].First());
     }
 
@@ -1822,6 +1822,17 @@ public class HttpRequestBuilderMethodsTests
         Assert.NotNull(httpRequestBuilder.SuppressExceptionTypes);
         Assert.Single(httpRequestBuilder.SuppressExceptionTypes);
         Assert.Equal(typeof(Exception), httpRequestBuilder.SuppressExceptionTypes.Single());
+    }
+
+    [Fact]
+    public void SetOmitContentType_ReturnOK()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        Assert.False(httpRequestBuilder.OmitContentType);
+        httpRequestBuilder.SetOmitContentType(true);
+        Assert.True(httpRequestBuilder.OmitContentType);
+        httpRequestBuilder.SetOmitContentType(false);
+        Assert.False(httpRequestBuilder.OmitContentType);
     }
 
     [Fact]

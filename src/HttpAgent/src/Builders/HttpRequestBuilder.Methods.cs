@@ -310,23 +310,20 @@ public sealed partial class HttpRequestBuilder
     /// <param name="key">键</param>
     /// <param name="value">值</param>
     /// <param name="escape">是否转义字符串，默认 <c>false</c></param>
+    /// <param name="replace">是否替换已存在的请求标头。默认值为 <c>false</c></param>
     /// <param name="culture">
     ///     <see cref="CultureInfo" />
     /// </param>
-    /// <param name="comparer">
-    ///     <see cref="IEqualityComparer{T}" />
-    /// </param>
-    /// <param name="replace">是否替换已存在的请求标头。默认值为 <c>false</c>。</param>
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
-    public HttpRequestBuilder WithHeader(string key, object? value, bool escape = false, CultureInfo? culture = null,
-        IEqualityComparer<string>? comparer = null, bool replace = false)
+    public HttpRequestBuilder WithHeader(string key, object? value, bool escape = false, bool replace = false,
+        CultureInfo? culture = null)
     {
         // 空检查
         ArgumentException.ThrowIfNullOrWhiteSpace(key);
 
-        return WithHeaders(new Dictionary<string, object?> { { key, value } }, escape, culture, comparer, replace);
+        return WithHeaders(new Dictionary<string, object?> { { key, value } }, escape, replace, culture);
     }
 
     /// <summary>
@@ -335,25 +332,22 @@ public sealed partial class HttpRequestBuilder
     /// <remarks>支持多次调用。</remarks>
     /// <param name="headers">请求标头集合</param>
     /// <param name="escape">是否转义字符串，默认 <c>false</c></param>
+    /// <param name="replace">是否替换已存在的请求标头。默认值为 <c>false</c></param>
     /// <param name="culture">
     ///     <see cref="CultureInfo" />
     /// </param>
-    /// <param name="comparer">
-    ///     <see cref="IEqualityComparer{T}" />
-    /// </param>
-    /// <param name="replace">是否替换已存在的请求标头。默认值为 <c>false</c>。</param>
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
     public HttpRequestBuilder WithHeaders(IDictionary<string, object?> headers, bool escape = false,
-        CultureInfo? culture = null, IEqualityComparer<string>? comparer = null, bool replace = false)
+        bool replace = false, CultureInfo? culture = null)
     {
         // 空检查
         ArgumentNullException.ThrowIfNull(headers);
 
         // 初始化请求标头
-        Headers ??= new Dictionary<string, List<string?>>(comparer);
-        var objectHeaders = new Dictionary<string, List<object?>>(comparer);
+        Headers ??= new Dictionary<string, List<string?>>(StringComparer.OrdinalIgnoreCase);
+        var objectHeaders = new Dictionary<string, List<object?>>(StringComparer.OrdinalIgnoreCase);
 
         // 存在则合并否则添加
         objectHeaders.AddOrUpdate(Headers.ToDictionary(u => u.Key, object? (u) => u.Value), false);
@@ -363,7 +357,7 @@ public sealed partial class HttpRequestBuilder
         Headers = objectHeaders.ToDictionary(kvp => kvp.Key,
             kvp => kvp.Value.Select(u =>
                 u.ToCultureString(culture ?? CultureInfo.InvariantCulture)?.EscapeDataString(escape)).ToList(),
-            comparer);
+            StringComparer.OrdinalIgnoreCase);
 
         return this;
     }
@@ -374,26 +368,23 @@ public sealed partial class HttpRequestBuilder
     /// <remarks>支持多次调用。</remarks>
     /// <param name="headerSource">请求标头源对象</param>
     /// <param name="escape">是否转义字符串，默认 <c>false</c></param>
+    /// <param name="replace">是否替换已存在的请求标头。默认值为 <c>false</c></param>
     /// <param name="culture">
     ///     <see cref="CultureInfo" />
     /// </param>
-    /// <param name="comparer">
-    ///     <see cref="IEqualityComparer{T}" />
-    /// </param>
-    /// <param name="replace">是否替换已存在的请求标头。默认值为 <c>false</c>。</param>
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
-    public HttpRequestBuilder WithHeaders(object headerSource, bool escape = false, CultureInfo? culture = null,
-        IEqualityComparer<string>? comparer = null, bool replace = false)
+    public HttpRequestBuilder WithHeaders(object headerSource, bool escape = false, bool replace = false,
+        CultureInfo? culture = null)
     {
         // 空检查
         ArgumentNullException.ThrowIfNull(headerSource);
 
         return WithHeaders(
             headerSource.ObjectToDictionary()!.ToDictionary(
-                u => u.Key.ToCultureString(culture ?? CultureInfo.InvariantCulture)!, u => u.Value), escape, culture,
-            comparer, replace);
+                u => u.Key.ToCultureString(culture ?? CultureInfo.InvariantCulture)!, u => u.Value), escape, replace,
+            culture);
     }
 
     /// <summary>
@@ -553,26 +544,22 @@ public sealed partial class HttpRequestBuilder
     /// <param name="key">键</param>
     /// <param name="value">值</param>
     /// <param name="escape">是否转义字符串，默认 <c>false</c></param>
+    /// <param name="replace">是否替换已存在的查询参数。默认值为 <c>false</c></param>
+    /// <param name="ignoreNullValues">是否忽略空值。默认值为 <c>false</c></param>
     /// <param name="culture">
     ///     <see cref="CultureInfo" />
     /// </param>
-    /// <param name="comparer">
-    ///     <see cref="IEqualityComparer{T}" />
-    /// </param>
-    /// <param name="replace">是否替换已存在的查询参数。默认值为 <c>false</c>。</param>
-    /// <param name="ignoreNullValues">是否忽略空值。默认值为 <c>false</c>。</param>
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
-    public HttpRequestBuilder WithQueryParameter(string key, object? value, bool escape = false,
-        CultureInfo? culture = null, IEqualityComparer<string>? comparer = null, bool replace = false,
-        bool ignoreNullValues = false)
+    public HttpRequestBuilder WithQueryParameter(string key, object? value, bool escape = false, bool replace = false,
+        bool ignoreNullValues = false, CultureInfo? culture = null)
     {
         // 空检查
         ArgumentException.ThrowIfNullOrWhiteSpace(key);
 
-        return WithQueryParameters(new Dictionary<string, object?> { { key, value } }, escape, culture, comparer,
-            replace, ignoreNullValues);
+        return WithQueryParameters(new Dictionary<string, object?> { { key, value } }, escape, replace,
+            ignoreNullValues, culture);
     }
 
     /// <summary>
@@ -581,27 +568,23 @@ public sealed partial class HttpRequestBuilder
     /// <remarks>支持多次调用。</remarks>
     /// <param name="parameters">查询参数集合</param>
     /// <param name="escape">是否转义字符串，默认 <c>false</c></param>
+    /// <param name="replace">是否替换已存在的查询参数。默认值为 <c>false</c></param>
+    /// <param name="ignoreNullValues">是否忽略空值。默认值为 <c>false</c></param>
     /// <param name="culture">
     ///     <see cref="CultureInfo" />
     /// </param>
-    /// <param name="comparer">
-    ///     <see cref="IEqualityComparer{T}" />
-    /// </param>
-    /// <param name="replace">是否替换已存在的查询参数。默认值为 <c>false</c>。</param>
-    /// <param name="ignoreNullValues">是否忽略空值。默认值为 <c>false</c>。</param>
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
     public HttpRequestBuilder WithQueryParameters(IDictionary<string, object?> parameters, bool escape = false,
-        CultureInfo? culture = null, IEqualityComparer<string>? comparer = null, bool replace = false,
-        bool ignoreNullValues = false)
+        bool replace = false, bool ignoreNullValues = false, CultureInfo? culture = null)
     {
         // 空检查
         ArgumentNullException.ThrowIfNull(parameters);
 
         // 初始化查询参数
-        QueryParameters ??= new Dictionary<string, List<string?>>(comparer);
-        var objectQueryParameters = new Dictionary<string, List<object?>>(comparer);
+        QueryParameters ??= new Dictionary<string, List<string?>>(StringComparer.OrdinalIgnoreCase);
+        var objectQueryParameters = new Dictionary<string, List<object?>>(StringComparer.OrdinalIgnoreCase);
 
         // 存在则合并否则添加
         objectQueryParameters.AddOrUpdate(QueryParameters.ToDictionary(u => u.Key, object? (u) => u.Value), false);
@@ -612,7 +595,7 @@ public sealed partial class HttpRequestBuilder
         QueryParameters = objectQueryParameters.ToDictionary(kvp => kvp.Key,
             kvp => kvp.Value.Select(u =>
                 u.ToCultureString(culture ?? CultureInfo.InvariantCulture)?.EscapeDataString(escape)).ToList(),
-            comparer);
+            StringComparer.OrdinalIgnoreCase);
 
         return this;
     }
@@ -624,20 +607,16 @@ public sealed partial class HttpRequestBuilder
     /// <param name="parameterSource">查询参数集合</param>
     /// <param name="prefix">参数前缀。对于对象类型可生成如 <c>prefix.Name=furion</c> 与 <c>prefix.Age=30</c> 参数格式。</param>
     /// <param name="escape">是否转义字符串，默认 <c>false</c></param>
+    /// <param name="replace">是否替换已存在的查询参数。默认值为 <c>false</c></param>
+    /// <param name="ignoreNullValues">是否忽略空值。默认值为 <c>false</c></param>
     /// <param name="culture">
     ///     <see cref="CultureInfo" />
     /// </param>
-    /// <param name="comparer">
-    ///     <see cref="IEqualityComparer{T}" />
-    /// </param>
-    /// <param name="replace">是否替换已存在的查询参数。默认值为 <c>false</c>。</param>
-    /// <param name="ignoreNullValues">是否忽略空值。默认值为 <c>false</c>。</param>
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
     public HttpRequestBuilder WithQueryParameters(object parameterSource, string? prefix = null, bool escape = false,
-        CultureInfo? culture = null, IEqualityComparer<string>? comparer = null, bool replace = false,
-        bool ignoreNullValues = false)
+        bool replace = false, bool ignoreNullValues = false, CultureInfo? culture = null)
     {
         // 空检查
         ArgumentNullException.ThrowIfNull(parameterSource);
@@ -646,7 +625,7 @@ public sealed partial class HttpRequestBuilder
             parameterSource.ObjectToDictionary()!.ToDictionary(
                 u =>
                     $"{(string.IsNullOrWhiteSpace(prefix) ? null : $"{prefix}.")}{u.Key.ToCultureString(culture ?? CultureInfo.InvariantCulture)!}",
-                u => u.Value), escape, culture, comparer, replace, ignoreNullValues);
+                u => u.Value), escape, replace, ignoreNullValues, culture);
     }
 
     /// <summary>
@@ -692,19 +671,16 @@ public sealed partial class HttpRequestBuilder
     /// <param name="culture">
     ///     <see cref="CultureInfo" />
     /// </param>
-    /// <param name="comparer">
-    ///     <see cref="IEqualityComparer{T}" />
-    /// </param>
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
     public HttpRequestBuilder WithPathParameter(string key, object? value, bool escape = false,
-        CultureInfo? culture = null, IEqualityComparer<string>? comparer = null)
+        CultureInfo? culture = null)
     {
         // 空检查
         ArgumentException.ThrowIfNullOrWhiteSpace(key);
 
-        return WithPathParameters(new Dictionary<string, object?> { { key, value } }, escape, culture, comparer);
+        return WithPathParameters(new Dictionary<string, object?> { { key, value } }, escape, culture);
     }
 
     /// <summary>
@@ -716,26 +692,21 @@ public sealed partial class HttpRequestBuilder
     /// <param name="culture">
     ///     <see cref="CultureInfo" />
     /// </param>
-    /// <param name="comparer">
-    ///     <see cref="IEqualityComparer{T}" />
-    /// </param>
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
-    public HttpRequestBuilder WithPathParameters(IDictionary<string, object?> parameters,
-        bool escape = false,
-        CultureInfo? culture = null,
-        IEqualityComparer<string>? comparer = null)
+    public HttpRequestBuilder WithPathParameters(IDictionary<string, object?> parameters, bool escape = false,
+        CultureInfo? culture = null)
     {
         // 空检查
         ArgumentNullException.ThrowIfNull(parameters);
 
-        PathParameters ??= new Dictionary<string, string?>(comparer);
+        PathParameters ??= new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
 
         // 存在则更新否则添加
         PathParameters.AddOrUpdate(parameters.ToDictionary(u => u.Key,
             u => u.Value?.ToCultureString(culture ?? CultureInfo.InvariantCulture)?.EscapeDataString(escape),
-            comparer));
+            StringComparer.OrdinalIgnoreCase));
 
         return this;
     }
@@ -750,15 +721,11 @@ public sealed partial class HttpRequestBuilder
     /// <param name="culture">
     ///     <see cref="CultureInfo" />
     /// </param>
-    /// <param name="comparer">
-    ///     <see cref="IEqualityComparer{T}" />
-    /// </param>
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
     public HttpRequestBuilder WithPathParameters(object? parameterSource, string? prefix = null, bool escape = false,
-        CultureInfo? culture = null,
-        IEqualityComparer<string>? comparer = null)
+        CultureInfo? culture = null)
     {
         // 检查是否设置了模板字符串前缀
         if (string.IsNullOrWhiteSpace(prefix))
@@ -769,7 +736,7 @@ public sealed partial class HttpRequestBuilder
             return WithPathParameters(
                 parameterSource.ObjectToDictionary()!.ToDictionary(
                     u => u.Key.ToCultureString(culture ?? CultureInfo.InvariantCulture)!, u => u.Value), escape,
-                culture, comparer);
+                culture);
         }
 
         ObjectPathParameters ??= new Dictionary<string, object?>();
@@ -806,19 +773,15 @@ public sealed partial class HttpRequestBuilder
     /// <param name="culture">
     ///     <see cref="CultureInfo" />
     /// </param>
-    /// <param name="comparer">
-    ///     <see cref="IEqualityComparer{T}" />
-    /// </param>
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
-    public HttpRequestBuilder WithCookie(string key, object? value, bool escape = false, CultureInfo? culture = null,
-        IEqualityComparer<string>? comparer = null)
+    public HttpRequestBuilder WithCookie(string key, object? value, bool escape = false, CultureInfo? culture = null)
     {
         // 空检查
         ArgumentException.ThrowIfNullOrWhiteSpace(key);
 
-        return WithCookies(new Dictionary<string, object?> { { key, value } }, escape, culture, comparer);
+        return WithCookies(new Dictionary<string, object?> { { key, value } }, escape, culture);
     }
 
     /// <summary>
@@ -830,26 +793,21 @@ public sealed partial class HttpRequestBuilder
     /// <param name="culture">
     ///     <see cref="CultureInfo" />
     /// </param>
-    /// <param name="comparer">
-    ///     <see cref="IEqualityComparer{T}" />
-    /// </param>
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
-    public HttpRequestBuilder WithCookies(IDictionary<string, object?> cookies,
-        bool escape = false,
-        CultureInfo? culture = null,
-        IEqualityComparer<string>? comparer = null)
+    public HttpRequestBuilder WithCookies(IDictionary<string, object?> cookies, bool escape = false,
+        CultureInfo? culture = null)
     {
         // 空检查
         ArgumentNullException.ThrowIfNull(cookies);
 
-        Cookies ??= new Dictionary<string, string?>(comparer);
+        Cookies ??= new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
 
         // 存在则更新否则添加
         Cookies.AddOrUpdate(cookies.ToDictionary(u => u.Key,
             u => u.Value?.ToCultureString(culture ?? CultureInfo.InvariantCulture)?.EscapeDataString(escape),
-            comparer));
+            StringComparer.OrdinalIgnoreCase));
 
         return this;
     }
@@ -863,15 +821,10 @@ public sealed partial class HttpRequestBuilder
     /// <param name="culture">
     ///     <see cref="CultureInfo" />
     /// </param>
-    /// <param name="comparer">
-    ///     <see cref="IEqualityComparer{T}" />
-    /// </param>
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
-    public HttpRequestBuilder WithCookies(object cookieSource, bool escape = false,
-        CultureInfo? culture = null,
-        IEqualityComparer<string>? comparer = null)
+    public HttpRequestBuilder WithCookies(object cookieSource, bool escape = false, CultureInfo? culture = null)
     {
         // 空检查
         ArgumentNullException.ThrowIfNull(cookieSource);
@@ -879,8 +832,7 @@ public sealed partial class HttpRequestBuilder
         // 存在则更新否则添加
         return WithCookies(
             cookieSource.ObjectToDictionary()!.ToDictionary(
-                u => u.Key.ToCultureString(culture ?? CultureInfo.InvariantCulture)!, u => u.Value), escape, culture,
-            comparer);
+                u => u.Key.ToCultureString(culture ?? CultureInfo.InvariantCulture)!, u => u.Value), escape, culture);
     }
 
     /// <summary>
@@ -1639,6 +1591,20 @@ public sealed partial class HttpRequestBuilder
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
     public HttpRequestBuilder SuppressExceptions(bool enable) => SuppressExceptions(enable ? [typeof(Exception)] : []);
+
+    /// <summary>
+    ///     设置是否移除默认的内容的 <c>Content-Type</c>
+    /// </summary>
+    /// <param name="omit">如果为 <c>true</c> 则移除，默认为 <c>false</c></param>
+    /// <returns>
+    ///     <see cref="HttpRequestBuilder" />
+    /// </returns>
+    public HttpRequestBuilder SetOmitContentType(bool omit)
+    {
+        OmitContentType = omit;
+
+        return this;
+    }
 
     /// <summary>
     ///     设置异常抑制

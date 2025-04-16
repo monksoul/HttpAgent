@@ -667,6 +667,20 @@ public sealed class HttpMultipartFormDataBuilder
     }
 
     /// <summary>
+    ///     设置是否移除默认的多部分内容的 <c>Content-Type</c>
+    /// </summary>
+    /// <param name="omit">如果为 <c>true</c> 则移除，默认为 <c>false</c></param>
+    /// <returns>
+    ///     <see cref="HttpMultipartFormDataBuilder" />
+    /// </returns>
+    public HttpMultipartFormDataBuilder SetOmitContentType(bool omit)
+    {
+        OmitContentType = omit;
+
+        return this;
+    }
+
+    /// <summary>
     ///     构建 <see cref="MultipartFormDataContent" /> 实例
     /// </summary>
     /// <param name="httpRemoteOptions">

@@ -51,6 +51,7 @@ public class HttpRequestBuilderPropertiesTests
         Assert.Null(httpRequestBuilder2.OnRequestFailed);
         Assert.Null(httpRequestBuilder2.AuthenticationHeader);
         Assert.Null(httpRequestBuilder2.MultipartFormDataBuilder);
+        Assert.False(httpRequestBuilder2.OmitContentType);
         Assert.False(httpRequestBuilder2.EnsureSuccessStatusCodeEnabled);
         Assert.False(httpRequestBuilder2.DisableCacheEnabled);
         Assert.Null(httpRequestBuilder2.RequestEventHandlerType);

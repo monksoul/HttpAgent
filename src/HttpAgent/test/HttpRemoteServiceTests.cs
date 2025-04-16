@@ -89,7 +89,7 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
         Assert.NotNull(httpClient);
         Assert.Null(httpClientPooling.Release);
         Assert.Equal(
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36 Edg/133.0.0.0",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0",
             httpClient.DefaultRequestHeaders.UserAgent.ToString());
 
         var httpRequestBuilder2 =
@@ -102,7 +102,7 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
         Assert.Equal("http://localhost/test/", httpClient2.BaseAddress.ToString());
         Assert.Null(httpClientPooling2.Release);
         Assert.Equal(
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36 Edg/133.0.0.0",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0",
             httpClient2.DefaultRequestHeaders.UserAgent.ToString());
 
         var httpClient3 = new HttpClient { BaseAddress = new Uri("http://localhost/custom") };
@@ -117,7 +117,7 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
         var httpClient4 = httpClientPooling3.Instance;
         Assert.Equal(httpClient3, httpClient4);
         Assert.Equal(
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36 Edg/133.0.0.0",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0",
             httpClient4.DefaultRequestHeaders.UserAgent.ToString());
         Assert.NotNull(httpClientPooling3.Release);
         httpClientPooling3.Release(httpClient3);
@@ -160,7 +160,7 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
         Assert.NotNull(httpClient);
         Assert.Null(httpClientPooling.Release);
         Assert.Equal(
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36 Edg/133.0.0.0",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0",
             httpClient.DefaultRequestHeaders.UserAgent.ToString());
 
         var httpRequestBuilder2 =
@@ -173,7 +173,7 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
         Assert.Equal("http://localhost/test/", httpClient2.BaseAddress.ToString());
         Assert.Null(httpClientPooling2.Release);
         Assert.Equal(
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36 Edg/133.0.0.0",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0",
             httpClient2.DefaultRequestHeaders.UserAgent.ToString());
 
         var httpClient3 = new HttpClient { BaseAddress = new Uri("http://localhost/custom") };
@@ -188,7 +188,7 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
         var httpClient4 = httpClientPooling3.Instance;
         Assert.Equal(httpClient3, httpClient4);
         Assert.Equal(
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36 Edg/133.0.0.0",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0",
             httpClient4.DefaultRequestHeaders.UserAgent.ToString());
         Assert.NotNull(httpClientPooling3.Release);
         httpClientPooling3.Release(httpClient3);
@@ -199,17 +199,28 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
     [Fact]
     public void AddDefaultUserAgentHeader_ReturnOK()
     {
+        var httpRequestBuilder = HttpRequestBuilder.Get("https://furion.net");
         var httpClient = new HttpClient();
-        HttpRemoteService.AddDefaultUserAgentHeader(httpClient);
+        HttpRemoteService.AddDefaultUserAgentHeader(httpClient, httpRequestBuilder);
 
         Assert.Equal(
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36 Edg/133.0.0.0",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0",
             httpClient.DefaultRequestHeaders.UserAgent.ToString());
 
         var httpClient2 = new HttpClient();
         httpClient2.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "furion");
-        HttpRemoteService.AddDefaultUserAgentHeader(httpClient2);
+        HttpRemoteService.AddDefaultUserAgentHeader(httpClient2, httpRequestBuilder);
         Assert.Equal("furion", httpClient2.DefaultRequestHeaders.UserAgent.ToString());
+
+        var httpRequestBuilder2 = HttpRequestBuilder.Get("https://furion.net").RemoveHeaders("user-agent");
+        var httpClient3 = new HttpClient();
+        HttpRemoteService.AddDefaultUserAgentHeader(httpClient3, httpRequestBuilder2);
+        Assert.Empty(httpClient3.DefaultRequestHeaders.UserAgent);
+
+        var httpRequestBuilder3 = HttpRequestBuilder.Get("https://furion.net").WithHeader("user-agent", "furion");
+        var httpClient4 = new HttpClient();
+        HttpRemoteService.AddDefaultUserAgentHeader(httpClient4, httpRequestBuilder3);
+        Assert.Empty(httpClient4.DefaultRequestHeaders.UserAgent);
     }
 
     [Fact]

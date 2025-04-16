@@ -485,6 +485,18 @@ public sealed partial class HttpRequestBuilder
         // 构建 HttpContent 实例
         var httpContent = httpContentProcessorFactory.Build(RawContent, ContentType!, ContentEncoding, processors);
 
+        // 空检查
+        if (httpContent is null)
+        {
+            return;
+        }
+
+        // 检查是否移除默认的内容的 Content-Type，解决对接 Java 程序时可能出现失败问题
+        if (OmitContentType)
+        {
+            httpContent.Headers.ContentType = null;
+        }
+
         // 调用用于处理在设置请求消息的内容时的操作
         OnPreSetContent?.Invoke(httpContent);
 

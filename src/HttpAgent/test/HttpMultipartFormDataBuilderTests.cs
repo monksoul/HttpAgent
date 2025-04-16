@@ -905,6 +905,17 @@ public class HttpMultipartFormDataBuilderTests
     }
 
     [Fact]
+    public void SetOmitContentType_ReturnOK()
+    {
+        var builder = new HttpMultipartFormDataBuilder(HttpRequestBuilder.Get("http://localhost"));
+        Assert.True(builder.OmitContentType);
+        builder.SetOmitContentType(false);
+        Assert.False(builder.OmitContentType);
+        builder.SetOmitContentType(true);
+        Assert.True(builder.OmitContentType);
+    }
+
+    [Fact]
     public void Build_Invalid_Parameters()
     {
         var builder = new HttpMultipartFormDataBuilder(HttpRequestBuilder.Get("http://localhost"));

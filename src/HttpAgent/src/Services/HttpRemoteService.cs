@@ -714,7 +714,7 @@ internal sealed partial class HttpRemoteService : IHttpRemoteService
         ArgumentNullException.ThrowIfNull(httpClient);
 
         // 添加默认的 User-Agent 标头
-        AddDefaultUserAgentHeader(httpClient);
+        AddDefaultUserAgentHeader(httpClient, httpRequestBuilder);
 
         // 存储 HttpClientPooling 实例并返回
         return httpRequestBuilder.HttpClientPooling = new HttpClientPooling(httpClient, release);
@@ -727,10 +727,15 @@ internal sealed partial class HttpRemoteService : IHttpRemoteService
     /// <param name="httpClient">
     ///     <see cref="HttpClient" />
     /// </param>
-    internal static void AddDefaultUserAgentHeader(HttpClient httpClient)
+    /// <param name="httpRequestBuilder">
+    ///     <see cref="HttpRequestBuilder" />
+    /// </param>
+    internal static void AddDefaultUserAgentHeader(HttpClient httpClient, HttpRequestBuilder httpRequestBuilder)
     {
         // 空检查
-        if (httpClient.DefaultRequestHeaders.UserAgent.Count != 0)
+        if (httpClient.DefaultRequestHeaders.UserAgent.Count != 0 ||
+            httpRequestBuilder.HeadersToRemove?.Contains(HeaderNames.UserAgent) == true ||
+            httpRequestBuilder.Headers?.ContainsKey(HeaderNames.UserAgent) == true)
         {
             return;
         }
@@ -896,8 +901,6 @@ internal sealed partial class HttpRemoteService : IHttpRemoteService
                     "=" => statusCode == number,
                     _ => false
                 };
-            default:
-                return false;
         }
 
         return false;

@@ -176,7 +176,7 @@ public sealed partial class HttpRequestBuilder
     /// <summary>
     ///     用于处理在设置 <see cref="HttpRequestMessage" /> 的请求消息的内容时的操作
     /// </summary>
-    public Action<HttpContent?>? OnPreSetContent { get; private set; }
+    public Action<HttpContent>? OnPreSetContent { get; private set; }
 
     /// <summary>
     ///     用于处理在发送 HTTP 请求之前的操作
@@ -197,6 +197,12 @@ public sealed partial class HttpRequestBuilder
     ///     <inheritdoc cref="HttpMultipartFormDataBuilder" />
     /// </summary>
     public HttpMultipartFormDataBuilder? MultipartFormDataBuilder { get; private set; }
+
+    /// <summary>
+    ///     是否移除默认的内容的 <c>Content-Type</c>
+    /// </summary>
+    /// <remarks>默认值为：<c>false</c>。</remarks>
+    public bool OmitContentType { get; private set; }
 
     /// <summary>
     ///     如果 HTTP 响应的 <c>IsSuccessStatusCode</c> 属性是 <c>false</c>，则引发异常。

@@ -85,13 +85,13 @@ internal static class Constants
     ///     浏览器的 <c>User-Agent</c> 标头值
     /// </summary>
     internal const string USER_AGENT_OF_BROWSER =
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36 Edg/133.0.0.0";
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0";
 
     /// <summary>
     ///     移动端浏览器的 <c>User-Agent</c> 标头值
     /// </summary>
     internal const string USER_AGENT_OF_MOBILE_BROWSER =
-        "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Mobile Safari/537.36 Edg/133.0.0.0";
+        "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Mobile Safari/537.36 Edg/135.0.0.0";
 
     /// <summary>
     ///     <c>Referer</c> 标头请求基地址模板
