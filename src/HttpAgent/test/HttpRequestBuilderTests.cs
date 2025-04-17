@@ -111,6 +111,10 @@ public class HttpRequestBuilderTests
         var finalRequestUri9 =
             httpRequestBuilder7.BuildFinalRequestUri(new Uri("https://furion.net"), builder.Configuration);
         Assert.Equal("https://furion.net/Furion/10/MonkSoul/default", finalRequestUri9);
+
+        var httpRequestBuilder8 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost/test/")); // 保留末尾斜杆
+        var finalRequestUri10 = httpRequestBuilder8.BuildFinalRequestUri(null, null);
+        Assert.Equal("http://localhost/test/", finalRequestUri10);
     }
 
     [Fact]

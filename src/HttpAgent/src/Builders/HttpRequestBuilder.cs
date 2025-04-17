@@ -151,18 +151,44 @@ public sealed partial class HttpRequestBuilder
     /// </param>
     internal void AppendPathSegments(UriBuilder uriBuilder)
     {
+        // 空检查
+        if ((PathSegments == null || PathSegments.Count == 0) &&
+            (PathSegmentsToRemove == null || PathSegmentsToRemove.Count == 0))
+        {
+            return;
+        }
+
+        // 记录原路径是否以斜杠结尾（修复核心逻辑）
+        var originalPath = uriBuilder.Uri.AbsolutePath;
+        var endsWithSlash = originalPath.Length > 1 && originalPath.EndsWith('/');
+
         // 解析 URL 中的路径片段列表
-        var pathSegments = uriBuilder.Path.Split('/', StringSplitOptions.RemoveEmptyEntries).Concat([]);
+        var pathSegments = uriBuilder.Path.Split('/', StringSplitOptions.RemoveEmptyEntries);
 
-        // 追加路径片段
-        pathSegments = pathSegments.Concat(PathSegments.ConcatIgnoreNull([]).Where(u => !string.IsNullOrWhiteSpace(u))
-            .Select(u => u.TrimStart('/').TrimEnd('/')));
+        // 追加并处理新路径片段
+        var newPathSegments = pathSegments.Concat(PathSegments.ConcatIgnoreNull([])
+            .Where(u => !string.IsNullOrWhiteSpace(u)).Select(u => u.TrimStart('/').TrimEnd('/')));
 
-        // 构建路径片段赋值给 UriBuilder 的 Path 属性
-        uriBuilder.Path = '/' + string.Join('/',
-            // 过滤已标记为移除的路径片段
-            pathSegments.WhereIf(PathSegmentsToRemove is { Count: > 0 },
-                u => PathSegmentsToRemove?.TryGetValue(u, out _) == false));
+        // 过滤需要移除的路径片段
+        var filteredSegments = newPathSegments.WhereIf(PathSegmentsToRemove is { Count: > 0 },
+            u => PathSegmentsToRemove?.Contains(u) == false).ToArray();
+
+        // 构建最终路径
+        if (filteredSegments.Length != 0)
+        {
+            uriBuilder.Path = $"/{string.Join('/', filteredSegments)}";
+
+            // 恢复原路径的结尾斜杠（当存在路径片段时）
+            if (endsWithSlash)
+            {
+                uriBuilder.Path += "/";
+            }
+        }
+        // 没有路径片段时设置为根路径
+        else
+        {
+            uriBuilder.Path = "/";
+        }
     }
 
     /// <summary>
@@ -173,6 +199,13 @@ public sealed partial class HttpRequestBuilder
     /// </param>
     internal void AppendQueryParameters(UriBuilder uriBuilder)
     {
+        // 空检查
+        if ((QueryParameters is null || QueryParameters.Count == 0) &&
+            (QueryParametersToRemove is null || QueryParametersToRemove.Count == 0))
+        {
+            return;
+        }
+
         // 解析 URL 中的查询字符串为键值对列表
         var queryParameters = uriBuilder.Query.ParseFormatKeyValueString(['&'], '?');
 
