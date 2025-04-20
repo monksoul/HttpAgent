@@ -187,7 +187,16 @@ public static class HttpRemoteExtensions
         // 默认只读取 5KB 的内容
         const int maxBytesToDisplay = 5120;
 
-        // 读取内容为字节数组
+        /*
+         * 读取内容为字节数组
+         *
+         * 由于 HttpContent 的流设计为单次读取（即流内容在首次读取后会被消耗，无法重复读取），
+         * 当前实现（即使用 ReadAsByteArrayAsync(cancellationToken)）中对于较大内容会一次性加载至内存，
+         * 这可能导致性能问题（如内存占用过高或响应延迟），不过目前尚未找到更优的解决方案。
+         *
+         * 强烈建议在生产环境中禁用或关闭此类一次性读取操作，尤其是对于高并发或大流量场景，
+         * 以避免因内存溢出（OOM）或线程阻塞导致的服务不可用风险。
+         */
         var buffer = await httpContent.ReadAsByteArrayAsync(cancellationToken);
         var total = buffer.Length;
 
