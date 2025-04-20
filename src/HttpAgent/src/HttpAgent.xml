@@ -1917,6 +1917,15 @@
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
         </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.WithSuccessStatusCodeHandler(System.Func{System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken,System.Threading.Tasks.Task})">
+            <summary>
+                添加请求成功（200-299）状态码处理程序
+            </summary>
+            <param name="handler">自定义处理程序</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
         <member name="M:HttpAgent.HttpRequestBuilder.WithStatusCodeHandler(System.Collections.Generic.IEnumerable{System.Object},System.Func{System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken,System.Threading.Tasks.Task})">
             <summary>
                 添加状态码处理程序
@@ -8527,12 +8536,12 @@
         <member name="M:HttpAgent.HttpRemoteService.StatusCodeRangeRegex">
             <remarks>
             Pattern:<br/>
-            <code>^\\d+-\\d+$</code><br/>
+            <code>^\\d+[-~]\\d+$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
-            ○ Match '-'.<br/>
+            ○ Match a character in the set [-~].<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
@@ -13578,9 +13587,6 @@
         <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_ascii_60FF03FEFFFF87FEFFFF47">
             <summary>Supports searching for characters in or not in "-.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz~".</summary>
         </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_EBC667BDABA1472FA863B5B39B31251EF2B4C95DD643BDECF694CB1CE7BDC178">
-            <summary>Supports searching for the string "[[".</summary>
-        </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions">
             <summary>
                 HTTP 远程请求模块 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" /> 拓展类
@@ -13606,6 +13612,15 @@
                 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
             </param>
             <param name="httpRemoteBuilder">
+                <see cref="T:HttpAgent.HttpRemoteBuilder" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
+            </returns>
+        </member>
+    </members>
+</doc>
+teBuilder">
                 <see cref="T:HttpAgent.HttpRemoteBuilder" />
             </param>
             <returns>

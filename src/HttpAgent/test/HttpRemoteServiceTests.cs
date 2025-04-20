@@ -354,6 +354,7 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
     [InlineData("*", true)]
     [InlineData('*', true)]
     [InlineData("200-300", true)]
+    [InlineData("200~300", true)]
     [InlineData("100-200", true)]
     [InlineData(">=200", true)]
     [InlineData("<=200", true)]
@@ -373,6 +374,7 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
     [InlineData("300-", false)]
     [InlineData(".", false)]
     [InlineData("200--300", false)]
+    [InlineData("200-~300", false)]
     [InlineData("+200", false)]
     public void IsMatched200StatusCode_ReturnOK(object code, bool result) =>
         Assert.Equal(result, HttpRemoteService.IsMatchedStatusCode(code, 200));

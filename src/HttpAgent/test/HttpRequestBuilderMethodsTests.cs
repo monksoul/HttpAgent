@@ -1570,6 +1570,11 @@ public class HttpRequestBuilderMethodsTests
 
         Assert.NotNull(httpRequestBuilder.StatusCodeHandlers);
         Assert.Equal(7, httpRequestBuilder.StatusCodeHandlers.Count);
+
+        var httpRequestBuilder2 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        httpRequestBuilder2.WithSuccessStatusCodeHandler((_, _) => Task.CompletedTask);
+        Assert.NotNull(httpRequestBuilder2.StatusCodeHandlers);
+        Assert.Contains(httpRequestBuilder2.StatusCodeHandlers.Keys, k => k.Contains("200-299"));
     }
 
     [Fact]

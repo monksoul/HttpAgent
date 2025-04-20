@@ -140,26 +140,29 @@ public class HttpRemoteExtensionsTests
         Assert.Null(await HttpRemoteExtensions.ProfilerAsync(null));
 
         var stringContent = new StringContent("Hello World");
-        Assert.Equal("Request Body (StringContent): \r\n\tHello World", await stringContent.ProfilerAsync());
+        Assert.Equal("Request Body (StringContent, total: 11 bytes): \r\n\tHello World",
+            await stringContent.ProfilerAsync());
 
         var jsonContent = JsonContent.Create(new { id = 1, name = "furion" });
-        Assert.Equal("Request Body (JsonContent): \r\n\t{\"id\":1,\"name\":\"furion\"}",
+        Assert.Equal("Request Body (JsonContent, total: 24 bytes): \r\n\t{\"id\":1,\"name\":\"furion\"}",
             await jsonContent.ProfilerAsync());
 
         var byteArrayContent = new ByteArrayContent("Hello World"u8.ToArray());
-        Assert.Equal("Request Body (ByteArrayContent): \r\n\tHello World", await byteArrayContent.ProfilerAsync());
+        Assert.Equal("Request Body (ByteArrayContent, total: 11 bytes): \r\n\tHello World",
+            await byteArrayContent.ProfilerAsync());
 
         var formUrlEncodedContent = new FormUrlEncodedContent([
             new KeyValuePair<string, string>("id", "1"), new KeyValuePair<string, string>("name", "Furion")
         ]);
-        Assert.Equal("Request Body (FormUrlEncodedContent): \r\n\tid=1&name=Furion",
+        Assert.Equal("Request Body (FormUrlEncodedContent, total: 16 bytes): \r\n\tid=1&name=Furion",
             await formUrlEncodedContent.ProfilerAsync());
 
         var streamStream = new StreamContent(File.OpenRead(Path.Combine(AppContext.BaseDirectory, "test.txt")));
-        Assert.Equal("Request Body (StreamContent): \r\n\t﻿测试文件内容", await streamStream.ProfilerAsync());
+        Assert.Equal("Request Body (StreamContent, total: 21 bytes): \r\n\t﻿测试文件内容",
+            await streamStream.ProfilerAsync());
 
         var readOnlyMemoryContent = new ReadOnlyMemoryContent(new ReadOnlyMemory<byte>("Hello World"u8.ToArray()));
-        Assert.Equal("Request Body (ReadOnlyMemoryContent): \r\n\tHello World",
+        Assert.Equal("Request Body (ReadOnlyMemoryContent, total: 11 bytes): \r\n\tHello World",
             await readOnlyMemoryContent.ProfilerAsync());
 
         var multipartFormDataContent = new MultipartFormDataContent("--------------------------");
@@ -167,11 +170,11 @@ public class HttpRemoteExtensionsTests
         multipartFormDataContent.Add(
             new StreamContent(File.OpenRead(Path.Combine(AppContext.BaseDirectory, "test.txt"))), "file");
         Assert.Equal(
-            "Request Body (MultipartFormDataContent): \r\n\t----------------------------\r\n  Content-Type: text/plain; charset=utf-8\r\n  Content-Disposition: form-data; name=text\r\n  \r\n  Hello World\r\n  ----------------------------\r\n  Content-Disposition: form-data; name=file\r\n  \r\n  ﻿测试文件内容\r\n  ------------------------------\r\n  ",
+            "Request Body (MultipartFormDataContent, total: 259 bytes): \r\n\t----------------------------\r\n  Content-Type: text/plain; charset=utf-8\r\n  Content-Disposition: form-data; name=text\r\n  \r\n  Hello World\r\n  ----------------------------\r\n  Content-Disposition: form-data; name=file\r\n  \r\n  ﻿测试文件内容\r\n  ------------------------------\r\n  ",
             await multipartFormDataContent.ProfilerAsync());
 
         var stringContent2 = new StringContent("Hello World");
-        Assert.Equal("Response Body (StringContent): \r\n\tHello World",
+        Assert.Equal("Response Body (StringContent, total: 11 bytes): \r\n\tHello World",
             await stringContent2.ProfilerAsync("Response Body"));
     }
 

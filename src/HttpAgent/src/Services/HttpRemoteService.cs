@@ -867,10 +867,10 @@ internal sealed partial class HttpRemoteService : IHttpRemoteService
                                               int.TryParse(stringStatusCode, out var intStatusCodeResult) &&
                                               intStatusCodeResult == statusCode:
                 return true;
-            // 处理字符串区间类型，如 200-500
+            // 处理字符串区间类型，如 200-500 或 200~500
             case string stringStatusCode when StatusCodeRangeRegex().IsMatch(stringStatusCode):
-                // 根据 - 符号切割
-                var parts = stringStatusCode.Split('-', StringSplitOptions.RemoveEmptyEntries);
+                // 根据 - 或 ~ 符号切割
+                var parts = stringStatusCode.Split(['-', '~'], StringSplitOptions.RemoveEmptyEntries);
 
                 // 比较状态码区间
                 if (parts.Length == 2 && int.TryParse(parts[0], out var start) && int.TryParse(parts[1], out var end))
@@ -987,7 +987,7 @@ internal sealed partial class HttpRemoteService : IHttpRemoteService
     ///     状态码区间正则表达式
     /// </summary>
     /// <returns></returns>
-    [GeneratedRegex(@"^\d+-\d+$")]
+    [GeneratedRegex(@"^\d+[-~]\d+$")]
     private static partial Regex StatusCodeRangeRegex();
 
     /// <summary>

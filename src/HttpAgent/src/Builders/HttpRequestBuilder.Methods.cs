@@ -1322,6 +1322,17 @@ public sealed partial class HttpRequestBuilder
         WithStatusCodeHandler(["*"], handler);
 
     /// <summary>
+    ///     添加请求成功（200-299）状态码处理程序
+    /// </summary>
+    /// <param name="handler">自定义处理程序</param>
+    /// <returns>
+    ///     <see cref="HttpRequestBuilder" />
+    /// </returns>
+    public HttpRequestBuilder
+        WithSuccessStatusCodeHandler(Func<HttpResponseMessage, CancellationToken, Task> handler) =>
+        WithStatusCodeHandler("200-299", handler);
+
+    /// <summary>
     ///     添加状态码处理程序
     /// </summary>
     /// <remarks>支持多次调用。</remarks>

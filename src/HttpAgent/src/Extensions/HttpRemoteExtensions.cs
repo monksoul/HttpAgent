@@ -189,17 +189,20 @@ public static class HttpRemoteExtensions
 
         // 读取内容为字节数组
         var buffer = await httpContent.ReadAsByteArrayAsync(cancellationToken);
+        var total = buffer.Length;
 
         // 计算要显示的部分
-        var bytesToShow = Math.Min(buffer.Length, maxBytesToDisplay);
+        var bytesToShow = Math.Min(total, maxBytesToDisplay);
         var partialContent = Encoding.UTF8.GetString(buffer, 0, bytesToShow);
 
         // 如果实际读取的数据小于最大显示大小，则直接返回；否则，添加省略号表示内容被截断
-        var bodyString = buffer.Length <= maxBytesToDisplay ? partialContent : partialContent + " ... [truncated]";
+        var bodyString = total <= maxBytesToDisplay
+            ? partialContent
+            : partialContent + $" ... [truncated, total: {total} bytes]";
 
         return StringUtility.FormatKeyValuesSummary(
             [new KeyValuePair<string, IEnumerable<string>>(string.Empty, [bodyString])],
-            $"{summary} ({httpContent.GetType().Name})");
+            $"{summary} ({httpContent.GetType().Name}, total: {total} bytes)");
     }
 
     /// <summary>
