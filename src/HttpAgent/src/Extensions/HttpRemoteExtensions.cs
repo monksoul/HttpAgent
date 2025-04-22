@@ -10,7 +10,7 @@ namespace HttpAgent.Extensions;
 /// <summary>
 ///     HTTP 远程服务拓展类
 /// </summary>
-public static class HttpRemoteExtensions
+public static partial class HttpRemoteExtensions
 {
     /// <summary>
     ///     添加 HTTP 远程请求分析工具处理委托
@@ -202,7 +202,19 @@ public static class HttpRemoteExtensions
 
         // 计算要显示的部分
         var bytesToShow = Math.Min(total, maxBytesToDisplay);
-        var partialContent = Encoding.UTF8.GetString(buffer, 0, bytesToShow);
+
+        // 注册 CodePagesEncodingProvider，使得程序能够识别并使用 Windows 代码页中的各种编码
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
+        // 获取内容编码
+        var charset = httpContent.Headers.ContentType?.CharSet ?? "utf-8";
+        var partialContent = Encoding.GetEncoding(charset).GetString(buffer, 0, bytesToShow);
+
+        // 检查是否是完整的 Unicode 转义字符串
+        if (total == bytesToShow && UnicodeEscapeRegex().IsMatch(partialContent))
+        {
+            partialContent = Regex.Unescape(partialContent);
+        }
 
         // 如果实际读取的数据小于最大显示大小，则直接返回；否则，添加省略号表示内容被截断
         var bodyString = total <= maxBytesToDisplay
@@ -355,4 +367,13 @@ public static class HttpRemoteExtensions
             ? null
             : Convert.ToString(hostEnvironment.GetType().GetProperty("EnvironmentName")?.GetValue(hostEnvironment));
     }
+
+    /// <summary>
+    ///     Unicode 转义正则表达式
+    /// </summary>
+    /// <returns>
+    ///     <see cref="Regex" />
+    /// </returns>
+    [GeneratedRegex(@"\\u([0-9a-fA-F]{4})")]
+    private static partial Regex UnicodeEscapeRegex();
 }
