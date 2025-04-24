@@ -24,6 +24,5 @@ public sealed class DateTimeOffsetConverterUsingDateTimeOffsetParseAsFallback : 
 
     /// <inheritdoc />
     public override void Write(Utf8JsonWriter writer, DateTimeOffset value, JsonSerializerOptions options) =>
-        // 使用默认反序列化输出（有极小的性能损耗，因为会创建一个新的序列化过程
         JsonSerializer.Serialize(writer, value);
 }
