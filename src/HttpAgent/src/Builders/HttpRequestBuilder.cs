@@ -557,6 +557,9 @@ public sealed partial class HttpRequestBuilder
         {
             httpRequestMessage.Options.AddOrUpdate(Constants.DISABLED_PROFILER_KEY, "TRUE");
         }
+
+        // 添加 HttpClient 实例的配置名称
+        httpRequestMessage.Options.AddOrUpdate(Constants.HTTP_CLIENT_NAME, HttpClientName ?? string.Empty);
     }
 
     /// <summary>

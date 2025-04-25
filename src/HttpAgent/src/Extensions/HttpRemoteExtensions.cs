@@ -54,6 +54,56 @@ public static partial class HttpRemoteExtensions
             disableInProduction && GetHostEnvironmentName(builder.Services)?.ToLower() == "production");
 
     /// <summary>
+    ///     配置 <see cref="HttpClient" /> 额外选项
+    /// </summary>
+    /// <param name="builder">
+    ///     <see cref="IHttpClientBuilder" />
+    /// </param>
+    /// <param name="configure">自定义配置选项</param>
+    /// <returns>
+    ///     <see cref="IHttpClientBuilder" />
+    /// </returns>
+    public static IHttpClientBuilder ConfigureOptions(this IHttpClientBuilder builder,
+        Action<HttpClientOptions> configure)
+    {
+        // 空检查
+        ArgumentNullException.ThrowIfNull(configure);
+
+        builder.Services.AddOptions<HttpClientOptions>(builder.Name).Configure(options =>
+        {
+            options.IsDefault = false;
+            configure.Invoke(options);
+        });
+
+        return builder;
+    }
+
+    /// <summary>
+    ///     配置 <see cref="HttpClient" /> 额外选项
+    /// </summary>
+    /// <param name="builder">
+    ///     <see cref="IHttpClientBuilder" />
+    /// </param>
+    /// <param name="configure">自定义配置选项</param>
+    /// <returns>
+    ///     <see cref="IHttpClientBuilder" />
+    /// </returns>
+    public static IHttpClientBuilder ConfigureOptions(this IHttpClientBuilder builder,
+        Action<HttpClientOptions, IServiceProvider> configure)
+    {
+        // 空检查
+        ArgumentNullException.ThrowIfNull(configure);
+
+        builder.Services.AddOptions<HttpClientOptions>(builder.Name).Configure<IServiceProvider>((options, provider) =>
+        {
+            options.IsDefault = false;
+            configure.Invoke(options, provider);
+        });
+
+        return builder;
+    }
+
+    /// <summary>
     ///     为 <see cref="HttpClient" /> 启用性能优化
     /// </summary>
     /// <param name="httpClient">
@@ -143,18 +193,26 @@ public static partial class HttpRemoteExtensions
                 ? [new KeyValuePair<string, IEnumerable<string>>("Declarative", [methodSignature])]
                 : null;
 
+        // 格式化 HttpClient 实例的配置条目
+        IEnumerable<KeyValuePair<string, IEnumerable<string>>>? httpClientKeyValues =
+            httpRequestMessage.Options.TryGetValue(new HttpRequestOptionsKey<string>(Constants.HTTP_CLIENT_NAME),
+                out var httpClientName)
+                ? [new KeyValuePair<string, IEnumerable<string>>("HttpClient Name", [httpClientName])]
+                : null;
+
         // 格式化常规条目
         var generalEntry = StringUtility.FormatKeyValuesSummary(new[]
-        {
-            new KeyValuePair<string, IEnumerable<string>>("Request URL",
-                [httpRequestMessage.RequestUri?.OriginalString!]),
-            new KeyValuePair<string, IEnumerable<string>>("HTTP Method", [httpRequestMessage.Method.ToString()]),
-            new KeyValuePair<string, IEnumerable<string>>("Status Code",
-                [$"{(int)httpResponseMessage.StatusCode} {httpResponseMessage.StatusCode}"]),
-            new KeyValuePair<string, IEnumerable<string>>("HTTP Version", [httpResponseMessage.Version.ToString()]),
-            new KeyValuePair<string, IEnumerable<string>>("HTTP Content",
-                [$"{httpContent?.GetType().Name}"])
-        }.ConcatIgnoreNull(declarativeKeyValues).ConcatIgnoreNull(generalCustomKeyValues), generalSummary);
+            {
+                new KeyValuePair<string, IEnumerable<string>>("Request URL",
+                    [httpRequestMessage.RequestUri?.OriginalString!]),
+                new KeyValuePair<string, IEnumerable<string>>("HTTP Method", [httpRequestMessage.Method.ToString()]),
+                new KeyValuePair<string, IEnumerable<string>>("Status Code",
+                    [$"{(int)httpResponseMessage.StatusCode} {httpResponseMessage.StatusCode}"]),
+                new KeyValuePair<string, IEnumerable<string>>("HTTP Version", [httpResponseMessage.Version.ToString()]),
+                new KeyValuePair<string, IEnumerable<string>>("HTTP Content",
+                    [$"{httpContent?.GetType().Name}"])
+            }.ConcatIgnoreNull(httpClientKeyValues).ConcatIgnoreNull(declarativeKeyValues)
+            .ConcatIgnoreNull(generalCustomKeyValues), generalSummary);
 
         // 格式化响应条目
         var responseEntry = httpResponseMessage.ProfilerHeaders(responseSummary);

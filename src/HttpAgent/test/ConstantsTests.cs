@@ -60,6 +60,10 @@ public class ConstantsTests
         Assert.Equal("__DECLARATIVE_METHOD__", Constants.DECLARATIVE_METHOD_KEY);
 
     [Fact]
+    public void HTTP_CLIENT_NAME() =>
+        Assert.Equal("__HTTP_CLIENT_NAME__", Constants.HTTP_CLIENT_NAME);
+
+    [Fact]
     public void USER_AGENT_OF_BROWSER() =>
         Assert.Equal(
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0",

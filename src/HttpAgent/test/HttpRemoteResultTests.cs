@@ -33,6 +33,7 @@ public class HttpRemoteResultTests
         Assert.NotNull(httpRemoteResult.Headers);
         Assert.NotNull(httpRemoteResult.ContentHeaders);
         Assert.Equal("1.1", httpRemoteResult.Version.ToString());
+        Assert.Null(httpRemoteResult.HttpClientName);
     }
 
     [Fact]
@@ -128,10 +129,13 @@ public class HttpRemoteResultTests
     {
         var httpResponseMessage = new HttpResponseMessage();
         httpResponseMessage.Version = new Version(1, 2);
+        httpResponseMessage.RequestMessage = new HttpRequestMessage(HttpMethod.Get, new Uri("https://localhost/"));
+        httpResponseMessage.RequestMessage.Options.TryAdd(Constants.HTTP_CLIENT_NAME, "github");
         var httpRemoteResult = new HttpRemoteResult<string>(httpResponseMessage);
         httpRemoteResult.Initialize();
 
         Assert.Equal("1.2", httpRemoteResult.Version.ToString());
+        Assert.Equal("github", httpRemoteResult.HttpClientName);
         Assert.Null(httpRemoteResult.RawSetCookies);
         Assert.Null(httpRemoteResult.SetCookies);
 

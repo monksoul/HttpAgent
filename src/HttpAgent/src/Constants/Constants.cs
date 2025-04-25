@@ -82,6 +82,12 @@ internal static class Constants
     internal const string DECLARATIVE_METHOD_KEY = "__DECLARATIVE_METHOD__";
 
     /// <summary>
+    ///     HTTP 请求 <see cref="HttpClient" /> 实例的配置名称键
+    /// </summary>
+    /// <remarks>被用于从 <see cref="HttpRequestMessage" /> 的 <c>Options</c> 属性中读取。</remarks>
+    internal const string HTTP_CLIENT_NAME = "__HTTP_CLIENT_NAME__";
+
+    /// <summary>
     ///     浏览器的 <c>User-Agent</c> 标头值
     /// </summary>
     internal const string USER_AGENT_OF_BROWSER =

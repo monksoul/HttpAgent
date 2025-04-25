@@ -312,4 +312,47 @@ public class HttpRemoteExtensionsTests
         var builder2 = WebApplication.CreateBuilder(new WebApplicationOptions { EnvironmentName = "Production" });
         Assert.Equal("Production", HttpRemoteExtensions.GetHostEnvironmentName(builder2.Services));
     }
+
+    [Fact]
+    public void ConfigureOptions_Invalid_Parameters()
+    {
+        var services = new ServiceCollection();
+
+        Assert.Throws<ArgumentNullException>(() =>
+            services.AddHttpClient(string.Empty).ConfigureOptions((Action<HttpClientOptions>)null!));
+        Assert.Throws<ArgumentNullException>(() =>
+            services.AddHttpClient(string.Empty).ConfigureOptions((Action<HttpClientOptions, IServiceProvider>)null!));
+    }
+
+    [Fact]
+    public void ConfigureOptions_ReturnOK()
+    {
+        var services = new ServiceCollection();
+
+        services.AddHttpClient(string.Empty)
+            .ConfigureOptions(options => options.JsonSerializerOptions.IncludeFields = true);
+        services.AddHttpClient("github").ConfigureOptions((options, serviceProvider) =>
+        {
+            Assert.NotNull(serviceProvider);
+            options.JsonSerializerOptions.IncludeFields = true;
+        });
+
+        var serviceProvider = services.BuildServiceProvider();
+
+        var httpClientOptionsAccessor = serviceProvider.GetRequiredService<IOptionsSnapshot<HttpClientOptions>>();
+
+        var httpClientOptions = httpClientOptionsAccessor.Get(string.Empty);
+        Assert.True(httpClientOptions.JsonSerializerOptions.IncludeFields);
+        Assert.False(httpClientOptions.IsDefault);
+
+        var httpClientOptions2 = httpClientOptionsAccessor.Get("github");
+        Assert.True(httpClientOptions2.JsonSerializerOptions.IncludeFields);
+        Assert.False(httpClientOptions2.IsDefault);
+
+        var httpClientOptions3 = httpClientOptionsAccessor.Get("notfound");
+        Assert.False(httpClientOptions3.JsonSerializerOptions.IncludeFields);
+        Assert.True(httpClientOptions3.IsDefault);
+
+        serviceProvider.Dispose();
+    }
 }

@@ -171,4 +171,112 @@ public class ObjectContentConverterTests
         Assert.Equal(10, objectModel2.Id);
         Assert.Equal("furion", objectModel2.Name);
     }
+
+    [Fact]
+    public async Task ReadAsync_WithJsonNamingPolicy_ReturnOK()
+    {
+        var services = new ServiceCollection();
+        services.AddHttpClient(string.Empty).ConfigureOptions(options =>
+        {
+            options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower;
+        });
+        var serviceProvider = services.BuildServiceProvider();
+
+        using var stringContent = new StringContent("""{"user_id":10, "user_name":"furion"}""");
+        var httpResponseMessage = new HttpResponseMessage();
+        httpResponseMessage.Content = stringContent;
+
+        var converter = new ObjectContentConverter<ObjectModelSnakeCase> { ServiceProvider = serviceProvider };
+        var objectModel = await converter.ReadAsync(httpResponseMessage);
+        Assert.NotNull(objectModel);
+        Assert.Equal(10, objectModel.UserId);
+        Assert.Equal("furion", objectModel.UserName);
+
+        await serviceProvider.DisposeAsync();
+    }
+
+    [Fact]
+    public void GetJsonSerializerOptions_Invalid_Parameters()
+    {
+        using var stringContent = new StringContent("""{"id":10, "name":"furion"}""");
+        var httpResponseMessage = new HttpResponseMessage();
+        httpResponseMessage.Content = stringContent;
+
+        var converter = new ObjectContentConverter<ObjectModel>();
+        var getJsonSerializerOptionsMethod = typeof(ObjectContentConverter).GetMethod("GetJsonSerializerOptions",
+            BindingFlags.NonPublic | BindingFlags.Instance)!;
+
+        var exception = Assert.Throws<TargetInvocationException>(() =>
+            getJsonSerializerOptionsMethod.Invoke(converter, [null!]));
+        Assert.True(exception.InnerException is ArgumentNullException);
+    }
+
+    [Fact]
+    public void GetJsonSerializerOptions_WithDefault_ReturnOK()
+    {
+        using var stringContent = new StringContent("""{"id":10, "name":"furion"}""");
+        var httpResponseMessage = new HttpResponseMessage();
+        httpResponseMessage.Content = stringContent;
+
+        var converter = new ObjectContentConverter<ObjectModel>();
+        var getJsonSerializerOptionsMethod = typeof(ObjectContentConverter).GetMethod("GetJsonSerializerOptions",
+            BindingFlags.NonPublic | BindingFlags.Instance)!;
+
+        var jsonSerializerOptions =
+            getJsonSerializerOptionsMethod.Invoke(converter, [httpResponseMessage]) as JsonSerializerOptions;
+        Assert.NotNull(jsonSerializerOptions);
+        Assert.False(jsonSerializerOptions.IncludeFields);
+    }
+
+    [Fact]
+    public void GetJsonSerializerOptions_WithHttpClientOptions_ReturnOK()
+    {
+        var services = new ServiceCollection();
+        services.AddHttpClient(string.Empty).ConfigureOptions(options =>
+        {
+            options.JsonSerializerOptions.IncludeFields = true;
+        });
+        var serviceProvider = services.BuildServiceProvider();
+
+        using var stringContent = new StringContent("""{"id":10, "name":"furion"}""");
+        var httpResponseMessage = new HttpResponseMessage();
+        httpResponseMessage.Content = stringContent;
+
+        var converter = new ObjectContentConverter<ObjectModel> { ServiceProvider = serviceProvider };
+        var getJsonSerializerOptionsMethod = typeof(ObjectContentConverter).GetMethod("GetJsonSerializerOptions",
+            BindingFlags.NonPublic | BindingFlags.Instance)!;
+
+        var jsonSerializerOptions =
+            getJsonSerializerOptionsMethod.Invoke(converter, [httpResponseMessage]) as JsonSerializerOptions;
+        Assert.NotNull(jsonSerializerOptions);
+        Assert.True(jsonSerializerOptions.IncludeFields);
+
+        serviceProvider.Dispose();
+    }
+
+    [Fact]
+    public void GetJsonSerializerOptions_WithHttpRemoteOptions_ReturnOK()
+    {
+        var services = new ServiceCollection();
+        services.AddHttpRemote().ConfigureOptions(options =>
+        {
+            options.JsonSerializerOptions.IncludeFields = true;
+        });
+        var serviceProvider = services.BuildServiceProvider();
+
+        using var stringContent = new StringContent("""{"id":10, "name":"furion"}""");
+        var httpResponseMessage = new HttpResponseMessage();
+        httpResponseMessage.Content = stringContent;
+
+        var converter = new ObjectContentConverter<ObjectModel> { ServiceProvider = serviceProvider };
+        var getJsonSerializerOptionsMethod = typeof(ObjectContentConverter).GetMethod("GetJsonSerializerOptions",
+            BindingFlags.NonPublic | BindingFlags.Instance)!;
+
+        var jsonSerializerOptions =
+            getJsonSerializerOptionsMethod.Invoke(converter, [httpResponseMessage]) as JsonSerializerOptions;
+        Assert.NotNull(jsonSerializerOptions);
+        Assert.True(jsonSerializerOptions.IncludeFields);
+
+        serviceProvider.Dispose();
+    }
 }

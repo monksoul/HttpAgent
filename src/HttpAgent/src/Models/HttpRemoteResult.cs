@@ -102,6 +102,11 @@ public sealed class HttpRemoteResult<TResult>
     public Version Version { get; private set; } = null!;
 
     /// <summary>
+    ///     <see cref="HttpClient" /> 实例的配置名称
+    /// </summary>
+    public string? HttpClientName { get; private set; }
+
+    /// <summary>
     ///     初始化
     /// </summary>
     internal void Initialize()
@@ -120,6 +125,13 @@ public sealed class HttpRemoteResult<TResult>
 
         // 获取 HTTP 版本
         Version = ResponseMessage.Version;
+
+        // 获取 HttpClient 实例的配置名称
+        if (ResponseMessage.RequestMessage?.Options.TryGetValue(
+                new HttpRequestOptionsKey<string>(Constants.HTTP_CLIENT_NAME), out var httpClientName) == true)
+        {
+            HttpClientName = httpClientName;
+        }
     }
 
     /// <summary>

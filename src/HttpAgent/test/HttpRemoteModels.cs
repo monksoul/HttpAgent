@@ -23,6 +23,12 @@ public class ObjectModel
     public string? Name { get; set; }
 }
 
+public class ObjectModelSnakeCase
+{
+    public int UserId { get; set; }
+    public string? UserName { get; set; }
+}
+
 public class CustomObjectContentConverter<TResult> : ObjectContentConverter<TResult>;
 
 public class CustomObjectContentConverter : ObjectContentConverter;

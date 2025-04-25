@@ -3238,6 +3238,12 @@
             </summary>
             <remarks>被用于从 <see cref="T:System.Net.Http.HttpRequestMessage" /> 的 <c>Options</c> 属性中读取。</remarks>
         </member>
+        <member name="F:HttpAgent.Constants.HTTP_CLIENT_NAME">
+            <summary>
+                HTTP 请求 <see cref="T:System.Net.Http.HttpClient" /> 实例的配置名称键
+            </summary>
+            <remarks>被用于从 <see cref="T:System.Net.Http.HttpRequestMessage" /> 的 <c>Options</c> 属性中读取。</remarks>
+        </member>
         <member name="F:HttpAgent.Constants.USER_AGENT_OF_BROWSER">
             <summary>
                 浏览器的 <c>User-Agent</c> 标头值
@@ -3441,6 +3447,17 @@
         </member>
         <member name="M:HttpAgent.ObjectContentConverter.ReadAsync(System.Type,System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
             <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.ObjectContentConverter.GetJsonSerializerOptions(System.Net.Http.HttpResponseMessage)">
+            <summary>
+                获取 JSON 序列化选项实例
+            </summary>
+            <param name="httpResponseMessage">
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </param>
+            <returns>
+                <see cref="T:System.Text.Json.JsonSerializerOptions" />
+            </returns>
         </member>
         <member name="T:HttpAgent.ObjectContentConverter`1">
             <summary>
@@ -5848,6 +5865,30 @@
                 <see cref="T:Microsoft.Extensions.DependencyInjection.IHttpClientBuilder" />
             </returns>
         </member>
+        <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.ConfigureOptions(Microsoft.Extensions.DependencyInjection.IHttpClientBuilder,System.Action{HttpAgent.HttpClientOptions})">
+            <summary>
+                配置 <see cref="T:System.Net.Http.HttpClient" /> 额外选项
+            </summary>
+            <param name="builder">
+                <see cref="T:Microsoft.Extensions.DependencyInjection.IHttpClientBuilder" />
+            </param>
+            <param name="configure">自定义配置选项</param>
+            <returns>
+                <see cref="T:Microsoft.Extensions.DependencyInjection.IHttpClientBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.ConfigureOptions(Microsoft.Extensions.DependencyInjection.IHttpClientBuilder,System.Action{HttpAgent.HttpClientOptions,System.IServiceProvider})">
+            <summary>
+                配置 <see cref="T:System.Net.Http.HttpClient" /> 额外选项
+            </summary>
+            <param name="builder">
+                <see cref="T:Microsoft.Extensions.DependencyInjection.IHttpClientBuilder" />
+            </param>
+            <param name="configure">自定义配置选项</param>
+            <returns>
+                <see cref="T:Microsoft.Extensions.DependencyInjection.IHttpClientBuilder" />
+            </returns>
+        </member>
         <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.PerformanceOptimization(System.Net.Http.HttpClient)">
             <summary>
                 为 <see cref="T:System.Net.Http.HttpClient" /> 启用性能优化
@@ -7408,6 +7449,11 @@
                 HTTP 版本
             </summary>
         </member>
+        <member name="P:HttpAgent.HttpRemoteResult`1.HttpClientName">
+            <summary>
+                <see cref="T:System.Net.Http.HttpClient" /> 实例的配置名称
+            </summary>
+        </member>
         <member name="M:HttpAgent.HttpRemoteResult`1.Initialize">
             <summary>
                 初始化
@@ -7971,6 +8017,22 @@
             <summary>
                 用于标识无需接收 HTTP 远程请求返回值
             </summary>
+        </member>
+        <member name="T:HttpAgent.HttpClientOptions">
+            <summary>
+                <see cref="T:System.Net.Http.HttpClient" /> 配置选项
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpClientOptions.JsonSerializerOptions">
+            <summary>
+                JSON 序列化配置
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpClientOptions.IsDefault">
+            <summary>
+                标识选项是否配置为默认值（未配置）
+            </summary>
+            <remarks>用于避免通过 <see cref="T:Microsoft.Extensions.Options.IOptionsSnapshot`1" /> 获取选项时无法确定是否已配置该选项。默认值为：<c>true</c>。</remarks>
         </member>
         <member name="T:HttpAgent.HttpRemoteOptions">
             <summary>
