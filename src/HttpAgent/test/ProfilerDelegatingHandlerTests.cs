@@ -94,7 +94,7 @@ public class ProfilerDelegatingHandlerTests
         ProfilerDelegatingHandler.Log(logger, remoteOptions, " ", httpRemoteProfiler);
         ProfilerDelegatingHandler.Log(logger, remoteOptions, "HttpAgent.Tests", httpRemoteProfiler);
         ProfilerDelegatingHandler.Log(logger, remoteOptions, "__", httpRemoteProfiler);
-        Assert.Equal("HttpAgent.Tests__", httpRemoteProfiler.Data);
+        Assert.Equal("HttpAgent.Tests\r\n__", httpRemoteProfiler.Data);
     }
 
     [Fact]
