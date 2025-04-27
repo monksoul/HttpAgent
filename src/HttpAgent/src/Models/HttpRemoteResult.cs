@@ -106,6 +106,70 @@ public sealed class HttpRemoteResult<TResult>
     /// </summary>
     public string? HttpClientName { get; private set; }
 
+    // /// <summary>
+    // ///     解构函数（至少包含两个 out 参数！！！）
+    // /// </summary>
+    // /// <param name="result">
+    // ///     <typeparamref name="TResult" />
+    // /// </param>
+    // public void Deconstruct(out TResult? result)
+    // {
+    //     result = Result;
+    // }
+
+    /// <summary>
+    ///     解构函数
+    /// </summary>
+    /// <param name="result">
+    ///     <typeparamref name="TResult" />
+    /// </param>
+    /// <param name="httpResponseMessage">
+    ///     <inheritdoc cref="HttpResponseMessage" />
+    /// </param>
+    public void Deconstruct(out TResult? result, out HttpResponseMessage httpResponseMessage)
+    {
+        result = Result;
+        httpResponseMessage = ResponseMessage;
+    }
+
+    /// <summary>
+    ///     解构函数
+    /// </summary>
+    /// <param name="result">
+    ///     <typeparamref name="TResult" />
+    /// </param>
+    /// <param name="httpResponseMessage">
+    ///     <inheritdoc cref="HttpResponseMessage" />
+    /// </param>
+    /// <param name="isSuccessStatusCode">是否请求成功</param>
+    public void Deconstruct(out TResult? result, out HttpResponseMessage httpResponseMessage,
+        out bool isSuccessStatusCode)
+    {
+        result = Result;
+        httpResponseMessage = ResponseMessage;
+        isSuccessStatusCode = IsSuccessStatusCode;
+    }
+
+    /// <summary>
+    ///     解构函数
+    /// </summary>
+    /// <param name="result">
+    ///     <typeparamref name="TResult" />
+    /// </param>
+    /// <param name="httpResponseMessage">
+    ///     <inheritdoc cref="HttpResponseMessage" />
+    /// </param>
+    /// <param name="isSuccessStatusCode">是否请求成功</param>
+    /// <param name="statusCode">响应状态码</param>
+    public void Deconstruct(out TResult? result, out HttpResponseMessage httpResponseMessage,
+        out bool isSuccessStatusCode, out HttpStatusCode statusCode)
+    {
+        result = Result;
+        httpResponseMessage = ResponseMessage;
+        isSuccessStatusCode = IsSuccessStatusCode;
+        statusCode = StatusCode;
+    }
+
     /// <summary>
     ///     初始化
     /// </summary>

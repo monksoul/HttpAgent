@@ -7454,6 +7454,42 @@
                 <see cref="T:System.Net.Http.HttpClient" /> 实例的配置名称
             </summary>
         </member>
+        <member name="M:HttpAgent.HttpRemoteResult`1.Deconstruct(`0@,System.Net.Http.HttpResponseMessage@)">
+            <summary>
+                解构函数
+            </summary>
+            <param name="result">
+                <typeparamref name="TResult" />
+            </param>
+            <param name="httpResponseMessage">
+                <inheritdoc cref="T:System.Net.Http.HttpResponseMessage" />
+            </param>
+        </member>
+        <member name="M:HttpAgent.HttpRemoteResult`1.Deconstruct(`0@,System.Net.Http.HttpResponseMessage@,System.Boolean@)">
+            <summary>
+                解构函数
+            </summary>
+            <param name="result">
+                <typeparamref name="TResult" />
+            </param>
+            <param name="httpResponseMessage">
+                <inheritdoc cref="T:System.Net.Http.HttpResponseMessage" />
+            </param>
+            <param name="isSuccessStatusCode">是否请求成功</param>
+        </member>
+        <member name="M:HttpAgent.HttpRemoteResult`1.Deconstruct(`0@,System.Net.Http.HttpResponseMessage@,System.Boolean@,System.Net.HttpStatusCode@)">
+            <summary>
+                解构函数
+            </summary>
+            <param name="result">
+                <typeparamref name="TResult" />
+            </param>
+            <param name="httpResponseMessage">
+                <inheritdoc cref="T:System.Net.Http.HttpResponseMessage" />
+            </param>
+            <param name="isSuccessStatusCode">是否请求成功</param>
+            <param name="statusCode">响应状态码</param>
+        </member>
         <member name="M:HttpAgent.HttpRemoteResult`1.Initialize">
             <summary>
                 初始化

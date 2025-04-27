@@ -189,4 +189,29 @@ public class HttpRemoteResultTests
             "Request Headers: \r\n\tAccept:              application/json\r\n\tAccept-Encoding:     gzip, deflate\r\nGeneral: \r\n\tRequest URL:               http://localhost\r\n\tHTTP Method:               GET\r\n\tStatus Code:               200 OK\r\n\tHTTP Version:              1.1\r\n\tHTTP Content:              \r\n\tRequest Duration (ms):     200.00\r\nResponse Headers: \r\n\tAccept:              application/json\r\n\tAccept-Encoding:     gzip, deflate\r\n\tContent-Type:        application/json\r\n\tContent-Length:      0",
             httpRemoteResult.ToString());
     }
+
+    [Fact]
+    public void Deconstruct_ReturnOK()
+    {
+        var httpResponseMessage = new HttpResponseMessage { StatusCode = HttpStatusCode.OK };
+        var stringContent = new StringContent("furion", Encoding.UTF8,
+            new MediaTypeHeaderValue("application/json") { CharSet = "utf-8" });
+        httpResponseMessage.Content = stringContent;
+        var httpRemoteResult = new HttpRemoteResult<string>(httpResponseMessage) { RequestDuration = 200 };
+
+        var (result, response) = httpRemoteResult;
+        Assert.Equal("furion", result);
+        Assert.NotNull(response);
+
+        var (result2, response2, isSuccess) = httpRemoteResult;
+        Assert.Equal("furion", result2);
+        Assert.NotNull(response2);
+        Assert.True(isSuccess);
+
+        var (result3, response3, isSuccess2, statusCode) = httpRemoteResult;
+        Assert.Equal("furion", result3);
+        Assert.NotNull(response3);
+        Assert.True(isSuccess2);
+        Assert.Equal(HttpStatusCode.OK, statusCode);
+    }
 }
