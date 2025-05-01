@@ -11,6 +11,11 @@ namespace HttpAgent;
 public sealed class ServerSentEventsData
 {
     /// <summary>
+    ///     用于存储自定义的字段数据
+    /// </summary>
+    internal readonly List<KeyValuePair<string, string>> _customFields;
+
+    /// <summary>
     ///     消息数据构建器
     /// </summary>
     internal readonly StringBuilder _dataBuffer;
@@ -23,7 +28,11 @@ public sealed class ServerSentEventsData
     /// <summary>
     ///     <inheritdoc cref="ServerSentEventsData" />
     /// </summary>
-    internal ServerSentEventsData() => _dataBuffer = new StringBuilder();
+    internal ServerSentEventsData()
+    {
+        _dataBuffer = new StringBuilder();
+        _customFields = [];
+    }
 
     /// <summary>
     ///     事件类型
@@ -53,6 +62,12 @@ public sealed class ServerSentEventsData
     public int Retry { get; internal set; }
 
     /// <summary>
+    ///     自定义的字段数据
+    /// </summary>
+    public IReadOnlyCollection<KeyValuePair<string, string>> CustomFields =>
+        new ReadOnlyCollection<KeyValuePair<string, string>>(_customFields);
+
+    /// <summary>
     ///     追加消息数据
     /// </summary>
     /// <param name="value">消息数据</param>
@@ -61,4 +76,12 @@ public sealed class ServerSentEventsData
         _dataBuffer.Append(value);
         _cachedData = null;
     }
+
+    /// <summary>
+    ///     追加自定义字段数据
+    /// </summary>
+    /// <param name="name">字段名</param>
+    /// <param name="value">字段数据</param>
+    internal void AddCustomField(string name, string value) =>
+        _customFields.Add(new KeyValuePair<string, string>(name, value));
 }

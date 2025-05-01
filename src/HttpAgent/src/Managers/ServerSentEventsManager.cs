@@ -384,10 +384,10 @@ internal sealed class ServerSentEventsManager
                     ? retryInterval
                     : _httpServerSentEventsBuilder.DefaultRetryInterval;
                 break;
-            // 所有其他的字段名都会被忽略
+            // 其他的字段名存储在 CustomFields 属性中
             default:
-                // 保持数据不变
-                return true;
+                serverSentEventsData.AddCustomField(key, value);
+                break;
         }
 
         return true;

@@ -14,10 +14,14 @@ public class ServerSentEventsDataTests
         Assert.NotNull(serverSentEventsData._dataBuffer);
         Assert.Equal(0, serverSentEventsData._dataBuffer.Length);
         Assert.Null(serverSentEventsData._cachedData);
+        Assert.NotNull(serverSentEventsData._customFields);
+        Assert.Empty(serverSentEventsData._customFields);
         Assert.Null(serverSentEventsData.Event);
         Assert.NotNull(serverSentEventsData.Data);
         Assert.Empty(serverSentEventsData.Data);
         Assert.Null(serverSentEventsData.Id);
+        Assert.NotNull(serverSentEventsData.CustomFields);
+        Assert.Empty(serverSentEventsData.CustomFields);
     }
 
     [Fact]
@@ -33,5 +37,17 @@ public class ServerSentEventsDataTests
         Assert.Null(serverSentEventsData._cachedData);
         Assert.Equal("furion", serverSentEventsData.Data);
         Assert.NotNull(serverSentEventsData._cachedData);
+    }
+
+    [Fact]
+    public void AddCustomField_ReturnOK()
+    {
+        var serverSentEventsData = new ServerSentEventsData();
+        serverSentEventsData.AddCustomField("custom", "这是一条自定义数据");
+        serverSentEventsData.AddCustomField("custom", "这是一条自定义数据2");
+        Assert.Equal(2, serverSentEventsData._customFields.Count);
+        Assert.Equal(2, serverSentEventsData.CustomFields.Count);
+        Assert.Equal("这是一条自定义数据", serverSentEventsData.CustomFields.First().Value);
+        Assert.Equal("这是一条自定义数据2", serverSentEventsData.CustomFields.Last().Value);
     }
 }

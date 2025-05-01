@@ -7360,6 +7360,76 @@
         <member name="M:HttpAgent.HttpRemoteAnalyzer.ToString">
             <inheritdoc />
         </member>
+        <member name="T:HttpAgent.HttpRemoteClient">
+            <summary>
+                提供静态访问 <see cref="T:HttpAgent.IHttpRemoteService" /> 服务的方式
+            </summary>
+            <remarks>支持服务的延迟初始化、配置更新以及资源释放。</remarks>
+        </member>
+        <member name="F:HttpAgent.HttpRemoteClient._serviceProvider">
+            <inheritdoc cref="T:System.IServiceProvider" />
+        </member>
+        <member name="F:HttpAgent.HttpRemoteClient._lazyService">
+            <summary>
+                延迟加载的 <see cref="T:HttpAgent.IHttpRemoteService" /> 实例
+            </summary>
+        </member>
+        <member name="F:HttpAgent.HttpRemoteClient._lock">
+            <summary>
+                并发锁对象
+            </summary>
+        </member>
+        <member name="F:HttpAgent.HttpRemoteClient._isDisposed">
+            <summary>
+                标记服务是否已释放
+            </summary>
+        </member>
+        <member name="F:HttpAgent.HttpRemoteClient._configure">
+            <summary>
+                自定义服务注册逻辑的委托
+            </summary>
+        </member>
+        <member name="M:HttpAgent.HttpRemoteClient.#cctor">
+            <summary>
+                <inheritdoc cref="T:HttpAgent.HttpRemoteClient" />
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpRemoteClient.Configure">
+            <summary>
+                自定义服务注册逻辑的委托
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpRemoteClient.Service">
+            <summary>
+                获取当前配置下的 <see cref="T:HttpAgent.IHttpRemoteService" /> 实例
+            </summary>
+            <exception cref="T:System.ObjectDisposedException">当服务已释放时访问此属性</exception>
+        </member>
+        <member name="M:HttpAgent.HttpRemoteClient.Dispose">
+            <summary>
+                释放服务提供器及相关资源
+            </summary>
+            <remarks>通常在应用程序关闭或不再需要 HTTP 远程请求服务时调用。</remarks>
+        </member>
+        <member name="M:HttpAgent.HttpRemoteClient.CreateService">
+            <summary>
+                创建 <see cref="T:HttpAgent.IHttpRemoteService" /> 实例
+            </summary>
+            <returns>
+                <see cref="T:HttpAgent.IHttpRemoteService" />
+            </returns>
+            <exception cref="T:System.InvalidOperationException">初始化失败时抛出</exception>
+        </member>
+        <member name="M:HttpAgent.HttpRemoteClient.Reinitialize">
+            <summary>
+                使用最新的 <see cref="P:HttpAgent.HttpRemoteClient.Configure" /> 配置重新初始化服务
+            </summary>
+        </member>
+        <member name="M:HttpAgent.HttpRemoteClient.ReleaseServiceProvider">
+            <summary>
+                释放服务提供器
+            </summary>
+        </member>
         <member name="T:HttpAgent.HttpRemoteResult`1">
             <summary>
                 HTTP 远程请求结果
@@ -7872,6 +7942,11 @@
             </summary>
             <remarks>参考文献：https://developer.mozilla.org/zh-CN/docs/Web/API/Server-sent_events/Using_server-sent_events#%E5%AD%97%E6%AE%B5。</remarks>
         </member>
+        <member name="F:HttpAgent.ServerSentEventsData._customFields">
+            <summary>
+                用于存储自定义的字段数据
+            </summary>
+        </member>
         <member name="F:HttpAgent.ServerSentEventsData._dataBuffer">
             <summary>
                 消息数据构建器
@@ -7914,11 +7989,23 @@
             </summary>
             <remarks>重新连接的时间。如果与服务器的连接丢失，浏览器将等待指定的时间，然后尝试重新连接。这必须是一个整数，以毫秒为单位指定重新连接的时间。如果指定了一个非整数值，该字段将被忽略。</remarks>
         </member>
+        <member name="P:HttpAgent.ServerSentEventsData.CustomFields">
+            <summary>
+                自定义的字段数据
+            </summary>
+        </member>
         <member name="M:HttpAgent.ServerSentEventsData.AppendData(System.String)">
             <summary>
                 追加消息数据
             </summary>
             <param name="value">消息数据</param>
+        </member>
+        <member name="M:HttpAgent.ServerSentEventsData.AddCustomField(System.String,System.String)">
+            <summary>
+                追加自定义字段数据
+            </summary>
+            <param name="name">字段名</param>
+            <param name="value">字段数据</param>
         </member>
         <member name="T:HttpAgent.StressTestHarnessResult">
             <summary>
