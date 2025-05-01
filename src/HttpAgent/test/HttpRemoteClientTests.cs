@@ -16,21 +16,24 @@ public class HttpRemoteClientTests
         Assert.NotNull(HttpRemoteClient._lazyService.Value);
         Assert.NotNull(HttpRemoteClient._lock);
         Assert.NotNull(HttpRemoteClient._configure);
-        Assert.NotNull(HttpRemoteClient.Configure);
         Assert.NotNull(HttpRemoteClient.Service);
 
         Assert.Same(httpRemoteService, HttpRemoteClient.Service);
     }
 
     [Fact]
+    public void Configure_Invalid_Parameters() =>
+        Assert.Throws<ArgumentNullException>(() => HttpRemoteClient.Configure(null!));
+
+    [Fact]
     public void Configure_ReturnOK()
     {
         var httpRemoteService = HttpRemoteClient.Service;
-        HttpRemoteClient.Configure = service =>
+        HttpRemoteClient.Configure(service =>
         {
             service.AddHttpRemote()
                 .ConfigureHttpClientDefaults(clientBuilder => clientBuilder.AddProfilerDelegatingHandler());
-        };
+        });
         var httpRemoteService2 = HttpRemoteClient.Service;
 
         Assert.NotSame(httpRemoteService, httpRemoteService2);

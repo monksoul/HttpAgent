@@ -40,24 +40,6 @@ public static class HttpRemoteClient
     static HttpRemoteClient() => _lazyService = new Lazy<IHttpRemoteService>(CreateService);
 
     /// <summary>
-    ///     自定义服务注册逻辑的委托
-    /// </summary>
-    public static Action<IServiceCollection> Configure
-    {
-        get => _configure;
-        set
-        {
-            lock (_lock)
-            {
-                _configure = value;
-
-                // 重新初始化服务
-                Reinitialize();
-            }
-        }
-    }
-
-    /// <summary>
     ///     获取当前配置下的 <see cref="IHttpRemoteService" /> 实例
     /// </summary>
     /// <exception cref="ObjectDisposedException">当服务已释放时访问此属性</exception>
@@ -71,6 +53,23 @@ public static class HttpRemoteClient
             }
 
             return _lazyService.Value;
+        }
+    }
+
+    /// <summary>
+    ///     自定义服务注册逻辑
+    /// </summary>
+    public static void Configure(Action<IServiceCollection> configure)
+    {
+        // 空检查
+        ArgumentNullException.ThrowIfNull(configure);
+
+        lock (_lock)
+        {
+            _configure = configure;
+
+            // 重新初始化服务
+            Reinitialize();
         }
     }
 

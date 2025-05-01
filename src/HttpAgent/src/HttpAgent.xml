@@ -7394,16 +7394,16 @@
                 <inheritdoc cref="T:HttpAgent.HttpRemoteClient" />
             </summary>
         </member>
-        <member name="P:HttpAgent.HttpRemoteClient.Configure">
-            <summary>
-                自定义服务注册逻辑的委托
-            </summary>
-        </member>
         <member name="P:HttpAgent.HttpRemoteClient.Service">
             <summary>
                 获取当前配置下的 <see cref="T:HttpAgent.IHttpRemoteService" /> 实例
             </summary>
             <exception cref="T:System.ObjectDisposedException">当服务已释放时访问此属性</exception>
+        </member>
+        <member name="M:HttpAgent.HttpRemoteClient.Configure(System.Action{Microsoft.Extensions.DependencyInjection.IServiceCollection})">
+            <summary>
+                自定义服务注册逻辑
+            </summary>
         </member>
         <member name="M:HttpAgent.HttpRemoteClient.Dispose">
             <summary>
@@ -7422,7 +7422,7 @@
         </member>
         <member name="M:HttpAgent.HttpRemoteClient.Reinitialize">
             <summary>
-                使用最新的 <see cref="P:HttpAgent.HttpRemoteClient.Configure" /> 配置重新初始化服务
+                使用最新的 <see cref="M:HttpAgent.HttpRemoteClient.Configure(System.Action{Microsoft.Extensions.DependencyInjection.IServiceCollection})" /> 配置重新初始化服务
             </summary>
         </member>
         <member name="M:HttpAgent.HttpRemoteClient.ReleaseServiceProvider">
