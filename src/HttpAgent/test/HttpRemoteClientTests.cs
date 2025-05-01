@@ -47,6 +47,7 @@ public class HttpRemoteClientTests
         Assert.NotNull(HttpRemoteClient._serviceProvider);
         HttpRemoteClient.Dispose();
         Assert.Null(HttpRemoteClient._serviceProvider);
+        Assert.Throws<ObjectDisposedException>(() => HttpRemoteClient.Service);
     }
 
     [Fact]
