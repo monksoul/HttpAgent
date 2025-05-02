@@ -27,7 +27,7 @@ public static class HttpRemoteClient
     /// <summary>
     ///     标记服务是否已释放
     /// </summary>
-    private static bool _isDisposed;
+    internal static bool _isDisposed;
 
     /// <summary>
     ///     自定义服务注册逻辑的委托

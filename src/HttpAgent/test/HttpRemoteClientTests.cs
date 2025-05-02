@@ -16,6 +16,7 @@ public class HttpRemoteClientTests
         Assert.NotNull(HttpRemoteClient._lazyService.Value);
         Assert.NotNull(HttpRemoteClient._lock);
         Assert.NotNull(HttpRemoteClient._configure);
+        Assert.False(HttpRemoteClient._isDisposed);
         Assert.NotNull(HttpRemoteClient.Service);
 
         Assert.Same(httpRemoteService, HttpRemoteClient.Service);
@@ -47,6 +48,7 @@ public class HttpRemoteClientTests
         Assert.NotNull(HttpRemoteClient._serviceProvider);
         HttpRemoteClient.Dispose();
         Assert.Null(HttpRemoteClient._serviceProvider);
+        Assert.True(HttpRemoteClient._isDisposed);
         Assert.Throws<ObjectDisposedException>(() => HttpRemoteClient.Service);
     }
 
