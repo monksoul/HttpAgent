@@ -7398,7 +7398,7 @@
             <summary>
                 获取当前配置下的 <see cref="T:HttpAgent.IHttpRemoteService" /> 实例
             </summary>
-            <exception cref="T:System.ObjectDisposedException">当服务已释放时访问此属性</exception>
+            <exception cref="T:System.ObjectDisposedException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRemoteClient.Configure(System.Action{Microsoft.Extensions.DependencyInjection.IServiceCollection})">
             <summary>
@@ -7418,12 +7418,14 @@
             <returns>
                 <see cref="T:HttpAgent.IHttpRemoteService" />
             </returns>
-            <exception cref="T:System.InvalidOperationException">初始化失败时抛出</exception>
+            <exception cref="T:System.ObjectDisposedException"></exception>
+            <exception cref="T:System.InvalidOperationException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRemoteClient.Reinitialize">
             <summary>
                 使用最新的 <see cref="M:HttpAgent.HttpRemoteClient.Configure(System.Action{Microsoft.Extensions.DependencyInjection.IServiceCollection})" /> 配置重新初始化服务
             </summary>
+            <exception cref="T:System.ObjectDisposedException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRemoteClient.ReleaseServiceProvider">
             <summary>

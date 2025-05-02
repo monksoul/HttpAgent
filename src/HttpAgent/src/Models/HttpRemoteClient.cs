@@ -42,7 +42,7 @@ public static class HttpRemoteClient
     /// <summary>
     ///     获取当前配置下的 <see cref="IHttpRemoteService" /> 实例
     /// </summary>
-    /// <exception cref="ObjectDisposedException">当服务已释放时访问此属性</exception>
+    /// <exception cref="ObjectDisposedException"></exception>
     public static IHttpRemoteService Service
     {
         get
@@ -98,7 +98,8 @@ public static class HttpRemoteClient
     /// <returns>
     ///     <see cref="IHttpRemoteService" />
     /// </returns>
-    /// <exception cref="InvalidOperationException">初始化失败时抛出</exception>
+    /// <exception cref="ObjectDisposedException"></exception>
+    /// <exception cref="InvalidOperationException"></exception>
     internal static IHttpRemoteService CreateService()
     {
         lock (_lock)
@@ -140,6 +141,7 @@ public static class HttpRemoteClient
     /// <summary>
     ///     使用最新的 <see cref="Configure" /> 配置重新初始化服务
     /// </summary>
+    /// <exception cref="ObjectDisposedException"></exception>
     internal static void Reinitialize()
     {
         lock (_lock)
