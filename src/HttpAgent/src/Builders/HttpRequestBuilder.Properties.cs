@@ -280,4 +280,9 @@ public sealed partial class HttpRequestBuilder
     /// </summary>
     /// <remarks>当配置了异常抑制类型集合后，框架将抑制（即不抛出）该集合中匹配的异常类型。</remarks>
     internal HashSet<Type>? SuppressExceptionTypes { get; private set; }
+
+    /// <summary>
+    ///     超时发生时要执行的操作
+    /// </summary>
+    internal Action? TimeoutAction { get; private set; }
 }

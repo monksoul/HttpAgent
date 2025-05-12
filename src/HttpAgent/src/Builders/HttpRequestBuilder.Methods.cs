@@ -448,6 +448,7 @@ public sealed partial class HttpRequestBuilder
     public HttpRequestBuilder SetTimeout(TimeSpan timeout)
     {
         Timeout = timeout;
+        TimeoutAction = null;
 
         return this;
     }
@@ -468,6 +469,43 @@ public sealed partial class HttpRequestBuilder
         }
 
         Timeout = TimeSpan.FromMilliseconds(timeoutMilliseconds);
+        TimeoutAction = null;
+
+        return this;
+    }
+
+    /// <summary>
+    ///     设置超时时间
+    /// </summary>
+    /// <param name="timeout">超时时间</param>
+    /// <param name="onTimeout">超时发生时要执行的操作</param>
+    /// <returns>
+    ///     <see cref="HttpRequestBuilder" />
+    /// </returns>
+    public HttpRequestBuilder SetTimeout(TimeSpan timeout, Action onTimeout)
+    {
+        // 空检查
+        ArgumentNullException.ThrowIfNull(onTimeout);
+
+        SetTimeout(timeout).TimeoutAction = onTimeout;
+
+        return this;
+    }
+
+    /// <summary>
+    ///     设置超时时间
+    /// </summary>
+    /// <param name="timeoutMilliseconds">超时时间（毫秒）</param>
+    /// <param name="onTimeout">超时发生时要执行的操作</param>
+    /// <returns>
+    ///     <see cref="HttpRequestBuilder" />
+    /// </returns>
+    public HttpRequestBuilder SetTimeout(double timeoutMilliseconds, Action onTimeout)
+    {
+        // 空检查
+        ArgumentNullException.ThrowIfNull(onTimeout);
+
+        SetTimeout(timeoutMilliseconds).TimeoutAction = onTimeout;
 
         return this;
     }

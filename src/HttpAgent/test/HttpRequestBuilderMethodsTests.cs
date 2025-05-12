@@ -543,6 +543,9 @@ public class HttpRequestBuilderMethodsTests
         });
 
         Assert.Equal("Timeout value must be non-negative. (Parameter 'timeoutMilliseconds')", exception.Message);
+
+        Assert.Throws<ArgumentNullException>(() => httpRequestBuilder.SetTimeout(100, null!));
+        Assert.Throws<ArgumentNullException>(() => httpRequestBuilder.SetTimeout(TimeSpan.FromSeconds(10), null!));
     }
 
     [Fact]
@@ -551,12 +554,29 @@ public class HttpRequestBuilderMethodsTests
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
         httpRequestBuilder.SetTimeout(TimeSpan.MaxValue);
         Assert.Equal(TimeSpan.MaxValue, httpRequestBuilder.Timeout);
+        Assert.Null(httpRequestBuilder.TimeoutAction);
 
         httpRequestBuilder.SetTimeout(1000);
         Assert.Equal(TimeSpan.FromMilliseconds(1000), httpRequestBuilder.Timeout);
+        Assert.Null(httpRequestBuilder.TimeoutAction);
 
         httpRequestBuilder.SetTimeout(0);
         Assert.Equal(TimeSpan.Zero, httpRequestBuilder.Timeout);
+        Assert.Null(httpRequestBuilder.TimeoutAction);
+
+        httpRequestBuilder.SetTimeout(1200, () => { });
+        Assert.Equal(TimeSpan.FromMilliseconds(1200), httpRequestBuilder.Timeout);
+        Assert.NotNull(httpRequestBuilder.TimeoutAction);
+
+        httpRequestBuilder.SetTimeout(1200);
+        Assert.Null(httpRequestBuilder.TimeoutAction);
+
+        httpRequestBuilder.SetTimeout(TimeSpan.FromMilliseconds(1000), () => { });
+        Assert.Equal(TimeSpan.FromMilliseconds(1000), httpRequestBuilder.Timeout);
+        Assert.NotNull(httpRequestBuilder.TimeoutAction);
+
+        httpRequestBuilder.SetTimeout(TimeSpan.FromMilliseconds(1000));
+        Assert.Null(httpRequestBuilder.TimeoutAction);
     }
 
     [Fact]

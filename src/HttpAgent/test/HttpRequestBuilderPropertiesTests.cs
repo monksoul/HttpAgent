@@ -68,5 +68,6 @@ public class HttpRequestBuilderPropertiesTests
         Assert.Null(httpRequestBuilder2.BaseAddress);
         Assert.Null(httpRequestBuilder2.Version);
         Assert.Null(httpRequestBuilder2.SuppressExceptionTypes);
+        Assert.Null(httpRequestBuilder2.TimeoutAction);
     }
 }

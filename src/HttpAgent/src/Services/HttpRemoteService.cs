@@ -447,6 +447,10 @@ internal sealed partial class HttpRemoteService : IHttpRemoteService
                     "HttpRequestBuilder's Timeout cannot be greater than HttpClient's Timeout, which defaults to 100 seconds.");
             }
 
+            // 调用超时发生时要执行的操作
+            timeoutCancellationTokenSource.Token.Register(httpRequestBuilder.TimeoutAction.TryInvoke);
+
+            // 延迟指定时间后取消任务
             timeoutCancellationTokenSource.CancelAfter(httpRequestBuilder.Timeout.Value);
         }
 

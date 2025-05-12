@@ -1457,6 +1457,26 @@
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
         </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.SetTimeout(System.TimeSpan,System.Action)">
+            <summary>
+                设置超时时间
+            </summary>
+            <param name="timeout">超时时间</param>
+            <param name="onTimeout">超时发生时要执行的操作</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.SetTimeout(System.Double,System.Action)">
+            <summary>
+                设置超时时间
+            </summary>
+            <param name="timeoutMilliseconds">超时时间（毫秒）</param>
+            <param name="onTimeout">超时发生时要执行的操作</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
         <member name="M:HttpAgent.HttpRequestBuilder.WithPathSegment(System.String,System.Boolean)">
             <summary>
                 设置路径片段
@@ -2414,6 +2434,11 @@
                 异常抑制类型集合
             </summary>
             <remarks>当配置了异常抑制类型集合后，框架将抑制（即不抛出）该集合中匹配的异常类型。</remarks>
+        </member>
+        <member name="P:HttpAgent.HttpRequestBuilder.TimeoutAction">
+            <summary>
+                超时发生时要执行的操作
+            </summary>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.Get(System.String,System.Action{HttpAgent.HttpRequestBuilder})">
             <summary>

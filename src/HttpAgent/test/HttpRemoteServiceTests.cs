@@ -762,9 +762,11 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
         await app.StartAsync();
 
         // 测试代码
+        var callTimeoutActionTimes = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder =
-            new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test")).SetTimeout(200);
+            new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test")).SetTimeout(200,
+                () => callTimeoutActionTimes++);
 
         await Assert.ThrowsAsync<TaskCanceledException>(async () =>
         {
@@ -772,6 +774,7 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
                 HttpCompletionOption.ResponseContentRead, (httpClient, httpRequestMessage, option, token) =>
                     httpClient.SendAsync(httpRequestMessage, option, token), null);
         });
+        Assert.Equal(1, callTimeoutActionTimes);
 
         // 超时为 0
         var httpRequestBuilder2 =
