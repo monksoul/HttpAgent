@@ -72,16 +72,45 @@ internal static class ObjectExtensions
             case ICollection collection:
                 count = collection.Count;
                 return true;
+            // 检查对象是否实现了 IEnumerable 接口
+            case IEnumerable enumerable:
+                // 获取集合枚举数
+                var enumerator = enumerable.GetEnumerator();
+
+                try
+                {
+                    // 检查枚举数是否可以推进到下一个元素
+                    if (!enumerator.MoveNext())
+                    {
+                        count = 0;
+                        return true;
+                    }
+
+                    // 枚举数循环推进到下一个元素并叠加推进次数
+                    var c = 1;
+                    while (enumerator.MoveNext())
+                    {
+                        c++;
+                    }
+
+                    count = c;
+                    return true;
+                }
+                finally
+                {
+                    // 检查枚举数是否实现了 IDisposable 接口
+                    if (enumerator is IDisposable disposable)
+                    {
+                        disposable.Dispose();
+                    }
+                }
         }
 
         // 反射查找是否存在 Count 属性
-        var runtimeProperty = obj.GetType()
-            .GetRuntimeProperty("Count");
+        var runtimeProperty = obj.GetType().GetRuntimeProperty("Count");
 
         // 反射获取 Count 属性值
-        if (runtimeProperty is not null
-            && runtimeProperty.CanRead
-            && runtimeProperty.PropertyType == typeof(int))
+        if (runtimeProperty is not null && runtimeProperty.CanRead && runtimeProperty.PropertyType == typeof(int))
         {
             count = (int)runtimeProperty.GetValue(obj)!;
             return true;
