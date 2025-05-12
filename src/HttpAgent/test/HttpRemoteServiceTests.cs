@@ -777,11 +777,14 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
         Assert.Equal(1, callTimeoutActionTimes);
 
         // 超时为 0
+        var callTimeoutActionTimes2 = 0;
         var httpRequestBuilder2 =
-            new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test")).SetTimeout(0);
+            new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test")).SetTimeout(0,
+                () => callTimeoutActionTimes2++);
         _ = await httpRemoteService.SendCoreAsync(httpRequestBuilder2,
             HttpCompletionOption.ResponseContentRead, (httpClient, httpRequestMessage, option, token) =>
                 httpClient.SendAsync(httpRequestMessage, option, token), null);
+        Assert.Equal(0, callTimeoutActionTimes2);
 
         await app.StopAsync();
         await serviceProvider.DisposeAsync();
