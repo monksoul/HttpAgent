@@ -448,7 +448,10 @@ internal sealed partial class HttpRemoteService : IHttpRemoteService
             }
 
             // 调用超时发生时要执行的操作
-            timeoutCancellationTokenSource.Token.Register(httpRequestBuilder.TimeoutAction.TryInvoke);
+            if (httpRequestBuilder.TimeoutAction is not null)
+            {
+                timeoutCancellationTokenSource.Token.Register(httpRequestBuilder.TimeoutAction.TryInvoke);
+            }
 
             // 延迟指定时间后取消任务
             timeoutCancellationTokenSource.CancelAfter(httpRequestBuilder.Timeout.Value);
