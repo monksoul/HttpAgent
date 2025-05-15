@@ -13119,6 +13119,11 @@
                 忽略 SSL 证书验证
             </summary>
         </member>
+        <member name="P:HttpAgent.HttpRemoteUtility.IgnoreSocketSslErrors">
+            <summary>
+                忽略（Socket） SSL 证书验证
+            </summary>
+        </member>
         <member name="M:HttpAgent.HttpRemoteUtility.IPv4ConnectCallback(System.Net.Http.SocketsHttpConnectionContext,System.Threading.CancellationToken)">
             <summary>
                 获取使用 IPv4 连接到服务器的回调

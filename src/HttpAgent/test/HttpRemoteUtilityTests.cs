@@ -31,6 +31,20 @@ public class HttpRemoteUtilityTests
     }
 
     [Fact]
+    public void IgnoreSocketSslErrors_ReturnOK()
+    {
+        var handler = new SocketsHttpHandler
+        {
+            SslOptions = new SslClientAuthenticationOptions
+            {
+                RemoteCertificateValidationCallback = HttpRemoteUtility.IgnoreSocketSslErrors
+            }
+        };
+
+        Assert.NotNull(handler.SslOptions.RemoteCertificateValidationCallback);
+    }
+
+    [Fact]
     public async Task IPAddressConnectCallback_ReturnOK()
     {
         using var httpClient = new HttpClient(new SocketsHttpHandler

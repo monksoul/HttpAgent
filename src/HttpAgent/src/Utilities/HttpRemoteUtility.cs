@@ -27,6 +27,11 @@ public static class HttpRemoteUtility
         (_, _, _, _) => true;
 
     /// <summary>
+    ///     忽略（Socket） SSL 证书验证
+    /// </summary>
+    public static RemoteCertificateValidationCallback IgnoreSocketSslErrors => (_, _, _, _) => true;
+
+    /// <summary>
     ///     获取使用 IPv4 连接到服务器的回调
     /// </summary>
     /// <param name="context">
