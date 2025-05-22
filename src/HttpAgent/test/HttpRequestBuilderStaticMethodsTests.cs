@@ -560,8 +560,8 @@ public class HttpRequestBuilderStaticMethodsTests
 
         Assert.NotNull(httpRequestBuilder.QueryParameters);
         Assert.Equal(2, httpRequestBuilder.QueryParameters.Count);
-        Assert.Equal("1", httpRequestBuilder.QueryParameters["id"].First());
-        Assert.Equal("Furion", httpRequestBuilder.QueryParameters["name"].First());
+        Assert.Equal("1", httpRequestBuilder.QueryParameters["id"].First()?.ToString());
+        Assert.Equal("Furion", httpRequestBuilder.QueryParameters["name"].First()?.ToString());
 
         Assert.NotNull(httpRequestBuilder.Cookies);
         Assert.Equal(2, httpRequestBuilder.Cookies.Count);

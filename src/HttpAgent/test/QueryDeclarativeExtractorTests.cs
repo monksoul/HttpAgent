@@ -64,10 +64,10 @@ public class QueryDeclarativeExtractorTests
         Assert.Equal("value1", httpRequestBuilder4.QueryParameters["query1"].First());
         Assert.Equal("value2", httpRequestBuilder4.QueryParameters["query2"].First());
         Assert.Equal("value3", httpRequestBuilder4.QueryParameters["query3"].First());
-        Assert.Equal("1", httpRequestBuilder4.QueryParameters["id"].First());
+        Assert.Equal(1, httpRequestBuilder4.QueryParameters["id"].First());
         Assert.Equal("furion", httpRequestBuilder4.QueryParameters["name"].First());
         Assert.Equal("furion", httpRequestBuilder4.QueryParameters["myName"].First());
-        Assert.Equal("31", httpRequestBuilder4.QueryParameters["age"].First());
+        Assert.Equal(31, httpRequestBuilder4.QueryParameters["age"].First());
         Assert.Equal("广东省", httpRequestBuilder4.QueryParameters["address"].First());
 
         var context5 = new HttpDeclarativeExtractorContext(method4, [1, "furion", null, "广东省", CancellationToken.None]);
@@ -79,10 +79,10 @@ public class QueryDeclarativeExtractorTests
         Assert.Equal("value1", httpRequestBuilder5.QueryParameters["query1"].First());
         Assert.Equal("value2", httpRequestBuilder5.QueryParameters["query2"].First());
         Assert.Equal("value3", httpRequestBuilder5.QueryParameters["query3"].First());
-        Assert.Equal("1", httpRequestBuilder5.QueryParameters["id"].First());
+        Assert.Equal(1, httpRequestBuilder5.QueryParameters["id"].First());
         Assert.Equal("furion", httpRequestBuilder5.QueryParameters["name"].First());
         Assert.Equal("furion", httpRequestBuilder5.QueryParameters["myName"].First());
-        Assert.Equal("30", httpRequestBuilder5.QueryParameters["age"].First());
+        Assert.Equal(30, httpRequestBuilder5.QueryParameters["age"].First());
         Assert.Equal("广东省", httpRequestBuilder5.QueryParameters["address"].First());
 
         var method5 = typeof(IQueryDeclarativeTest).GetMethod(nameof(IQueryDeclarativeTest.Test5))!;
@@ -92,7 +92,7 @@ public class QueryDeclarativeExtractorTests
 
         Assert.NotNull(httpRequestBuilder6.QueryParameters);
         Assert.Equal(4, httpRequestBuilder6.QueryParameters.Count);
-        Assert.Equal("10", httpRequestBuilder6.QueryParameters["user.id"].First());
+        Assert.Equal(10, httpRequestBuilder6.QueryParameters["user.id"].First());
         Assert.Equal("furion", httpRequestBuilder6.QueryParameters["user.name"].First());
 
         var method6 = typeof(IQueryDeclarativeTest).GetMethod(nameof(IQueryDeclarativeTest.Test6))!;

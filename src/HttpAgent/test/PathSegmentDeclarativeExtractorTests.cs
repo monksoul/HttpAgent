@@ -56,7 +56,7 @@ public class PathSegmentDeclarativeExtractorTests
 
         Assert.NotNull(httpRequestBuilder4.PathSegments);
         Assert.Equal(8, httpRequestBuilder4.PathSegments.Count);
-        Assert.Equal(["segment1", "segment2", "segment3", "1", "furion", "furion", "31", "%E5%B9%BF%E4%B8%9C%E7%9C%81"],
+        Assert.Equal(["segment1", "segment2", "segment3", "1", "furion", "furion", "31", "广东省"],
             httpRequestBuilder4.PathSegments);
 
         var context5 = new HttpDeclarativeExtractorContext(method4, [1, "furion", null, "广东省", CancellationToken.None]);
@@ -66,7 +66,7 @@ public class PathSegmentDeclarativeExtractorTests
         Assert.NotNull(httpRequestBuilder5.PathSegments);
         Assert.Equal(8, httpRequestBuilder5.PathSegments.Count);
         Assert.Equal(
-            ["segment1", "segment2", "segment3", "1", "furion", "furion", "age", "%E5%B9%BF%E4%B8%9C%E7%9C%81"],
+            ["segment1", "segment2", "segment3", "1", "furion", "furion", "age", "广东省"],
             httpRequestBuilder5.PathSegments);
     }
 }
@@ -92,5 +92,5 @@ public interface IPathSegmentDeclarativeTest : IHttpDeclarative
     [Get("http://localhost:5000")]
     [PathSegment("segment3")]
     Task Test4([PathSegment] int id, [PathSegment] [PathSegment] string name, [PathSegment("age")] int? age,
-        [PathSegment(Escape = true)] string abc, [PathSegment] CancellationToken cancellationToken);
+        [PathSegment] string abc, [PathSegment] CancellationToken cancellationToken);
 }

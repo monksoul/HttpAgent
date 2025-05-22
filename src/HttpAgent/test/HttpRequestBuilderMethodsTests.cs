@@ -35,9 +35,6 @@ public class HttpRequestBuilderMethodsTests
 
         httpRequestBuilder.SetTraceIdentifier("furi on");
         Assert.Equal("furi on", httpRequestBuilder.TraceIdentifier);
-
-        httpRequestBuilder.SetTraceIdentifier("furi on", true);
-        Assert.Equal("furi%20on", httpRequestBuilder.TraceIdentifier);
     }
 
     [Fact]
@@ -452,7 +449,7 @@ public class HttpRequestBuilderMethodsTests
         httpRequestBuilder.Headers.Clear();
 
         var dateNow = new DateTime(2024, 08, 30, 23, 59, 59, 999, DateTimeKind.Local);
-        httpRequestBuilder.WithHeaders(new { date = dateNow }, culture: CultureInfo.InvariantCulture);
+        httpRequestBuilder.WithHeaders(new { date = dateNow });
         Assert.Equal("2024-08-30T23:59:59.9990000+08:00", httpRequestBuilder.Headers["date"].First());
 
         httpRequestBuilder.Headers.Clear();
@@ -527,9 +524,6 @@ public class HttpRequestBuilderMethodsTests
 
         httpRequestBuilder.SetFragment("furi on");
         Assert.Equal("furi on", httpRequestBuilder.Fragment);
-
-        httpRequestBuilder.SetFragment("furi on", true);
-        Assert.Equal("furi%20on", httpRequestBuilder.Fragment);
     }
 
     [Fact]
@@ -589,8 +583,8 @@ public class HttpRequestBuilderMethodsTests
         Assert.NotNull(httpRequestBuilder.PathSegments);
         Assert.Equal(["furion", "dotnet"], httpRequestBuilder.PathSegments);
 
-        httpRequestBuilder.WithPathSegment("fur ion", true);
-        Assert.Equal(["furion", "dotnet", "fur%20ion"], httpRequestBuilder.PathSegments);
+        httpRequestBuilder.WithPathSegment("fur ion");
+        Assert.Equal(["furion", "dotnet", "fur ion"], httpRequestBuilder.PathSegments);
     }
 
     [Fact]
@@ -611,8 +605,8 @@ public class HttpRequestBuilderMethodsTests
         Assert.NotNull(httpRequestBuilder.PathSegments);
         Assert.Equal(["furion", "dotnet"], httpRequestBuilder.PathSegments);
 
-        httpRequestBuilder.WithPathSegments(["fur ion", "dot net"], true);
-        Assert.Equal(["furion", "dotnet", "fur%20ion", "dot%20net"], httpRequestBuilder.PathSegments);
+        httpRequestBuilder.WithPathSegments(["fur ion", "dot net"]);
+        Assert.Equal(["furion", "dotnet", "fur ion", "dot net"], httpRequestBuilder.PathSegments);
     }
 
     [Fact]
@@ -654,7 +648,7 @@ public class HttpRequestBuilderMethodsTests
         httpRequestBuilder.WithQueryParameter("id", 10).WithQueryParameter("name", "furion");
         Assert.NotNull(httpRequestBuilder.QueryParameters);
         Assert.Equal(2, httpRequestBuilder.QueryParameters.Count);
-        Assert.Equal("10", httpRequestBuilder.QueryParameters["id"].First());
+        Assert.Equal(10, httpRequestBuilder.QueryParameters["id"].First());
         Assert.Equal("furion", httpRequestBuilder.QueryParameters["name"].First());
 
         httpRequestBuilder.QueryParameters.Clear();
@@ -665,7 +659,7 @@ public class HttpRequestBuilderMethodsTests
         httpRequestBuilder.QueryParameters.Clear();
 
         httpRequestBuilder.WithQueryParameter("name", "furi on", true);
-        Assert.Equal("furi%20on", httpRequestBuilder.QueryParameters["name"].First());
+        Assert.Equal("furi on", httpRequestBuilder.QueryParameters["name"].First());
 
         httpRequestBuilder.QueryParameters.Clear();
 
@@ -697,7 +691,7 @@ public class HttpRequestBuilderMethodsTests
         httpRequestBuilder.WithQueryParameters(new Dictionary<string, object?> { ["id"] = 10, ["name"] = "furion" });
         Assert.NotNull(httpRequestBuilder.QueryParameters);
         Assert.Equal(2, httpRequestBuilder.QueryParameters.Count);
-        Assert.Equal("10", httpRequestBuilder.QueryParameters["id"].First());
+        Assert.Equal(10, httpRequestBuilder.QueryParameters["id"].First());
         Assert.Equal("furion", httpRequestBuilder.QueryParameters["name"].First());
 
         httpRequestBuilder.QueryParameters.Clear();
@@ -705,15 +699,15 @@ public class HttpRequestBuilderMethodsTests
         httpRequestBuilder.WithQueryParameters(new { id = 10, name = "furion" });
         Assert.NotNull(httpRequestBuilder.QueryParameters);
         Assert.Equal(2, httpRequestBuilder.QueryParameters.Count);
-        Assert.Equal("10", httpRequestBuilder.QueryParameters["id"].First());
+        Assert.Equal(10, httpRequestBuilder.QueryParameters["id"].First());
         Assert.Equal("furion", httpRequestBuilder.QueryParameters["name"].First());
 
         httpRequestBuilder.WithQueryParameters(new { age = 30 });
         Assert.NotNull(httpRequestBuilder.QueryParameters);
         Assert.Equal(3, httpRequestBuilder.QueryParameters.Count);
-        Assert.Equal("10", httpRequestBuilder.QueryParameters["id"].First());
+        Assert.Equal(10, httpRequestBuilder.QueryParameters["id"].First());
         Assert.Equal("furion", httpRequestBuilder.QueryParameters["name"].First());
-        Assert.Equal("30", httpRequestBuilder.QueryParameters["age"].First());
+        Assert.Equal(30, httpRequestBuilder.QueryParameters["age"].First());
 
         httpRequestBuilder.QueryParameters.Clear();
 
@@ -722,14 +716,10 @@ public class HttpRequestBuilderMethodsTests
 
         httpRequestBuilder.QueryParameters.Clear();
 
-        httpRequestBuilder.WithQueryParameters(new { name = "furi on" }, escape: true);
-        Assert.Equal("furi%20on", httpRequestBuilder.QueryParameters["name"].First());
-
-        httpRequestBuilder.QueryParameters.Clear();
-
         var dateNow = new DateTime(2024, 08, 30, 23, 59, 59, 999, DateTimeKind.Local);
-        httpRequestBuilder.WithQueryParameters(new { date = dateNow }, culture: CultureInfo.InvariantCulture);
-        Assert.Equal("2024-08-30T23:59:59.9990000+08:00", httpRequestBuilder.QueryParameters["date"].First());
+        httpRequestBuilder.WithQueryParameters(new { date = dateNow });
+        Assert.Equal("2024-08-30T23:59:59.9990000+08:00",
+            httpRequestBuilder.QueryParameters["date"].First()?.ToCultureString(CultureInfo.InvariantCulture));
 
         httpRequestBuilder.QueryParameters.Clear();
 
@@ -747,7 +737,7 @@ public class HttpRequestBuilderMethodsTests
 
         httpRequestBuilder3.WithQueryParameters(new { name = "furion" })
             .WithQueryParameters(new { id = 10, name = "furion2" });
-        Assert.Equal("10", httpRequestBuilder3.QueryParameters!["id"].First());
+        Assert.Equal(10, httpRequestBuilder3.QueryParameters!["id"].First());
         Assert.Equal(2, httpRequestBuilder3.QueryParameters!["name"].Count);
         Assert.Equal("furion", httpRequestBuilder3.QueryParameters!["name"].First());
         Assert.Equal("furion2", httpRequestBuilder3.QueryParameters!["name"].Last());
@@ -756,7 +746,7 @@ public class HttpRequestBuilderMethodsTests
 
         httpRequestBuilder4.WithQueryParameters(new { name = "furion" })
             .WithQueryParameters(new { id = 10, name = "furion2" }, "user");
-        Assert.Equal("10", httpRequestBuilder4.QueryParameters!["user.id"].First());
+        Assert.Equal(10, httpRequestBuilder4.QueryParameters!["user.id"].First());
         Assert.Equal("furion2", httpRequestBuilder4.QueryParameters!["user.name"].First());
         Assert.Single(httpRequestBuilder4.QueryParameters!["name"]);
         Assert.Equal("furion", httpRequestBuilder4.QueryParameters!["name"].First());
@@ -816,11 +806,6 @@ public class HttpRequestBuilderMethodsTests
 
         httpRequestBuilder.WithPathParameter("name", "furi on");
         Assert.Equal("furi on", httpRequestBuilder.PathParameters["name"]);
-
-        httpRequestBuilder.PathParameters.Clear();
-
-        httpRequestBuilder.WithPathParameter("name", "furi on", true);
-        Assert.Equal("furi%20on", httpRequestBuilder.PathParameters["name"]);
     }
 
     [Fact]
@@ -872,13 +857,8 @@ public class HttpRequestBuilderMethodsTests
 
         httpRequestBuilder.PathParameters.Clear();
 
-        httpRequestBuilder.WithPathParameters(new { name = "furi on" }, escape: true);
-        Assert.Equal("furi%20on", httpRequestBuilder.PathParameters["name"]);
-
-        httpRequestBuilder.PathParameters.Clear();
-
         var dateNow = new DateTime(2024, 08, 30, 23, 59, 59, 999, DateTimeKind.Local);
-        httpRequestBuilder.WithPathParameters(new { date = dateNow }, null, false, CultureInfo.InvariantCulture);
+        httpRequestBuilder.WithPathParameters(new { date = dateNow });
         Assert.Equal("2024-08-30T23:59:59.9990000+08:00", httpRequestBuilder.PathParameters["date"]);
 
         var httpRequestBuilder2 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
@@ -945,11 +925,6 @@ public class HttpRequestBuilderMethodsTests
         httpRequestBuilder.WithCookie("name", "furi on");
         Assert.Equal("furi on", httpRequestBuilder.Cookies["name"]);
 
-        httpRequestBuilder.Cookies.Clear();
-
-        httpRequestBuilder.WithCookie("name", "furi on", true);
-        Assert.Equal("furi%20on", httpRequestBuilder.Cookies["name"]);
-
         httpRequestBuilder.WithCookie("name", new[] { "monksoul", "furion" });
         Assert.Equal("monksoul,furion", httpRequestBuilder.Cookies["name"]);
 
@@ -1009,13 +984,8 @@ public class HttpRequestBuilderMethodsTests
 
         httpRequestBuilder.Cookies.Clear();
 
-        httpRequestBuilder.WithCookies(new { name = "furi on" }, true);
-        Assert.Equal("furi%20on", httpRequestBuilder.Cookies["name"]);
-
-        httpRequestBuilder.Cookies.Clear();
-
         var dateNow = new DateTime(2024, 08, 30, 23, 59, 59, 999, DateTimeKind.Local);
-        httpRequestBuilder.WithCookies(new { date = dateNow }, false, CultureInfo.InvariantCulture);
+        httpRequestBuilder.WithCookies(new { date = dateNow });
         Assert.Equal("2024-08-30T23:59:59.9990000+08:00", httpRequestBuilder.Cookies["date"]);
 
         var httpRequestBuilder2 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
@@ -1635,12 +1605,12 @@ public class HttpRequestBuilderMethodsTests
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
 
-        httpRequestBuilder.Profiler(analyzer => { });
+        httpRequestBuilder.Profiler(_ => { });
         Assert.True(httpRequestBuilder.ProfilerEnabled);
         Assert.False(httpRequestBuilder.__Disabled_Profiler__);
         Assert.NotNull(httpRequestBuilder.ProfilerPredicate);
 
-        httpRequestBuilder.Profiler(analyzer => { }, false);
+        httpRequestBuilder.Profiler(_ => { }, false);
         Assert.False(httpRequestBuilder.ProfilerEnabled);
         Assert.True(httpRequestBuilder.__Disabled_Profiler__);
         Assert.Null(httpRequestBuilder.ProfilerPredicate);

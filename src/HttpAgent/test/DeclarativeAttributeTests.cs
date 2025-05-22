@@ -104,7 +104,6 @@ public class DeclarativeAttributeTests
         Assert.Null(attribute3.Value);
         Assert.Null(attribute3.AliasAs);
         Assert.True(attribute3.HasSetValue);
-        Assert.False(attribute3.Escape);
     }
 
     [Fact]
@@ -301,7 +300,6 @@ public class DeclarativeAttributeTests
         Assert.Null(attribute3.Value);
         Assert.Null(attribute3.AliasAs);
         Assert.True(attribute3.HasSetValue);
-        Assert.False(attribute3.Escape);
     }
 
     [Fact]
@@ -323,12 +321,10 @@ public class DeclarativeAttributeTests
 
         var attribute = new PathSegmentAttribute();
         Assert.Null(attribute.Segment);
-        Assert.False(attribute.Escape);
         Assert.False(attribute.Remove);
 
         var attribute2 = new PathSegmentAttribute("docs");
         Assert.Equal("docs", attribute2.Segment);
-        Assert.False(attribute.Escape);
         Assert.False(attribute.Remove);
     }
 

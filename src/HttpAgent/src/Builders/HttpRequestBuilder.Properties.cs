@@ -81,7 +81,7 @@ public sealed partial class HttpRequestBuilder
     ///     查询参数集合
     /// </summary>
     /// <remarks>请求地址中位于 <c>?</c> 符号之后且 <c>#</c> 符号之前的部分。</remarks>
-    public IDictionary<string, List<string?>>? QueryParameters { get; private set; }
+    public IDictionary<string, List<object?>>? QueryParameters { get; private set; }
 
     /// <summary>
     ///     需要从 URL 中移除的查询参数集合

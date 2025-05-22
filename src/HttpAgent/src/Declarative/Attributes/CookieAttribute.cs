@@ -75,11 +75,6 @@ public sealed class CookieAttribute : Attribute
     public string? AliasAs { get; set; }
 
     /// <summary>
-    ///     是否转义
-    /// </summary>
-    public bool Escape { get; set; }
-
-    /// <summary>
     ///     是否设置了值
     /// </summary>
     internal bool HasSetValue { get; private set; }

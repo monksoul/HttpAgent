@@ -75,11 +75,6 @@ public sealed class QueryAttribute : Attribute
     public string? AliasAs { get; set; }
 
     /// <summary>
-    ///     是否转义
-    /// </summary>
-    public bool Escape { get; set; }
-
-    /// <summary>
     ///     参数前缀
     /// </summary>
     /// <remarks>作用于对象类型时有效。</remarks>

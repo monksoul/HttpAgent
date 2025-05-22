@@ -32,8 +32,8 @@ internal sealed class QueryDeclarativeExtractor : IHttpDeclarativeExtractor
                 // 设置查询参数
                 if (queryAttribute.HasSetValue)
                 {
-                    httpRequestBuilder.WithQueryParameter(queryName, queryAttribute.Value, queryAttribute.Escape,
-                        queryAttribute.Replace, queryAttribute.IgnoreNullValues);
+                    httpRequestBuilder.WithQueryParameter(queryName, queryAttribute.Value, queryAttribute.Replace,
+                        queryAttribute.IgnoreNullValues);
                 }
                 // 移除查询参数
                 else
@@ -79,7 +79,7 @@ internal sealed class QueryDeclarativeExtractor : IHttpDeclarativeExtractor
                 if (parameter.ParameterType.IsBaseTypeOrEnumOrCollection())
                 {
                     httpRequestBuilder.WithQueryParameter(parameterName, value ?? queryAttribute.Value,
-                        queryAttribute.Escape, queryAttribute.Replace, queryAttribute.IgnoreNullValues);
+                        queryAttribute.Replace, queryAttribute.IgnoreNullValues);
 
                     continue;
                 }
@@ -87,8 +87,8 @@ internal sealed class QueryDeclarativeExtractor : IHttpDeclarativeExtractor
                 // 空检查
                 if (value is not null)
                 {
-                    httpRequestBuilder.WithQueryParameters(value, queryAttribute.Prefix, queryAttribute.Escape,
-                        queryAttribute.Replace, queryAttribute.IgnoreNullValues);
+                    httpRequestBuilder.WithQueryParameters(value, queryAttribute.Prefix, queryAttribute.Replace,
+                        queryAttribute.IgnoreNullValues);
                 }
             }
         }

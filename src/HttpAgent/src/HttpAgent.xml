@@ -1093,13 +1093,13 @@
                 <see cref="T:System.Net.Http.HttpRequestMessage" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpRequestBuilder.BuildFinalRequestUri(System.Uri,Microsoft.Extensions.Configuration.IConfiguration)">
+        <member name="M:HttpAgent.HttpRequestBuilder.BuildFinalRequestUri(System.Uri,HttpAgent.HttpRemoteOptions)">
             <summary>
                 构建最终的请求地址
             </summary>
             <param name="clientBaseAddress">客户端基地址</param>
-            <param name="configuration">
-                <see cref="T:Microsoft.Extensions.Configuration.IConfiguration" />
+            <param name="httpRemoteOptions">
+                <see cref="T:HttpAgent.HttpRemoteOptions" />
             </param>
             <returns>
                 <see cref="T:System.String" />
@@ -1113,12 +1113,15 @@
                 <see cref="T:System.UriBuilder" />
             </param>
         </member>
-        <member name="M:HttpAgent.HttpRequestBuilder.AppendQueryParameters(System.UriBuilder)">
+        <member name="M:HttpAgent.HttpRequestBuilder.AppendQueryParameters(System.UriBuilder,HttpAgent.IUrlParameterFormatter)">
             <summary>
                 追加查询参数
             </summary>
             <param name="uriBuilder">
                 <see cref="T:System.UriBuilder" />
+            </param>
+            <param name="formatter">
+                <see cref="T:HttpAgent.IUrlParameterFormatter" />
             </param>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.AppendFragment(System.UriBuilder)">
@@ -1228,12 +1231,11 @@
                 表示是否已添加了 <see cref="T:HttpAgent.StringContentForFormUrlEncodedContentProcessor" /> 处理器
             </summary>
         </member>
-        <member name="M:HttpAgent.HttpRequestBuilder.SetTraceIdentifier(System.String,System.Boolean)">
+        <member name="M:HttpAgent.HttpRequestBuilder.SetTraceIdentifier(System.String)">
             <summary>
                 设置跟踪标识
             </summary>
             <param name="traceIdentifier">设置跟踪标识</param>
-            <param name="escape">是否转义字符串，默认 <c>false</c></param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
@@ -1373,7 +1375,7 @@
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpRequestBuilder.WithHeader(System.String,System.Object,System.Boolean,System.Boolean,System.Globalization.CultureInfo)">
+        <member name="M:HttpAgent.HttpRequestBuilder.WithHeader(System.String,System.Object,System.Boolean,System.Boolean)">
             <summary>
                 设置请求标头
             </summary>
@@ -1382,14 +1384,11 @@
             <param name="value">值</param>
             <param name="escape">是否转义字符串，默认 <c>false</c></param>
             <param name="replace">是否替换已存在的请求标头。默认值为 <c>false</c></param>
-            <param name="culture">
-                <see cref="T:System.Globalization.CultureInfo" />
-            </param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpRequestBuilder.WithHeaders(System.Collections.Generic.IDictionary{System.String,System.Object},System.Boolean,System.Boolean,System.Globalization.CultureInfo)">
+        <member name="M:HttpAgent.HttpRequestBuilder.WithHeaders(System.Collections.Generic.IDictionary{System.String,System.Object},System.Boolean,System.Boolean)">
             <summary>
                 设置请求标头
             </summary>
@@ -1397,14 +1396,11 @@
             <param name="headers">请求标头集合</param>
             <param name="escape">是否转义字符串，默认 <c>false</c></param>
             <param name="replace">是否替换已存在的请求标头。默认值为 <c>false</c></param>
-            <param name="culture">
-                <see cref="T:System.Globalization.CultureInfo" />
-            </param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpRequestBuilder.WithHeaders(System.Object,System.Boolean,System.Boolean,System.Globalization.CultureInfo)">
+        <member name="M:HttpAgent.HttpRequestBuilder.WithHeaders(System.Object,System.Boolean,System.Boolean)">
             <summary>
                 设置请求标头
             </summary>
@@ -1412,9 +1408,6 @@
             <param name="headerSource">请求标头源对象</param>
             <param name="escape">是否转义字符串，默认 <c>false</c></param>
             <param name="replace">是否替换已存在的请求标头。默认值为 <c>false</c></param>
-            <param name="culture">
-                <see cref="T:System.Globalization.CultureInfo" />
-            </param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
@@ -1429,12 +1422,11 @@
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpRequestBuilder.SetFragment(System.String,System.Boolean)">
+        <member name="M:HttpAgent.HttpRequestBuilder.SetFragment(System.String)">
             <summary>
                 设置片段标识符
             </summary>
             <param name="fragment">片段标识符</param>
-            <param name="escape">是否转义字符串，默认 <c>false</c></param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
@@ -1477,24 +1469,22 @@
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpRequestBuilder.WithPathSegment(System.String,System.Boolean)">
+        <member name="M:HttpAgent.HttpRequestBuilder.WithPathSegment(System.String)">
             <summary>
                 设置路径片段
             </summary>
             <remarks>支持多次调用。</remarks>
             <param name="segment">路径片段</param>
-            <param name="escape">是否转义字符串，默认 <c>false</c></param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpRequestBuilder.WithPathSegments(System.Collections.Generic.IEnumerable{System.String},System.Boolean)">
+        <member name="M:HttpAgent.HttpRequestBuilder.WithPathSegments(System.Collections.Generic.IEnumerable{System.String})">
             <summary>
                 设置路径片段
             </summary>
             <remarks>支持多次调用。</remarks>
             <param name="segments">路径片段集合</param>
-            <param name="escape">是否转义字符串，默认 <c>false</c></param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
@@ -1509,52 +1499,40 @@
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpRequestBuilder.WithQueryParameter(System.String,System.Object,System.Boolean,System.Boolean,System.Boolean,System.Globalization.CultureInfo)">
+        <member name="M:HttpAgent.HttpRequestBuilder.WithQueryParameter(System.String,System.Object,System.Boolean,System.Boolean)">
             <summary>
                 设置查询参数
             </summary>
             <remarks>支持多次调用。</remarks>
             <param name="key">键</param>
             <param name="value">值</param>
-            <param name="escape">是否转义字符串，默认 <c>false</c></param>
             <param name="replace">是否替换已存在的查询参数。默认值为 <c>false</c></param>
             <param name="ignoreNullValues">是否忽略空值。默认值为 <c>false</c></param>
-            <param name="culture">
-                <see cref="T:System.Globalization.CultureInfo" />
-            </param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpRequestBuilder.WithQueryParameters(System.Collections.Generic.IDictionary{System.String,System.Object},System.Boolean,System.Boolean,System.Boolean,System.Globalization.CultureInfo)">
+        <member name="M:HttpAgent.HttpRequestBuilder.WithQueryParameters(System.Collections.Generic.IDictionary{System.String,System.Object},System.Boolean,System.Boolean)">
             <summary>
                 设置查询参数
             </summary>
             <remarks>支持多次调用。</remarks>
             <param name="parameters">查询参数集合</param>
-            <param name="escape">是否转义字符串，默认 <c>false</c></param>
             <param name="replace">是否替换已存在的查询参数。默认值为 <c>false</c></param>
             <param name="ignoreNullValues">是否忽略空值。默认值为 <c>false</c></param>
-            <param name="culture">
-                <see cref="T:System.Globalization.CultureInfo" />
-            </param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpRequestBuilder.WithQueryParameters(System.Object,System.String,System.Boolean,System.Boolean,System.Boolean,System.Globalization.CultureInfo)">
+        <member name="M:HttpAgent.HttpRequestBuilder.WithQueryParameters(System.Object,System.String,System.Boolean,System.Boolean)">
             <summary>
                 设置查询参数
             </summary>
             <remarks>支持多次调用。</remarks>
             <param name="parameterSource">查询参数集合</param>
             <param name="prefix">参数前缀。对于对象类型可生成如 <c>prefix.Name=furion</c> 与 <c>prefix.Age=30</c> 参数格式。</param>
-            <param name="escape">是否转义字符串，默认 <c>false</c></param>
             <param name="replace">是否替换已存在的查询参数。默认值为 <c>false</c></param>
             <param name="ignoreNullValues">是否忽略空值。默认值为 <c>false</c></param>
-            <param name="culture">
-                <see cref="T:System.Globalization.CultureInfo" />
-            </param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
@@ -1569,46 +1547,34 @@
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpRequestBuilder.WithPathParameter(System.String,System.Object,System.Boolean,System.Globalization.CultureInfo)">
+        <member name="M:HttpAgent.HttpRequestBuilder.WithPathParameter(System.String,System.Object)">
             <summary>
                 设置路径参数
             </summary>
             <remarks>支持多次调用。</remarks>
             <param name="key">键</param>
             <param name="value">值</param>
-            <param name="escape">是否转义字符串，默认 <c>false</c></param>
-            <param name="culture">
-                <see cref="T:System.Globalization.CultureInfo" />
-            </param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpRequestBuilder.WithPathParameters(System.Collections.Generic.IDictionary{System.String,System.Object},System.Boolean,System.Globalization.CultureInfo)">
+        <member name="M:HttpAgent.HttpRequestBuilder.WithPathParameters(System.Collections.Generic.IDictionary{System.String,System.Object})">
             <summary>
                 设置路径参数
             </summary>
             <remarks>支持多次调用。</remarks>
             <param name="parameters">路径参数集合</param>
-            <param name="escape">是否转义字符串，默认 <c>false</c></param>
-            <param name="culture">
-                <see cref="T:System.Globalization.CultureInfo" />
-            </param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpRequestBuilder.WithPathParameters(System.Object,System.String,System.Boolean,System.Globalization.CultureInfo)">
+        <member name="M:HttpAgent.HttpRequestBuilder.WithPathParameters(System.Object,System.String)">
             <summary>
                 设置路径参数
             </summary>
             <remarks>支持多次调用。</remarks>
             <param name="parameterSource">路径参数源对象</param>
             <param name="prefix">模板字符串前缀。若该参数值不为空，则支持 <c>{prefix.Prop.SubProp}</c> 对象路径方式。</param>
-            <param name="escape">是否转义字符串，默认 <c>false</c></param>
-            <param name="culture">
-                <see cref="T:System.Globalization.CultureInfo" />
-            </param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
@@ -1623,45 +1589,33 @@
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpRequestBuilder.WithCookie(System.String,System.Object,System.Boolean,System.Globalization.CultureInfo)">
+        <member name="M:HttpAgent.HttpRequestBuilder.WithCookie(System.String,System.Object)">
             <summary>
                 设置 Cookies
             </summary>
             <remarks>支持多次调用。</remarks>
             <param name="key">键</param>
             <param name="value">值</param>
-            <param name="escape">是否转义字符串，默认 <c>false</c></param>
-            <param name="culture">
-                <see cref="T:System.Globalization.CultureInfo" />
-            </param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpRequestBuilder.WithCookies(System.Collections.Generic.IDictionary{System.String,System.Object},System.Boolean,System.Globalization.CultureInfo)">
+        <member name="M:HttpAgent.HttpRequestBuilder.WithCookies(System.Collections.Generic.IDictionary{System.String,System.Object})">
             <summary>
                 设置 Cookies
             </summary>
             <remarks>支持多次调用。</remarks>
             <param name="cookies">Cookies 集合</param>
-            <param name="escape">是否转义字符串，默认 <c>false</c></param>
-            <param name="culture">
-                <see cref="T:System.Globalization.CultureInfo" />
-            </param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpRequestBuilder.WithCookies(System.Object,System.Boolean,System.Globalization.CultureInfo)">
+        <member name="M:HttpAgent.HttpRequestBuilder.WithCookies(System.Object)">
             <summary>
                 设置 Cookies
             </summary>
             <remarks>支持多次调用。</remarks>
             <param name="cookieSource">Cookie 参数源对象</param>
-            <param name="escape">是否转义字符串，默认 <c>false</c></param>
-            <param name="culture">
-                <see cref="T:System.Globalization.CultureInfo" />
-            </param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
@@ -4560,11 +4514,6 @@
                 <para>该属性优先级高于 <see cref="P:HttpAgent.CookieAttribute.Name" /> 属性设置的值。</para>
             </remarks>
         </member>
-        <member name="P:HttpAgent.CookieAttribute.Escape">
-            <summary>
-                是否转义
-            </summary>
-        </member>
         <member name="P:HttpAgent.CookieAttribute.HasSetValue">
             <summary>
                 是否设置了值
@@ -4954,11 +4903,6 @@
                 路径片段
             </summary>
         </member>
-        <member name="P:HttpAgent.PathSegmentAttribute.Escape">
-            <summary>
-                是否转义
-            </summary>
-        </member>
         <member name="P:HttpAgent.PathSegmentAttribute.Remove">
             <summary>
                 是否标记为待删除
@@ -5121,11 +5065,6 @@
                 <para>特性用于参数时有效。</para>
                 <para>该属性优先级高于 <see cref="P:HttpAgent.QueryAttribute.Name" /> 属性设置的值。</para>
             </remarks>
-        </member>
-        <member name="P:HttpAgent.QueryAttribute.Escape">
-            <summary>
-                是否转义
-            </summary>
         </member>
         <member name="P:HttpAgent.QueryAttribute.Prefix">
             <summary>
@@ -6268,6 +6207,34 @@
             <inheritdoc />
         </member>
         <member name="M:HttpAgent.ObjectContentConverterFactory.GetConverter(System.Type)">
+            <inheritdoc />
+        </member>
+        <member name="T:HttpAgent.IUrlParameterFormatter">
+            <summary>
+                URL 参数格式化程序
+            </summary>
+        </member>
+        <member name="M:HttpAgent.IUrlParameterFormatter.Format(System.Object,HttpAgent.UrlFormattingContext)">
+            <summary>
+                格式化
+            </summary>
+            <param name="value">参数值</param>
+            <param name="context">
+                <see cref="T:HttpAgent.UrlFormattingContext" />
+            </param>
+            <returns>
+                <see cref="T:System.String" />
+            </returns>
+        </member>
+        <member name="T:HttpAgent.UrlFormattingContext">
+            <summary>
+                URL 参数格式化上下文
+            </summary>
+        </member>
+        <member name="T:HttpAgent.UrlParameterFormatter">
+            <inheritdoc cref="T:HttpAgent.IUrlParameterFormatter" />
+        </member>
+        <member name="M:HttpAgent.UrlParameterFormatter.Format(System.Object,HttpAgent.UrlFormattingContext)">
             <inheritdoc />
         </member>
         <member name="T:HttpAgent.IHttpFileTransferEventHandler">
@@ -8239,6 +8206,11 @@
                 <inheritdoc cref="T:Microsoft.Extensions.Configuration.IConfiguration" />
             </summary>
             <remarks>支持作为替换 URL 地址中配置模板参数的提供源。</remarks>
+        </member>
+        <member name="P:HttpAgent.HttpRemoteOptions.UrlParameterFormatter">
+            <summary>
+                URL 参数格式化程序
+            </summary>
         </member>
         <member name="P:HttpAgent.HttpRemoteOptions.HttpDeclarativeExtractors">
             <summary>
@@ -13848,12 +13820,6 @@
         <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_ascii_60FF03FEFFFF87FEFFFF47">
             <summary>Supports searching for characters in or not in "-.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz~".</summary>
         </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_1F52B1A4D2E82B6FEDE25EC8C55F85BB36775196837076691C96925040F90D32">
-            <summary>Supports searching for the string "\\u".</summary>
-        </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_EBC667BDABA1472FA863B5B39B31251EF2B4C95DD643BDECF694CB1CE7BDC178">
-            <summary>Supports searching for the string "[[".</summary>
-        </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions">
             <summary>
                 HTTP 远程请求模块 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" /> 拓展类
@@ -13874,6 +13840,20 @@
         <member name="M:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions.AddHttpRemote(Microsoft.Extensions.DependencyInjection.IServiceCollection,HttpAgent.HttpRemoteBuilder)">
             <summary>
                 添加 HTTP 远程请求服务
+            </summary>
+            <param name="services">
+                <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
+            </param>
+            <param name="httpRemoteBuilder">
+                <see cref="T:HttpAgent.HttpRemoteBuilder" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
+            </returns>
+        </member>
+    </members>
+</doc>
+         添加 HTTP 远程请求服务
             </summary>
             <param name="services">
                 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />

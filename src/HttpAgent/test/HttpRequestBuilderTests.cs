@@ -37,18 +37,19 @@ public class HttpRequestBuilderTests
 
         Assert.Throws<InvalidOperationException>(() =>
         {
-            _ = httpRequestBuilder.BuildFinalRequestUri(null, null);
+            _ = httpRequestBuilder.BuildFinalRequestUri(null, new HttpRemoteOptions());
         });
     }
 
     [Fact]
     public void BuildFinalRequestUri_ReturnOK()
     {
+        var httpRemoteOptions = new HttpRemoteOptions();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost/{id}/{name}"));
         httpRequestBuilder.SetFragment("furion").WithQueryParameters(new { id = 10, name = "furion" })
             .WithPathParameters(new { id = 10, name = "furion" });
 
-        var finalRequestUri = httpRequestBuilder.BuildFinalRequestUri(null, null);
+        var finalRequestUri = httpRequestBuilder.BuildFinalRequestUri(null, httpRemoteOptions);
         Assert.Equal("http://localhost/10/furion?id=10&name=furion#furion", finalRequestUri);
 
         var httpRequestBuilder2 =
@@ -56,7 +57,8 @@ public class HttpRequestBuilderTests
         httpRequestBuilder2.SetFragment("furion").WithQueryParameters(new { id = 10, name = "furion" })
             .WithPathParameters(new { id = 10, name = "furion" });
 
-        var finalRequestUri2 = httpRequestBuilder2.BuildFinalRequestUri(new Uri("http://localhost"), null);
+        var finalRequestUri2 =
+            httpRequestBuilder2.BuildFinalRequestUri(new Uri("http://localhost"), httpRemoteOptions);
         Assert.Equal("http://localhost/10/furion?id=10&name=furion#furion", finalRequestUri2);
 
         var httpRequestBuilder3 =
@@ -65,7 +67,8 @@ public class HttpRequestBuilderTests
         httpRequestBuilder3.SetFragment("furion").WithQueryParameters(new { id = 10, name = "furion" })
             .WithPathParameters(new { id = 10, name = "furion" });
 
-        var finalRequestUri3 = httpRequestBuilder3.BuildFinalRequestUri(new Uri("http://localhost"), null);
+        var finalRequestUri3 =
+            httpRequestBuilder3.BuildFinalRequestUri(new Uri("http://localhost"), httpRemoteOptions);
         Assert.Equal("https://furion.net/10/furion?id=10&name=furion#furion", finalRequestUri3);
 
         var httpRequestBuilder4 =
@@ -73,13 +76,14 @@ public class HttpRequestBuilderTests
                 new Uri("{url}", UriKind.RelativeOrAbsolute));
         httpRequestBuilder4.WithPathParameters(new { url = "http://localhost/id=10" });
 
-        var finalRequestUri4 = httpRequestBuilder4.BuildFinalRequestUri(new Uri("http://localhost"), null);
+        var finalRequestUri4 =
+            httpRequestBuilder4.BuildFinalRequestUri(new Uri("http://localhost"), httpRemoteOptions);
         Assert.Equal("http://localhost/id=10", finalRequestUri4);
 
         var httpRequestBuilder5 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
         httpRequestBuilder5.SetFragment("#furion");
 
-        var finalRequestUri5 = httpRequestBuilder5.BuildFinalRequestUri(null, null);
+        var finalRequestUri5 = httpRequestBuilder5.BuildFinalRequestUri(null, httpRemoteOptions);
         Assert.Equal("http://localhost/#furion", finalRequestUri5);
 
         // With BassAddress
@@ -87,14 +91,16 @@ public class HttpRequestBuilderTests
             new HttpRequestBuilder(HttpMethod.Get, new Uri("/api/test", UriKind.RelativeOrAbsolute));
         httpRequestBuilder6.SetBaseAddress("http://localhost");
 
-        var finalRequestUri6 = httpRequestBuilder6.BuildFinalRequestUri(null, null);
+        var finalRequestUri6 = httpRequestBuilder6.BuildFinalRequestUri(null, httpRemoteOptions);
         Assert.Equal("http://localhost/api/test", finalRequestUri6);
 
-        var finalRequestUri7 = httpRequestBuilder6.BuildFinalRequestUri(new Uri("https://furion.net"), null);
+        var finalRequestUri7 =
+            httpRequestBuilder6.BuildFinalRequestUri(new Uri("https://furion.net"), httpRemoteOptions);
         Assert.Equal("http://localhost/api/test", finalRequestUri7);
 
         httpRequestBuilder6.WithPathSegment("docs");
-        var finalRequestUri8 = httpRequestBuilder6.BuildFinalRequestUri(new Uri("https://furion.net"), null);
+        var finalRequestUri8 =
+            httpRequestBuilder6.BuildFinalRequestUri(new Uri("https://furion.net"), httpRemoteOptions);
         Assert.Equal("http://localhost/api/test/docs", finalRequestUri8);
 
         var builder = WebApplication.CreateBuilder();
@@ -109,11 +115,12 @@ public class HttpRequestBuilderTests
                 new Uri("https://furion.net/[[name]]/[[age]]/[[furion:author]]/[[notfound:key || default]]",
                     UriKind.RelativeOrAbsolute));
         var finalRequestUri9 =
-            httpRequestBuilder7.BuildFinalRequestUri(new Uri("https://furion.net"), builder.Configuration);
+            httpRequestBuilder7.BuildFinalRequestUri(new Uri("https://furion.net"),
+                new HttpRemoteOptions { Configuration = builder.Configuration });
         Assert.Equal("https://furion.net/Furion/10/MonkSoul/default", finalRequestUri9);
 
         var httpRequestBuilder8 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost/test/")); // 保留末尾斜杆
-        var finalRequestUri10 = httpRequestBuilder8.BuildFinalRequestUri(null, null);
+        var finalRequestUri10 = httpRequestBuilder8.BuildFinalRequestUri(null, httpRemoteOptions);
         Assert.Equal("http://localhost/test/", finalRequestUri10);
     }
 
@@ -155,6 +162,13 @@ public class HttpRequestBuilderTests
 
         httpRequestBuilder4.AppendPathSegments(uriBuilder4);
         Assert.Equal("/abc", uriBuilder4.Path);
+
+        var httpRequestBuilder5 =
+            new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost/test/百小僧"));
+        var uriBuilder5 = new UriBuilder(httpRequestBuilder5.RequestUri!);
+
+        httpRequestBuilder5.AppendPathSegments(uriBuilder5);
+        Assert.Equal("/test/%E7%99%BE%E5%B0%8F%E5%83%A7", uriBuilder5.Path);
     }
 
     [Fact]
@@ -174,35 +188,36 @@ public class HttpRequestBuilderTests
     [Fact]
     public void AppendQueryParameters_ReturnOK()
     {
+        var formatter = new UrlParameterFormatter();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost?v=1"));
         var uriBuilder = new UriBuilder(httpRequestBuilder.RequestUri!);
 
-        httpRequestBuilder.AppendQueryParameters(uriBuilder);
+        httpRequestBuilder.AppendQueryParameters(uriBuilder, formatter);
         Assert.Equal("?v=1", uriBuilder.Query);
 
         httpRequestBuilder.WithQueryParameters(new { id = 10, name = "furion" })
             .WithQueryParameters(new { name = "monksoul" });
 
-        httpRequestBuilder.AppendQueryParameters(uriBuilder);
+        httpRequestBuilder.AppendQueryParameters(uriBuilder, null);
         Assert.Equal("?v=1&id=10&name=furion&name=monksoul", uriBuilder.Query);
 
         var httpRequestBuilder2 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
         var uriBuilder2 = new UriBuilder(httpRequestBuilder2.RequestUri!);
 
-        httpRequestBuilder2.AppendQueryParameters(uriBuilder2);
+        httpRequestBuilder2.AppendQueryParameters(uriBuilder2, formatter);
         Assert.Empty(uriBuilder2.Query);
 
         httpRequestBuilder2.WithQueryParameters(new { id = 10, name = "furion" })
             .WithQueryParameters(new { name = "monksoul" });
 
-        httpRequestBuilder2.AppendQueryParameters(uriBuilder2);
+        httpRequestBuilder2.AppendQueryParameters(uriBuilder2, formatter);
         Assert.Equal("?id=10&name=furion&name=monksoul", uriBuilder2.Query);
 
         var httpRequestBuilder3 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost?v=1&name=10&c=20"))
             .WithQueryParameters(new { id = 10 }).RemoveQueryParameters("C");
         var uriBuilder3 = new UriBuilder(httpRequestBuilder3.RequestUri!);
 
-        httpRequestBuilder3.AppendQueryParameters(uriBuilder3);
+        httpRequestBuilder3.AppendQueryParameters(uriBuilder3, formatter);
         Assert.Equal("?v=1&name=10&id=10", uriBuilder3.Query);
 
         var httpRequestBuilder4 =
@@ -210,8 +225,26 @@ public class HttpRequestBuilderTests
                 .RemoveQueryParameters("id");
         var uriBuilder4 = new UriBuilder(httpRequestBuilder4.RequestUri!);
 
-        httpRequestBuilder4.AppendQueryParameters(uriBuilder4);
+        httpRequestBuilder4.AppendQueryParameters(uriBuilder4, formatter);
         Assert.Equal("?name=furion", uriBuilder4.Query);
+
+        var httpRequestBuilder5 =
+            new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost?id=Fur ion&name=百小僧")).WithQueryParameters(
+                new { date = new DateTime(2025, 5, 22, 0, 3, 30) });
+        var uriBuilder5 = new UriBuilder(httpRequestBuilder5.RequestUri!);
+
+        httpRequestBuilder5.AppendQueryParameters(uriBuilder5, formatter);
+        Assert.Equal("?id=Fur%20ion&name=%E7%99%BE%E5%B0%8F%E5%83%A7&date=2025-05-22T00:03:30.0000000",
+            uriBuilder5.Query);
+
+        var httpRequestBuilder6 =
+            new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost")).WithQueryParameters(
+                new { date = new DateTime(2025, 5, 22, 0, 3, 30) });
+        var uriBuilder6 = new UriBuilder(httpRequestBuilder6.RequestUri!);
+
+        httpRequestBuilder6.AppendQueryParameters(uriBuilder6, new TestUrlParameterFormatter());
+        Assert.Equal("?date=2025-05-22",
+            uriBuilder6.Query);
     }
 
     [Fact]
@@ -271,7 +304,7 @@ public class HttpRequestBuilderTests
     {
         var httpRequestBuilder =
             new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost")).AutoSetHostHeader(false);
-        var finalRequestUri = httpRequestBuilder.BuildFinalRequestUri(null, null);
+        var finalRequestUri = httpRequestBuilder.BuildFinalRequestUri(null, new HttpRemoteOptions());
         var httpRequestMessage = new HttpRequestMessage(httpRequestBuilder.HttpMethod!, finalRequestUri);
 
         httpRequestBuilder.AppendHeaders(httpRequestMessage);
@@ -314,6 +347,11 @@ public class HttpRequestBuilderTests
         httpRequestBuilder.SetReferer("{BASE_ADDRESS}");
         httpRequestBuilder.AppendHeaders(httpRequestMessage);
         Assert.Equal("http://localhost/", httpRequestMessage.Headers.Referrer?.ToString());
+
+        httpRequestBuilder.WithHeaders(new { cname = "百小僧", ename = "fur ion" });
+        httpRequestBuilder.AppendHeaders(httpRequestMessage);
+        Assert.Equal("百小僧", httpRequestMessage.Headers.GetValues("cname").First());
+        Assert.Equal("fur ion", httpRequestMessage.Headers.GetValues("ename").First());
     }
 
     [Fact]
@@ -322,7 +360,7 @@ public class HttpRequestBuilderTests
         var httpRequestBuilder =
             new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost/")).AddBasicAuthentication(
                 "admin", "a123456789");
-        var finalRequestUri = httpRequestBuilder.BuildFinalRequestUri(null, null);
+        var finalRequestUri = httpRequestBuilder.BuildFinalRequestUri(null, new HttpRemoteOptions());
         var httpRequestMessage = new HttpRequestMessage(httpRequestBuilder.HttpMethod!, finalRequestUri);
 
         httpRequestBuilder.AppendAuthentication(httpRequestMessage);
@@ -352,7 +390,7 @@ public class HttpRequestBuilderTests
         var httpRequestBuilder =
             new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test")).AddDigestAuthentication(
                 "admin", "a123456789");
-        var finalRequestUri = httpRequestBuilder.BuildFinalRequestUri(null, null);
+        var finalRequestUri = httpRequestBuilder.BuildFinalRequestUri(null, new HttpRemoteOptions());
         var httpRequestMessage = new HttpRequestMessage(httpRequestBuilder.HttpMethod!, finalRequestUri);
 
         httpRequestBuilder.AppendAuthentication(httpRequestMessage);
@@ -368,7 +406,7 @@ public class HttpRequestBuilderTests
     public void AppendCookies_ReturnOK()
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
-        var finalRequestUri = httpRequestBuilder.BuildFinalRequestUri(null, null);
+        var finalRequestUri = httpRequestBuilder.BuildFinalRequestUri(null, new HttpRemoteOptions());
         var httpRequestMessage = new HttpRequestMessage(httpRequestBuilder.HttpMethod!, finalRequestUri);
 
         httpRequestBuilder.AppendCookies(httpRequestMessage);
@@ -387,7 +425,7 @@ public class HttpRequestBuilderTests
         var httpRequestBuilder =
             new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"))
                 .WithCookies(new { id = 10, name = "furion", age = 30, address = "广东省" }).RemoveCookies("age", "id");
-        var finalRequestUri = httpRequestBuilder.BuildFinalRequestUri(null, null);
+        var finalRequestUri = httpRequestBuilder.BuildFinalRequestUri(null, new HttpRemoteOptions());
         var httpRequestMessage = new HttpRequestMessage(httpRequestBuilder.HttpMethod!, finalRequestUri);
         httpRequestBuilder.AppendCookies(httpRequestMessage);
         httpRequestBuilder.RemoveCookies(httpRequestMessage);
@@ -402,7 +440,7 @@ public class HttpRequestBuilderTests
     {
         var httpRequestBuilder =
             new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost")).AutoSetHostHeader(false);
-        var finalRequestUri = httpRequestBuilder.BuildFinalRequestUri(null, null);
+        var finalRequestUri = httpRequestBuilder.BuildFinalRequestUri(null, new HttpRemoteOptions());
         var httpRequestMessage = new HttpRequestMessage(httpRequestBuilder.HttpMethod!, finalRequestUri);
 
         httpRequestBuilder.RemoveHeaders(httpRequestMessage);
@@ -430,7 +468,7 @@ public class HttpRequestBuilderTests
         var httpRemoteOptions = new HttpRemoteOptions();
 
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
-        var finalRequestUri = httpRequestBuilder.BuildFinalRequestUri(null, null);
+        var finalRequestUri = httpRequestBuilder.BuildFinalRequestUri(null, new HttpRemoteOptions());
         var httpRequestMessage = new HttpRequestMessage(httpRequestBuilder.HttpMethod!, finalRequestUri);
         var httpContentProcessorFactory = new HttpContentProcessorFactory(serviceProvider, []);
 
@@ -547,7 +585,7 @@ public class HttpRequestBuilderTests
         Assert.Equal(MediaTypeNames.Application.Octet, httpRequestBuilder7.ContentType);
 
         var httpRequestBuilder8 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
-        httpRequestBuilder8.SetContent(new FormUrlEncodedContent(Array.Empty<KeyValuePair<string, string>>()));
+        httpRequestBuilder8.SetContent(new FormUrlEncodedContent([]));
         httpRequestBuilder8.SetDefaultContentType(MediaTypeNames.Text.Plain);
         Assert.Equal(MediaTypeNames.Application.FormUrlEncoded, httpRequestBuilder8.ContentType);
 
@@ -677,7 +715,7 @@ public class HttpRequestBuilderTests
     {
         var httpRequestBuilder =
             new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost/"));
-        var finalRequestUri = httpRequestBuilder.BuildFinalRequestUri(null, null);
+        var finalRequestUri = httpRequestBuilder.BuildFinalRequestUri(null, new HttpRemoteOptions());
         var httpRequestMessage = new HttpRequestMessage(httpRequestBuilder.HttpMethod!, finalRequestUri);
 
         httpRequestBuilder.EnablePerformanceOptimization(httpRequestMessage);
