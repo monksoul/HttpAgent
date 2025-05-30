@@ -1594,6 +1594,39 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
         Assert.True(HttpRemoteService.ShouldSuppressException([typeof(Exception)], new HttpRequestException()));
         Assert.False(HttpRemoteService.ShouldSuppressException([typeof(TimeoutException)], new Exception()));
     }
+
+    [Fact]
+    public async Task SendAsync_WithUnixEpoch_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        builder.Services.AddHttpRemote();
+
+        await using var app = builder.Build();
+
+        app.MapGet("/test", async httpContext =>
+        {
+            await Task.Delay(50);
+            httpContext.Response.ContentType = "application/json";
+            await httpContext.Response.WriteAsync(
+                """{"DateTime":"/Date(1590863400000)/","DateTimeOffset":"/Date(1590863400000-0700)/"}""");
+        });
+
+        await app.StartAsync();
+
+        var httpRemoteService = app.Services.GetRequiredService<IHttpRemoteService>();
+
+        var result = await httpRemoteService.SendAsync<UnixEpochDateClass>(
+            HttpRequestBuilder.Get($"http://localhost:{port}/test"));
+
+        Assert.NotNull(result?.Result);
+        Assert.Equal("2020-05-30T18:30:00.0000000", result?.Result.DateTime.ToString("O", CultureInfo.CurrentCulture));
+        Assert.Equal("2020-05-30T11:30:00.0000000-07:00",
+            result?.Result.DateTimeOffset.ToString("O", CultureInfo.CurrentCulture));
+
+        await app.StopAsync();
+    }
 }
 
 public class NoISO8601TimeClass
@@ -1608,4 +1641,10 @@ public class StringClassTest
     public string? String1 { get; set; }
     public string? String2 { get; set; }
     public string? String3 { get; set; }
+}
+
+public class UnixEpochDateClass
+{
+    public DateTime DateTime { get; set; }
+    public DateTimeOffset DateTimeOffset { get; set; }
 }

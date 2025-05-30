@@ -31,10 +31,10 @@ public class HttpRemoteOptionsTests
         Assert.Equal(3, HttpRemoteOptions.JsonSerializerOptionsDefault.Converters.Count);
         Assert.True(
             HttpRemoteOptions.JsonSerializerOptionsDefault.Converters[0] is
-                DateTimeConverterUsingDateTimeParseAsFallback);
+                FlexibleDateTimeConverter);
         Assert.True(
             HttpRemoteOptions.JsonSerializerOptionsDefault.Converters[1] is
-                DateTimeOffsetConverterUsingDateTimeOffsetParseAsFallback);
+                FlexibleDateTimeOffsetConverter);
         Assert.True(HttpRemoteOptions.JsonSerializerOptionsDefault.Converters[2] is StringJsonConverter);
 
         Assert.NotNull(httpRemoteOptions.JsonSerializerOptions);
