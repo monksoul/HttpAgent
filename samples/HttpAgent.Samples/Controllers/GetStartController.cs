@@ -617,7 +617,7 @@ public class GetStartController(
     {
         var result = await httpRemoteService.GetAsStringAsync(
             "https://ocr.1datatech.net/oauth/1.0/token",
-            builder => builder.WithQueryParameter("a", "123", replace: true)
+            builder => builder.WithQueryParameter("a", "123", true)
                 .Profiler());
     }
 

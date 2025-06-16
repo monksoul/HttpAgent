@@ -13,7 +13,7 @@ consumption and high test coverage.
 
 ## Features
 
-- **Comprehensive `HTTP` Method Support**: Covers `GET`, `POST`, `PUT`, `DELETE`, `PATCH`, `HEAD`, `TRACE`, and
+- **Comprehensive `HTTP` Method Support**: Covers `GET`, `POST`, `PUT`, `DELETE`, `PATCH`, `HEAD`, `TRACE` and
   `OPTIONS` methods.
 - **File Transfer Functionality**: Supports file upload and download with real-time transfer progress monitoring.
 - **Polling Mechanism**: Supports standard polling and long polling with customizable polling intervals.

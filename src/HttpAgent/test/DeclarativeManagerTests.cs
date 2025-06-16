@@ -198,4 +198,208 @@ public class DeclarativeManagerTests
         Assert.Equal(HttpCompletionOption.ResponseHeadersRead, completionOption3);
         Assert.True(cancellationToken3 != CancellationToken.None);
     }
+
+    [Fact]
+    public async Task StartAsync_WithClayContentConverter_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        await using var app = builder.Build();
+
+        app.MapGet("/test", async context =>
+        {
+            await Task.Delay(50);
+
+            await context.Response.WriteAsJsonAsync(new { id = 1, name = "Furion" });
+        });
+
+        await app.StartAsync();
+
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
+        var method = typeof(IHttpDeclarativeTest).GetMethod(nameof(IHttpDeclarativeTest.GetUrlAsync))!;
+        var declarativeManager = new DeclarativeManager(httpRemoteService,
+            new HttpDeclarativeBuilder(method, [$"http://localhost:{port}/test", CancellationToken.None]));
+
+        var result = await declarativeManager.StartAsync<Clay>();
+        Assert.Equal("{\"id\":1,\"name\":\"Furion\"}", result!.ToJsonString());
+        Assert.Equal(1, result["id"]);
+        Assert.Equal(1, result["Id"]);
+        Assert.Equal("Furion", result["name"]);
+        Assert.Equal("Furion", result["Name"]);
+
+        await app.StopAsync();
+        await serviceProvider.DisposeAsync();
+    }
+
+    [Fact]
+    public async Task StartAsync_WithHttpRemoteResult_And_ClayContentConverter_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        await using var app = builder.Build();
+
+        app.MapGet("/test", async context =>
+        {
+            await Task.Delay(50);
+
+            await context.Response.WriteAsJsonAsync(new { id = 1, name = "Furion" });
+        });
+
+        await app.StartAsync();
+
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
+        var method = typeof(IHttpDeclarativeTest).GetMethod(nameof(IHttpDeclarativeTest.GetUrlAsync))!;
+        var declarativeManager = new DeclarativeManager(httpRemoteService,
+            new HttpDeclarativeBuilder(method, [$"http://localhost:{port}/test", CancellationToken.None]));
+
+        var result = await declarativeManager.StartAsync<HttpRemoteResult<Clay>>();
+        Assert.Equal("{\"id\":1,\"name\":\"Furion\"}", result!.Result!.ToJsonString());
+        Assert.Equal(1, result.Result["id"]);
+        Assert.Equal(1, result.Result["Id"]);
+        Assert.Equal("Furion", result.Result["name"]);
+        Assert.Equal("Furion", result.Result["Name"]);
+
+        await app.StopAsync();
+        await serviceProvider.DisposeAsync();
+    }
+
+    [Fact]
+    public async Task StartAsync_WithDynamicContentConverter_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        await using var app = builder.Build();
+
+        app.MapGet("/test", async context =>
+        {
+            await Task.Delay(50);
+
+            await context.Response.WriteAsJsonAsync(new { id = 1, name = "Furion" });
+        });
+
+        await app.StartAsync();
+
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
+        var method = typeof(IHttpDeclarativeTest).GetMethod(nameof(IHttpDeclarativeTest.GetUrlAsync))!;
+        var declarativeManager = new DeclarativeManager(httpRemoteService,
+            new HttpDeclarativeBuilder(method, [$"http://localhost:{port}/test", CancellationToken.None]));
+
+        var result = await declarativeManager.StartAsync<dynamic>();
+        Assert.Equal("{\"id\":1,\"name\":\"Furion\"}", result!.ToJsonString());
+        Assert.Equal(1, result["id"]);
+        Assert.Equal(1, result["Id"]);
+        Assert.Equal("Furion", result["name"]);
+        Assert.Equal("Furion", result["Name"]);
+
+        await app.StopAsync();
+        await serviceProvider.DisposeAsync();
+    }
+
+    [Fact]
+    public async Task StartAsync_WithHttpRemoteResult_And_DynamicContentConverter_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        await using var app = builder.Build();
+
+        app.MapGet("/test", async context =>
+        {
+            await Task.Delay(50);
+
+            await context.Response.WriteAsJsonAsync(new { id = 1, name = "Furion" });
+        });
+
+        await app.StartAsync();
+
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
+        var method = typeof(IHttpDeclarativeTest).GetMethod(nameof(IHttpDeclarativeTest.GetUrlAsync))!;
+        var declarativeManager = new DeclarativeManager(httpRemoteService,
+            new HttpDeclarativeBuilder(method, [$"http://localhost:{port}/test", CancellationToken.None]));
+
+        var result = await declarativeManager.StartAsync<HttpRemoteResult<dynamic>>();
+        Assert.Equal("{\"id\":1,\"name\":\"Furion\"}", result!.Result!.ToJsonString());
+        Assert.Equal(1, result.Result["id"]);
+        Assert.Equal(1, result.Result["Id"]);
+        Assert.Equal("Furion", result.Result["name"]);
+        Assert.Equal("Furion", result.Result["Name"]);
+
+        await app.StopAsync();
+        await serviceProvider.DisposeAsync();
+    }
+
+    [Fact]
+    public async Task StartAsync_WithObjectContentConverter_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        await using var app = builder.Build();
+
+        app.MapGet("/test", async context =>
+        {
+            await Task.Delay(50);
+
+            await context.Response.WriteAsJsonAsync(new { id = 1, name = "Furion" });
+        });
+
+        await app.StartAsync();
+
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
+        var method = typeof(IHttpDeclarativeTest).GetMethod(nameof(IHttpDeclarativeTest.GetUrlAsync))!;
+        var declarativeManager = new DeclarativeManager(httpRemoteService,
+            new HttpDeclarativeBuilder(method, [$"http://localhost:{port}/test", CancellationToken.None]));
+
+        dynamic? result = await declarativeManager.StartAsync<object>();
+        Assert.Equal("{\"id\":1,\"name\":\"Furion\"}", result!.ToJsonString());
+        Assert.Equal(1, result["id"]);
+        Assert.Equal(1, result["Id"]);
+        Assert.Equal("Furion", result["name"]);
+        Assert.Equal("Furion", result["Name"]);
+
+        await app.StopAsync();
+        await serviceProvider.DisposeAsync();
+    }
+
+    [Fact]
+    public async Task StartAsync_WithHttpRemoteResult_And_ObjectContentConverter_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        await using var app = builder.Build();
+
+        app.MapGet("/test", async context =>
+        {
+            await Task.Delay(50);
+
+            await context.Response.WriteAsJsonAsync(new { id = 1, name = "Furion" });
+        });
+
+        await app.StartAsync();
+
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
+        var method = typeof(IHttpDeclarativeTest).GetMethod(nameof(IHttpDeclarativeTest.GetUrlAsync))!;
+        var declarativeManager = new DeclarativeManager(httpRemoteService,
+            new HttpDeclarativeBuilder(method, [$"http://localhost:{port}/test", CancellationToken.None]));
+
+        dynamic? result = await declarativeManager.StartAsync<HttpRemoteResult<object>>();
+        Assert.Equal("{\"id\":1,\"name\":\"Furion\"}", result!.Result!.ToJsonString());
+        Assert.Equal(1, result.Result["id"]);
+        Assert.Equal(1, result.Result["Id"]);
+        Assert.Equal("Furion", result.Result["name"]);
+        Assert.Equal("Furion", result.Result["Name"]);
+
+        await app.StopAsync();
+        await serviceProvider.DisposeAsync();
+    }
 }

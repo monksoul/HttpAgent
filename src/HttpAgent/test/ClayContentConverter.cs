@@ -1,4 +1,4 @@
-﻿namespace HttpAgent.Samples;
+﻿namespace HttpAgent.Tests;
 
 public class ClayContentConverter : HttpContentConverterBase<Clay>
 {

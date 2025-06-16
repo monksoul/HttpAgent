@@ -11,6 +11,7 @@ global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.Extensions.DependencyInjection.Extensions;
 global using Microsoft.Extensions.Http;
 global using Microsoft.Extensions.Options;
+global using Shapeless;
 global using System.Collections.ObjectModel;
 global using System.ComponentModel.DataAnnotations;
 global using System.Diagnostics;

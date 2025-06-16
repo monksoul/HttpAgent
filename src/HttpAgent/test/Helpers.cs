@@ -54,7 +54,8 @@ public class Helpers
         var httpContentProcessorFactory = new HttpContentProcessorFactory(serviceProvider, null);
         var httpRemoteService = new HttpRemoteService(serviceProvider, logger, httpClientFactory,
             httpContentProcessorFactory,
-            new HttpContentConverterFactory(serviceProvider, null), options);
+            new HttpContentConverterFactory(serviceProvider,
+                [new ClayContentConverter(), new DynamicContentConverter()]), options);
 
         return (httpRemoteService, serviceProvider);
     }
