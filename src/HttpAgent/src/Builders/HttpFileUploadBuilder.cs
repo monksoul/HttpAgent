@@ -331,9 +331,8 @@ public sealed class HttpFileUploadBuilder
         EnsureLegalData(FilePath, AllowedFileExtensions, MaxFileSizeInBytes);
 
         // 初始化 HttpRequestBuilder 实例
-        var httpRequestBuilder = HttpRequestBuilder.Create(HttpMethod, RequestUri, configure)
-            .SetMultipartContent(builder =>
-                builder.AddFileWithProgressAsStream(FilePath, progressChannel, Name, FileName, ContentType));
+        var httpRequestBuilder = HttpRequestBuilder.Create(HttpMethod, RequestUri).SetMultipartContent(builder =>
+            builder.AddFileWithProgressAsStream(FilePath, progressChannel, Name, FileName, ContentType));
 
         // 检查是否设置了事件处理程序且该处理程序实现了 IHttpRequestEventHandler 接口，如果有则设置给 httpRequestBuilder
         if (FileTransferEventHandlerType is not null &&
@@ -341,6 +340,9 @@ public sealed class HttpFileUploadBuilder
         {
             httpRequestBuilder.SetEventHandler(FileTransferEventHandlerType);
         }
+
+        // 调用自定义配置委托
+        configure?.Invoke(httpRequestBuilder);
 
         return httpRequestBuilder;
     }

@@ -228,7 +228,7 @@ public sealed class HttpServerSentEventsBuilder
 
         // 初始化 HttpRequestBuilder 实例，并确保请求标头中添加了 Accept: text/event-stream；同时启用 HttpClient 池化管理
         // 如果请求失败，则应抛出异常。
-        var httpRequestBuilder = HttpRequestBuilder.Create(HttpMethod, RequestUri, configure)
+        var httpRequestBuilder = HttpRequestBuilder.Create(HttpMethod, RequestUri)
             .WithHeader(nameof(HttpRequestHeaders.Accept), "text/event-stream", replace: true).DisableCache()
             .UseHttpClientPool().EnsureSuccessStatusCode();
 
@@ -238,6 +238,9 @@ public sealed class HttpServerSentEventsBuilder
         {
             httpRequestBuilder.SetEventHandler(ServerSentEventsEventHandlerType);
         }
+
+        // 调用自定义配置委托
+        configure?.Invoke(httpRequestBuilder);
 
         return httpRequestBuilder;
     }

@@ -254,7 +254,7 @@ public sealed class HttpLongPollingBuilder
         ArgumentNullException.ThrowIfNull(httpRemoteOptions);
 
         // 初始化 HttpRequestBuilder 实例
-        var httpRequestBuilder = HttpRequestBuilder.Create(HttpMethod, RequestUri, configure).DisableCache();
+        var httpRequestBuilder = HttpRequestBuilder.Create(HttpMethod, RequestUri).DisableCache();
 
         // 设置超时时间
         if (Timeout is not null)
@@ -268,6 +268,9 @@ public sealed class HttpLongPollingBuilder
         {
             httpRequestBuilder.SetEventHandler(LongPollingEventHandlerType);
         }
+
+        // 调用自定义配置委托
+        configure?.Invoke(httpRequestBuilder);
 
         return httpRequestBuilder;
     }
