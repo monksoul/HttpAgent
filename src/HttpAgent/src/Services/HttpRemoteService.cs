@@ -558,7 +558,7 @@ internal sealed partial class HttpRemoteService : IHttpRemoteService
                 isTimeoutTriggered)
             {
                 throw new TaskCanceledException(
-                    $"The request was canceled due to the configured HttpRequestBuilder.Timeout of {httpRequestBuilder.Timeout?.TotalSeconds.ToString("0.###")} seconds elapsing.",
+                    $"The request was canceled due to the configured HttpRequestBuilder.Timeout of {httpRequestBuilder.Timeout?.TotalSeconds:0.###} seconds elapsing.",
                     new TimeoutException("The operation was canceled.", oce));
             }
 
