@@ -768,13 +768,18 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
             new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test")).SetTimeout(200,
                 () => callTimeoutActionTimes++);
 
-        await Assert.ThrowsAsync<TaskCanceledException>(async () =>
+        var exception = await Assert.ThrowsAsync<TaskCanceledException>(async () =>
         {
             _ = await httpRemoteService.SendCoreAsync(httpRequestBuilder,
                 HttpCompletionOption.ResponseContentRead, (httpClient, httpRequestMessage, option, token) =>
                     httpClient.SendAsync(httpRequestMessage, option, token), null);
         });
         Assert.Equal(1, callTimeoutActionTimes);
+        Assert.Equal(
+            "The request was canceled due to the configured HttpRequestBuilder.Timeout of 0.2 seconds elapsing.",
+            exception.Message);
+        Assert.True(exception.InnerException is TimeoutException);
+        Assert.Equal("The operation was canceled.", exception.InnerException.Message);
 
         // 超时为 0
         var callTimeoutActionTimes2 = 0;

@@ -436,6 +436,10 @@ internal sealed partial class HttpRemoteService : IHttpRemoteService
 
         // 创建关联的超时 Token 标识
         using var timeoutCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        var timeoutCancellationToken = timeoutCancellationTokenSource.Token;
+
+        // 定义标志位，用于判断是否引发了超时操作
+        var isTimeoutTriggered = false;
 
         // 设置单次请求超时时间控制
         if (httpRequestBuilder.Timeout is not null && httpRequestBuilder.Timeout.Value != TimeSpan.Zero)
@@ -450,8 +454,11 @@ internal sealed partial class HttpRemoteService : IHttpRemoteService
             // 调用超时发生时要执行的操作
             if (httpRequestBuilder.TimeoutAction is not null)
             {
-                timeoutCancellationTokenSource.Token.Register(httpRequestBuilder.TimeoutAction.TryInvoke);
+                timeoutCancellationToken.Register(httpRequestBuilder.TimeoutAction.TryInvoke);
             }
+
+            // 注册回调，用于标记是否是超时触发的取消
+            timeoutCancellationToken.Register(() => isTimeoutTriggered = true);
 
             // 延迟指定时间后取消任务
             timeoutCancellationTokenSource.CancelAfter(httpRequestBuilder.Timeout.Value);
@@ -467,9 +474,8 @@ internal sealed partial class HttpRemoteService : IHttpRemoteService
         {
             // 调用发送 HTTP 请求委托
             httpResponseMessage = sendAsyncMethod is not null
-                ? await sendAsyncMethod(httpClient, httpRequestMessage, completionOption,
-                    timeoutCancellationTokenSource.Token)
-                : sendMethod!(httpClient, httpRequestMessage, completionOption, timeoutCancellationTokenSource.Token);
+                ? await sendAsyncMethod(httpClient, httpRequestMessage, completionOption, timeoutCancellationToken)
+                : sendMethod!(httpClient, httpRequestMessage, completionOption, timeoutCancellationToken);
 
             // 初始化当前重定向次数和原始请求方法
             var redirections = 0;
@@ -504,9 +510,8 @@ internal sealed partial class HttpRemoteService : IHttpRemoteService
                 // 重新调用发送 HTTP 请求委托
                 httpResponseMessage = sendAsyncMethod is not null
                     ? await sendAsyncMethod(httpClient, redirectHttpRequestMessage, completionOption,
-                        timeoutCancellationTokenSource.Token)
-                    : sendMethod!(httpClient, redirectHttpRequestMessage, completionOption,
-                        timeoutCancellationTokenSource.Token);
+                        timeoutCancellationToken)
+                    : sendMethod!(httpClient, redirectHttpRequestMessage, completionOption, timeoutCancellationToken);
 
                 // 递增重定向次数
                 redirections++;
@@ -518,13 +523,12 @@ internal sealed partial class HttpRemoteService : IHttpRemoteService
             // 调用状态码处理程序
             if (sendAsyncMethod is not null)
             {
-                await InvokeStatusCodeHandlersAsync(httpRequestBuilder, httpResponseMessage,
-                    timeoutCancellationTokenSource.Token);
+                await InvokeStatusCodeHandlersAsync(httpRequestBuilder, httpResponseMessage, timeoutCancellationToken);
             }
             else
             {
                 // ReSharper disable once MethodHasAsyncOverload
-                InvokeStatusCodeHandlers(httpRequestBuilder, httpResponseMessage, timeoutCancellationTokenSource.Token);
+                InvokeStatusCodeHandlers(httpRequestBuilder, httpResponseMessage, timeoutCancellationToken);
             }
 
             // 检查 HTTP 响应内容长度是否在设定的最大缓冲区大小限制内
@@ -544,12 +548,21 @@ internal sealed partial class HttpRemoteService : IHttpRemoteService
             HandleRequestFailed(httpRequestBuilder, requestEventHandler, e, httpResponseMessage);
 
             // 检查是否启用异常抑制机制
-            if (!ShouldSuppressException(httpRequestBuilder.SuppressExceptionTypes, e))
+            if (ShouldSuppressException(httpRequestBuilder.SuppressExceptionTypes, e))
             {
-                throw;
+                return (httpResponseMessage, requestDuration);
             }
 
-            return (httpResponseMessage, requestDuration);
+            // 检查是否是超时导致的取消，如果是则抛出 TaskCanceledException(TimeoutException) 超时异常
+            if (e is OperationCanceledException oce && oce.CancellationToken == timeoutCancellationToken &&
+                isTimeoutTriggered)
+            {
+                throw new TaskCanceledException(
+                    $"The request was canceled due to the configured HttpRequestBuilder.Timeout of {httpRequestBuilder.Timeout?.TotalSeconds.ToString("0.###")} seconds elapsing.",
+                    new TimeoutException("The operation was canceled.", oce));
+            }
+
+            throw;
         }
         finally
         {
