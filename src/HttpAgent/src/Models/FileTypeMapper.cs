@@ -404,7 +404,8 @@ public sealed class FileTypeMapper
         { ".deb", "application/vnd.debian.binary-package" },
         { ".7z", "application/x-7z-compressed" },
         { ".nupkg", "application/vnd.nuget.package" },
-        { ".snupkg", "application/vnd.nuget.package" }
+        { ".snupkg", "application/vnd.nuget.package" },
+        { ".ofd", "application/ofd" }
     })
     {
     }
