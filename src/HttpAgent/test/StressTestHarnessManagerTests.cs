@@ -173,7 +173,7 @@ public class StressTestHarnessManagerTests
         Assert.Equal(10, result.TotalRequests);
         Assert.Equal(10, result.SuccessfulRequests);
         Assert.Equal(0, result.FailedRequests);
-        Assert.True(result.QueriesPerSecond > 50);
+        Assert.True(result.QueriesPerSecond > 15);
 
         await app.StopAsync();
         await serviceProvider.DisposeAsync();

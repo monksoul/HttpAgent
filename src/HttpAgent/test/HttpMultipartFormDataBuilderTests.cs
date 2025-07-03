@@ -1021,8 +1021,13 @@ public class HttpMultipartFormDataBuilderTests
                 httpContentProcessorFactory, null)!;
         Assert.NotNull(httpContent4);
         Assert.NotNull(httpContent4.Headers.ContentDisposition);
+#if NET10_0_OR_GREATER
+        Assert.Equal("test", httpContent4.Headers.ContentDisposition.Name);
+        Assert.Equal("text.txt", httpContent4.Headers.ContentDisposition.FileName);
+#else
         Assert.Equal("\"test\"", httpContent4.Headers.ContentDisposition.Name);
         Assert.Equal("\"text.txt\"", httpContent4.Headers.ContentDisposition.FileName);
+#endif
 
         using var stream = new MemoryStream();
         var httpContent5 =
@@ -1036,8 +1041,14 @@ public class HttpMultipartFormDataBuilderTests
                 httpContentProcessorFactory, null)!;
         Assert.NotNull(httpContent5);
         Assert.NotNull(httpContent5.Headers.ContentDisposition);
+
+#if NET10_0_OR_GREATER
+        Assert.Equal("test", httpContent5.Headers.ContentDisposition.Name);
+        Assert.Equal("text.txt", httpContent5.Headers.ContentDisposition.FileName);
+#else
         Assert.Equal("\"test\"", httpContent5.Headers.ContentDisposition.Name);
         Assert.Equal("\"text.txt\"", httpContent5.Headers.ContentDisposition.FileName);
+#endif
 
         var httpContent6 =
             HttpMultipartFormDataBuilder.BuildHttpContent(

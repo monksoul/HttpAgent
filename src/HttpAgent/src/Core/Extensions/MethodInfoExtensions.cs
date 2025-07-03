@@ -105,7 +105,7 @@ internal static class MethodInfoExtensions
         // 空检查
         if (method is null)
         {
-            return default;
+            return null;
         }
 
         // 获取方法的基本信息

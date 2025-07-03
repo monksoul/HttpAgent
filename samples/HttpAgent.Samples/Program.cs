@@ -44,8 +44,8 @@ builder.Services.AddHttpRemote(options =>
         // options.AddHttpDeclarative<ISampleService>();
 
         // 扫描程序集批量注册 HTTP 声明式请求接口（推荐此方式注册）
-        options.AddHttpDeclarativeFromAssemblies([Assembly.GetEntryAssembly()]);
-        options.AddHttpDeclarativeExtractorFromAssemblies([Assembly.GetEntryAssembly()]);
+        options.AddHttpDeclarativeFromAssemblies(Assembly.GetEntryAssembly());
+        options.AddHttpDeclarativeExtractorFromAssemblies(Assembly.GetEntryAssembly());
         options.AddHttpContentConverters(() => [new ClayContentConverter()]);
     }).ConfigureOptions(options => { options.JsonSerializerOptions.Converters.Add(new ClayJsonConverter()); })
     .ConfigureHttpClientDefaults(clientBuilder =>
