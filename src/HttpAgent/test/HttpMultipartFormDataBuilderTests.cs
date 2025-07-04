@@ -299,6 +299,22 @@ public class HttpMultipartFormDataBuilderTests
         Assert.Equal(Encoding.UTF8, builder._partContents[6].ContentEncoding);
         Assert.NotNull(builder._partContents[6].RawContent);
         Assert.Equal("furion", builder._partContents[6].RawContent);
+
+        builder.AddObject(new MultipartFileModel
+        {
+            Id = Guid.Empty, File = MultipartFile.CreateFromPath(Path.Combine(AppContext.BaseDirectory, "test.txt"))
+        });
+        Assert.Equal(9, builder._partContents.Count);
+
+        Assert.Equal("Id", builder._partContents[7].Name);
+        Assert.Equal("text/plain", builder._partContents[7].ContentType);
+        Assert.NotNull(builder._partContents[7].RawContent);
+        Assert.Equal(Guid.Empty, builder._partContents[7].RawContent);
+
+        Assert.Equal("file", builder._partContents[8].Name);
+        Assert.Equal(MediaTypeNames.Text.Plain, builder._partContents[8].ContentType);
+        Assert.NotNull(builder._partContents[8].RawContent);
+        Assert.True(builder._partContents[8].RawContent is FileStream);
     }
 
     [Fact]
@@ -1075,6 +1091,19 @@ public class HttpMultipartFormDataBuilderTests
         Assert.NotNull(httpContent7);
         Assert.Equal("form-data; name=\"test\"; filename=\"text.txt\"",
             httpContent7.Headers.ContentDisposition?.ToString());
+
+        var httpContent8 =
+            HttpMultipartFormDataBuilder.BuildHttpContent(
+                new MultipartFormDataItem("test")
+                {
+                    ContentType = "application/octet-stream",
+                    RawContent = new StreamContent(stream),
+                    FileName = string.Empty
+                },
+                httpContentProcessorFactory, new CustomStringContentProcessor())!;
+        Assert.NotNull(httpContent8);
+        Assert.True(httpContent8.Headers.ContentDisposition?.ToString()
+            .StartsWith("form-data; name=\"test\"; filename=\"Unnamed_"));
     }
 
     [Fact]

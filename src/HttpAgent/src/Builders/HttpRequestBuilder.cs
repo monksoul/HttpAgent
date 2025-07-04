@@ -586,15 +586,6 @@ public sealed partial class HttpRequestBuilder
             return;
         }
 
-        ContentType = RawContent switch
-        {
-            JsonContent => MediaTypeNames.Application.Json,
-            FormUrlEncodedContent => MediaTypeNames.Application.FormUrlEncoded,
-            (byte[] or Stream or ByteArrayContent or StreamContent or ReadOnlyMemoryContent or ReadOnlyMemory<byte>)
-                and not StringContent => MediaTypeNames.Application
-                    .Octet,
-            MultipartContent => MediaTypeNames.Multipart.FormData,
-            _ => defaultContentType ?? Constants.TEXT_PLAIN_MIME_TYPE
-        };
+        ContentType = Helpers.GetContentTypeOrDefault(RawContent, defaultContentType);
     }
 }

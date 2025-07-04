@@ -274,3 +274,9 @@ public class CustomHttpDeclarativeExtractor : IHttpDeclarativeExtractor
     {
     }
 }
+
+public class MultipartFileModel
+{
+    public Guid Id { get; set; }
+    public MultipartFile? File { get; set; }
+}

@@ -131,4 +131,43 @@ public class HelpersTests
     public void ParseBaseAddress_ReturnOK() =>
         Assert.Equal("https://furion.net/",
             HttpAgent.Helpers.ParseBaseAddress(new Uri("https://furion.net/user/1")).ToString());
+
+    [Fact]
+    public void GetContentTypeOrDefault_ReturnOK()
+    {
+        Assert.Equal(MediaTypeNames.Text.Plain,
+            HttpAgent.Helpers.GetContentTypeOrDefault(null, MediaTypeNames.Text.Plain));
+        Assert.Equal(MediaTypeNames.Text.Plain,
+            HttpAgent.Helpers.GetContentTypeOrDefault(new { }, MediaTypeNames.Text.Plain));
+        Assert.Equal(MediaTypeNames.Application.Octet,
+            HttpAgent.Helpers.GetContentTypeOrDefault(Array.Empty<byte>(), MediaTypeNames.Text.Plain));
+
+        using var stream = new MemoryStream();
+        Assert.Equal(MediaTypeNames.Application.Octet,
+            HttpAgent.Helpers.GetContentTypeOrDefault(stream, MediaTypeNames.Text.Plain));
+
+        Assert.Equal(MediaTypeNames.Application.Octet,
+            HttpAgent.Helpers.GetContentTypeOrDefault(new ByteArrayContent([]), MediaTypeNames.Text.Plain));
+        Assert.Equal(MediaTypeNames.Application.Octet,
+            HttpAgent.Helpers.GetContentTypeOrDefault(new StreamContent(stream), MediaTypeNames.Text.Plain));
+        Assert.Equal(MediaTypeNames.Application.FormUrlEncoded,
+            HttpAgent.Helpers.GetContentTypeOrDefault(new FormUrlEncodedContent([]), MediaTypeNames.Text.Plain));
+        Assert.Equal(MediaTypeNames.Multipart.FormData,
+            HttpAgent.Helpers.GetContentTypeOrDefault(new MultipartContent(), MediaTypeNames.Text.Plain));
+        Assert.Equal(MediaTypeNames.Text.Plain,
+            HttpAgent.Helpers.GetContentTypeOrDefault(new StringContent(""), MediaTypeNames.Text.Plain));
+        Assert.Equal(MediaTypeNames.Application.Json,
+            HttpAgent.Helpers.GetContentTypeOrDefault(new StringContent(""), MediaTypeNames.Application.Json));
+        Assert.Equal(MediaTypeNames.Application.Json,
+            HttpAgent.Helpers.GetContentTypeOrDefault(JsonContent.Create(new { }), MediaTypeNames.Application.Json));
+        Assert.Equal(MediaTypeNames.Application.Octet,
+            HttpAgent.Helpers.GetContentTypeOrDefault(new ReadOnlyMemoryContent(Array.Empty<byte>()),
+                MediaTypeNames.Application.Octet));
+        Assert.Equal(MediaTypeNames.Application.Octet,
+            HttpAgent.Helpers.GetContentTypeOrDefault(new ReadOnlyMemory<byte>([]), MediaTypeNames.Application.Octet));
+        Assert.Equal(MediaTypeNames.Application.Octet,
+            HttpAgent.Helpers.GetContentTypeOrDefault(
+                MultipartFile.CreateFromPath(Path.Combine(AppContext.BaseDirectory, "test.txt")),
+                MediaTypeNames.Application.Octet));
+    }
 }

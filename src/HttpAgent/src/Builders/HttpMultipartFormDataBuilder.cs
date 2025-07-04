@@ -231,12 +231,27 @@ public sealed class HttpMultipartFormDataBuilder
         // 空检查
         ArgumentNullException.ThrowIfNull(rawObject);
 
-        // 将对象转换为 MultipartFormDataItem 集合再追加
-        _partContents.AddRange(rawObject.ObjectToDictionary()!.Select(u =>
-            new MultipartFormDataItem(u.Key.ToCultureString(CultureInfo.InvariantCulture)!)
+        // 将对象转换为字典集合再追加
+        var formDataItems = rawObject.ObjectToDictionary()!;
+
+        // 遍历字典集合并逐条追加
+        foreach (var (key, rawContent) in formDataItems)
+        {
+            // 检查原始请求内容是否是 MultipartFile 类型
+            if (rawContent is MultipartFile multipartFile)
             {
-                ContentType = MediaTypeNames.Text.Plain, RawContent = u.Value, ContentEncoding = encoding
-            }));
+                AddFile(multipartFile);
+            }
+            else
+            {
+                _partContents.Add(new MultipartFormDataItem(key.ToCultureString(CultureInfo.InvariantCulture)!)
+                {
+                    ContentType = Helpers.GetContentTypeOrDefault(rawContent, MediaTypeNames.Text.Plain),
+                    RawContent = rawContent,
+                    ContentEncoding = encoding
+                });
+            }
+        }
 
         return this;
     }
@@ -786,7 +801,12 @@ public sealed class HttpMultipartFormDataBuilder
                 new ContentDispositionHeaderValue(Constants.FORM_DATA_DISPOSITION_TYPE)
                 {
                     Name = multipartFormDataItem.Name.AddQuotes(),
-                    FileName = multipartFormDataItem.FileName.AddQuotes()
+                    FileName =
+                        (string.IsNullOrWhiteSpace(multipartFormDataItem.FileName) &&
+                         contentType.IsIn([MediaTypeNames.Application.Octet], StringComparer.OrdinalIgnoreCase)
+                            // 解决发送文件或二进制【未设置】文件名问题
+                            ? $"Unnamed_{DateTime.Now:yyyyMMddHHmmss}_{Guid.NewGuid().ToString("N")[..8]}"
+                            : multipartFormDataItem.FileName).AddQuotes()
                 };
         }
 

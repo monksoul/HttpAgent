@@ -618,6 +618,12 @@ public class HttpRequestBuilderTests
         httpRequestBuilder14.SetContent(new ReadOnlyMemory<byte>([]));
         httpRequestBuilder14.SetDefaultContentType(MediaTypeNames.Application.Octet);
         Assert.Equal(MediaTypeNames.Application.Octet, httpRequestBuilder14.ContentType);
+
+        var httpRequestBuilder15 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        httpRequestBuilder15.SetContent(
+            MultipartFile.CreateFromPath(Path.Combine(AppContext.BaseDirectory, "test.txt")));
+        httpRequestBuilder15.SetDefaultContentType(MediaTypeNames.Application.Octet);
+        Assert.Equal(MediaTypeNames.Application.Octet, httpRequestBuilder15.ContentType);
     }
 
     [Fact]
