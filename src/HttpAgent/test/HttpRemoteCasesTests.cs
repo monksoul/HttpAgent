@@ -491,6 +491,44 @@ public class HttpRemoteCasesTests
     }
 
     [Fact]
+    public async Task SendMultipart4_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+
+        builder.Services.AddControllers()
+            .AddApplicationPart(typeof(HttpRemoteController).Assembly);
+        builder.Services.AddHttpRemote();
+
+        await using var app = builder.Build();
+
+        app.MapControllers();
+
+        await app.StartAsync();
+
+        var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
+        var httpRemoteService = app.Services.GetRequiredService<IHttpRemoteService>();
+
+        var httpRemoteResult =
+            await httpRemoteService.SendAsync<string>(
+                HttpRequestBuilder.Post($"http://localhost:{port}/HttpRemote/SendMultipart")
+                    .SetMultipartContent(mBuilder =>
+                    {
+                        mBuilder.AddObject(new HttpRemoteMultipartModel2
+                        {
+                            Id = 1, Name = "furion", File = MultipartFile.CreateFromPath(filePath)
+                        });
+                    }));
+
+        Assert.Equal(HttpStatusCode.OK, httpRemoteResult?.StatusCode);
+        Assert.NotNull(httpRemoteResult?.Result);
+        Assert.Equal("1;furion;test.txt", httpRemoteResult.Result);
+
+        await app.StopAsync();
+    }
+
+    [Fact]
     public async Task Send_IncludeRedirect_ReturnOK()
     {
         var port = NetworkUtility.FindAvailableTcpPort();

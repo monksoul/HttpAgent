@@ -67,6 +67,23 @@ public class DeclarativeAttributeTests
     }
 
     [Fact]
+    public void MultipartObjectAttribute_ReturnOK()
+    {
+        var attributeUsage = typeof(MultipartObjectAttribute).GetCustomAttribute<AttributeUsageAttribute>();
+        Assert.NotNull(attributeUsage);
+        Assert.Equal(AttributeTargets.Parameter, attributeUsage.ValidOn);
+        Assert.False(attributeUsage.AllowMultiple);
+
+        var attribute = new MultipartObjectAttribute();
+        Assert.Null(attribute.Name);
+        Assert.Null(attribute.FileName);
+        Assert.Null(attribute.ContentType);
+        Assert.Null(attribute.ContentEncoding);
+        Assert.Equal(FileSourceType.None, attribute.AsFileFrom);
+        Assert.False(attribute.AsFormItem);
+    }
+
+    [Fact]
     public void CookieAttribute_Invalid_Parameters()
     {
         Assert.Throws<ArgumentNullException>(() => new CookieAttribute(null!));

@@ -16,3 +16,10 @@ public class HttpRemoteMultipartModel
     public string? Name { get; set; }
     public IFormFile? File { get; set; }
 }
+
+public class HttpRemoteMultipartModel2
+{
+    public int? Id { get; set; }
+    public string? Name { get; set; }
+    public MultipartFile? File { get; set; }
+}

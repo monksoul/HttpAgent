@@ -13,7 +13,7 @@ public class FileTypeMapperTests
     public void New_ReturnOK()
     {
         var fileTypeMapper = new FileTypeMapper();
-        Assert.Equal(390, fileTypeMapper.Mappings.Count);
+        Assert.Equal(391, fileTypeMapper.Mappings.Count);
 
         var fileTypeMapper2 = new FileTypeMapper(new Dictionary<string, string> { { ".jpg", "image/jpeg" } });
         Assert.Single(fileTypeMapper2.Mappings);

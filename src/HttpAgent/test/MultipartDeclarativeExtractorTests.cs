@@ -95,6 +95,28 @@ public class MultipartDeclarativeExtractorTests
         Assert.Single(httpRequestBuilder4.MultipartFormDataBuilder._partContents);
         Assert.Equal("id", httpRequestBuilder4.MultipartFormDataBuilder._partContents[0].Name);
         Assert.Equal("text/plain", httpRequestBuilder4.MultipartFormDataBuilder._partContents[0].ContentType);
+
+        var method5 =
+            typeof(IMultipartDeclarativeExtractorTest).GetMethod(nameof(IMultipartDeclarativeExtractorTest.Test5))!;
+        var context5 = new HttpDeclarativeExtractorContext(method5,
+        [
+            new HttpRemoteMultipartModel2
+            {
+                Id = 1,
+                Name = "Furion",
+                File = MultipartFile.CreateFromPath(Path.Combine(AppContext.BaseDirectory, "test.txt"), "File")
+            }
+        ]);
+        var httpRequestBuilder5 = HttpRequestBuilder.Get("http://localhost");
+        new MultipartDeclarativeExtractor().Extract(httpRequestBuilder5, context5);
+        Assert.NotNull(httpRequestBuilder5.MultipartFormDataBuilder);
+        Assert.Equal(3, httpRequestBuilder5.MultipartFormDataBuilder._partContents.Count);
+        Assert.Equal("Id", httpRequestBuilder5.MultipartFormDataBuilder._partContents[0].Name);
+        Assert.Equal("text/plain", httpRequestBuilder5.MultipartFormDataBuilder._partContents[0].ContentType);
+        Assert.Equal("Name", httpRequestBuilder5.MultipartFormDataBuilder._partContents[1].Name);
+        Assert.Equal("text/plain", httpRequestBuilder5.MultipartFormDataBuilder._partContents[1].ContentType);
+        Assert.Equal("File", httpRequestBuilder5.MultipartFormDataBuilder._partContents[2].Name);
+        Assert.Equal("text/plain", httpRequestBuilder5.MultipartFormDataBuilder._partContents[2].ContentType);
     }
 
     [Fact]
@@ -314,4 +336,7 @@ public interface IMultipartDeclarativeExtractorTest : IHttpDeclarative
 
     [Post("http://localhost:5000")]
     Task Test4([Multipart] int id, [Multipart] CancellationToken cancellationToken);
+
+    [Post("http://localhost:5000")]
+    Task Test5([MultipartObject] HttpRemoteMultipartModel2 data);
 }
