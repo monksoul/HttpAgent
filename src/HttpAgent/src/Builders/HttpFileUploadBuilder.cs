@@ -106,6 +106,11 @@ public sealed class HttpFileUploadBuilder
     internal Type? FileTransferEventHandlerType { get; private set; }
 
     /// <summary>
+    ///     <see cref="HttpRequestBuilder" /> 配置委托
+    /// </summary>
+    internal Action<HttpRequestBuilder>? RequestConfigure { get; private set; }
+
+    /// <summary>
     ///     设置内容类型（文件类型）
     /// </summary>
     /// <param name="contentType">内容类型</param>
@@ -309,19 +314,51 @@ public sealed class HttpFileUploadBuilder
         SetEventHandler(typeof(TFileTransferEventHandler));
 
     /// <summary>
+    ///     配置 <see cref="HttpRequestBuilder" /> 实例
+    /// </summary>
+    /// <remarks>支持多次调用。</remarks>
+    /// <param name="configure">自定义配置委托</param>
+    /// <returns>
+    ///     <see cref="HttpFileUploadBuilder" />
+    /// </returns>
+    public HttpFileUploadBuilder WithRequest(Action<HttpRequestBuilder> configure)
+    {
+        // 空检查
+        ArgumentNullException.ThrowIfNull(configure);
+
+        // 如果 RequestConfigure 未设置则直接赋值
+        if (RequestConfigure is null)
+        {
+            RequestConfigure = configure;
+        }
+        // 否则创建级联调用委托
+        else
+        {
+            // 复制一个新的委托避免死循环
+            var originalRequestConfigure = RequestConfigure;
+
+            RequestConfigure = httpRequestBuilder =>
+            {
+                originalRequestConfigure.Invoke(httpRequestBuilder);
+                configure.Invoke(httpRequestBuilder);
+            };
+        }
+
+        return this;
+    }
+
+    /// <summary>
     ///     构建 <see cref="HttpRequestBuilder" /> 实例
     /// </summary>
     /// <param name="httpRemoteOptions">
     ///     <see cref="HttpRemoteOptions" />
     /// </param>
     /// <param name="progressChannel">文件传输进度信息的通道</param>
-    /// <param name="configure">自定义配置委托</param>
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
     internal HttpRequestBuilder Build(HttpRemoteOptions httpRemoteOptions,
-        Channel<FileTransferProgress> progressChannel,
-        Action<HttpRequestBuilder>? configure = null)
+        Channel<FileTransferProgress> progressChannel)
     {
         // 空检查
         ArgumentNullException.ThrowIfNull(httpRemoteOptions);
@@ -342,7 +379,7 @@ public sealed class HttpFileUploadBuilder
         }
 
         // 调用自定义配置委托
-        configure?.Invoke(httpRequestBuilder);
+        RequestConfigure?.Invoke(httpRequestBuilder);
 
         return httpRequestBuilder;
     }

@@ -53,6 +53,11 @@ public sealed class HttpStressTestHarnessBuilder
     public int NumberOfRounds { get; private set; } = 1;
 
     /// <summary>
+    ///     <see cref="HttpRequestBuilder" /> 配置委托
+    /// </summary>
+    internal Action<HttpRequestBuilder>? RequestConfigure { get; private set; }
+
+    /// <summary>
     ///     设置并发请求数量
     /// </summary>
     /// <param name="numberOfRequests">并发请求数量</param>
@@ -118,16 +123,49 @@ public sealed class HttpStressTestHarnessBuilder
     }
 
     /// <summary>
+    ///     配置 <see cref="HttpRequestBuilder" /> 实例
+    /// </summary>
+    /// <remarks>支持多次调用。</remarks>
+    /// <param name="configure">自定义配置委托</param>
+    /// <returns>
+    ///     <see cref="HttpStressTestHarnessBuilder" />
+    /// </returns>
+    public HttpStressTestHarnessBuilder WithRequest(Action<HttpRequestBuilder> configure)
+    {
+        // 空检查
+        ArgumentNullException.ThrowIfNull(configure);
+
+        // 如果 RequestConfigure 未设置则直接赋值
+        if (RequestConfigure is null)
+        {
+            RequestConfigure = configure;
+        }
+        // 否则创建级联调用委托
+        else
+        {
+            // 复制一个新的委托避免死循环
+            var originalRequestConfigure = RequestConfigure;
+
+            RequestConfigure = httpRequestBuilder =>
+            {
+                originalRequestConfigure.Invoke(httpRequestBuilder);
+                configure.Invoke(httpRequestBuilder);
+            };
+        }
+
+        return this;
+    }
+
+    /// <summary>
     ///     构建 <see cref="HttpRequestBuilder" /> 实例
     /// </summary>
     /// <param name="httpRemoteOptions">
     ///     <see cref="HttpRemoteOptions" />
     /// </param>
-    /// <param name="configure">自定义配置委托</param>
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
-    internal HttpRequestBuilder Build(HttpRemoteOptions httpRemoteOptions, Action<HttpRequestBuilder>? configure = null)
+    internal HttpRequestBuilder Build(HttpRemoteOptions httpRemoteOptions)
     {
         // 空检查
         ArgumentNullException.ThrowIfNull(httpRemoteOptions);
@@ -139,7 +177,7 @@ public sealed class HttpStressTestHarnessBuilder
             .PerformanceOptimization().UseHttpClientPool();
 
         // 调用自定义配置委托
-        configure?.Invoke(httpRequestBuilder);
+        RequestConfigure?.Invoke(httpRequestBuilder);
 
         return httpRequestBuilder;
     }

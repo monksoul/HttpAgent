@@ -44,6 +44,7 @@ public class HttpFileUploadBuilderTests
         Assert.Null(builder2.AllowedFileExtensions);
         Assert.Null(builder2.MaxFileSizeInBytes);
         Assert.Null(builder2.FileName);
+        Assert.Null(builder2.RequestConfigure);
 
         var builder3 =
             new HttpFileUploadBuilder(HttpMethod.Post, null, @"C:\Workspaces\index.html", "file", "myindex.html");
@@ -276,6 +277,24 @@ public class HttpFileUploadBuilderTests
     }
 
     [Fact]
+    public void WithRequest_Invalid_Parameters()
+    {
+        var builder = new HttpFileUploadBuilder(HttpMethod.Post, new Uri("http://localhost"),
+            @"C:\Workspaces\index.html", "file");
+        Assert.Throws<ArgumentNullException>(() => builder.WithRequest(null!));
+    }
+
+    [Fact]
+    public void WithRequest_ReturnOK()
+    {
+        var builder = new HttpFileUploadBuilder(HttpMethod.Post, new Uri("http://localhost"),
+            @"C:\Workspaces\index.html", "file");
+        Assert.Null(builder.RequestConfigure);
+        builder.WithRequest(requestBuilder => requestBuilder.WithHeader("framework", "Furion"));
+        Assert.NotNull(builder.RequestConfigure);
+    }
+
+    [Fact]
     public void EnsureLegalData_Invalid_Parameters()
     {
         Assert.Throws<ArgumentNullException>(() => HttpFileUploadBuilder.EnsureLegalData(null!, null, null));
@@ -302,7 +321,6 @@ public class HttpFileUploadBuilderTests
         HttpFileUploadBuilder.EnsureLegalData(filePath, null, 100);
         HttpFileUploadBuilder.EnsureLegalData(filePath, [".txt"], 100);
     }
-
 
     [Fact]
     public void Build_Invalid_Parameters()
@@ -346,12 +364,8 @@ public class HttpFileUploadBuilderTests
         Assert.Equal("text/plain", item.ContentType);
         Assert.Equal("file", item.Name);
 
-        var httpRequestBuilder2 = httpFileUploadBuilder.SetEventHandler<CustomFileTransferEventHandler2>().Build(
-            httpRemoteOptions, progressChannel,
-            builder =>
-            {
-                builder.SetTimeout(100);
-            });
+        var httpRequestBuilder2 = httpFileUploadBuilder.SetEventHandler<CustomFileTransferEventHandler2>()
+            .WithRequest(b => b.SetTimeout(100)).Build(httpRemoteOptions, progressChannel);
 
         Assert.Equal(TimeSpan.FromMilliseconds(100), httpRequestBuilder2.Timeout);
         Assert.NotNull(httpRequestBuilder2.RequestEventHandlerType);

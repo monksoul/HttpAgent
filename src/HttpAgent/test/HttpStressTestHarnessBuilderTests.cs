@@ -21,6 +21,7 @@ public class HttpStressTestHarnessBuilderTests
         Assert.Equal(100, builder.NumberOfRequests);
         Assert.Equal(100, builder.MaxDegreeOfParallelism);
         Assert.Equal(1, builder.NumberOfRounds);
+        Assert.Null(builder.RequestConfigure);
     }
 
     [Fact]
@@ -83,6 +84,22 @@ public class HttpStressTestHarnessBuilderTests
     }
 
     [Fact]
+    public void WithRequest_Invalid_Parameters()
+    {
+        var builder = new HttpStressTestHarnessBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        Assert.Throws<ArgumentNullException>(() => builder.WithRequest(null!));
+    }
+
+    [Fact]
+    public void WithRequest_ReturnOK()
+    {
+        var builder = new HttpStressTestHarnessBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        Assert.Null(builder.RequestConfigure);
+        builder.WithRequest(requestBuilder => requestBuilder.WithHeader("framework", "Furion"));
+        Assert.NotNull(builder.RequestConfigure);
+    }
+
+    [Fact]
     public void Build_Invalid_Parameters() =>
         Assert.Throws<ArgumentNullException>(() =>
             new HttpStressTestHarnessBuilder(HttpMethod.Post, new Uri("http://localhost")).Build(null!));
@@ -109,7 +126,7 @@ public class HttpStressTestHarnessBuilderTests
         Assert.True(httpRequestBuilder.PerformanceOptimizationEnabled);
 
         var builder2 = new HttpStressTestHarnessBuilder(HttpMethod.Post, new Uri("http://localhost"));
-        var httpRequestBuilder2 = builder2.Build(httpRemoteOptions, options => options.EnsureSuccessStatusCode());
+        var httpRequestBuilder2 = builder2.WithRequest(b => b.EnsureSuccessStatusCode()).Build(httpRemoteOptions);
         Assert.True(httpRequestBuilder2.EnsureSuccessStatusCodeEnabled);
     }
 }

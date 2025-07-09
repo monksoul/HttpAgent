@@ -80,6 +80,11 @@
                 实现 <see cref="T:HttpAgent.IHttpFileTransferEventHandler" /> 的类型
             </summary>
         </member>
+        <member name="P:HttpAgent.HttpFileDownloadBuilder.RequestConfigure">
+            <summary>
+                <see cref="T:HttpAgent.HttpRequestBuilder" /> 配置委托
+            </summary>
+        </member>
         <member name="M:HttpAgent.HttpFileDownloadBuilder.SetBufferSize(System.Int32)">
             <summary>
                 设置用于传输操作的缓冲区大小
@@ -189,14 +194,23 @@
                 <see cref="T:HttpAgent.HttpFileDownloadBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpFileDownloadBuilder.Build(HttpAgent.HttpRemoteOptions,System.Action{HttpAgent.HttpRequestBuilder})">
+        <member name="M:HttpAgent.HttpFileDownloadBuilder.WithRequest(System.Action{HttpAgent.HttpRequestBuilder})">
+            <summary>
+                配置 <see cref="T:HttpAgent.HttpRequestBuilder" /> 实例
+            </summary>
+            <remarks>支持多次调用。</remarks>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpFileDownloadBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpFileDownloadBuilder.Build(HttpAgent.HttpRemoteOptions)">
             <summary>
                 构建 <see cref="T:HttpAgent.HttpRequestBuilder" /> 实例
             </summary>
             <param name="httpRemoteOptions">
                 <see cref="T:HttpAgent.HttpRemoteOptions" />
             </param>
-            <param name="configure">自定义配置委托</param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
@@ -286,6 +300,11 @@
         <member name="P:HttpAgent.HttpFileUploadBuilder.FileTransferEventHandlerType">
             <summary>
                 实现 <see cref="T:HttpAgent.IHttpFileTransferEventHandler" /> 的类型
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpFileUploadBuilder.RequestConfigure">
+            <summary>
+                <see cref="T:HttpAgent.HttpRequestBuilder" /> 配置委托
             </summary>
         </member>
         <member name="M:HttpAgent.HttpFileUploadBuilder.SetContentType(System.String)">
@@ -391,7 +410,17 @@
                 <see cref="T:HttpAgent.HttpFileUploadBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpFileUploadBuilder.Build(HttpAgent.HttpRemoteOptions,System.Threading.Channels.Channel{HttpAgent.FileTransferProgress},System.Action{HttpAgent.HttpRequestBuilder})">
+        <member name="M:HttpAgent.HttpFileUploadBuilder.WithRequest(System.Action{HttpAgent.HttpRequestBuilder})">
+            <summary>
+                配置 <see cref="T:HttpAgent.HttpRequestBuilder" /> 实例
+            </summary>
+            <remarks>支持多次调用。</remarks>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpFileUploadBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpFileUploadBuilder.Build(HttpAgent.HttpRemoteOptions,System.Threading.Channels.Channel{HttpAgent.FileTransferProgress})">
             <summary>
                 构建 <see cref="T:HttpAgent.HttpRequestBuilder" /> 实例
             </summary>
@@ -399,7 +428,6 @@
                 <see cref="T:HttpAgent.HttpRemoteOptions" />
             </param>
             <param name="progressChannel">文件传输进度信息的通道</param>
-            <param name="configure">自定义配置委托</param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
@@ -471,6 +499,11 @@
         <member name="P:HttpAgent.HttpLongPollingBuilder.LongPollingEventHandlerType">
             <summary>
                 实现 <see cref="T:HttpAgent.IHttpLongPollingEventHandler" /> 的类型
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpLongPollingBuilder.RequestConfigure">
+            <summary>
+                <see cref="T:HttpAgent.HttpRequestBuilder" /> 配置委托
             </summary>
         </member>
         <member name="M:HttpAgent.HttpLongPollingBuilder.SetRetryInterval(System.TimeSpan)">
@@ -559,14 +592,23 @@
                 <see cref="T:HttpAgent.HttpLongPollingBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpLongPollingBuilder.Build(HttpAgent.HttpRemoteOptions,System.Action{HttpAgent.HttpRequestBuilder})">
+        <member name="M:HttpAgent.HttpLongPollingBuilder.WithRequest(System.Action{HttpAgent.HttpRequestBuilder})">
+            <summary>
+                配置 <see cref="T:HttpAgent.HttpRequestBuilder" /> 实例
+            </summary>
+            <remarks>支持多次调用。</remarks>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpLongPollingBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpLongPollingBuilder.Build(HttpAgent.HttpRemoteOptions)">
             <summary>
                 构建 <see cref="T:HttpAgent.HttpRequestBuilder" /> 实例
             </summary>
             <param name="httpRemoteOptions">
                 <see cref="T:HttpAgent.HttpRemoteOptions" />
             </param>
-            <param name="configure">自定义配置委托</param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
@@ -2915,6 +2957,11 @@
                 实现 <see cref="T:HttpAgent.IHttpServerSentEventsEventHandler" /> 的类型
             </summary>
         </member>
+        <member name="P:HttpAgent.HttpServerSentEventsBuilder.RequestConfigure">
+            <summary>
+                <see cref="T:HttpAgent.HttpRequestBuilder" /> 配置委托
+            </summary>
+        </member>
         <member name="M:HttpAgent.HttpServerSentEventsBuilder.SetDefaultRetryInterval(System.Int32)">
             <summary>
                 设置默认重新连接的间隔时间
@@ -2983,14 +3030,23 @@
                 <see cref="T:HttpAgent.HttpServerSentEventsBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpServerSentEventsBuilder.Build(HttpAgent.HttpRemoteOptions,System.Action{HttpAgent.HttpRequestBuilder})">
+        <member name="M:HttpAgent.HttpServerSentEventsBuilder.WithRequest(System.Action{HttpAgent.HttpRequestBuilder})">
+            <summary>
+                配置 <see cref="T:HttpAgent.HttpRequestBuilder" /> 实例
+            </summary>
+            <remarks>支持多次调用。</remarks>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpServerSentEventsBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpServerSentEventsBuilder.Build(HttpAgent.HttpRemoteOptions)">
             <summary>
                 构建 <see cref="T:HttpAgent.HttpRequestBuilder" /> 实例
             </summary>
             <param name="httpRemoteOptions">
                 <see cref="T:HttpAgent.HttpRemoteOptions" />
             </param>
-            <param name="configure">自定义配置委托</param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
@@ -3036,6 +3092,11 @@
             </summary>
             <remarks>默认值为：1。</remarks>
         </member>
+        <member name="P:HttpAgent.HttpStressTestHarnessBuilder.RequestConfigure">
+            <summary>
+                <see cref="T:HttpAgent.HttpRequestBuilder" /> 配置委托
+            </summary>
+        </member>
         <member name="M:HttpAgent.HttpStressTestHarnessBuilder.SetNumberOfRequests(System.Int32)">
             <summary>
                 设置并发请求数量
@@ -3066,14 +3127,23 @@
             </returns>
             <exception cref="T:System.ArgumentException"></exception>
         </member>
-        <member name="M:HttpAgent.HttpStressTestHarnessBuilder.Build(HttpAgent.HttpRemoteOptions,System.Action{HttpAgent.HttpRequestBuilder})">
+        <member name="M:HttpAgent.HttpStressTestHarnessBuilder.WithRequest(System.Action{HttpAgent.HttpRequestBuilder})">
+            <summary>
+                配置 <see cref="T:HttpAgent.HttpRequestBuilder" /> 实例
+            </summary>
+            <remarks>支持多次调用。</remarks>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpStressTestHarnessBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpStressTestHarnessBuilder.Build(HttpAgent.HttpRemoteOptions)">
             <summary>
                 构建 <see cref="T:HttpAgent.HttpRequestBuilder" /> 实例
             </summary>
             <param name="httpRemoteOptions">
                 <see cref="T:HttpAgent.HttpRemoteOptions" />
             </param>
-            <param name="configure">自定义配置委托</param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
@@ -6571,7 +6641,7 @@
                 文件传输进度信息的通道
             </summary>
         </member>
-        <member name="M:HttpAgent.FileDownloadManager.#ctor(HttpAgent.IHttpRemoteService,HttpAgent.HttpFileDownloadBuilder,System.Action{HttpAgent.HttpRequestBuilder})">
+        <member name="M:HttpAgent.FileDownloadManager.#ctor(HttpAgent.IHttpRemoteService,HttpAgent.HttpFileDownloadBuilder)">
             <summary>
                 <inheritdoc cref="T:HttpAgent.FileDownloadManager" />
             </summary>
@@ -6581,7 +6651,6 @@
             <param name="httpFileDownloadBuilder">
                 <see cref="T:HttpAgent.HttpFileDownloadBuilder" />
             </param>
-            <param name="configure">自定义配置委托</param>
         </member>
         <member name="P:HttpAgent.FileDownloadManager.RequestBuilder">
             <summary>
@@ -6702,7 +6771,7 @@
                 文件传输进度信息的通道
             </summary>
         </member>
-        <member name="M:HttpAgent.FileUploadManager.#ctor(HttpAgent.IHttpRemoteService,HttpAgent.HttpFileUploadBuilder,System.Action{HttpAgent.HttpRequestBuilder})">
+        <member name="M:HttpAgent.FileUploadManager.#ctor(HttpAgent.IHttpRemoteService,HttpAgent.HttpFileUploadBuilder)">
             <summary>
                 <inheritdoc cref="T:HttpAgent.FileUploadManager" />
             </summary>
@@ -6712,7 +6781,6 @@
             <param name="httpFileUploadBuilder">
                 <see cref="T:HttpAgent.HttpFileUploadBuilder" />
             </param>
-            <param name="configure">自定义配置委托</param>
         </member>
         <member name="P:HttpAgent.FileUploadManager.RequestBuilder">
             <summary>
@@ -6796,7 +6864,7 @@
         <member name="F:HttpAgent.LongPollingManager._httpRemoteService">
             <inheritdoc cref="T:HttpAgent.IHttpRemoteService" />
         </member>
-        <member name="M:HttpAgent.LongPollingManager.#ctor(HttpAgent.IHttpRemoteService,HttpAgent.HttpLongPollingBuilder,System.Action{HttpAgent.HttpRequestBuilder})">
+        <member name="M:HttpAgent.LongPollingManager.#ctor(HttpAgent.IHttpRemoteService,HttpAgent.HttpLongPollingBuilder)">
             <summary>
                 <inheritdoc cref="T:HttpAgent.LongPollingManager" />
             </summary>
@@ -6806,7 +6874,6 @@
             <param name="httpLongPollingBuilder">
                 <see cref="T:HttpAgent.HttpLongPollingBuilder" />
             </param>
-            <param name="configure">自定义配置委托</param>
         </member>
         <member name="P:HttpAgent.LongPollingManager.CurrentRetries">
             <summary>
@@ -6933,7 +7000,7 @@
         <member name="F:HttpAgent.ServerSentEventsManager._httpServerSentEventsBuilder">
             <inheritdoc cref="T:HttpAgent.HttpServerSentEventsBuilder" />
         </member>
-        <member name="M:HttpAgent.ServerSentEventsManager.#ctor(HttpAgent.IHttpRemoteService,HttpAgent.HttpServerSentEventsBuilder,System.Action{HttpAgent.HttpRequestBuilder})">
+        <member name="M:HttpAgent.ServerSentEventsManager.#ctor(HttpAgent.IHttpRemoteService,HttpAgent.HttpServerSentEventsBuilder)">
             <summary>
                 <inheritdoc cref="T:HttpAgent.ServerSentEventsManager" />
             </summary>
@@ -6943,7 +7010,6 @@
             <param name="httpServerSentEventsBuilder">
                 <see cref="T:HttpAgent.HttpServerSentEventsBuilder" />
             </param>
-            <param name="configure">自定义配置委托</param>
         </member>
         <member name="P:HttpAgent.ServerSentEventsManager.CurrentRetryInterval">
             <summary>
@@ -7066,7 +7132,7 @@
         <member name="F:HttpAgent.StressTestHarnessManager._httpStressTestHarnessBuilder">
             <inheritdoc cref="T:HttpAgent.HttpStressTestHarnessBuilder" />
         </member>
-        <member name="M:HttpAgent.StressTestHarnessManager.#ctor(HttpAgent.IHttpRemoteService,HttpAgent.HttpStressTestHarnessBuilder,System.Action{HttpAgent.HttpRequestBuilder})">
+        <member name="M:HttpAgent.StressTestHarnessManager.#ctor(HttpAgent.IHttpRemoteService,HttpAgent.HttpStressTestHarnessBuilder)">
             <summary>
                 <inheritdoc cref="T:HttpAgent.StressTestHarnessManager" />
             </summary>
@@ -7076,7 +7142,6 @@
             <param name="httpStressTestHarnessBuilder">
                 <see cref="T:HttpAgent.HttpStressTestHarnessBuilder" />
             </param>
-            <param name="configure">自定义配置委托</param>
         </member>
         <member name="P:HttpAgent.StressTestHarnessManager.RequestBuilder">
             <summary>
@@ -8822,64 +8887,64 @@
             </code>
             </remarks>
         </member>
-        <member name="M:HttpAgent.HttpRemoteService.DownloadFile(System.String,System.String,System.Func{HttpAgent.FileTransferProgress,System.Threading.Tasks.Task},HttpAgent.FileExistsBehavior,System.Action{HttpAgent.HttpFileDownloadBuilder},System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.HttpRemoteService.DownloadFile(System.String,System.String,System.Func{HttpAgent.FileTransferProgress,System.Threading.Tasks.Task},HttpAgent.FileExistsBehavior,System.Action{HttpAgent.HttpFileDownloadBuilder},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpRemoteService.DownloadFileAsync(System.String,System.String,System.Func{HttpAgent.FileTransferProgress,System.Threading.Tasks.Task},HttpAgent.FileExistsBehavior,System.Action{HttpAgent.HttpFileDownloadBuilder},System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.HttpRemoteService.DownloadFileAsync(System.String,System.String,System.Func{HttpAgent.FileTransferProgress,System.Threading.Tasks.Task},HttpAgent.FileExistsBehavior,System.Action{HttpAgent.HttpFileDownloadBuilder},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpRemoteService.Send(HttpAgent.HttpFileDownloadBuilder,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.HttpRemoteService.Send(HttpAgent.HttpFileDownloadBuilder,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpRemoteService.SendAsync(HttpAgent.HttpFileDownloadBuilder,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.HttpRemoteService.SendAsync(HttpAgent.HttpFileDownloadBuilder,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpRemoteService.UploadFile(System.String,System.String,System.String,System.Func{HttpAgent.FileTransferProgress,System.Threading.Tasks.Task},System.String,System.Action{HttpAgent.HttpFileUploadBuilder},System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.HttpRemoteService.UploadFile(System.String,System.String,System.String,System.Func{HttpAgent.FileTransferProgress,System.Threading.Tasks.Task},System.String,System.Action{HttpAgent.HttpFileUploadBuilder},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpRemoteService.UploadFileAsync(System.String,System.String,System.String,System.Func{HttpAgent.FileTransferProgress,System.Threading.Tasks.Task},System.String,System.Action{HttpAgent.HttpFileUploadBuilder},System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.HttpRemoteService.UploadFileAsync(System.String,System.String,System.String,System.Func{HttpAgent.FileTransferProgress,System.Threading.Tasks.Task},System.String,System.Action{HttpAgent.HttpFileUploadBuilder},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpRemoteService.Send(HttpAgent.HttpFileUploadBuilder,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.HttpRemoteService.Send(HttpAgent.HttpFileUploadBuilder,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpRemoteService.SendAsync(HttpAgent.HttpFileUploadBuilder,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.HttpRemoteService.SendAsync(HttpAgent.HttpFileUploadBuilder,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpRemoteService.ServerSentEvents(System.String,System.Func{HttpAgent.ServerSentEventsData,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Action{HttpAgent.HttpServerSentEventsBuilder},System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.HttpRemoteService.ServerSentEvents(System.String,System.Func{HttpAgent.ServerSentEventsData,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Action{HttpAgent.HttpServerSentEventsBuilder},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpRemoteService.ServerSentEventsAsync(System.String,System.Func{HttpAgent.ServerSentEventsData,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Action{HttpAgent.HttpServerSentEventsBuilder},System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.HttpRemoteService.ServerSentEventsAsync(System.String,System.Func{HttpAgent.ServerSentEventsData,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Action{HttpAgent.HttpServerSentEventsBuilder},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpRemoteService.Send(HttpAgent.HttpServerSentEventsBuilder,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.HttpRemoteService.Send(HttpAgent.HttpServerSentEventsBuilder,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpRemoteService.SendAsync(HttpAgent.HttpServerSentEventsBuilder,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.HttpRemoteService.SendAsync(HttpAgent.HttpServerSentEventsBuilder,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpRemoteService.StressTestHarness(System.String,System.Int32,System.Action{HttpAgent.HttpStressTestHarnessBuilder},System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.HttpRemoteService.StressTestHarness(System.String,System.Int32,System.Action{HttpAgent.HttpStressTestHarnessBuilder},System.Net.Http.HttpCompletionOption,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpRemoteService.StressTestHarnessAsync(System.String,System.Int32,System.Action{HttpAgent.HttpStressTestHarnessBuilder},System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.HttpRemoteService.StressTestHarnessAsync(System.String,System.Int32,System.Action{HttpAgent.HttpStressTestHarnessBuilder},System.Net.Http.HttpCompletionOption,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpRemoteService.Send(HttpAgent.HttpStressTestHarnessBuilder,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.HttpRemoteService.Send(HttpAgent.HttpStressTestHarnessBuilder,System.Net.Http.HttpCompletionOption,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpRemoteService.SendAsync(HttpAgent.HttpStressTestHarnessBuilder,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.HttpRemoteService.SendAsync(HttpAgent.HttpStressTestHarnessBuilder,System.Net.Http.HttpCompletionOption,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpRemoteService.LongPolling(System.String,System.Func{System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Action{HttpAgent.HttpLongPollingBuilder},System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.HttpRemoteService.LongPolling(System.String,System.Func{System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Action{HttpAgent.HttpLongPollingBuilder},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpRemoteService.LongPollingAsync(System.String,System.Func{System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Action{HttpAgent.HttpLongPollingBuilder},System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.HttpRemoteService.LongPollingAsync(System.String,System.Func{System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Action{HttpAgent.HttpLongPollingBuilder},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpRemoteService.Send(HttpAgent.HttpLongPollingBuilder,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.HttpRemoteService.Send(HttpAgent.HttpLongPollingBuilder,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpRemoteService.SendAsync(HttpAgent.HttpLongPollingBuilder,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.HttpRemoteService.SendAsync(HttpAgent.HttpLongPollingBuilder,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="M:HttpAgent.HttpRemoteService.Declarative(System.Reflection.MethodInfo,System.Object[])">
@@ -9932,7 +9997,7 @@
                 <see cref="T:HttpAgent.HttpRemoteResult`1" />
             </returns>
         </member>
-        <member name="M:HttpAgent.IHttpRemoteService.DownloadFile(System.String,System.String,System.Func{HttpAgent.FileTransferProgress,System.Threading.Tasks.Task},HttpAgent.FileExistsBehavior,System.Action{HttpAgent.HttpFileDownloadBuilder},System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.IHttpRemoteService.DownloadFile(System.String,System.String,System.Func{HttpAgent.FileTransferProgress,System.Threading.Tasks.Task},HttpAgent.FileExistsBehavior,System.Action{HttpAgent.HttpFileDownloadBuilder},System.Threading.CancellationToken)">
             <summary>
                 下载文件
             </summary>
@@ -9943,12 +10008,11 @@
                 <see cref="T:HttpAgent.FileExistsBehavior" />
             </param>
             <param name="configure">自定义配置委托</param>
-            <param name="requestConfigure">自定义配置委托</param>
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
         </member>
-        <member name="M:HttpAgent.IHttpRemoteService.DownloadFileAsync(System.String,System.String,System.Func{HttpAgent.FileTransferProgress,System.Threading.Tasks.Task},HttpAgent.FileExistsBehavior,System.Action{HttpAgent.HttpFileDownloadBuilder},System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.IHttpRemoteService.DownloadFileAsync(System.String,System.String,System.Func{HttpAgent.FileTransferProgress,System.Threading.Tasks.Task},HttpAgent.FileExistsBehavior,System.Action{HttpAgent.HttpFileDownloadBuilder},System.Threading.CancellationToken)">
             <summary>
                 下载文件
             </summary>
@@ -9959,7 +10023,6 @@
                 <see cref="T:HttpAgent.FileExistsBehavior" />
             </param>
             <param name="configure">自定义配置委托</param>
-            <param name="requestConfigure">自定义配置委托</param>
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
@@ -9967,26 +10030,24 @@
                 <see cref="T:System.Threading.Tasks.Task" />
             </returns>
         </member>
-        <member name="M:HttpAgent.IHttpRemoteService.Send(HttpAgent.HttpFileDownloadBuilder,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.IHttpRemoteService.Send(HttpAgent.HttpFileDownloadBuilder,System.Threading.CancellationToken)">
             <summary>
                 下载文件
             </summary>
             <param name="httpFileDownloadBuilder">
                 <see cref="T:HttpAgent.HttpFileDownloadBuilder" />
             </param>
-            <param name="configure">自定义配置委托</param>
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
         </member>
-        <member name="M:HttpAgent.IHttpRemoteService.SendAsync(HttpAgent.HttpFileDownloadBuilder,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.IHttpRemoteService.SendAsync(HttpAgent.HttpFileDownloadBuilder,System.Threading.CancellationToken)">
             <summary>
                 下载文件
             </summary>
             <param name="httpFileDownloadBuilder">
                 <see cref="T:HttpAgent.HttpFileDownloadBuilder" />
             </param>
-            <param name="configure">自定义配置委托</param>
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
@@ -9994,7 +10055,7 @@
                 <see cref="T:System.Threading.Tasks.Task" />
             </returns>
         </member>
-        <member name="M:HttpAgent.IHttpRemoteService.UploadFile(System.String,System.String,System.String,System.Func{HttpAgent.FileTransferProgress,System.Threading.Tasks.Task},System.String,System.Action{HttpAgent.HttpFileUploadBuilder},System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.IHttpRemoteService.UploadFile(System.String,System.String,System.String,System.Func{HttpAgent.FileTransferProgress,System.Threading.Tasks.Task},System.String,System.Action{HttpAgent.HttpFileUploadBuilder},System.Threading.CancellationToken)">
             <summary>
                 上传文件
             </summary>
@@ -10004,7 +10065,6 @@
             <param name="onProgressChanged">用于传输进度发生变化时执行的委托</param>
             <param name="fileName">文件的名称</param>
             <param name="configure">自定义配置委托</param>
-            <param name="requestConfigure">自定义配置委托</param>
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
@@ -10012,7 +10072,7 @@
                 <see cref="T:System.Net.Http.HttpResponseMessage" />
             </returns>
         </member>
-        <member name="M:HttpAgent.IHttpRemoteService.UploadFileAsync(System.String,System.String,System.String,System.Func{HttpAgent.FileTransferProgress,System.Threading.Tasks.Task},System.String,System.Action{HttpAgent.HttpFileUploadBuilder},System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.IHttpRemoteService.UploadFileAsync(System.String,System.String,System.String,System.Func{HttpAgent.FileTransferProgress,System.Threading.Tasks.Task},System.String,System.Action{HttpAgent.HttpFileUploadBuilder},System.Threading.CancellationToken)">
             <summary>
                 上传文件
             </summary>
@@ -10022,7 +10082,6 @@
             <param name="onProgressChanged">用于传输进度发生变化时执行的委托</param>
             <param name="fileName">文件的名称</param>
             <param name="configure">自定义配置委托</param>
-            <param name="requestConfigure">自定义配置委托</param>
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
@@ -10030,14 +10089,13 @@
                 <see cref="T:System.Threading.Tasks.Task`1" />
             </returns>
         </member>
-        <member name="M:HttpAgent.IHttpRemoteService.Send(HttpAgent.HttpFileUploadBuilder,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.IHttpRemoteService.Send(HttpAgent.HttpFileUploadBuilder,System.Threading.CancellationToken)">
             <summary>
                 上传文件
             </summary>
             <param name="httpFileUploadBuilder">
                 <see cref="T:HttpAgent.HttpFileUploadBuilder" />
             </param>
-            <param name="configure">自定义配置委托</param>
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
@@ -10045,14 +10103,13 @@
                 <see cref="T:System.Net.Http.HttpResponseMessage" />
             </returns>
         </member>
-        <member name="M:HttpAgent.IHttpRemoteService.SendAsync(HttpAgent.HttpFileUploadBuilder,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.IHttpRemoteService.SendAsync(HttpAgent.HttpFileUploadBuilder,System.Threading.CancellationToken)">
             <summary>
                 上传文件
             </summary>
             <param name="httpFileUploadBuilder">
                 <see cref="T:HttpAgent.HttpFileUploadBuilder" />
             </param>
-            <param name="configure">自定义配置委托</param>
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
@@ -10060,52 +10117,23 @@
                 <see cref="T:System.Threading.Tasks.Task`1" />
             </returns>
         </member>
-        <member name="M:HttpAgent.IHttpRemoteService.ServerSentEvents(System.String,System.Func{HttpAgent.ServerSentEventsData,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Action{HttpAgent.HttpServerSentEventsBuilder},System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.IHttpRemoteService.ServerSentEvents(System.String,System.Func{HttpAgent.ServerSentEventsData,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Action{HttpAgent.HttpServerSentEventsBuilder},System.Threading.CancellationToken)">
             <summary>
                 发送 Server-Sent Events 请求
             </summary>
             <param name="requestUri">请求地址</param>
             <param name="onMessage">用于在从事件源接收到数据时的操作</param>
             <param name="configure">自定义配置委托</param>
-            <param name="requestConfigure">自定义配置委托</param>
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
         </member>
-        <member name="M:HttpAgent.IHttpRemoteService.ServerSentEventsAsync(System.String,System.Func{HttpAgent.ServerSentEventsData,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Action{HttpAgent.HttpServerSentEventsBuilder},System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.IHttpRemoteService.ServerSentEventsAsync(System.String,System.Func{HttpAgent.ServerSentEventsData,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Action{HttpAgent.HttpServerSentEventsBuilder},System.Threading.CancellationToken)">
             <summary>
                 发送 Server-Sent Events 请求
             </summary>
             <param name="requestUri">请求地址</param>
             <param name="onMessage">用于在从事件源接收到数据时的操作</param>
-            <param name="configure">自定义配置委托</param>
-            <param name="requestConfigure">自定义配置委托</param>
-            <param name="cancellationToken">
-                <see cref="T:System.Threading.CancellationToken" />
-            </param>
-            <returns>
-                <see cref="T:System.Threading.Tasks.Task" />
-            </returns>
-        </member>
-        <member name="M:HttpAgent.IHttpRemoteService.Send(HttpAgent.HttpServerSentEventsBuilder,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
-            <summary>
-                发送 Server-Sent Events 请求
-            </summary>
-            <param name="httpServerSentEventsBuilder">
-                <see cref="T:HttpAgent.HttpServerSentEventsBuilder" />
-            </param>
-            <param name="configure">自定义配置委托</param>
-            <param name="cancellationToken">
-                <see cref="T:System.Threading.CancellationToken" />
-            </param>
-        </member>
-        <member name="M:HttpAgent.IHttpRemoteService.SendAsync(HttpAgent.HttpServerSentEventsBuilder,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
-            <summary>
-                发送 Server-Sent Events 请求
-            </summary>
-            <param name="httpServerSentEventsBuilder">
-                <see cref="T:HttpAgent.HttpServerSentEventsBuilder" />
-            </param>
             <param name="configure">自定义配置委托</param>
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
@@ -10114,49 +10142,37 @@
                 <see cref="T:System.Threading.Tasks.Task" />
             </returns>
         </member>
-        <member name="M:HttpAgent.IHttpRemoteService.StressTestHarness(System.String,System.Int32,System.Action{HttpAgent.HttpStressTestHarnessBuilder},System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.IHttpRemoteService.Send(HttpAgent.HttpServerSentEventsBuilder,System.Threading.CancellationToken)">
             <summary>
-                压力测试
+                发送 Server-Sent Events 请求
             </summary>
-            <param name="requestUri">请求地址</param>
-            <param name="numberOfRequests">并发请求数量，默认值为：100。</param>
-            <param name="configure">自定义配置委托</param>
-            <param name="requestConfigure">自定义配置委托</param>
-            <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption" />
+            <param name="httpServerSentEventsBuilder">
+                <see cref="T:HttpAgent.HttpServerSentEventsBuilder" />
+            </param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+        </member>
+        <member name="M:HttpAgent.IHttpRemoteService.SendAsync(HttpAgent.HttpServerSentEventsBuilder,System.Threading.CancellationToken)">
+            <summary>
+                发送 Server-Sent Events 请求
+            </summary>
+            <param name="httpServerSentEventsBuilder">
+                <see cref="T:HttpAgent.HttpServerSentEventsBuilder" />
             </param>
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
             <returns>
-                <see cref="T:HttpAgent.StressTestHarnessResult" />
+                <see cref="T:System.Threading.Tasks.Task" />
             </returns>
         </member>
-        <member name="M:HttpAgent.IHttpRemoteService.StressTestHarnessAsync(System.String,System.Int32,System.Action{HttpAgent.HttpStressTestHarnessBuilder},System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.IHttpRemoteService.StressTestHarness(System.String,System.Int32,System.Action{HttpAgent.HttpStressTestHarnessBuilder},System.Net.Http.HttpCompletionOption,System.Threading.CancellationToken)">
             <summary>
                 压力测试
             </summary>
             <param name="requestUri">请求地址</param>
             <param name="numberOfRequests">并发请求数量，默认值为：100。</param>
-            <param name="configure">自定义配置委托</param>
-            <param name="requestConfigure">自定义配置委托</param>
-            <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption" />
-            </param>
-            <param name="cancellationToken">
-                <see cref="T:System.Threading.CancellationToken" />
-            </param>
-            <returns>
-                <see cref="T:System.Threading.Tasks.Task`1" />
-            </returns>
-        </member>
-        <member name="M:HttpAgent.IHttpRemoteService.Send(HttpAgent.HttpStressTestHarnessBuilder,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,System.Threading.CancellationToken)">
-            <summary>
-                压力测试
-            </summary>
-            <param name="httpStressTestHarnessBuilder">
-                <see cref="T:HttpAgent.HttpStressTestHarnessBuilder" />
-            </param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
                 <see cref="T:System.Net.Http.HttpCompletionOption" />
@@ -10168,13 +10184,12 @@
                 <see cref="T:HttpAgent.StressTestHarnessResult" />
             </returns>
         </member>
-        <member name="M:HttpAgent.IHttpRemoteService.SendAsync(HttpAgent.HttpStressTestHarnessBuilder,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.IHttpRemoteService.StressTestHarnessAsync(System.String,System.Int32,System.Action{HttpAgent.HttpStressTestHarnessBuilder},System.Net.Http.HttpCompletionOption,System.Threading.CancellationToken)">
             <summary>
                 压力测试
             </summary>
-            <param name="httpStressTestHarnessBuilder">
-                <see cref="T:HttpAgent.HttpStressTestHarnessBuilder" />
-            </param>
+            <param name="requestUri">请求地址</param>
+            <param name="numberOfRequests">并发请求数量，默认值为：100。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
                 <see cref="T:System.Net.Http.HttpCompletionOption" />
@@ -10186,26 +10201,58 @@
                 <see cref="T:System.Threading.Tasks.Task`1" />
             </returns>
         </member>
-        <member name="M:HttpAgent.IHttpRemoteService.LongPolling(System.String,System.Func{System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Action{HttpAgent.HttpLongPollingBuilder},System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.IHttpRemoteService.Send(HttpAgent.HttpStressTestHarnessBuilder,System.Net.Http.HttpCompletionOption,System.Threading.CancellationToken)">
+            <summary>
+                压力测试
+            </summary>
+            <param name="httpStressTestHarnessBuilder">
+                <see cref="T:HttpAgent.HttpStressTestHarnessBuilder" />
+            </param>
+            <param name="completionOption">
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
+            </param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.StressTestHarnessResult" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.IHttpRemoteService.SendAsync(HttpAgent.HttpStressTestHarnessBuilder,System.Net.Http.HttpCompletionOption,System.Threading.CancellationToken)">
+            <summary>
+                压力测试
+            </summary>
+            <param name="httpStressTestHarnessBuilder">
+                <see cref="T:HttpAgent.HttpStressTestHarnessBuilder" />
+            </param>
+            <param name="completionOption">
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
+            </param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns>
+                <see cref="T:System.Threading.Tasks.Task`1" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.IHttpRemoteService.LongPolling(System.String,System.Func{System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Action{HttpAgent.HttpLongPollingBuilder},System.Threading.CancellationToken)">
             <summary>
                 发送长轮询请求
             </summary>
             <param name="requestUri">请求地址</param>
             <param name="onDataReceived">用于接收服务器返回 <c>200~299</c> 状态码的数据的操作</param>
             <param name="configure">自定义配置委托</param>
-            <param name="requestConfigure">自定义配置委托</param>
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
         </member>
-        <member name="M:HttpAgent.IHttpRemoteService.LongPollingAsync(System.String,System.Func{System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Action{HttpAgent.HttpLongPollingBuilder},System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.IHttpRemoteService.LongPollingAsync(System.String,System.Func{System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Action{HttpAgent.HttpLongPollingBuilder},System.Threading.CancellationToken)">
             <summary>
                 发送长轮询请求
             </summary>
             <param name="requestUri">请求地址</param>
             <param name="onDataReceived">用于接收服务器返回 <c>200~299</c> 状态码的数据的操作</param>
             <param name="configure">自定义配置委托</param>
-            <param name="requestConfigure">自定义配置委托</param>
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
@@ -10213,26 +10260,24 @@
                 <see cref="T:System.Threading.Tasks.Task" />
             </returns>
         </member>
-        <member name="M:HttpAgent.IHttpRemoteService.Send(HttpAgent.HttpLongPollingBuilder,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.IHttpRemoteService.Send(HttpAgent.HttpLongPollingBuilder,System.Threading.CancellationToken)">
             <summary>
                 发送长轮询请求
             </summary>
             <param name="httpLongPollingBuilder">
                 <see cref="T:HttpAgent.HttpLongPollingBuilder" />
             </param>
-            <param name="configure">自定义配置委托</param>
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
         </member>
-        <member name="M:HttpAgent.IHttpRemoteService.SendAsync(HttpAgent.HttpLongPollingBuilder,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.IHttpRemoteService.SendAsync(HttpAgent.HttpLongPollingBuilder,System.Threading.CancellationToken)">
             <summary>
                 发送长轮询请求
             </summary>
             <param name="httpLongPollingBuilder">
                 <see cref="T:HttpAgent.HttpLongPollingBuilder" />
             </param>
-            <param name="configure">自定义配置委托</param>
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
             </param>

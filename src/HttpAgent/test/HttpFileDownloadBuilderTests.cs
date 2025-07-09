@@ -31,6 +31,7 @@ public class HttpFileDownloadBuilderTests
         Assert.Null(builder2.OnTransferFailed);
         Assert.Null(builder2.OnFileExistAndSkip);
         Assert.Null(builder2.FileTransferEventHandlerType);
+        Assert.Null(builder2.RequestConfigure);
     }
 
     [Fact]
@@ -210,6 +211,22 @@ public class HttpFileDownloadBuilderTests
     }
 
     [Fact]
+    public void WithRequest_Invalid_Parameters()
+    {
+        var builder = new HttpFileDownloadBuilder(HttpMethod.Get, null);
+        Assert.Throws<ArgumentNullException>(() => builder.WithRequest(null!));
+    }
+
+    [Fact]
+    public void WithRequest_ReturnOK()
+    {
+        var builder = new HttpFileDownloadBuilder(HttpMethod.Get, null);
+        Assert.Null(builder.RequestConfigure);
+        builder.WithRequest(requestBuilder => requestBuilder.WithHeader("framework", "Furion"));
+        Assert.NotNull(builder.RequestConfigure);
+    }
+
+    [Fact]
     public void Build_Invalid_Parameters()
     {
         var builder = new HttpFileDownloadBuilder(HttpMethod.Get, null);
@@ -239,12 +256,11 @@ public class HttpFileDownloadBuilderTests
         Assert.Null(httpRequestBuilder.RequestEventHandlerType);
         Assert.True(httpRequestBuilder.PerformanceOptimizationEnabled);
 
-        var httpRequestBuilder2 = httpFileDownloadBuilder.SetEventHandler<CustomFileTransferEventHandler2>().Build(
-            httpRemoteOptions,
-            builder =>
+        var httpRequestBuilder2 = httpFileDownloadBuilder.SetEventHandler<CustomFileTransferEventHandler2>()
+            .WithRequest(builder =>
             {
                 builder.SetTimeout(100);
-            });
+            }).Build(httpRemoteOptions);
 
         Assert.Equal(TimeSpan.FromMilliseconds(100), httpRequestBuilder2.Timeout);
         Assert.NotNull(httpRequestBuilder2.RequestEventHandlerType);

@@ -29,9 +29,7 @@ internal sealed class FileUploadManager
     /// <param name="httpFileUploadBuilder">
     ///     <see cref="HttpFileUploadBuilder" />
     /// </param>
-    /// <param name="configure">自定义配置委托</param>
-    internal FileUploadManager(IHttpRemoteService httpRemoteService, HttpFileUploadBuilder httpFileUploadBuilder,
-        Action<HttpRequestBuilder>? configure = null)
+    internal FileUploadManager(IHttpRemoteService httpRemoteService, HttpFileUploadBuilder httpFileUploadBuilder)
     {
         // 空检查
         ArgumentNullException.ThrowIfNull(httpRemoteService);
@@ -50,7 +48,7 @@ internal sealed class FileUploadManager
 
         // 构建 HttpRequestBuilder 实例
         RequestBuilder = httpFileUploadBuilder.Build(httpRemoteService.ServiceProvider
-            .GetRequiredService<IOptions<HttpRemoteOptions>>().Value, _progressChannel, configure);
+            .GetRequiredService<IOptions<HttpRemoteOptions>>().Value, _progressChannel);
     }
 
     /// <summary>

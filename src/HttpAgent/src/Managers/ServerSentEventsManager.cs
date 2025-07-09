@@ -25,10 +25,8 @@ internal sealed class ServerSentEventsManager
     /// <param name="httpServerSentEventsBuilder">
     ///     <see cref="HttpServerSentEventsBuilder" />
     /// </param>
-    /// <param name="configure">自定义配置委托</param>
     internal ServerSentEventsManager(IHttpRemoteService httpRemoteService,
-        HttpServerSentEventsBuilder httpServerSentEventsBuilder,
-        Action<HttpRequestBuilder>? configure = null)
+        HttpServerSentEventsBuilder httpServerSentEventsBuilder)
     {
         // 空检查
         ArgumentNullException.ThrowIfNull(httpRemoteService);
@@ -46,7 +44,7 @@ internal sealed class ServerSentEventsManager
 
         // 构建 HttpRequestBuilder 实例
         RequestBuilder = httpServerSentEventsBuilder.Build(httpRemoteService.ServiceProvider
-            .GetRequiredService<IOptions<HttpRemoteOptions>>().Value, configure);
+            .GetRequiredService<IOptions<HttpRemoteOptions>>().Value);
     }
 
     /// <summary>

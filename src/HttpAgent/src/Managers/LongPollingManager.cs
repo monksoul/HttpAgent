@@ -24,9 +24,7 @@ internal sealed class LongPollingManager
     /// <param name="httpLongPollingBuilder">
     ///     <see cref="HttpLongPollingBuilder" />
     /// </param>
-    /// <param name="configure">自定义配置委托</param>
-    internal LongPollingManager(IHttpRemoteService httpRemoteService, HttpLongPollingBuilder httpLongPollingBuilder,
-        Action<HttpRequestBuilder>? configure = null)
+    internal LongPollingManager(IHttpRemoteService httpRemoteService, HttpLongPollingBuilder httpLongPollingBuilder)
     {
         // 空检查
         ArgumentNullException.ThrowIfNull(httpRemoteService);
@@ -42,7 +40,7 @@ internal sealed class LongPollingManager
 
         // 构建 HttpRequestBuilder 实例
         RequestBuilder = httpLongPollingBuilder.Build(httpRemoteService.ServiceProvider
-            .GetRequiredService<IOptions<HttpRemoteOptions>>().Value, configure);
+            .GetRequiredService<IOptions<HttpRemoteOptions>>().Value);
     }
 
     /// <summary>

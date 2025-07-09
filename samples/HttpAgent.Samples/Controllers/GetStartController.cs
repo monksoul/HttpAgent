@@ -394,7 +394,7 @@ public class GetStartController(
                 // 连接打开时操作
                 .SetOnOpen(() => { Console.WriteLine("连接成功。"); })
                 // 连接未打开时操作
-                .SetOnError(ex => { Console.WriteLine("连接错误。" + ex.Message); }), cancellationToken: cancellationToken);
+                .SetOnError(ex => { Console.WriteLine("连接错误。" + ex.Message); }), cancellationToken);
 
         // 使用构建器模式
         //await httpRemoteService.SendAsync(HttpRequestBuilder
@@ -668,7 +668,7 @@ public class GetStartController(
                 var content = clay.choices[0].delta.content;
 
                 Console.WriteLine(content);
-            }), builder => builder
+            }).WithRequest(builder => builder
             .Profiler(false) // 建议关闭请求分析工具
             .AddJwtBearerAuthentication("您的 APIKEY")
             .SetJsonContent("""
@@ -680,7 +680,7 @@ public class GetStartController(
                                 ],
                                 "stream": true
                             }
-                            """), cancellationToken);
+                            """)), cancellationToken);
 
         return "OK";
     }
@@ -714,7 +714,7 @@ public class GetStartController(
                 // 确保数据被立即发送到客户端
                 await httpContext.Response.Body.WriteAsync(Encoding.UTF8.GetBytes(content), token);
                 await httpContext.Response.Body.FlushAsync(token);
-            }), builder => builder
+            }).WithRequest(builder => builder
             .Profiler(false) // 建议关闭请求分析工具
             .AddJwtBearerAuthentication("您的 APIKEY")
             .SetJsonContent($$"""
@@ -726,7 +726,7 @@ public class GetStartController(
                               ],
                               "stream": true
                               }
-                              """), cancellationToken);
+                              """)), cancellationToken);
 
         await httpContext.Response.CompleteAsync();
     }

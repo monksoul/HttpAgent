@@ -34,8 +34,8 @@ public class FileUploadManagerTests(ITestOutputHelper output)
         Assert.Null(fileUploadManager.FileTransferEventHandler);
 
         var fileUploadManager2 = new FileUploadManager(httpRemoteService,
-            new HttpFileUploadBuilder(HttpMethod.Post, new Uri("http://localhost:5000"), filePath, "file"),
-            builder => builder.SetTimeout(100));
+            new HttpFileUploadBuilder(HttpMethod.Post, new Uri("http://localhost:5000"), filePath, "file")
+                .WithRequest(builder => builder.SetTimeout(100)));
         Assert.NotNull(fileUploadManager2.RequestBuilder);
         Assert.Equal(TimeSpan.FromMilliseconds(100), fileUploadManager2.RequestBuilder.Timeout);
 
@@ -484,11 +484,11 @@ public class FileUploadManagerTests(ITestOutputHelper output)
                 {
                     i += 1;
                     output.WriteLine($"上传出错 {e.Message}");
+                }).WithRequest(b =>
+                {
+                    b.EnsureSuccessStatusCode();
                 });
-        var fileUploadManager = new FileUploadManager(httpRemoteService, httpFileUploadBuilder, b =>
-        {
-            b.EnsureSuccessStatusCode();
-        });
+        var fileUploadManager = new FileUploadManager(httpRemoteService, httpFileUploadBuilder);
 
         Assert.Throws<HttpRequestException>(() =>
         {
@@ -751,11 +751,11 @@ public class FileUploadManagerTests(ITestOutputHelper output)
                 {
                     i += 1;
                     output.WriteLine($"上传出错 {e.Message}");
+                }).WithRequest(b =>
+                {
+                    b.EnsureSuccessStatusCode();
                 });
-        var fileUploadManager = new FileUploadManager(httpRemoteService, httpFileUploadBuilder, b =>
-        {
-            b.EnsureSuccessStatusCode();
-        });
+        var fileUploadManager = new FileUploadManager(httpRemoteService, httpFileUploadBuilder);
 
         await Assert.ThrowsAsync<HttpRequestException>(async () =>
         {

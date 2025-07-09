@@ -13,141 +13,121 @@ internal sealed partial class HttpRemoteService
     public void DownloadFile(string? requestUri, string? destinationPath,
         Func<FileTransferProgress, Task>? onProgressChanged = null,
         FileExistsBehavior fileExistsBehavior = FileExistsBehavior.CreateNew,
-        Action<HttpFileDownloadBuilder>? configure = null, Action<HttpRequestBuilder>? requestConfigure = null,
-        CancellationToken cancellationToken = default) =>
+        Action<HttpFileDownloadBuilder>? configure = null, CancellationToken cancellationToken = default) =>
         Send(
             HttpRequestBuilder.DownloadFile(requestUri, destinationPath, onProgressChanged, fileExistsBehavior,
-                configure),
-            requestConfigure, cancellationToken);
+                configure), cancellationToken);
 
     /// <inheritdoc />
     public Task DownloadFileAsync(string? requestUri, string? destinationPath,
         Func<FileTransferProgress, Task>? onProgressChanged = null,
         FileExistsBehavior fileExistsBehavior = FileExistsBehavior.CreateNew,
-        Action<HttpFileDownloadBuilder>? configure = null, Action<HttpRequestBuilder>? requestConfigure = null,
-        CancellationToken cancellationToken = default) =>
+        Action<HttpFileDownloadBuilder>? configure = null, CancellationToken cancellationToken = default) =>
         SendAsync(
             HttpRequestBuilder.DownloadFile(requestUri, destinationPath, onProgressChanged, fileExistsBehavior,
-                configure),
-            requestConfigure, cancellationToken);
+                configure), cancellationToken);
 
     /// <inheritdoc />
-    public void Send(HttpFileDownloadBuilder httpFileDownloadBuilder, Action<HttpRequestBuilder>? configure = null,
-        CancellationToken cancellationToken = default) =>
-        new FileDownloadManager(this, httpFileDownloadBuilder, configure).Start(cancellationToken);
+    public void Send(HttpFileDownloadBuilder httpFileDownloadBuilder, CancellationToken cancellationToken = default) =>
+        new FileDownloadManager(this, httpFileDownloadBuilder).Start(cancellationToken);
 
     /// <inheritdoc />
-    public Task SendAsync(HttpFileDownloadBuilder httpFileDownloadBuilder, Action<HttpRequestBuilder>? configure = null,
+    public Task SendAsync(HttpFileDownloadBuilder httpFileDownloadBuilder,
         CancellationToken cancellationToken = default) =>
-        new FileDownloadManager(this, httpFileDownloadBuilder, configure).StartAsync(cancellationToken);
+        new FileDownloadManager(this, httpFileDownloadBuilder).StartAsync(cancellationToken);
 
     /// <inheritdoc />
     public HttpResponseMessage? UploadFile(string? requestUri, string filePath, string name = "file",
         Func<FileTransferProgress, Task>? onProgressChanged = null, string? fileName = null,
-        Action<HttpFileUploadBuilder>? configure = null, Action<HttpRequestBuilder>? requestConfigure = null,
-        CancellationToken cancellationToken = default) =>
+        Action<HttpFileUploadBuilder>? configure = null, CancellationToken cancellationToken = default) =>
         Send(HttpRequestBuilder.UploadFile(requestUri, filePath, name, onProgressChanged, fileName, configure),
-            requestConfigure,
             cancellationToken);
 
     /// <inheritdoc />
     public Task<HttpResponseMessage?> UploadFileAsync(string? requestUri, string filePath, string name = "file",
         Func<FileTransferProgress, Task>? onProgressChanged = null, string? fileName = null,
-        Action<HttpFileUploadBuilder>? configure = null, Action<HttpRequestBuilder>? requestConfigure = null,
-        CancellationToken cancellationToken = default) =>
+        Action<HttpFileUploadBuilder>? configure = null, CancellationToken cancellationToken = default) =>
         SendAsync(HttpRequestBuilder.UploadFile(requestUri, filePath, name, onProgressChanged, fileName, configure),
-            requestConfigure,
             cancellationToken);
 
     /// <inheritdoc />
     public HttpResponseMessage? Send(HttpFileUploadBuilder httpFileUploadBuilder,
-        Action<HttpRequestBuilder>? configure = null, CancellationToken cancellationToken = default) =>
-        new FileUploadManager(this, httpFileUploadBuilder, configure).Start(cancellationToken);
+        CancellationToken cancellationToken = default) =>
+        new FileUploadManager(this, httpFileUploadBuilder).Start(cancellationToken);
 
     /// <inheritdoc />
     public Task<HttpResponseMessage?> SendAsync(HttpFileUploadBuilder httpFileUploadBuilder,
-        Action<HttpRequestBuilder>? configure = null, CancellationToken cancellationToken = default) =>
-        new FileUploadManager(this, httpFileUploadBuilder, configure).StartAsync(cancellationToken);
+        CancellationToken cancellationToken = default) =>
+        new FileUploadManager(this, httpFileUploadBuilder).StartAsync(cancellationToken);
 
     /// <inheritdoc />
     public void ServerSentEvents(string? requestUri, Func<ServerSentEventsData, CancellationToken, Task> onMessage,
-        Action<HttpServerSentEventsBuilder>? configure = null, Action<HttpRequestBuilder>? requestConfigure = null,
-        CancellationToken cancellationToken = default) =>
-        Send(HttpRequestBuilder.ServerSentEvents(requestUri, onMessage, configure), requestConfigure,
-            cancellationToken);
+        Action<HttpServerSentEventsBuilder>? configure = null, CancellationToken cancellationToken = default) =>
+        Send(HttpRequestBuilder.ServerSentEvents(requestUri, onMessage, configure), cancellationToken);
 
     /// <inheritdoc />
     public Task ServerSentEventsAsync(string? requestUri, Func<ServerSentEventsData, CancellationToken, Task> onMessage,
-        Action<HttpServerSentEventsBuilder>? configure = null, Action<HttpRequestBuilder>? requestConfigure = null,
-        CancellationToken cancellationToken = default) =>
-        SendAsync(HttpRequestBuilder.ServerSentEvents(requestUri, onMessage, configure), requestConfigure,
-            cancellationToken);
+        Action<HttpServerSentEventsBuilder>? configure = null, CancellationToken cancellationToken = default) =>
+        SendAsync(HttpRequestBuilder.ServerSentEvents(requestUri, onMessage, configure), cancellationToken);
 
     /// <inheritdoc />
     public void Send(HttpServerSentEventsBuilder httpServerSentEventsBuilder,
-        Action<HttpRequestBuilder>? configure = null, CancellationToken cancellationToken = default) =>
-        new ServerSentEventsManager(this, httpServerSentEventsBuilder, configure).Start(cancellationToken);
+        CancellationToken cancellationToken = default) =>
+        new ServerSentEventsManager(this, httpServerSentEventsBuilder).Start(cancellationToken);
 
     /// <inheritdoc />
     public Task SendAsync(HttpServerSentEventsBuilder httpServerSentEventsBuilder,
-        Action<HttpRequestBuilder>? configure = null, CancellationToken cancellationToken = default) =>
-        new ServerSentEventsManager(this, httpServerSentEventsBuilder, configure).StartAsync(cancellationToken);
+        CancellationToken cancellationToken = default) =>
+        new ServerSentEventsManager(this, httpServerSentEventsBuilder).StartAsync(cancellationToken);
 
     /// <inheritdoc />
     public StressTestHarnessResult StressTestHarness(string? requestUri, int numberOfRequests = 100,
-        Action<HttpStressTestHarnessBuilder>? configure = null, Action<HttpRequestBuilder>? requestConfigure = null,
+        Action<HttpStressTestHarnessBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         CancellationToken cancellationToken = default) =>
-        Send(HttpRequestBuilder.StressTestHarness(requestUri, numberOfRequests, configure), requestConfigure,
-            completionOption, cancellationToken);
+        Send(HttpRequestBuilder.StressTestHarness(requestUri, numberOfRequests, configure), completionOption,
+            cancellationToken);
 
     /// <inheritdoc />
     public Task<StressTestHarnessResult> StressTestHarnessAsync(string? requestUri, int numberOfRequests = 100,
-        Action<HttpStressTestHarnessBuilder>? configure = null, Action<HttpRequestBuilder>? requestConfigure = null,
+        Action<HttpStressTestHarnessBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         CancellationToken cancellationToken = default) =>
-        SendAsync(HttpRequestBuilder.StressTestHarness(requestUri, numberOfRequests, configure), requestConfigure,
-            completionOption, cancellationToken);
+        SendAsync(HttpRequestBuilder.StressTestHarness(requestUri, numberOfRequests, configure), completionOption,
+            cancellationToken);
 
     /// <inheritdoc />
     public StressTestHarnessResult Send(HttpStressTestHarnessBuilder httpStressTestHarnessBuilder,
-        Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         CancellationToken cancellationToken = default) =>
-        new StressTestHarnessManager(this, httpStressTestHarnessBuilder, configure).Start(completionOption,
+        new StressTestHarnessManager(this, httpStressTestHarnessBuilder).Start(completionOption,
             cancellationToken);
 
     /// <inheritdoc />
     public Task<StressTestHarnessResult> SendAsync(HttpStressTestHarnessBuilder httpStressTestHarnessBuilder,
-        Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         CancellationToken cancellationToken = default) =>
-        new StressTestHarnessManager(this, httpStressTestHarnessBuilder, configure).StartAsync(completionOption,
+        new StressTestHarnessManager(this, httpStressTestHarnessBuilder).StartAsync(completionOption,
             cancellationToken);
 
     /// <inheritdoc />
     public void LongPolling(string? requestUri, Func<HttpResponseMessage, CancellationToken, Task> onDataReceived,
-        Action<HttpLongPollingBuilder>? configure = null, Action<HttpRequestBuilder>? requestConfigure = null,
-        CancellationToken cancellationToken = default) =>
-        Send(HttpRequestBuilder.LongPolling(requestUri, onDataReceived, configure), requestConfigure,
-            cancellationToken);
+        Action<HttpLongPollingBuilder>? configure = null, CancellationToken cancellationToken = default) =>
+        Send(HttpRequestBuilder.LongPolling(requestUri, onDataReceived, configure), cancellationToken);
 
     /// <inheritdoc />
     public Task LongPollingAsync(string? requestUri, Func<HttpResponseMessage, CancellationToken, Task> onDataReceived,
-        Action<HttpLongPollingBuilder>? configure = null, Action<HttpRequestBuilder>? requestConfigure = null,
-        CancellationToken cancellationToken = default) =>
-        SendAsync(HttpRequestBuilder.LongPolling(requestUri, onDataReceived, configure), requestConfigure,
-            cancellationToken);
+        Action<HttpLongPollingBuilder>? configure = null, CancellationToken cancellationToken = default) =>
+        SendAsync(HttpRequestBuilder.LongPolling(requestUri, onDataReceived, configure), cancellationToken);
 
     /// <inheritdoc />
-    public void Send(HttpLongPollingBuilder httpLongPollingBuilder, Action<HttpRequestBuilder>? configure = null,
-        CancellationToken cancellationToken = default) =>
-        new LongPollingManager(this, httpLongPollingBuilder, configure).Start(cancellationToken);
+    public void Send(HttpLongPollingBuilder httpLongPollingBuilder, CancellationToken cancellationToken = default) =>
+        new LongPollingManager(this, httpLongPollingBuilder).Start(cancellationToken);
 
     /// <inheritdoc />
-    public Task SendAsync(HttpLongPollingBuilder httpLongPollingBuilder, Action<HttpRequestBuilder>? configure = null,
+    public Task SendAsync(HttpLongPollingBuilder httpLongPollingBuilder,
         CancellationToken cancellationToken = default) =>
-        new LongPollingManager(this, httpLongPollingBuilder, configure).StartAsync(cancellationToken);
+        new LongPollingManager(this, httpLongPollingBuilder).StartAsync(cancellationToken);
 
     /// <inheritdoc />
     public object? Declarative(MethodInfo method, object[] args) =>

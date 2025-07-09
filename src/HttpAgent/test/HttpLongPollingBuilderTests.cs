@@ -29,6 +29,7 @@ public class HttpLongPollingBuilderTests
         Assert.Null(builder2.OnError);
         Assert.Null(builder2.OnEndOfStream);
         Assert.Null(builder2.LongPollingEventHandlerType);
+        Assert.Null(builder2.RequestConfigure);
     }
 
     [Fact]
@@ -171,6 +172,22 @@ public class HttpLongPollingBuilderTests
     }
 
     [Fact]
+    public void WithRequest_Invalid_Parameters()
+    {
+        var builder = new HttpLongPollingBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        Assert.Throws<ArgumentNullException>(() => builder.WithRequest(null!));
+    }
+
+    [Fact]
+    public void WithRequest_ReturnOK()
+    {
+        var builder = new HttpLongPollingBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        Assert.Null(builder.RequestConfigure);
+        builder.WithRequest(requestBuilder => requestBuilder.WithHeader("framework", "Furion"));
+        Assert.NotNull(builder.RequestConfigure);
+    }
+
+    [Fact]
     public void Build_Invalid_Parameters() =>
         Assert.Throws<ArgumentNullException>(() =>
             new HttpLongPollingBuilder(HttpMethod.Get, new Uri("http://localhost")).Build(null!));
@@ -194,11 +211,8 @@ public class HttpLongPollingBuilderTests
         Assert.Equal(TimeSpan.FromMilliseconds(100), httpRequestBuilder.Timeout);
 
         var httpRequestBuilder2 = httpLongPollingBuilder.SetEventHandler<CustomLongPollingEventHandler2>()
-            .Build(httpRemoteOptions,
-                builder =>
-                {
-                    builder.SetTimeout(100);
-                });
+            .WithRequest(builder => builder.SetTimeout(100))
+            .Build(httpRemoteOptions);
 
         Assert.Equal(TimeSpan.FromMilliseconds(100), httpRequestBuilder2.Timeout);
         Assert.NotNull(httpRequestBuilder2.RequestEventHandlerType);

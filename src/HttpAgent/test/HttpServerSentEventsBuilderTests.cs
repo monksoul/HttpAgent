@@ -24,6 +24,7 @@ public class HttpServerSentEventsBuilderTests
         Assert.Null(builder2.OnMessage);
         Assert.Null(builder2.OnError);
         Assert.Null(builder2.ServerSentEventsEventHandlerType);
+        Assert.Null(builder2.RequestConfigure);
 
         var builder3 = new HttpServerSentEventsBuilder(HttpMethod.Post, new Uri("http://localhost"));
         Assert.NotNull(builder3);
@@ -144,6 +145,22 @@ public class HttpServerSentEventsBuilderTests
     }
 
     [Fact]
+    public void WithRequest_Invalid_Parameters()
+    {
+        var builder = new HttpServerSentEventsBuilder(new Uri("http://localhost"));
+        Assert.Throws<ArgumentNullException>(() => builder.WithRequest(null!));
+    }
+
+    [Fact]
+    public void WithRequest_ReturnOK()
+    {
+        var builder = new HttpServerSentEventsBuilder(new Uri("http://localhost"));
+        Assert.Null(builder.RequestConfigure);
+        builder.WithRequest(requestBuilder => requestBuilder.WithHeader("framework", "Furion"));
+        Assert.NotNull(builder.RequestConfigure);
+    }
+
+    [Fact]
     public void Build_Invalid_Parameters() =>
         Assert.Throws<ArgumentNullException>(() =>
             new HttpServerSentEventsBuilder(new Uri("http://localhost")).Build(null!));
@@ -169,11 +186,7 @@ public class HttpServerSentEventsBuilderTests
         Assert.Equal("text/event-stream", httpRequestBuilder.Headers["Accept"].First());
 
         var httpRequestBuilder2 = httpServerSentEventsBuilder.SetEventHandler<CustomServerSentEventsEventHandler2>()
-            .Build(httpRemoteOptions,
-                builder =>
-                {
-                    builder.SetTimeout(100);
-                });
+            .WithRequest(builder => builder.SetTimeout(100)).Build(httpRemoteOptions);
 
         Assert.Equal(TimeSpan.FromMilliseconds(100), httpRequestBuilder2.Timeout);
         Assert.NotNull(httpRequestBuilder2.RequestEventHandlerType);

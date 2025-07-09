@@ -34,7 +34,7 @@ public class FileDownloadManagerTests(ITestOutputHelper output)
 
         var fileDownloadManager2 = new FileDownloadManager(httpRemoteService,
             new HttpFileDownloadBuilder(HttpMethod.Get, new Uri("http://localhost:5000")).SetDestinationPath(
-                @"C:\Workspaces"), builder => builder.SetTimeout(100));
+                @"C:\Workspaces").WithRequest(builder => builder.SetTimeout(100)));
         Assert.NotNull(fileDownloadManager2.RequestBuilder);
         Assert.Equal(TimeSpan.FromMilliseconds(100), fileDownloadManager2.RequestBuilder.Timeout);
 

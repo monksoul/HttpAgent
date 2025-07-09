@@ -19,15 +19,13 @@ public partial interface IHttpRemoteService
     ///     <see cref="FileExistsBehavior" />
     /// </param>
     /// <param name="configure">自定义配置委托</param>
-    /// <param name="requestConfigure">自定义配置委托</param>
     /// <param name="cancellationToken">
     ///     <see cref="CancellationToken" />
     /// </param>
     void DownloadFile(string? requestUri, string? destinationPath,
         Func<FileTransferProgress, Task>? onProgressChanged = null,
         FileExistsBehavior fileExistsBehavior = FileExistsBehavior.CreateNew,
-        Action<HttpFileDownloadBuilder>? configure = null, Action<HttpRequestBuilder>? requestConfigure = null,
-        CancellationToken cancellationToken = default);
+        Action<HttpFileDownloadBuilder>? configure = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     ///     下载文件
@@ -39,7 +37,6 @@ public partial interface IHttpRemoteService
     ///     <see cref="FileExistsBehavior" />
     /// </param>
     /// <param name="configure">自定义配置委托</param>
-    /// <param name="requestConfigure">自定义配置委托</param>
     /// <param name="cancellationToken">
     ///     <see cref="CancellationToken" />
     /// </param>
@@ -49,8 +46,7 @@ public partial interface IHttpRemoteService
     Task DownloadFileAsync(string? requestUri, string? destinationPath,
         Func<FileTransferProgress, Task>? onProgressChanged = null,
         FileExistsBehavior fileExistsBehavior = FileExistsBehavior.CreateNew,
-        Action<HttpFileDownloadBuilder>? configure = null, Action<HttpRequestBuilder>? requestConfigure = null,
-        CancellationToken cancellationToken = default);
+        Action<HttpFileDownloadBuilder>? configure = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     ///     下载文件
@@ -58,12 +54,10 @@ public partial interface IHttpRemoteService
     /// <param name="httpFileDownloadBuilder">
     ///     <see cref="HttpFileDownloadBuilder" />
     /// </param>
-    /// <param name="configure">自定义配置委托</param>
     /// <param name="cancellationToken">
     ///     <see cref="CancellationToken" />
     /// </param>
-    void Send(HttpFileDownloadBuilder httpFileDownloadBuilder, Action<HttpRequestBuilder>? configure = null,
-        CancellationToken cancellationToken = default);
+    void Send(HttpFileDownloadBuilder httpFileDownloadBuilder, CancellationToken cancellationToken = default);
 
     /// <summary>
     ///     下载文件
@@ -71,15 +65,13 @@ public partial interface IHttpRemoteService
     /// <param name="httpFileDownloadBuilder">
     ///     <see cref="HttpFileDownloadBuilder" />
     /// </param>
-    /// <param name="configure">自定义配置委托</param>
     /// <param name="cancellationToken">
     ///     <see cref="CancellationToken" />
     /// </param>
     /// <returns>
     ///     <see cref="Task" />
     /// </returns>
-    Task SendAsync(HttpFileDownloadBuilder httpFileDownloadBuilder, Action<HttpRequestBuilder>? configure = null,
-        CancellationToken cancellationToken = default);
+    Task SendAsync(HttpFileDownloadBuilder httpFileDownloadBuilder, CancellationToken cancellationToken = default);
 
     /// <summary>
     ///     上传文件
@@ -90,7 +82,6 @@ public partial interface IHttpRemoteService
     /// <param name="onProgressChanged">用于传输进度发生变化时执行的委托</param>
     /// <param name="fileName">文件的名称</param>
     /// <param name="configure">自定义配置委托</param>
-    /// <param name="requestConfigure">自定义配置委托</param>
     /// <param name="cancellationToken">
     ///     <see cref="CancellationToken" />
     /// </param>
@@ -99,8 +90,7 @@ public partial interface IHttpRemoteService
     /// </returns>
     HttpResponseMessage? UploadFile(string? requestUri, string filePath, string name = "file",
         Func<FileTransferProgress, Task>? onProgressChanged = null, string? fileName = null,
-        Action<HttpFileUploadBuilder>? configure = null, Action<HttpRequestBuilder>? requestConfigure = null,
-        CancellationToken cancellationToken = default);
+        Action<HttpFileUploadBuilder>? configure = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     ///     上传文件
@@ -111,7 +101,6 @@ public partial interface IHttpRemoteService
     /// <param name="onProgressChanged">用于传输进度发生变化时执行的委托</param>
     /// <param name="fileName">文件的名称</param>
     /// <param name="configure">自定义配置委托</param>
-    /// <param name="requestConfigure">自定义配置委托</param>
     /// <param name="cancellationToken">
     ///     <see cref="CancellationToken" />
     /// </param>
@@ -120,8 +109,7 @@ public partial interface IHttpRemoteService
     /// </returns>
     Task<HttpResponseMessage?> UploadFileAsync(string? requestUri, string filePath, string name = "file",
         Func<FileTransferProgress, Task>? onProgressChanged = null, string? fileName = null,
-        Action<HttpFileUploadBuilder>? configure = null, Action<HttpRequestBuilder>? requestConfigure = null,
-        CancellationToken cancellationToken = default);
+        Action<HttpFileUploadBuilder>? configure = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     ///     上传文件
@@ -129,14 +117,13 @@ public partial interface IHttpRemoteService
     /// <param name="httpFileUploadBuilder">
     ///     <see cref="HttpFileUploadBuilder" />
     /// </param>
-    /// <param name="configure">自定义配置委托</param>
     /// <param name="cancellationToken">
     ///     <see cref="CancellationToken" />
     /// </param>
     /// <returns>
     ///     <see cref="HttpResponseMessage" />
     /// </returns>
-    HttpResponseMessage? Send(HttpFileUploadBuilder httpFileUploadBuilder, Action<HttpRequestBuilder>? configure = null,
+    HttpResponseMessage? Send(HttpFileUploadBuilder httpFileUploadBuilder,
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -145,7 +132,6 @@ public partial interface IHttpRemoteService
     /// <param name="httpFileUploadBuilder">
     ///     <see cref="HttpFileUploadBuilder" />
     /// </param>
-    /// <param name="configure">自定义配置委托</param>
     /// <param name="cancellationToken">
     ///     <see cref="CancellationToken" />
     /// </param>
@@ -153,20 +139,6 @@ public partial interface IHttpRemoteService
     ///     <see cref="Task{TResult}" />
     /// </returns>
     Task<HttpResponseMessage?> SendAsync(HttpFileUploadBuilder httpFileUploadBuilder,
-        Action<HttpRequestBuilder>? configure = null, CancellationToken cancellationToken = default);
-
-    /// <summary>
-    ///     发送 Server-Sent Events 请求
-    /// </summary>
-    /// <param name="requestUri">请求地址</param>
-    /// <param name="onMessage">用于在从事件源接收到数据时的操作</param>
-    /// <param name="configure">自定义配置委托</param>
-    /// <param name="requestConfigure">自定义配置委托</param>
-    /// <param name="cancellationToken">
-    ///     <see cref="CancellationToken" />
-    /// </param>
-    void ServerSentEvents(string? requestUri, Func<ServerSentEventsData, CancellationToken, Task> onMessage,
-        Action<HttpServerSentEventsBuilder>? configure = null, Action<HttpRequestBuilder>? requestConfigure = null,
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -175,7 +147,18 @@ public partial interface IHttpRemoteService
     /// <param name="requestUri">请求地址</param>
     /// <param name="onMessage">用于在从事件源接收到数据时的操作</param>
     /// <param name="configure">自定义配置委托</param>
-    /// <param name="requestConfigure">自定义配置委托</param>
+    /// <param name="cancellationToken">
+    ///     <see cref="CancellationToken" />
+    /// </param>
+    void ServerSentEvents(string? requestUri, Func<ServerSentEventsData, CancellationToken, Task> onMessage,
+        Action<HttpServerSentEventsBuilder>? configure = null, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     发送 Server-Sent Events 请求
+    /// </summary>
+    /// <param name="requestUri">请求地址</param>
+    /// <param name="onMessage">用于在从事件源接收到数据时的操作</param>
+    /// <param name="configure">自定义配置委托</param>
     /// <param name="cancellationToken">
     ///     <see cref="CancellationToken" />
     /// </param>
@@ -183,8 +166,7 @@ public partial interface IHttpRemoteService
     ///     <see cref="Task" />
     /// </returns>
     Task ServerSentEventsAsync(string? requestUri, Func<ServerSentEventsData, CancellationToken, Task> onMessage,
-        Action<HttpServerSentEventsBuilder>? configure = null, Action<HttpRequestBuilder>? requestConfigure = null,
-        CancellationToken cancellationToken = default);
+        Action<HttpServerSentEventsBuilder>? configure = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     ///     发送 Server-Sent Events 请求
@@ -192,12 +174,10 @@ public partial interface IHttpRemoteService
     /// <param name="httpServerSentEventsBuilder">
     ///     <see cref="HttpServerSentEventsBuilder" />
     /// </param>
-    /// <param name="configure">自定义配置委托</param>
     /// <param name="cancellationToken">
     ///     <see cref="CancellationToken" />
     /// </param>
-    void Send(HttpServerSentEventsBuilder httpServerSentEventsBuilder, Action<HttpRequestBuilder>? configure = null,
-        CancellationToken cancellationToken = default);
+    void Send(HttpServerSentEventsBuilder httpServerSentEventsBuilder, CancellationToken cancellationToken = default);
 
     /// <summary>
     ///     发送 Server-Sent Events 请求
@@ -205,7 +185,6 @@ public partial interface IHttpRemoteService
     /// <param name="httpServerSentEventsBuilder">
     ///     <see cref="HttpServerSentEventsBuilder" />
     /// </param>
-    /// <param name="configure">自定义配置委托</param>
     /// <param name="cancellationToken">
     ///     <see cref="CancellationToken" />
     /// </param>
@@ -213,7 +192,7 @@ public partial interface IHttpRemoteService
     ///     <see cref="Task" />
     /// </returns>
     Task SendAsync(HttpServerSentEventsBuilder httpServerSentEventsBuilder,
-        Action<HttpRequestBuilder>? configure = null, CancellationToken cancellationToken = default);
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     ///     压力测试
@@ -221,7 +200,6 @@ public partial interface IHttpRemoteService
     /// <param name="requestUri">请求地址</param>
     /// <param name="numberOfRequests">并发请求数量，默认值为：100。</param>
     /// <param name="configure">自定义配置委托</param>
-    /// <param name="requestConfigure">自定义配置委托</param>
     /// <param name="completionOption">
     ///     <see cref="HttpCompletionOption" />
     /// </param>
@@ -232,7 +210,7 @@ public partial interface IHttpRemoteService
     ///     <see cref="StressTestHarnessResult" />
     /// </returns>
     StressTestHarnessResult StressTestHarness(string? requestUri, int numberOfRequests = 100,
-        Action<HttpStressTestHarnessBuilder>? configure = null, Action<HttpRequestBuilder>? requestConfigure = null,
+        Action<HttpStressTestHarnessBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         CancellationToken cancellationToken = default);
 
@@ -242,7 +220,6 @@ public partial interface IHttpRemoteService
     /// <param name="requestUri">请求地址</param>
     /// <param name="numberOfRequests">并发请求数量，默认值为：100。</param>
     /// <param name="configure">自定义配置委托</param>
-    /// <param name="requestConfigure">自定义配置委托</param>
     /// <param name="completionOption">
     ///     <see cref="HttpCompletionOption" />
     /// </param>
@@ -253,7 +230,7 @@ public partial interface IHttpRemoteService
     ///     <see cref="Task{TResult}" />
     /// </returns>
     Task<StressTestHarnessResult> StressTestHarnessAsync(string? requestUri, int numberOfRequests = 100,
-        Action<HttpStressTestHarnessBuilder>? configure = null, Action<HttpRequestBuilder>? requestConfigure = null,
+        Action<HttpStressTestHarnessBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         CancellationToken cancellationToken = default);
 
@@ -263,7 +240,6 @@ public partial interface IHttpRemoteService
     /// <param name="httpStressTestHarnessBuilder">
     ///     <see cref="HttpStressTestHarnessBuilder" />
     /// </param>
-    /// <param name="configure">自定义配置委托</param>
     /// <param name="completionOption">
     ///     <see cref="HttpCompletionOption" />
     /// </param>
@@ -274,7 +250,6 @@ public partial interface IHttpRemoteService
     ///     <see cref="StressTestHarnessResult" />
     /// </returns>
     StressTestHarnessResult Send(HttpStressTestHarnessBuilder httpStressTestHarnessBuilder,
-        Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         CancellationToken cancellationToken = default);
 
@@ -284,7 +259,6 @@ public partial interface IHttpRemoteService
     /// <param name="httpStressTestHarnessBuilder">
     ///     <see cref="HttpStressTestHarnessBuilder" />
     /// </param>
-    /// <param name="configure">自定义配置委托</param>
     /// <param name="completionOption">
     ///     <see cref="HttpCompletionOption" />
     /// </param>
@@ -295,7 +269,6 @@ public partial interface IHttpRemoteService
     ///     <see cref="Task{TResult}" />
     /// </returns>
     Task<StressTestHarnessResult> SendAsync(HttpStressTestHarnessBuilder httpStressTestHarnessBuilder,
-        Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         CancellationToken cancellationToken = default);
 
@@ -305,13 +278,11 @@ public partial interface IHttpRemoteService
     /// <param name="requestUri">请求地址</param>
     /// <param name="onDataReceived">用于接收服务器返回 <c>200~299</c> 状态码的数据的操作</param>
     /// <param name="configure">自定义配置委托</param>
-    /// <param name="requestConfigure">自定义配置委托</param>
     /// <param name="cancellationToken">
     ///     <see cref="CancellationToken" />
     /// </param>
     void LongPolling(string? requestUri, Func<HttpResponseMessage, CancellationToken, Task> onDataReceived,
-        Action<HttpLongPollingBuilder>? configure = null, Action<HttpRequestBuilder>? requestConfigure = null,
-        CancellationToken cancellationToken = default);
+        Action<HttpLongPollingBuilder>? configure = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     ///     发送长轮询请求
@@ -319,7 +290,6 @@ public partial interface IHttpRemoteService
     /// <param name="requestUri">请求地址</param>
     /// <param name="onDataReceived">用于接收服务器返回 <c>200~299</c> 状态码的数据的操作</param>
     /// <param name="configure">自定义配置委托</param>
-    /// <param name="requestConfigure">自定义配置委托</param>
     /// <param name="cancellationToken">
     ///     <see cref="CancellationToken" />
     /// </param>
@@ -327,8 +297,7 @@ public partial interface IHttpRemoteService
     ///     <see cref="Task" />
     /// </returns>
     Task LongPollingAsync(string? requestUri, Func<HttpResponseMessage, CancellationToken, Task> onDataReceived,
-        Action<HttpLongPollingBuilder>? configure = null, Action<HttpRequestBuilder>? requestConfigure = null,
-        CancellationToken cancellationToken = default);
+        Action<HttpLongPollingBuilder>? configure = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     ///     发送长轮询请求
@@ -336,12 +305,10 @@ public partial interface IHttpRemoteService
     /// <param name="httpLongPollingBuilder">
     ///     <see cref="HttpLongPollingBuilder" />
     /// </param>
-    /// <param name="configure">自定义配置委托</param>
     /// <param name="cancellationToken">
     ///     <see cref="CancellationToken" />
     /// </param>
-    void Send(HttpLongPollingBuilder httpLongPollingBuilder, Action<HttpRequestBuilder>? configure = null,
-        CancellationToken cancellationToken = default);
+    void Send(HttpLongPollingBuilder httpLongPollingBuilder, CancellationToken cancellationToken = default);
 
     /// <summary>
     ///     发送长轮询请求
@@ -349,15 +316,13 @@ public partial interface IHttpRemoteService
     /// <param name="httpLongPollingBuilder">
     ///     <see cref="HttpLongPollingBuilder" />
     /// </param>
-    /// <param name="configure">自定义配置委托</param>
     /// <param name="cancellationToken">
     ///     <see cref="CancellationToken" />
     /// </param>
     /// <returns>
     ///     <see cref="Task" />
     /// </returns>
-    Task SendAsync(HttpLongPollingBuilder httpLongPollingBuilder, Action<HttpRequestBuilder>? configure = null,
-        CancellationToken cancellationToken = default);
+    Task SendAsync(HttpLongPollingBuilder httpLongPollingBuilder, CancellationToken cancellationToken = default);
 
     /// <summary>
     ///     发送 HTTP 声明式请求
