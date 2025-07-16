@@ -438,8 +438,8 @@ public sealed class FileTypeMapper
     /// </returns>
     public bool TryGetContentType(string subpath, [MaybeNullWhen(false)] out string contentType)
     {
-        // 根据文件路径获取拓展名
-        var extension = GetExtension(subpath);
+        // 根据文件路径解析拓展名
+        var extension = ExtractExtension(subpath);
 
         // 空检查
         if (extension is not null)
@@ -463,13 +463,13 @@ public sealed class FileTypeMapper
         new FileTypeMapper().TryGetContentType(subpath, out var contentType) ? contentType : defaultContentType;
 
     /// <summary>
-    ///     根据文件路径获取拓展名
+    ///     根据文件路径解析拓展名
     /// </summary>
     /// <param name="path">文件路径</param>
     /// <returns>
     ///     <see cref="string" />
     /// </returns>
-    internal static string? GetExtension(string path)
+    internal static string? ExtractExtension(string path)
     {
         // 空检查
         if (string.IsNullOrWhiteSpace(path))

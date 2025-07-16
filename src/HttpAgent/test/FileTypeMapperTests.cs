@@ -40,12 +40,12 @@ public class FileTypeMapperTests
     }
 
     [Fact]
-    public void GetExtension_ReturnOK()
+    public void ExtractExtension_ReturnOK()
     {
-        Assert.Null(FileTypeMapper.GetExtension(null!));
-        Assert.Null(FileTypeMapper.GetExtension(string.Empty));
-        Assert.Null(FileTypeMapper.GetExtension(" "));
+        Assert.Null(FileTypeMapper.ExtractExtension(null!));
+        Assert.Null(FileTypeMapper.ExtractExtension(string.Empty));
+        Assert.Null(FileTypeMapper.ExtractExtension(" "));
 
-        Assert.Equal(".jpg", FileTypeMapper.GetExtension(@"C:\Workspaces\httptest.jpg"));
+        Assert.Equal(".jpg", FileTypeMapper.ExtractExtension(@"C:\Workspaces\httptest.jpg"));
     }
 }
