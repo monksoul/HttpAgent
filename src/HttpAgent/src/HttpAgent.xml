@@ -1402,6 +1402,20 @@
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
         </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.SetMultipartContent(System.Action{HttpAgent.HttpMultipartFormDataBuilder},System.Boolean)">
+            <summary>
+                设置多部分表单内容，请求类型为 <c>multipart/form-data</c>
+            </summary>
+            <remarks>
+                该操作将强制覆盖 <see cref="M:HttpAgent.HttpRequestBuilder.SetContent(System.Object,System.String,System.Text.Encoding)" />、<see cref="M:HttpAgent.HttpRequestBuilder.SetContentEncoding(System.Text.Encoding)" /> 和
+                <see cref="M:HttpAgent.HttpRequestBuilder.SetContentType(System.String)" /> 设置的内容。
+            </remarks>
+            <param name="configure">自定义配置委托</param>
+            <param name="omitContentType">是否移除默认的多部分内容的 <c>Content-Type</c></param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
         <member name="M:HttpAgent.HttpRequestBuilder.SetMultipartContent(HttpAgent.HttpMultipartFormDataBuilder)">
             <summary>
                 设置多部分表单内容，请求类型为 <c>multipart/form-data</c>

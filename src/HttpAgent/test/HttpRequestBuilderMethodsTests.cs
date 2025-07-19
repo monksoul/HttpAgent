@@ -348,13 +348,22 @@ public class HttpRequestBuilderMethodsTests
         {
             builder.AddFormItem(new { }, "name");
         });
-
         Assert.NotNull(httpRequestBuilder.MultipartFormDataBuilder);
+        Assert.True(httpRequestBuilder.MultipartFormDataBuilder.OmitContentType);
 
         var httpRequestBuilder2 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
         httpRequestBuilder2.SetMultipartContent(
             new HttpMultipartFormDataBuilder(httpRequestBuilder2).AddFormItem(new { }, "name"));
         Assert.NotNull(httpRequestBuilder2.MultipartFormDataBuilder);
+        Assert.True(httpRequestBuilder2.MultipartFormDataBuilder.OmitContentType);
+
+        var httpRequestBuilder3 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        httpRequestBuilder3.SetMultipartContent(builder =>
+        {
+            builder.AddFormItem(new { }, "name");
+        }, false);
+        Assert.NotNull(httpRequestBuilder3.MultipartFormDataBuilder);
+        Assert.False(httpRequestBuilder3.MultipartFormDataBuilder.OmitContentType);
     }
 
     [Fact]

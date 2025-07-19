@@ -263,13 +263,28 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
-    public HttpRequestBuilder SetMultipartContent(Action<HttpMultipartFormDataBuilder> configure)
+    public HttpRequestBuilder SetMultipartContent(Action<HttpMultipartFormDataBuilder> configure) =>
+        SetMultipartContent(configure, true);
+
+    /// <summary>
+    ///     设置多部分表单内容，请求类型为 <c>multipart/form-data</c>
+    /// </summary>
+    /// <remarks>
+    ///     该操作将强制覆盖 <see cref="SetContent" />、<see cref="SetContentEncoding(System.Text.Encoding)" /> 和
+    ///     <see cref="SetContentType" /> 设置的内容。
+    /// </remarks>
+    /// <param name="configure">自定义配置委托</param>
+    /// <param name="omitContentType">是否移除默认的多部分内容的 <c>Content-Type</c></param>
+    /// <returns>
+    ///     <see cref="HttpRequestBuilder" />
+    /// </returns>
+    public HttpRequestBuilder SetMultipartContent(Action<HttpMultipartFormDataBuilder> configure, bool omitContentType)
     {
         // 空检查
         ArgumentNullException.ThrowIfNull(configure);
 
         // 初始化 HttpMultipartFormDataBuilder 实例
-        var httpMultipartFormDataBuilder = new HttpMultipartFormDataBuilder(this);
+        var httpMultipartFormDataBuilder = new HttpMultipartFormDataBuilder(this) { OmitContentType = omitContentType };
 
         // 调用自定义配置委托
         configure.Invoke(httpMultipartFormDataBuilder);
