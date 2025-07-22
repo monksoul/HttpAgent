@@ -2157,6 +2157,17 @@
             </returns>
             <exception cref="T:System.ArgumentException"></exception>
         </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.When(System.Boolean,System.Action{HttpAgent.HttpRequestBuilder})">
+            <summary>
+                当指定条件为 <c>true</c> 时，对构建器执行配置操作
+            </summary>
+            <remarks>支持多次调用。</remarks>
+            <param name="condition">布尔条件值</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
         <member name="M:HttpAgent.HttpRequestBuilder.ReleaseDisposables">
             <summary>
                 释放可释放的对象集合

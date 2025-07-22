@@ -1643,6 +1643,29 @@ public sealed partial class HttpRequestBuilder
     }
 
     /// <summary>
+    ///     当指定条件为 <c>true</c> 时，对构建器执行配置操作
+    /// </summary>
+    /// <remarks>支持多次调用。</remarks>
+    /// <param name="condition">布尔条件值</param>
+    /// <param name="configure">自定义配置委托</param>
+    /// <returns>
+    ///     <see cref="HttpRequestBuilder" />
+    /// </returns>
+    public HttpRequestBuilder When(bool condition, Action<HttpRequestBuilder> configure)
+    {
+        // 空检查
+        ArgumentNullException.ThrowIfNull(configure);
+
+        // 检查条件是否成立
+        if (condition)
+        {
+            configure(this);
+        }
+
+        return this;
+    }
+
+    /// <summary>
     ///     释放可释放的对象集合
     /// </summary>
     internal void ReleaseDisposables()

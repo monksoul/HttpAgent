@@ -1886,4 +1886,23 @@ public class HttpRequestBuilderMethodsTests
         httpRequestBuilder4.ConfigureForRedirect(new Uri("https://furion.net/"), HttpMethod.Post);
         Assert.NotNull(httpRequestBuilder4.RawContent);
     }
+
+    [Fact]
+    public void When_Invalid_Parameters()
+    {
+        Assert.Throws<ArgumentNullException>(() =>
+            new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost")).When(true, null!));
+    }
+
+    [Fact]
+    public void When_ReturnOK()
+    {
+        var builder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        builder.When(true, b => b.WithHeader("framework", "Furion"))
+            .When(false, b => b.WithHeader("author", "MonkSoul"));
+
+        Assert.NotNull(builder.Headers);
+        Assert.Single(builder.Headers);
+        Assert.Equal("Furion", builder.Headers["framework"].First());
+    }
 }
