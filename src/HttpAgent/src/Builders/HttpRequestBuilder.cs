@@ -323,6 +323,10 @@ public sealed partial class HttpRequestBuilder
             {
                 NoCache = true, NoStore = true, MustRevalidate = true
             };
+
+            // 解决部分服务器不能识别 Cache-Control 标头问题
+            httpRequestMessage.Headers.TryAddWithoutValidation("Pragma", "no-cache");
+            httpRequestMessage.Headers.TryAddWithoutValidation("If-None-Match", "\"\"");
         }
 
         // 空检查

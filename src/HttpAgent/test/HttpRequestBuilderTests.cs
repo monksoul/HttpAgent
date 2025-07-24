@@ -335,6 +335,8 @@ public class HttpRequestBuilderTests
         Assert.True(httpRequestMessage.Headers.CacheControl.NoCache);
         Assert.True(httpRequestMessage.Headers.CacheControl.NoStore);
         Assert.True(httpRequestMessage.Headers.CacheControl.MustRevalidate);
+        Assert.Equal("no-cache", httpRequestMessage.Headers.GetValues("Pragma").First());
+        Assert.Equal("\"\"", httpRequestMessage.Headers.GetValues("If-None-Match").First());
 
         httpRequestBuilder.WithHeader("null", null);
         httpRequestBuilder.AppendHeaders(httpRequestMessage);

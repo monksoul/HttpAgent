@@ -1,4 +1,6 @@
-﻿namespace HttpAgent.Samples.Controllers;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace HttpAgent.Samples.Controllers;
 
 [ApiController]
 [Route("[controller]/[action]")]
@@ -792,5 +794,11 @@ public class GetStartController(
     {
         return await httpRemoteService.SendAsStringAsync(HttpRequestBuilder.Get("docs")
             .SetHttpClientName("furion"));
+    }
+
+    [HttpGet]
+    public async Task<IActionResult?> ForwardToFile2([Required, FromQuery] string url)
+    {
+        return await httpContextAccessor.HttpContext.ForwardAsResultAsync(url);
     }
 }
