@@ -1888,11 +1888,9 @@ public class HttpRequestBuilderMethodsTests
     }
 
     [Fact]
-    public void When_Invalid_Parameters()
-    {
+    public void When_Invalid_Parameters() =>
         Assert.Throws<ArgumentNullException>(() =>
             new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost")).When(true, null!));
-    }
 
     [Fact]
     public void When_ReturnOK()

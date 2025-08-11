@@ -797,7 +797,7 @@ public class GetStartController(
     }
 
     [HttpGet]
-    public async Task<IActionResult?> ForwardToFile2([Required, FromQuery] string url)
+    public async Task<IActionResult?> ForwardToFile2([Required] [FromQuery] string url)
     {
         return await httpContextAccessor.HttpContext.ForwardAsResultAsync(url);
     }
