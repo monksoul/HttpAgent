@@ -6,14 +6,12 @@
     <members>
         <member name="T:HttpAgent.HttpContextForwardBuilder">
             <summary>
-                <see cref="P:HttpAgent.HttpContextForwardBuilder.HttpContext"/>
-                转发构建器
+                <see cref="P:HttpAgent.HttpContextForwardBuilder.HttpContext" /> 转发构建器
             </summary>
         </member>
         <member name="F:HttpAgent.HttpContextForwardBuilder._actionResultContentConverterInstance">
             <summary>
-                <see cref="T:HttpAgent.IActionResultContentConverter"/>
-                实例
+                <see cref="T:HttpAgent.IActionResultContentConverter" /> 实例
             </summary>
         </member>
         <member name="F:HttpAgent.HttpContextForwardBuilder._ignoreRequestHeaders">
@@ -23,16 +21,15 @@
         </member>
         <member name="M:HttpAgent.HttpContextForwardBuilder.#ctor(Microsoft.AspNetCore.Http.HttpContext,System.Net.Http.HttpMethod,System.Uri,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                <inheritdoc cref="T:HttpAgent.HttpContextForwardBuilder"/>
+                <inheritdoc cref="T:HttpAgent.HttpContextForwardBuilder" />
             </summary>
             <param name="httpContext">
-                <see cref="P:HttpAgent.HttpContextForwardBuilder.HttpContext"/>
+                <see cref="P:HttpAgent.HttpContextForwardBuilder.HttpContext" />
             </param>
             <param name="httpMethod">转发方式</param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
         </member>
         <member name="P:HttpAgent.HttpContextForwardBuilder.RequestUri">
@@ -46,60 +43,53 @@
             </summary>
         </member>
         <member name="P:HttpAgent.HttpContextForwardBuilder.HttpContext">
-            <inheritdoc cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+            <inheritdoc cref="T:Microsoft.AspNetCore.Http.HttpContext" />
         </member>
         <member name="P:HttpAgent.HttpContextForwardBuilder.ForwardOptions">
-            <inheritdoc cref="T:HttpAgent.HttpContextForwardOptions"/>
+            <inheritdoc cref="T:HttpAgent.HttpContextForwardOptions" />
         </member>
         <member name="M:HttpAgent.HttpContextForwardBuilder.GetTargetUri(Microsoft.AspNetCore.Http.HttpContext,System.Uri)">
             <summary>
                 获取目标地址
             </summary>
             <param name="httpContext">
-                <see cref="P:HttpAgent.HttpContextForwardBuilder.HttpContext"/>
+                <see cref="P:HttpAgent.HttpContextForwardBuilder.HttpContext" />
             </param>
-            <param name="requestUri">请求地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">请求地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <returns>
-                <see cref="T:System.Uri"/>
+                <see cref="T:System.Uri" />
             </returns>
         </member>
         <member name="M:HttpAgent.HttpContextForwardBuilder.GetForwardOptions(Microsoft.AspNetCore.Http.HttpContext,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                获取
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
-                实例
+                获取 <see cref="T:HttpAgent.HttpContextForwardOptions" /> 实例
             </summary>
             <param name="httpContext">
-                <see cref="P:HttpAgent.HttpContextForwardBuilder.HttpContext"/>
+                <see cref="P:HttpAgent.HttpContextForwardBuilder.HttpContext" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </returns>
         </member>
         <member name="M:HttpAgent.HttpContextForwardBuilder.Build(System.Action{HttpAgent.HttpRequestBuilder})">
             <summary>
-                构建
-                <see cref="T:HttpAgent.HttpRequestBuilder"/>
-                实例
+                构建 <see cref="T:HttpAgent.HttpRequestBuilder" /> 实例
             </summary>
             <param name="configure">自定义配置委托</param>
             <returns>
-                <see cref="T:HttpAgent.HttpRequestBuilder"/>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
         </member>
         <member name="M:HttpAgent.HttpContextForwardBuilder.BuildAsync(System.Action{HttpAgent.HttpRequestBuilder})">
             <summary>
-                构建
-                <see cref="T:HttpAgent.HttpRequestBuilder"/>
-                实例
+                构建 <see cref="T:HttpAgent.HttpRequestBuilder" /> 实例
             </summary>
             <param name="configure">自定义配置委托</param>
             <returns>
-                <see cref="T:HttpAgent.HttpRequestBuilder"/>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
         </member>
         <member name="M:HttpAgent.HttpContextForwardBuilder.CopyQueryAndRouteValues(HttpAgent.HttpRequestBuilder)">
@@ -107,7 +97,7 @@
                 复制查询参数和路由参数
             </summary>
             <param name="httpRequestBuilder">
-                <see cref="T:HttpAgent.HttpRequestBuilder"/>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
             </param>
         </member>
         <member name="M:HttpAgent.HttpContextForwardBuilder.CopyHeaders(HttpAgent.HttpRequestBuilder)">
@@ -115,7 +105,7 @@
                 复制请求标头
             </summary>
             <param name="httpRequestBuilder">
-                <see cref="T:HttpAgent.HttpRequestBuilder"/>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
             </param>
         </member>
         <member name="M:HttpAgent.HttpContextForwardBuilder.CopyBodyAsync(HttpAgent.HttpRequestBuilder)">
@@ -123,7 +113,7 @@
                 复制请求内容
             </summary>
             <param name="httpRequestBuilder">
-                <see cref="T:HttpAgent.HttpRequestBuilder"/>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
             </param>
         </member>
         <member name="M:HttpAgent.HttpContextForwardBuilder.CopyNonMultipartFormData(System.IO.Stream,System.String,HttpAgent.HttpRequestBuilder)">
@@ -131,11 +121,11 @@
                 复制非多部分表单内容
             </summary>
             <param name="bodyStream">
-                <see cref="T:System.IO.Stream"/>
+                <see cref="T:System.IO.Stream" />
             </param>
             <param name="contentType">内容类型</param>
             <param name="httpRequestBuilder">
-                <see cref="T:HttpAgent.HttpRequestBuilder"/>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
             </param>
         </member>
         <member name="M:HttpAgent.HttpContextForwardBuilder.CopyMultipartFormDataAsync(System.IO.Stream,System.String,HttpAgent.HttpRequestBuilder,System.Threading.CancellationToken)">
@@ -143,14 +133,14 @@
                 复制多部分表单内容
             </summary>
             <param name="bodyStream">
-                <see cref="T:System.IO.Stream"/>
+                <see cref="T:System.IO.Stream" />
             </param>
             <param name="rawContentType">原始内容类型</param>
             <param name="httpRequestBuilder">
-                <see cref="T:HttpAgent.HttpRequestBuilder"/>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
             </param>
             <param name="cancellationToken">
-                <see cref="T:System.Threading.CancellationToken"/>
+                <see cref="T:System.Threading.CancellationToken" />
             </param>
         </member>
         <member name="M:HttpAgent.HttpContextForwardBuilder.CopyTextMultipartSectionAsync(Microsoft.AspNetCore.WebUtilities.MultipartSection,HttpAgent.HttpMultipartFormDataBuilder,System.Threading.CancellationToken)">
@@ -158,78 +148,73 @@
                 复制多部分表单内容文本节内容
             </summary>
             <param name="multipartSection">
-                <see cref="T:Microsoft.AspNetCore.WebUtilities.MultipartSection"/>
+                <see cref="T:Microsoft.AspNetCore.WebUtilities.MultipartSection" />
             </param>
             <param name="httpMultipartFormDataBuilder">
-                <see cref="T:HttpAgent.HttpMultipartFormDataBuilder"/>
+                <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </param>
             <param name="cancellationToken">
-                <see cref="T:System.Threading.CancellationToken"/>
+                <see cref="T:System.Threading.CancellationToken" />
             </param>
         </member>
-        <member name="M:HttpAgent.HttpContextForwardBuilder.CopyFileMultipartSectionAsync(Microsoft.AspNetCore.WebUtilities.MultipartSection,HttpAgent.HttpMultipartFormDataBuilder,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.HttpContextForwardBuilder.CopyFileMultipartSectionAsync(Microsoft.AspNetCore.WebUtilities.FileMultipartSection,HttpAgent.HttpMultipartFormDataBuilder,System.Threading.CancellationToken)">
             <summary>
                 复制多部分表单内容文件节内容
             </summary>
-            <param name="multipartSection">
-                <see cref="T:Microsoft.AspNetCore.WebUtilities.MultipartSection"/>
+            <param name="fileMultipartSection">
+                <see cref="T:Microsoft.AspNetCore.WebUtilities.FileMultipartSection" />
             </param>
             <param name="httpMultipartFormDataBuilder">
-                <see cref="T:HttpAgent.HttpMultipartFormDataBuilder"/>
+                <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </param>
             <param name="cancellationToken">
-                <see cref="T:System.Threading.CancellationToken"/>
+                <see cref="T:System.Threading.CancellationToken" />
             </param>
         </member>
         <member name="M:HttpAgent.HttpContextForwardBuilder.ReadBodyAsync(HttpAgent.HttpRequestBuilder)">
             <summary>
-                读取
-                <see cref="P:HttpAgent.HttpContextForwardBuilder.HttpContext"/>
-                请求体流
+                读取 <see cref="P:HttpAgent.HttpContextForwardBuilder.HttpContext" /> 请求体流
             </summary>
             <param name="httpRequestBuilder">
-                <see cref="T:HttpAgent.HttpRequestBuilder"/>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
             </param>
             <returns>
-                <see cref="T:System.IO.Stream"/>
+                <see cref="T:System.IO.Stream" />
             </returns>
             <exception cref="T:System.InvalidOperationException"></exception>
         </member>
         <member name="T:HttpAgent.IActionResultContentConverter">
             <summary>
-                <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult"/>
-                内容转换器
+                <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult" /> 内容转换器
             </summary>
         </member>
         <member name="M:HttpAgent.IActionResultContentConverter.Read(System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
-            <inheritdoc/>
+            <inheritdoc />
         </member>
         <member name="M:HttpAgent.IActionResultContentConverter.ReadAsync(System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
-            <inheritdoc/>
+            <inheritdoc />
         </member>
         <member name="M:HttpAgent.IActionResultContentConverter.TryGetStatusCodeResult(System.Net.Http.HttpResponseMessage,System.Net.HttpStatusCode@,Microsoft.AspNetCore.Mvc.IActionResult@)">
             <summary>
                 处理特定状态码结果
             </summary>
             <param name="httpResponseMessage">
-                <see cref="T:System.Net.Http.HttpResponseMessage"/>
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
             </param>
             <param name="statusCode">HTTP 状态码</param>
             <param name="statusCodeResult">
-                <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult"/>
+                <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult" />
             </param>
             <returns>
-                <see cref="T:System.Boolean"/>
+                <see cref="T:System.Boolean" />
             </returns>
         </member>
         <member name="T:HttpAgent.Extensions.HttpContextExtensions">
             <summary>
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                拓展类
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 拓展类
             </summary>
             <summary>
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                拓展类
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 拓展类
             </summary>
         </member>
         <member name="F:HttpAgent.Extensions.HttpContextExtensions._ignoreResponseHeaders">
@@ -239,19 +224,16 @@
             <remarks>
                 <list type="bullet">
                     <item>
-                        <term>Content-Type:</term>
+                        <term>Content-Type: </term>
                         <description>
-                            非标准的 <c>Content-Type</c> 值（例如
-                            <c>text/plain; charset=utf-8</c>
-                            ）可能会导致“No output formatter was found for content types 'text/plain; charset=utf-8,
-                            text/plain;
+                            非标准的 <c>Content-Type</c> 值（例如 <c>text/plain; charset=utf-8</c>
+                            ）可能会导致“No output formatter was found for content types 'text/plain; charset=utf-8, text/plain;
                             charset=utf-8' to write the response.”错误。忽略此标头以防止此类错误。
                         </description>
                     </item>
                     <item>
-                        <term>Transfer-Encoding:</term>
-                        <description>当响应标头包含 <c>Transfer-Encoding: chunked</c> 时，可能导致响应处理过程无限期挂起。忽略此标头可避免该问题。
-                        </description>
+                        <term>Transfer-Encoding: </term>
+                        <description>当响应标头包含 <c>Transfer-Encoding: chunked</c> 时，可能导致响应处理过程无限期挂起。忽略此标头可避免该问题。</description>
                     </item>
                 </list>
             </remarks>
@@ -261,470 +243,406 @@
                 获取完整的请求 URL 地址
             </summary>
             <param name="httpRequest">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpRequest"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpRequest" />
             </param>
             <returns>
-                <see cref="T:System.String"/>
+                <see cref="T:System.String" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.Forward(Microsoft.AspNetCore.Http.HttpContext,System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:System.Net.Http.HttpResponseMessage"/>
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.Forward(Microsoft.AspNetCore.Http.HttpContext,System.Net.Http.HttpMethod,System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
             <param name="httpMethod">转发方式</param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:System.Net.Http.HttpResponseMessage"/>
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.Forward(Microsoft.AspNetCore.Http.HttpContext,System.Uri,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:System.Net.Http.HttpResponseMessage"/>
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.Forward(Microsoft.AspNetCore.Http.HttpContext,System.Net.Http.HttpMethod,System.Uri,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
             <param name="httpMethod">转发方式</param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:System.Net.Http.HttpResponseMessage"/>
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsync(Microsoft.AspNetCore.Http.HttpContext,System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:System.Net.Http.HttpResponseMessage"/>
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsync(Microsoft.AspNetCore.Http.HttpContext,System.Net.Http.HttpMethod,System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
             <param name="httpMethod">转发方式</param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:System.Net.Http.HttpResponseMessage"/>
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsync(Microsoft.AspNetCore.Http.HttpContext,System.Uri,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:System.Net.Http.HttpResponseMessage"/>
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsync(Microsoft.AspNetCore.Http.HttpContext,System.Net.Http.HttpMethod,System.Uri,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
             <param name="httpMethod">转发方式</param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:System.Net.Http.HttpResponseMessage"/>
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.Forward``1(Microsoft.AspNetCore.Http.HttpContext,System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <typeparam name="TResult">转换的目标类型</typeparam>
             <returns>
-                <see cref="T:HttpAgent.HttpRemoteResult`1"/>
+                <see cref="T:HttpAgent.HttpRemoteResult`1" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.Forward``1(Microsoft.AspNetCore.Http.HttpContext,System.Net.Http.HttpMethod,System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
             <param name="httpMethod">转发方式</param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <typeparam name="TResult">转换的目标类型</typeparam>
             <returns>
-                <see cref="T:HttpAgent.HttpRemoteResult`1"/>
+                <see cref="T:HttpAgent.HttpRemoteResult`1" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.Forward``1(Microsoft.AspNetCore.Http.HttpContext,System.Uri,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <typeparam name="TResult">转换的目标类型</typeparam>
             <returns>
-                <see cref="T:HttpAgent.HttpRemoteResult`1"/>
+                <see cref="T:HttpAgent.HttpRemoteResult`1" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.Forward``1(Microsoft.AspNetCore.Http.HttpContext,System.Net.Http.HttpMethod,System.Uri,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
             <param name="httpMethod">转发方式</param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <typeparam name="TResult">转换的目标类型</typeparam>
             <returns>
-                <see cref="T:HttpAgent.HttpRemoteResult`1"/>
+                <see cref="T:HttpAgent.HttpRemoteResult`1" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsync``1(Microsoft.AspNetCore.Http.HttpContext,System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <typeparam name="TResult">转换的目标类型</typeparam>
             <returns>
-                <see cref="T:HttpAgent.HttpRemoteResult`1"/>
+                <see cref="T:HttpAgent.HttpRemoteResult`1" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsync``1(Microsoft.AspNetCore.Http.HttpContext,System.Net.Http.HttpMethod,System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
             <param name="httpMethod">转发方式</param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <typeparam name="TResult">转换的目标类型</typeparam>
             <returns>
-                <see cref="T:HttpAgent.HttpRemoteResult`1"/>
+                <see cref="T:HttpAgent.HttpRemoteResult`1" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsync``1(Microsoft.AspNetCore.Http.HttpContext,System.Uri,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <typeparam name="TResult">转换的目标类型</typeparam>
             <returns>
-                <see cref="T:HttpAgent.HttpRemoteResult`1"/>
+                <see cref="T:HttpAgent.HttpRemoteResult`1" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsync``1(Microsoft.AspNetCore.Http.HttpContext,System.Net.Http.HttpMethod,System.Uri,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
             <param name="httpMethod">转发方式</param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <typeparam name="TResult">转换的目标类型</typeparam>
             <returns>
-                <see cref="T:HttpAgent.HttpRemoteResult`1"/>
+                <see cref="T:HttpAgent.HttpRemoteResult`1" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.CreateForwardBuilder(Microsoft.AspNetCore.Http.HttpContext,System.Net.Http.HttpMethod,System.String,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                创建
-                <see cref="T:HttpAgent.HttpContextForwardBuilder"/>
-                实例
+                创建 <see cref="T:HttpAgent.HttpContextForwardBuilder" /> 实例
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
             <param name="httpMethod">转发方式</param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:HttpAgent.HttpContextForwardBuilder"/>
+                <see cref="T:HttpAgent.HttpContextForwardBuilder" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.CreateForwardBuilder(Microsoft.AspNetCore.Http.HttpContext,System.String,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                创建
-                <see cref="T:HttpAgent.HttpContextForwardBuilder"/>
-                实例
+                创建 <see cref="T:HttpAgent.HttpContextForwardBuilder" /> 实例
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:HttpAgent.HttpContextForwardBuilder"/>
+                <see cref="T:HttpAgent.HttpContextForwardBuilder" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.CreateForwardBuilder(Microsoft.AspNetCore.Http.HttpContext,System.Net.Http.HttpMethod,System.Uri,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                创建
-                <see cref="T:HttpAgent.HttpContextForwardBuilder"/>
-                实例
+                创建 <see cref="T:HttpAgent.HttpContextForwardBuilder" /> 实例
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
             <param name="httpMethod">转发方式</param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:HttpAgent.HttpContextForwardBuilder"/>
+                <see cref="T:HttpAgent.HttpContextForwardBuilder" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.CreateForwardBuilder(Microsoft.AspNetCore.Http.HttpContext,System.Uri,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                创建
-                <see cref="T:HttpAgent.HttpContextForwardBuilder"/>
-                实例
+                创建 <see cref="T:HttpAgent.HttpContextForwardBuilder" /> 实例
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:HttpAgent.HttpContextForwardBuilder"/>
+                <see cref="T:HttpAgent.HttpContextForwardBuilder" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardResponseMessage(Microsoft.AspNetCore.Http.HttpContext,System.Net.Http.HttpResponseMessage,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                根据配置选项将
-                <see cref="T:System.Net.Http.HttpResponseMessage"/>
-                信息转发到
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                中
+                根据配置选项将 <see cref="T:System.Net.Http.HttpResponseMessage" /> 信息转发到 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 中
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
             <param name="httpResponseMessage">
-                <see cref="T:System.Net.Http.HttpResponseMessage"/>
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardHttpHeaders(Microsoft.AspNetCore.Http.HttpResponse,System.Net.Http.Headers.HttpHeaders,HttpAgent.HttpContextForwardOptions)">
@@ -732,13 +650,13 @@
                 转发 HTTP 标头
             </summary>
             <param name="httpResponse">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpResponse"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpResponse" />
             </param>
             <param name="httpHeaders">
-                <see cref="T:System.Net.Http.Headers.HttpHeaders"/>
+                <see cref="T:System.Net.Http.Headers.HttpHeaders" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.PrepareForwardService(Microsoft.AspNetCore.Http.HttpContext,System.Net.Http.HttpMethod,System.Uri,System.Action{HttpAgent.HttpRequestBuilder},HttpAgent.HttpContextForwardOptions)">
@@ -746,17 +664,16 @@
                 初始化转发所需的服务
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
             <param name="httpMethod">转发方式</param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="forwardOptions">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <returns>
-                <see cref="T:System.Tuple"/>
+                <see cref="T:System.Tuple" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.PrepareForwardServiceAsync(Microsoft.AspNetCore.Http.HttpContext,System.Net.Http.HttpMethod,System.Uri,System.Action{HttpAgent.HttpRequestBuilder},HttpAgent.HttpContextForwardOptions)">
@@ -764,404 +681,352 @@
                 初始化转发所需的服务
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
             <param name="httpMethod">转发方式</param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="forwardOptions">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <returns>
-                <see cref="T:System.Tuple"/>
+                <see cref="T:System.Tuple" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAs``1(Microsoft.AspNetCore.Http.HttpContext,System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <typeparam name="TResult">转换的目标类型</typeparam>
             <returns>
-                <typeparamref name="TResult"/>
+                <typeparamref name="TResult" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAs``1(Microsoft.AspNetCore.Http.HttpContext,System.Net.Http.HttpMethod,System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
             <param name="httpMethod">转发方式</param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <typeparam name="TResult">转换的目标类型</typeparam>
             <returns>
-                <typeparamref name="TResult"/>
+                <typeparamref name="TResult" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAs``1(Microsoft.AspNetCore.Http.HttpContext,System.Uri,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <typeparam name="TResult">转换的目标类型</typeparam>
             <returns>
-                <typeparamref name="TResult"/>
+                <typeparamref name="TResult" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAs``1(Microsoft.AspNetCore.Http.HttpContext,System.Net.Http.HttpMethod,System.Uri,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
             <param name="httpMethod">转发方式</param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <typeparam name="TResult">转换的目标类型</typeparam>
             <returns>
-                <typeparamref name="TResult"/>
+                <typeparamref name="TResult" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsAsync``1(Microsoft.AspNetCore.Http.HttpContext,System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <typeparam name="TResult">转换的目标类型</typeparam>
             <returns>
-                <typeparamref name="TResult"/>
+                <typeparamref name="TResult" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsAsync``1(Microsoft.AspNetCore.Http.HttpContext,System.Net.Http.HttpMethod,System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
             <param name="httpMethod">转发方式</param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <typeparam name="TResult">转换的目标类型</typeparam>
             <returns>
-                <typeparamref name="TResult"/>
+                <typeparamref name="TResult" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsAsync``1(Microsoft.AspNetCore.Http.HttpContext,System.Uri,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <typeparam name="TResult">转换的目标类型</typeparam>
             <returns>
-                <typeparamref name="TResult"/>
+                <typeparamref name="TResult" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsAsync``1(Microsoft.AspNetCore.Http.HttpContext,System.Net.Http.HttpMethod,System.Uri,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
             <param name="httpMethod">转发方式</param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <typeparam name="TResult">转换的目标类型</typeparam>
             <returns>
-                <typeparamref name="TResult"/>
+                <typeparamref name="TResult" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsString(Microsoft.AspNetCore.Http.HttpContext,System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:System.String"/>
+                <see cref="T:System.String" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsString(Microsoft.AspNetCore.Http.HttpContext,System.Net.Http.HttpMethod,System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
             <param name="httpMethod">转发方式</param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:System.String"/>
+                <see cref="T:System.String" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsString(Microsoft.AspNetCore.Http.HttpContext,System.Uri,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:System.String"/>
+                <see cref="T:System.String" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsString(Microsoft.AspNetCore.Http.HttpContext,System.Net.Http.HttpMethod,System.Uri,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
             <param name="httpMethod">转发方式</param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:System.String"/>
+                <see cref="T:System.String" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsStringAsync(Microsoft.AspNetCore.Http.HttpContext,System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:System.String"/>
+                <see cref="T:System.String" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsStringAsync(Microsoft.AspNetCore.Http.HttpContext,System.Net.Http.HttpMethod,System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
             <param name="httpMethod">转发方式</param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:System.String"/>
+                <see cref="T:System.String" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsStringAsync(Microsoft.AspNetCore.Http.HttpContext,System.Uri,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:System.String"/>
+                <see cref="T:System.String" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsStringAsync(Microsoft.AspNetCore.Http.HttpContext,System.Net.Http.HttpMethod,System.Uri,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
             <param name="httpMethod">转发方式</param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:System.String"/>
+                <see cref="T:System.String" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsByteArray(Microsoft.AspNetCore.Http.HttpContext,System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
                 <c>byte[]</c>
@@ -1169,22 +1034,19 @@
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsByteArray(Microsoft.AspNetCore.Http.HttpContext,System.Net.Http.HttpMethod,System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
             <param name="httpMethod">转发方式</param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
                 <c>byte[]</c>
@@ -1192,21 +1054,18 @@
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsByteArray(Microsoft.AspNetCore.Http.HttpContext,System.Uri,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
                 <c>byte[]</c>
@@ -1214,22 +1073,19 @@
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsByteArray(Microsoft.AspNetCore.Http.HttpContext,System.Net.Http.HttpMethod,System.Uri,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
             <param name="httpMethod">转发方式</param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
                 <c>byte[]</c>
@@ -1237,21 +1093,18 @@
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsByteArrayAsync(Microsoft.AspNetCore.Http.HttpContext,System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
                 <c>byte[]</c>
@@ -1259,22 +1112,19 @@
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsByteArrayAsync(Microsoft.AspNetCore.Http.HttpContext,System.Net.Http.HttpMethod,System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
             <param name="httpMethod">转发方式</param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
                 <c>byte[]</c>
@@ -1282,21 +1132,18 @@
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsByteArrayAsync(Microsoft.AspNetCore.Http.HttpContext,System.Uri,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
                 <c>byte[]</c>
@@ -1304,22 +1151,19 @@
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsByteArrayAsync(Microsoft.AspNetCore.Http.HttpContext,System.Net.Http.HttpMethod,System.Uri,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
             <param name="httpMethod">转发方式</param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
                 <c>byte[]</c>
@@ -1327,556 +1171,483 @@
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsStream(Microsoft.AspNetCore.Http.HttpContext,System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:System.IO.Stream"/>
+                <see cref="T:System.IO.Stream" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsStream(Microsoft.AspNetCore.Http.HttpContext,System.Net.Http.HttpMethod,System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
             <param name="httpMethod">转发方式</param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:System.IO.Stream"/>
+                <see cref="T:System.IO.Stream" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsStream(Microsoft.AspNetCore.Http.HttpContext,System.Uri,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:System.IO.Stream"/>
+                <see cref="T:System.IO.Stream" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsStream(Microsoft.AspNetCore.Http.HttpContext,System.Net.Http.HttpMethod,System.Uri,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
             <param name="httpMethod">转发方式</param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:System.IO.Stream"/>
+                <see cref="T:System.IO.Stream" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsStreamAsync(Microsoft.AspNetCore.Http.HttpContext,System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:System.IO.Stream"/>
+                <see cref="T:System.IO.Stream" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsStreamAsync(Microsoft.AspNetCore.Http.HttpContext,System.Net.Http.HttpMethod,System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
             <param name="httpMethod">转发方式</param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:System.IO.Stream"/>
+                <see cref="T:System.IO.Stream" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsStreamAsync(Microsoft.AspNetCore.Http.HttpContext,System.Uri,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:System.IO.Stream"/>
+                <see cref="T:System.IO.Stream" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsStreamAsync(Microsoft.AspNetCore.Http.HttpContext,System.Net.Http.HttpMethod,System.Uri,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
             <param name="httpMethod">转发方式</param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:System.IO.Stream"/>
+                <see cref="T:System.IO.Stream" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsResult(Microsoft.AspNetCore.Http.HttpContext,System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult"/>
+                <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsResult(Microsoft.AspNetCore.Http.HttpContext,System.Net.Http.HttpMethod,System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
             <param name="httpMethod">转发方式</param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult"/>
+                <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsResult(Microsoft.AspNetCore.Http.HttpContext,System.Uri,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult"/>
+                <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsResult(Microsoft.AspNetCore.Http.HttpContext,System.Net.Http.HttpMethod,System.Uri,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
             <param name="httpMethod">转发方式</param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult"/>
+                <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsResultAsync(Microsoft.AspNetCore.Http.HttpContext,System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult"/>
+                <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsResultAsync(Microsoft.AspNetCore.Http.HttpContext,System.Net.Http.HttpMethod,System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
             <param name="httpMethod">转发方式</param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult"/>
+                <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsResultAsync(Microsoft.AspNetCore.Http.HttpContext,System.Uri,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult"/>
+                <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsResultAsync(Microsoft.AspNetCore.Http.HttpContext,System.Net.Http.HttpMethod,System.Uri,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
             <param name="httpMethod">转发方式</param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult"/>
+                <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAs(Microsoft.AspNetCore.Http.HttpContext,System.Type,System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
             <param name="resultType">转换的目标类型</param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:System.Object"/>
+                <see cref="T:System.Object" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAs(Microsoft.AspNetCore.Http.HttpContext,System.Type,System.Net.Http.HttpMethod,System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="resultType">转换的目标类型</param>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
             <param name="httpMethod">转发方式</param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:System.Object"/>
+                <see cref="T:System.Object" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAs(Microsoft.AspNetCore.Http.HttpContext,System.Type,System.Uri,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
             <param name="resultType">转换的目标类型</param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:System.Object"/>
+                <see cref="T:System.Object" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAs(Microsoft.AspNetCore.Http.HttpContext,System.Type,System.Net.Http.HttpMethod,System.Uri,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
             <param name="resultType">转换的目标类型</param>
             <param name="httpMethod">转发方式</param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:System.Object"/>
+                <see cref="T:System.Object" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsAsync(Microsoft.AspNetCore.Http.HttpContext,System.Type,System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
             <param name="resultType">转换的目标类型</param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:System.Object"/>
+                <see cref="T:System.Object" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsAsync(Microsoft.AspNetCore.Http.HttpContext,System.Type,System.Net.Http.HttpMethod,System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
             <param name="resultType">转换的目标类型</param>
             <param name="httpMethod">转发方式</param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:System.Object"/>
+                <see cref="T:System.Object" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsAsync(Microsoft.AspNetCore.Http.HttpContext,System.Type,System.Uri,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
             <param name="resultType">转换的目标类型</param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:System.Object"/>
+                <see cref="T:System.Object" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsAsync(Microsoft.AspNetCore.Http.HttpContext,System.Type,System.Net.Http.HttpMethod,System.Uri,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
-                转发
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                到新的 HTTP 远程地址
+                转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
             </summary>
             <param name="httpContext">
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" />
             </param>
             <param name="resultType">转换的目标类型</param>
             <param name="httpMethod">转发方式</param>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="configure">自定义配置委托</param>
             <param name="completionOption">
-                <see cref="T:System.Net.Http.HttpCompletionOption"/>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="forwardOptions">
-                <see cref="T:HttpAgent.HttpContextForwardOptions"/>
+                <see cref="T:HttpAgent.HttpContextForwardOptions" />
             </param>
             <returns>
-                <see cref="T:System.Object"/>
+                <see cref="T:System.Object" />
             </returns>
         </member>
         <member name="T:HttpAgent.HttpMultipartFormDataBuilderExtensions">
             <summary>
-                <see cref="T:HttpAgent.HttpMultipartFormDataBuilder"/>
-                拓展类
+                <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" /> 拓展类
             </summary>
         </member>
         <member name="M:HttpAgent.HttpMultipartFormDataBuilderExtensions.AddFile(HttpAgent.HttpMultipartFormDataBuilder,Microsoft.AspNetCore.Http.IFormFile,System.String,System.String,System.String,System.Text.Encoding)">
@@ -1884,17 +1655,17 @@
                 添加文件
             </summary>
             <param name="httpMultipartFormDataBuilder">
-                <see cref="T:HttpAgent.HttpMultipartFormDataBuilder"/>
+                <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </param>
             <param name="formFile">
-                <see cref="T:Microsoft.AspNetCore.Http.IFormFile"/>
+                <see cref="T:Microsoft.AspNetCore.Http.IFormFile" />
             </param>
             <param name="name">表单名称</param>
             <param name="fileName">文件的名称</param>
             <param name="contentType">内容类型</param>
             <param name="contentEncoding">内容编码</param>
             <returns>
-                <see cref="T:HttpAgent.HttpMultipartFormDataBuilder"/>
+                <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
         </member>
         <member name="M:HttpAgent.HttpMultipartFormDataBuilderExtensions.AddFiles(HttpAgent.HttpMultipartFormDataBuilder,System.Collections.Generic.IEnumerable{Microsoft.AspNetCore.Http.IFormFile},System.String)">
@@ -1902,20 +1673,19 @@
                 添加多个文件
             </summary>
             <param name="httpMultipartFormDataBuilder">
-                <see cref="T:HttpAgent.HttpMultipartFormDataBuilder"/>
+                <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </param>
             <param name="formFiles">
-                <see cref="T:Microsoft.AspNetCore.Http.IFormFileCollection"/>
+                <see cref="T:Microsoft.AspNetCore.Http.IFormFileCollection" />
             </param>
             <param name="name">表单名称</param>
             <returns>
-                <see cref="T:HttpAgent.HttpMultipartFormDataBuilder"/>
+                <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
         </member>
         <member name="T:HttpAgent.AspNetCore.Extensions.IApplicationBuilderExtensions">
             <summary>
-                <see cref="T:Microsoft.AspNetCore.Builder.IApplicationBuilder"/>
-                拓展类
+                <see cref="T:Microsoft.AspNetCore.Builder.IApplicationBuilder" /> 拓展类
             </summary>
         </member>
         <member name="M:HttpAgent.AspNetCore.Extensions.IApplicationBuilderExtensions.UseEnableBuffering(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
@@ -1923,38 +1693,32 @@
                 启用请求正文缓存
             </summary>
             <remarks>
-                <para>支持 <c>HttpRequest.Body</c> 重复读取。
-                </para>
-                <para>
-                    https://learn.microsoft.com/zh-cn/aspnet/core/fundamentals/use-http-context?view=aspnetcore-8.0#enable-request-body-buffering
-                </para>
+                <para>支持 <c>HttpRequest.Body</c> 重复读取。</para>
+                <para>https://learn.microsoft.com/zh-cn/aspnet/core/fundamentals/use-http-context?view=aspnetcore-8.0#enable-request-body-buffering</para>
             </remarks>
             <param name="app">
-                <see cref="T:Microsoft.AspNetCore.Builder.IApplicationBuilder"/>
+                <see cref="T:Microsoft.AspNetCore.Builder.IApplicationBuilder" />
             </param>
             <returns>
-                <see cref="T:Microsoft.AspNetCore.Builder.IApplicationBuilder"/>
+                <see cref="T:Microsoft.AspNetCore.Builder.IApplicationBuilder" />
             </returns>
         </member>
         <member name="T:HttpAgent.ForwardAttribute">
             <summary>
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                转发操作筛选器
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 转发操作筛选器
             </summary>
         </member>
         <member name="M:HttpAgent.ForwardAttribute.#ctor(System.String)">
             <summary>
-                <inheritdoc cref="T:HttpAgent.ForwardAttribute"/>
+                <inheritdoc cref="T:HttpAgent.ForwardAttribute" />
             </summary>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
         </member>
         <member name="M:HttpAgent.ForwardAttribute.#ctor(System.String,System.Net.Http.HttpMethod)">
             <summary>
-                <inheritdoc cref="T:HttpAgent.ForwardAttribute"/>
+                <inheritdoc cref="T:HttpAgent.ForwardAttribute" />
             </summary>
-            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。
-            </param>
+            <param name="requestUri">转发地址。若为空则尝试从请求标头 <c>X-Forward-To</c> 中获取目标地址。</param>
             <param name="httpMethod">转发方式</param>
         </member>
         <member name="P:HttpAgent.ForwardAttribute.RequestUri">
@@ -1970,61 +1734,47 @@
         </member>
         <member name="P:HttpAgent.ForwardAttribute.HttpClientName">
             <summary>
-                <see cref="T:System.Net.Http.HttpClient"/>
-                实例的配置名称
+                <see cref="T:System.Net.Http.HttpClient" /> 实例的配置名称
             </summary>
             <remarks>
-                <para>此属性用于指定
-                    <see cref="T:System.Net.Http.IHttpClientFactory"/>
-                    创建
-                    <see cref="T:System.Net.Http.HttpClient"/>
-                    实例时传递的名称。
-                </para>
-                <para>该名称用于标识在服务容器中与特定
-                    <see cref="T:System.Net.Http.HttpClient"/>
-                    实例相关的配置。
-                </para>
+                <para>此属性用于指定 <see cref="T:System.Net.Http.IHttpClientFactory" /> 创建 <see cref="T:System.Net.Http.HttpClient" /> 实例时传递的名称。</para>
+                <para>该名称用于标识在服务容器中与特定 <see cref="T:System.Net.Http.HttpClient" /> 实例相关的配置。</para>
             </remarks>
         </member>
         <member name="P:HttpAgent.ForwardAttribute.CompletionOption">
             <summary>
-                <inheritdoc cref="T:System.Net.Http.HttpCompletionOption"/>
+                <inheritdoc cref="T:System.Net.Http.HttpCompletionOption" />
             </summary>
         </member>
         <member name="P:HttpAgent.ForwardAttribute.WithQueryParameters">
             <summary>
                 是否转发查询参数（URL 参数）
             </summary>
-            <remarks>默认值为：<c>true</c>。
-            </remarks>
+            <remarks>默认值为：<c>true</c>。</remarks>
         </member>
         <member name="P:HttpAgent.ForwardAttribute.WithRequestHeaders">
             <summary>
                 是否转发请求标头
             </summary>
-            <remarks>默认值为：<c>true</c>。
-            </remarks>
+            <remarks>默认值为：<c>true</c>。</remarks>
         </member>
         <member name="P:HttpAgent.ForwardAttribute.WithResponseStatusCode">
             <summary>
                 是否转发响应状态码
             </summary>
-            <remarks>默认值为：<c>true</c>。
-            </remarks>
+            <remarks>默认值为：<c>true</c>。</remarks>
         </member>
         <member name="P:HttpAgent.ForwardAttribute.WithResponseHeaders">
             <summary>
                 是否转发响应标头
             </summary>
-            <remarks>默认值为：<c>true</c>。
-            </remarks>
+            <remarks>默认值为：<c>true</c>。</remarks>
         </member>
         <member name="P:HttpAgent.ForwardAttribute.WithResponseContentHeaders">
             <summary>
                 是否转发响应内容标头
             </summary>
-            <remarks>默认值为：<c>true</c>。
-            </remarks>
+            <remarks>默认值为：<c>true</c>。</remarks>
         </member>
         <member name="P:HttpAgent.ForwardAttribute.IgnoreRequestHeaders">
             <summary>
@@ -2036,8 +1786,7 @@
                 忽略在转发时需要跳过的响应标头列表
             </summary>
             <remarks>
-                若响应标头中包含 <c>Content-Length</c>，且其值与实际响应体大小不符，则可能引发“Error while copying content
-                to a
+                若响应标头中包含 <c>Content-Length</c>，且其值与实际响应体大小不符，则可能引发“Error while copying content to a
                 stream.”。忽略此标头有助于解决因长度不匹配引起的错误。
             </remarks>
         </member>
@@ -2045,11 +1794,10 @@
             <summary>
                 是否重新设置 <c>Host</c> 请求标头
             </summary>
-            <remarks>在一些目标服务器中，可能需要校验该请求标头。默认值为：<c>false</c>。
-            </remarks>
+            <remarks>在一些目标服务器中，可能需要校验该请求标头。默认值为：<c>false</c>。</remarks>
         </member>
         <member name="M:HttpAgent.ForwardAttribute.OnActionExecutionAsync(Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext,Microsoft.AspNetCore.Mvc.Filters.ActionExecutionDelegate)">
-            <inheritdoc/>
+            <inheritdoc />
         </member>
         <member name="M:HttpAgent.ForwardAttribute.ParseResultType(System.Type)">
             <summary>
@@ -2057,56 +1805,49 @@
             </summary>
             <param name="returnType">方法返回值类型</param>
             <returns>
-                <see cref="T:System.Type"/>
+                <see cref="T:System.Type" />
             </returns>
         </member>
         <member name="T:HttpAgent.HttpContextForwardOptions">
             <summary>
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>
-                转发配置选项
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 转发配置选项
             </summary>
         </member>
         <member name="P:HttpAgent.HttpContextForwardOptions.WithQueryParameters">
             <summary>
                 是否转发查询参数（URL 参数）
             </summary>
-            <remarks>默认值为：<c>true</c>。
-            </remarks>
+            <remarks>默认值为：<c>true</c>。</remarks>
         </member>
         <member name="P:HttpAgent.HttpContextForwardOptions.WithRequestHeaders">
             <summary>
                 是否转发请求标头
             </summary>
-            <remarks>默认值为：<c>true</c>。
-            </remarks>
+            <remarks>默认值为：<c>true</c>。</remarks>
         </member>
         <member name="P:HttpAgent.HttpContextForwardOptions.WithResponseStatusCode">
             <summary>
                 是否转发响应状态码
             </summary>
-            <remarks>默认值为：<c>true</c>。
-            </remarks>
+            <remarks>默认值为：<c>true</c>。</remarks>
         </member>
         <member name="P:HttpAgent.HttpContextForwardOptions.WithResponseHeaders">
             <summary>
                 是否转发响应标头
             </summary>
-            <remarks>默认值为：<c>true</c>。
-            </remarks>
+            <remarks>默认值为：<c>true</c>。</remarks>
         </member>
         <member name="P:HttpAgent.HttpContextForwardOptions.WithResponseContentHeaders">
             <summary>
                 是否转发响应内容标头
             </summary>
-            <remarks>默认值为：<c>true</c>。
-            </remarks>
+            <remarks>默认值为：<c>true</c>。</remarks>
         </member>
         <member name="P:HttpAgent.HttpContextForwardOptions.ResetHostRequestHeader">
             <summary>
                 是否重新设置 <c>Host</c> 请求标头
             </summary>
-            <remarks>在一些目标服务器中，可能需要校验该请求标头。默认值为：<c>false</c>。
-            </remarks>
+            <remarks>在一些目标服务器中，可能需要校验该请求标头。默认值为：<c>false</c>。</remarks>
         </member>
         <member name="P:HttpAgent.HttpContextForwardOptions.IgnoreRequestHeaders">
             <summary>
@@ -2118,8 +1859,7 @@
                 忽略在转发时需要跳过的响应标头列表
             </summary>
             <remarks>
-                若响应标头中包含 <c>Content-Length</c>，且其值与实际响应体大小不符，则可能引发“Error while copying content
-                to a
+                若响应标头中包含 <c>Content-Length</c>，且其值与实际响应体大小不符，则可能引发“Error while copying content to a
                 stream.”。忽略此标头有助于解决因长度不匹配引起的错误。
             </remarks>
         </member>

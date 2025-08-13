@@ -333,7 +333,12 @@ public sealed class HttpContextForwardBuilder
 
         // 初始化 HttpMultipartFormDataBuilder 实例
         var httpMultipartFormDataBuilder =
-            new HttpMultipartFormDataBuilder(httpRequestBuilder) { Boundary = boundary };
+            new HttpMultipartFormDataBuilder(httpRequestBuilder)
+            {
+                Boundary = boundary,
+                // 同步 HttpRequestBuilder.OmitContentType 属性值，解决转发无法配置是否同步 Content-Type 标头问题
+                OmitContentType = httpRequestBuilder.OmitContentType
+            };
 
         // 初始化 MultipartReader 实例
         var multipartReader = new MultipartReader(boundary, bodyStream);
@@ -342,10 +347,12 @@ public sealed class HttpContextForwardBuilder
         while (await multipartReader.ReadNextSectionAsync(cancellationToken) is { } multipartSection)
         {
             // 检查当前节是否为文件节
-            if (multipartSection.AsFileSection() is not null)
+            var fileMultipartSection = multipartSection.AsFileSection();
+            if (fileMultipartSection is not null)
             {
                 // 复制多部分表单内容文件节内容
-                await CopyFileMultipartSectionAsync(multipartSection, httpMultipartFormDataBuilder, cancellationToken);
+                await CopyFileMultipartSectionAsync(fileMultipartSection, httpMultipartFormDataBuilder,
+                    cancellationToken);
             }
             else
             {
@@ -392,8 +399,8 @@ public sealed class HttpContextForwardBuilder
     /// <summary>
     ///     复制多部分表单内容文件节内容
     /// </summary>
-    /// <param name="multipartSection">
-    ///     <see cref="MultipartSection" />
+    /// <param name="fileMultipartSection">
+    ///     <see cref="FileMultipartSection" />
     /// </param>
     /// <param name="httpMultipartFormDataBuilder">
     ///     <see cref="HttpMultipartFormDataBuilder" />
@@ -401,24 +408,21 @@ public sealed class HttpContextForwardBuilder
     /// <param name="cancellationToken">
     ///     <see cref="CancellationToken" />
     /// </param>
-    internal static async Task CopyFileMultipartSectionAsync(MultipartSection multipartSection,
+    internal static async Task CopyFileMultipartSectionAsync(FileMultipartSection fileMultipartSection,
         HttpMultipartFormDataBuilder httpMultipartFormDataBuilder, CancellationToken cancellationToken)
     {
         // 初始化 MemoryStream 实例
         var memoryStream = new MemoryStream();
 
         // 将多部分表单内容流复制到内存流
-        await multipartSection.Body.CopyToAsync(memoryStream, cancellationToken);
+        await fileMultipartSection.Section.Body.CopyToAsync(memoryStream, cancellationToken);
 
         // 将内存流的位置重置到起始位置
         memoryStream.Position = 0;
 
-        // 将 multipartSection 转换为 MultipartSection 类型
-        var fileMultipartSection = multipartSection.AsFileSection()!;
-
         // 添加文件流
         httpMultipartFormDataBuilder.AddStream(memoryStream, fileMultipartSection.Name, fileMultipartSection.FileName,
-            disposeStreamOnRequestCompletion: true);
+            fileMultipartSection.Section.ContentType, disposeStreamOnRequestCompletion: true);
     }
 
     /// <summary>
