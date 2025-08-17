@@ -336,7 +336,7 @@ public sealed class HttpContextForwardBuilder
             new HttpMultipartFormDataBuilder(httpRequestBuilder)
             {
                 Boundary = boundary,
-                // 同步 HttpRequestBuilder.OmitContentType 属性值，解决转发无法配置是否同步 Content-Type 标头问题
+                // 同步 HttpRequestBuilder.OmitContentType 属性，解决请求转发时无法控制 Content-Type 头部传递的问题
                 OmitContentType = httpRequestBuilder.OmitContentType
             };
 
