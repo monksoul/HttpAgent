@@ -15,6 +15,12 @@ public sealed class FileTransferProgress
     internal const double _epsilon = double.Epsilon;
 
     /// <summary>
+    ///     标记是否已打印文件头
+    /// </summary>
+    /// <remarks>仅适用于 <see cref="UpdateConsoleProgress" /> 方法。</remarks>
+    internal bool _hasPrintedHeader;
+
+    /// <summary>
     ///     <inheritdoc cref="FileTransferProgress" />
     /// </summary>
     /// <param name="filePath">文件路径</param>
@@ -80,11 +86,11 @@ public sealed class FileTransferProgress
             new KeyValuePair<string, IEnumerable<string>>("File Name", [FileName]),
             new KeyValuePair<string, IEnumerable<string>>("File Path", [FilePath]),
             new KeyValuePair<string, IEnumerable<string>>("Total File Size",
-                [$"{TotalFileSize.ToSizeUnits("MB"):F2} MB"]),
-            new KeyValuePair<string, IEnumerable<string>>("Transferred", [$"{Transferred.ToSizeUnits("MB"):F2} MB"]),
+                [$"{TotalFileSize.ToSizeUnits("MB"):F2}MB"]),
+            new KeyValuePair<string, IEnumerable<string>>("Transferred", [$"{Transferred.ToSizeUnits("MB"):F2}MB"]),
             new KeyValuePair<string, IEnumerable<string>>("Percentage Complete", [$"{PercentageComplete:F2}%"]),
             new KeyValuePair<string, IEnumerable<string>>("Transfer Rate",
-                [$"{TransferRate.ToSizeUnits("MB"):F2} MB/s"]),
+                [$"{TransferRate.ToSizeUnits("MB"):F2}MB/s"]),
             new KeyValuePair<string, IEnumerable<string>>("Time Elapsed (s)", [$"{TimeElapsed.TotalSeconds:F2}"]),
             new KeyValuePair<string, IEnumerable<string>>("Estimated Time Remaining (s)",
                 [$"{EstimatedTimeRemaining.TotalSeconds:F2}"])
@@ -97,7 +103,42 @@ public sealed class FileTransferProgress
     ///     <see cref="string" />
     /// </returns>
     public string ToSummaryString() =>
-        $"Transferred {Transferred.ToSizeUnits("MB"):F2} MB of {TotalFileSize.ToSizeUnits("MB"):F2} MB ({PercentageComplete:F2}% complete, Speed: {TransferRate.ToSizeUnits("MB"):F2} MB/s, Time: {TimeElapsed.TotalSeconds:F2}s, ETA: {EstimatedTimeRemaining.TotalSeconds:F2}s), File: {FileName}, Path: {FilePath}.";
+        $"Transferred {Transferred.ToSizeUnits("MB"):F2}MB of {TotalFileSize.ToSizeUnits("MB"):F2}MB ({PercentageComplete:F2}% complete, Speed: {TransferRate.ToSizeUnits("MB"):F2}MB/s, Time: {TimeElapsed.TotalSeconds:F2}s, ETA: {EstimatedTimeRemaining.TotalSeconds:F2}s), File: {FileName}, Path: {FilePath}.";
+
+    /// <summary>
+    ///     在控制台中更新（打印）文件传输进度条
+    /// </summary>
+    /// <param name="barWidth">进度条的宽度，默认值为：50</param>
+    public void UpdateConsoleProgress(int barWidth = 50)
+    {
+        // 检查是否已打印文件头
+        if (!_hasPrintedHeader)
+        {
+            Console.WriteLine($"File: {FileName}, Path: {FilePath}");
+            _hasPrintedHeader = true;
+        }
+
+        // 计算进度条
+        var progress = (int)Math.Clamp(PercentageComplete, 0, 100);
+        var filledLength = (int)(progress / 100.0 * barWidth);
+        var progressBar = new string('#', filledLength) + new string(' ', barWidth - filledLength);
+
+        // 生成进度文本
+        var progressText =
+            $"[{progressBar}] {PercentageComplete:F2}% ({Transferred.ToSizeUnits("MB"):F2}MB/{TotalFileSize.ToSizeUnits("MB"):F2}MB) Speed: {TransferRate.ToSizeUnits("MB"):F2}MB/s, Time: {TimeElapsed.TotalSeconds:F2}s, ETA: {EstimatedTimeRemaining.TotalSeconds:F2}s.";
+
+        // 清除当前行并写入新进度（不换行）
+        try
+        {
+            Console.CursorLeft = 0;
+            Console.Write(progressText.PadRight(Console.WindowWidth - 1));
+            Console.CursorLeft = 0;
+        }
+        // 控制台不可用
+        catch (IOException) { }
+        // 某些平台不支持
+        catch (PlatformNotSupportedException) { }
+    }
 
     /// <summary>
     ///     更新文件传输进度

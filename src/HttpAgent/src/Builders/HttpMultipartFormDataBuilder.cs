@@ -318,7 +318,7 @@ public sealed class HttpMultipartFormDataBuilder
         if (fileLength > maxFileSizeInBytes)
         {
             throw new InvalidOperationException(
-                $"The file size exceeds the maximum allowed size of `{maxFileSizeInBytes.ToSizeUnits("MB"):F2} MB`.");
+                $"The file size exceeds the maximum allowed size of `{maxFileSizeInBytes.ToSizeUnits("MB"):F2}MB`.");
         }
 
         return AddByteArray(bytes, name, fileName, contentType, contentEncoding);
