@@ -108,7 +108,7 @@ internal static partial class Helpers
         }
 
         // 使用 UTF-8 解码文件的名称
-        return Uri.UnescapeDataString(fileName);
+        return Uri.UnescapeDataString(fileName).Trim('"');
     }
 
     /// <summary>

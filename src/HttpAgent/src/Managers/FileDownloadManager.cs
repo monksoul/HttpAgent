@@ -446,10 +446,19 @@ internal sealed class FileDownloadManager
     /// <exception cref="InvalidOperationException"></exception>
     internal bool ShouldContinueWithDownload(HttpResponseMessage httpResponseMessage, out string destinationPath)
     {
+        // 获取文件下载名
+        var fileName = GetFileName(httpResponseMessage);
+
+        // 获取无效的文件名字符数组
+        var invalidChars = Path.GetInvalidFileNameChars();
+
+        // 替换文件名中所有非法字符，默认替换为 '_'，避免因非法字符中断下载程序
+        fileName = new string(fileName.Select(c => Array.IndexOf(invalidChars, c) >= 0 ? '_' : c).ToArray());
+
         // 生成完整的文件存储路径
         destinationPath = Path.GetFullPath(Path.Combine(
             Path.GetDirectoryName(_httpFileDownloadBuilder.DestinationPath) ?? string.Empty,
-            GetFileName(httpResponseMessage)));
+            fileName));
 
         // 检查文件是否存在
         if (!File.Exists(destinationPath))
@@ -503,12 +512,12 @@ internal sealed class FileDownloadManager
         if (!string.IsNullOrWhiteSpace(contentDisposition?.FileNameStar))
         {
             // 使用 UTF-8 解码文件的名称
-            fileName = Uri.UnescapeDataString(contentDisposition.FileNameStar);
+            fileName = Uri.UnescapeDataString(contentDisposition.FileNameStar).Trim('"');
         }
         else if (!string.IsNullOrWhiteSpace(contentDisposition?.FileName))
         {
             // 使用 UTF-8 解码文件的名称
-            fileName = Uri.UnescapeDataString(contentDisposition.FileName);
+            fileName = Uri.UnescapeDataString(contentDisposition.FileName).Trim('"');
         }
 
         // 空检查
