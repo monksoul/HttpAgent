@@ -178,19 +178,6 @@ public class FileDownloadManagerTests(ITestOutputHelper output)
         Assert.False(fileDownloadManager3.ShouldContinueWithDownload(httpResponseMessage!, out var destinationPath3));
         Assert.Equal(filePath, destinationPath3);
 
-        const string url =
-            "https://civitai-delivery-worker-prod.5ac0637cfd0766c97916cefa3764fbdf.r2.cloudflarestorage.com/model/4313379/one20obsessionMature.iKQG.safetensors?X-Amz-Expires=86400&response-content-disposition=attachment%3B filename%3D\"oneObsessionBranch_v5bMatureEPS.safetensors\"&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=e01358d793ad6966166af8b3064953ad/20250828/us-east-1/s3/aws4_request&X-Amz-Date=20250828T012613Z&X-Amz-SignedHeaders=host&X-Amz-Signature=fbc738f06f272ca1d66e9b83af173608f97abc911a31d83601fb3dcf42d1fa28";
-        var httpFileDownloadBuilder2 =
-            new HttpFileDownloadBuilder(HttpMethod.Get, new Uri(url)).SetDestinationPath(
-                @"C:\Workspaces\");
-        var fileDownloadManager4 = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder2);
-
-        var httpResponseMessage2 =
-            httpRemoteService.Send(fileDownloadManager4.RequestBuilder, HttpCompletionOption.ResponseHeadersRead);
-
-        Assert.True(fileDownloadManager4.ShouldContinueWithDownload(httpResponseMessage2!, out var destinationPath4));
-        Assert.Equal(@"C:\Workspaces\oneObsessionBranch_v5bMatureEPS.safetensors", destinationPath4);
-
         serviceProvider.Dispose();
     }
 

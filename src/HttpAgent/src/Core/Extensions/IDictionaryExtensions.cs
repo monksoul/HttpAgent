@@ -137,4 +137,37 @@ internal static class IDictionaryExtensions
             dictionary.TryAdd(keySelector(value), value);
         }
     }
+
+    /// <summary>
+    ///     尝试添加（线程安全）
+    /// </summary>
+    /// <remarks>其中键是由值通过给定的选择器函数生成的。</remarks>
+    /// <param name="dictionary">
+    ///     <see cref="ConcurrentDictionary{TKey, TValue}" />
+    /// </param>
+    /// <param name="values">
+    ///     <see cref="IEnumerable{T}" />
+    /// </param>
+    /// <param name="keySelector">键选择器</param>
+    /// <typeparam name="TKey">字典键类型</typeparam>
+    /// <typeparam name="TValue">字典值类型</typeparam>
+    internal static void TryAdd<TKey, TValue>(this ConcurrentDictionary<TKey, TValue> dictionary,
+        IEnumerable<TValue>? values, Func<TValue, TKey> keySelector)
+        where TKey : notnull
+    {
+        // 空检查
+        ArgumentNullException.ThrowIfNull(keySelector);
+
+        // 空检查
+        if (values is null)
+        {
+            return;
+        }
+
+        // 逐条遍历尝试添加
+        foreach (var value in values)
+        {
+            dictionary.TryAdd(keySelector(value), value);
+        }
+    }
 }
