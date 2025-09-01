@@ -7336,7 +7336,7 @@
             <summary>
                 标记是否已打印文件头
             </summary>
-            <remarks>仅适用于 <see cref="M:HttpAgent.FileTransferProgress.UpdateConsoleProgress(System.Int32)" /> 方法。</remarks>
+            <remarks>仅适用于 <see cref="M:HttpAgent.FileTransferProgress.UpdateConsoleProgress" /> 方法。</remarks>
         </member>
         <member name="M:HttpAgent.FileTransferProgress.#ctor(System.String,System.Int64,System.String)">
             <summary>
@@ -7400,11 +7400,10 @@
                 <see cref="T:System.String" />
             </returns>
         </member>
-        <member name="M:HttpAgent.FileTransferProgress.UpdateConsoleProgress(System.Int32)">
+        <member name="M:HttpAgent.FileTransferProgress.UpdateConsoleProgress">
             <summary>
                 在控制台中更新（打印）文件传输进度条
             </summary>
-            <param name="barWidth">进度条的宽度，默认值为：50</param>
         </member>
         <member name="M:HttpAgent.FileTransferProgress.UpdateProgress(System.Int64,System.TimeSpan)">
             <summary>

@@ -108,9 +108,22 @@ public sealed class FileTransferProgress
     /// <summary>
     ///     在控制台中更新（打印）文件传输进度条
     /// </summary>
-    /// <param name="barWidth">进度条的宽度，默认值为：50</param>
-    public void UpdateConsoleProgress(int barWidth = 50)
+    public void UpdateConsoleProgress()
     {
+        // 获取控制台宽度
+        int windowWidth;
+        try
+        {
+            windowWidth = Console.WindowWidth;
+        }
+        catch
+        {
+            windowWidth = 80;
+        }
+
+        // 计算自适应进度条宽度，10-30 字符最合适
+        var barWidth = (int)Math.Clamp(windowWidth * 0.3, 10, 30);
+
         // 检查是否已打印文件头
         if (!_hasPrintedHeader)
         {
@@ -127,11 +140,17 @@ public sealed class FileTransferProgress
         var progressText =
             $"[{progressBar}] {PercentageComplete:F2}% ({Transferred.ToSizeUnits("MB"):F2}MB/{TotalFileSize.ToSizeUnits("MB"):F2}MB) Speed: {TransferRate.ToSizeUnits("MB"):F2}MB/s, Time: {TimeElapsed.TotalSeconds:F2}s, ETA: {EstimatedTimeRemaining.TotalSeconds:F2}s.";
 
+        // 处理窗口过小问题（截断处理）
+        if (progressText.Length >= windowWidth)
+        {
+            progressText = progressText[..(windowWidth - 4)] + "...";
+        }
+
         // 清除当前行并写入新进度（不换行）
         try
         {
             Console.CursorLeft = 0;
-            Console.Write(progressText.PadRight(Console.WindowWidth - 1));
+            Console.Write(progressText.PadRight(windowWidth - 1));
             Console.CursorLeft = 0;
         }
         // 控制台不可用
