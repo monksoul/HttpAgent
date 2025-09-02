@@ -3945,6 +3945,24 @@
             </returns>
             <exception cref="T:System.ArgumentOutOfRangeException"></exception>
         </member>
+        <member name="M:HttpAgent.Core.Extensions.NumberExtensions.FormatDuration(System.Int64)">
+            <summary>
+                将毫秒数格式化为更直观的时间单位字符串（如 ms, s, min, h, d, y）
+            </summary>
+            <param name="millisecond">时间间隔的毫秒数</param>
+            <returns>
+                <see cref="T:System.String" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Core.Extensions.NumberExtensions.FormatDuration(System.Double)">
+            <summary>
+                将毫秒数格式化为更直观的时间单位字符串（如 ms, s, min, h, d, y）
+            </summary>
+            <param name="millisecond">时间间隔的毫秒数</param>
+            <returns>
+                <see cref="T:System.String" />
+            </returns>
+        </member>
         <member name="T:HttpAgent.Core.Extensions.ObjectExtensions">
             <summary>
                 <see cref="T:System.Object" /> 拓展类

@@ -134,11 +134,11 @@ public sealed class FileTransferProgress
         // 计算进度条
         var progress = (int)Math.Clamp(PercentageComplete, 0, 100);
         var filledLength = (int)(progress / 100.0 * barWidth);
-        var progressBar = new string('#', filledLength) + new string(' ', barWidth - filledLength);
+        var progressBar = new string('#', filledLength) + new string('.', barWidth - filledLength);
 
         // 生成进度文本
         var progressText =
-            $"[{progressBar}] {PercentageComplete:F2}% ({Transferred.ToSizeUnits("MB"):F2}MB/{TotalFileSize.ToSizeUnits("MB"):F2}MB) Speed: {TransferRate.ToSizeUnits("MB"):F2}MB/s, Time: {TimeElapsed.TotalSeconds:F2}s, ETA: {EstimatedTimeRemaining.TotalSeconds:F2}s.";
+            $"[{progressBar}] {PercentageComplete:F2}% ({Transferred.ToSizeUnits("MB"):F2}MB/{TotalFileSize.ToSizeUnits("MB"):F2}MB) Speed: {TransferRate.ToSizeUnits("MB"):F2}MB/s, Time: {TimeElapsed.TotalMilliseconds.FormatDuration()}, ETA: {EstimatedTimeRemaining.TotalMilliseconds.FormatDuration()}.";
 
         // 处理窗口过小问题（截断处理）
         if (progressText.Length >= windowWidth)
