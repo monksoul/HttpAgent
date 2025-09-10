@@ -111,15 +111,15 @@ public class HttpRemoteResultTests
         Assert.Single(httpRemoteResult2.SetCookies);
 
         var cookies = httpRemoteResult2.SetCookies.First();
-        Assert.Equal("baidu.com", cookies.Domain);
-        Assert.Equal("/", cookies.Path);
+        Assert.Equal<StringSegment>("baidu.com", cookies.Domain);
+        Assert.Equal<StringSegment>("/", cookies.Path);
         Assert.Equal("2034/9/1 2:22:19 +00:00", cookies.Expires.ToString());
         Assert.Equal(TimeSpan.FromSeconds(315360000), cookies.MaxAge);
         Assert.True(cookies.HttpOnly);
         Assert.True(cookies.Secure);
         Assert.Equal(SameSiteMode.None, cookies.SameSite);
-        Assert.Equal("BDUSS_BFESS", cookies.Name);
-        Assert.Equal(
+        Assert.Equal<StringSegment>("BDUSS_BFESS", cookies.Name);
+        Assert.Equal<StringSegment>(
             "hBSH5yRDI1a0Fzb2lMWllDYk0tRkZ0UEc2OW1URjBvLUtVckNMeFUyaUNxdWxtRVFBQUFBJCQAAAAAAAAAAAEAAADeGZbRsNnHqc34xcwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIIdwmaCHcJmUm",
             cookies.Value);
     }
@@ -157,15 +157,15 @@ public class HttpRemoteResultTests
         Assert.Single(httpRemoteResult2.SetCookies);
 
         var cookies = httpRemoteResult2.SetCookies.First();
-        Assert.Equal("baidu.com", cookies.Domain);
-        Assert.Equal("/", cookies.Path);
+        Assert.Equal<StringSegment>("baidu.com", cookies.Domain);
+        Assert.Equal<StringSegment>("/", cookies.Path);
         Assert.Equal("2034/9/1 2:22:19 +00:00", cookies.Expires.ToString());
         Assert.Equal(TimeSpan.FromSeconds(315360000), cookies.MaxAge);
         Assert.True(cookies.HttpOnly);
         Assert.True(cookies.Secure);
         Assert.Equal(SameSiteMode.None, cookies.SameSite);
-        Assert.Equal("BDUSS_BFESS", cookies.Name);
-        Assert.Equal(
+        Assert.Equal<StringSegment>("BDUSS_BFESS", cookies.Name);
+        Assert.Equal<StringSegment>(
             "hBSH5yRDI1a0Fzb2lMWllDYk0tRkZ0UEc2OW1URjBvLUtVckNMeFUyaUNxdWxtRVFBQUFBJCQAAAAAAAAAAAEAAADeGZbRsNnHqc34xcwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIIdwmaCHcJmUm",
             cookies.Value);
     }

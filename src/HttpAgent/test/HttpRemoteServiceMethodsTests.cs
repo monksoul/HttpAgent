@@ -603,9 +603,9 @@ public class HttpRemoteServiceMethodsTests
         Assert.Single(httpRemoteResult.SetCookies);
 
         var setCookies = httpRemoteResult.SetCookies.First();
-        Assert.Equal("MyCookie", setCookies.Name);
-        Assert.Equal("furion", setCookies.Value);
-        Assert.Equal("/", setCookies.Path);
+        Assert.Equal<StringSegment>("MyCookie", setCookies.Name);
+        Assert.Equal<StringSegment>("furion", setCookies.Value);
+        Assert.Equal<StringSegment>("/", setCookies.Path);
         Assert.True(setCookies.HttpOnly);
         Assert.Equal(Microsoft.Net.Http.Headers.SameSiteMode.Strict, setCookies.SameSite);
         Assert.Equal("2025/1/1 0:00:00 +00:00", setCookies.Expires.ToString());
