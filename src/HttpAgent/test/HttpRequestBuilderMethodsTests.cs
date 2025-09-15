@@ -1903,4 +1903,14 @@ public class HttpRequestBuilderMethodsTests
         Assert.Single(builder.Headers);
         Assert.Equal("Furion", builder.Headers["framework"].First());
     }
+
+    [Fact]
+    public void Clone_ReturnOK()
+    {
+        var builder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost")).SetFragment("User").Clone();
+        Assert.NotNull(builder);
+        Assert.Equal(HttpMethod.Get, builder.HttpMethod);
+        Assert.Equal("http://localhost/", builder.RequestUri?.ToString());
+        Assert.Equal("User", builder.Fragment);
+    }
 }

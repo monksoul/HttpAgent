@@ -188,6 +188,25 @@ public class HttpLongPollingBuilderTests
     }
 
     [Fact]
+    public void Profiler_ReturnOK()
+    {
+        var builder = new HttpLongPollingBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        builder.Profiler();
+
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, null);
+        builder.RequestConfigure?.Invoke(httpRequestBuilder);
+        Assert.True(httpRequestBuilder.ProfilerEnabled);
+
+        builder.Profiler(false);
+        builder.RequestConfigure?.Invoke(httpRequestBuilder);
+        Assert.False(httpRequestBuilder.ProfilerEnabled);
+
+        builder.Profiler(_ => { });
+        builder.RequestConfigure?.Invoke(httpRequestBuilder);
+        Assert.True(httpRequestBuilder.ProfilerEnabled);
+    }
+
+    [Fact]
     public void Build_Invalid_Parameters() =>
         Assert.Throws<ArgumentNullException>(() =>
             new HttpLongPollingBuilder(HttpMethod.Get, new Uri("http://localhost")).Build(null!));
@@ -198,7 +217,7 @@ public class HttpLongPollingBuilderTests
         var httpRemoteOptions = new HttpRemoteOptions();
         var httpLongPollingBuilder =
             new HttpLongPollingBuilder(HttpMethod.Get, new Uri("http://localhost")).SetTimeout(
-                TimeSpan.FromMilliseconds(100));
+                TimeSpan.FromMilliseconds(100)).Profiler();
 
         var httpRequestBuilder = httpLongPollingBuilder.Build(httpRemoteOptions);
         Assert.NotNull(httpRequestBuilder);
@@ -209,6 +228,7 @@ public class HttpLongPollingBuilderTests
         Assert.Null(httpRequestBuilder.RequestEventHandlerType);
         Assert.True(httpRequestBuilder.DisableCacheEnabled);
         Assert.Equal(TimeSpan.FromMilliseconds(100), httpRequestBuilder.Timeout);
+        Assert.True(httpRequestBuilder.ProfilerEnabled);
 
         var httpRequestBuilder2 = httpLongPollingBuilder.SetEventHandler<CustomLongPollingEventHandler2>()
             .WithRequest(builder => builder.SetTimeout(100))

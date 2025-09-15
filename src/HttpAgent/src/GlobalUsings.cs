@@ -45,3 +45,4 @@ global using System.Text.Json.Nodes;
 global using System.Text.Json.Serialization;
 global using System.Text.RegularExpressions;
 global using System.Threading.Channels;
+global using System.Xml.Serialization;

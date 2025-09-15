@@ -295,6 +295,26 @@ public class HttpFileUploadBuilderTests
     }
 
     [Fact]
+    public void Profiler_ReturnOK()
+    {
+        var builder = new HttpFileUploadBuilder(HttpMethod.Post, new Uri("http://localhost"),
+            @"C:\Workspaces\index.html", "file");
+        builder.Profiler();
+
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, null);
+        builder.RequestConfigure?.Invoke(httpRequestBuilder);
+        Assert.True(httpRequestBuilder.ProfilerEnabled);
+
+        builder.Profiler(false);
+        builder.RequestConfigure?.Invoke(httpRequestBuilder);
+        Assert.False(httpRequestBuilder.ProfilerEnabled);
+
+        builder.Profiler(_ => { });
+        builder.RequestConfigure?.Invoke(httpRequestBuilder);
+        Assert.True(httpRequestBuilder.ProfilerEnabled);
+    }
+
+    [Fact]
     public void EnsureLegalData_Invalid_Parameters()
     {
         Assert.Throws<ArgumentNullException>(() => HttpFileUploadBuilder.EnsureLegalData(null!, null, null));
@@ -343,7 +363,7 @@ public class HttpFileUploadBuilderTests
     {
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
         var httpFileUploadBuilder = new HttpFileUploadBuilder(HttpMethod.Post, new Uri("http://localhost"),
-            filePath, "file");
+            filePath, "file").Profiler();
 
         var httpRemoteOptions = new HttpRemoteOptions();
         var progressChannel = Channel.CreateUnbounded<FileTransferProgress>();
@@ -357,6 +377,7 @@ public class HttpFileUploadBuilderTests
         Assert.Null(httpRequestBuilder.RequestEventHandlerType);
         Assert.NotNull(httpRequestBuilder.MultipartFormDataBuilder);
         Assert.Single(httpRequestBuilder.MultipartFormDataBuilder._partContents);
+        Assert.True(httpRequestBuilder.ProfilerEnabled);
 
         var item = httpRequestBuilder.MultipartFormDataBuilder._partContents[0];
         Assert.True(item.RawContent is ProgressFileStream);

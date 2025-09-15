@@ -260,17 +260,17 @@ public class HttpRemoteExtensionsTests
         Assert.Single(setCookies2);
 
         var cookies = setCookies2.First();
-        Assert.Equal<StringSegment>("baidu.com", cookies.Domain);
-        Assert.Equal<StringSegment>("/", cookies.Path);
+        Assert.Equal("baidu.com", cookies.Domain.ToString());
+        Assert.Equal("/", cookies.Path.ToString());
         Assert.Equal("2034/9/1 2:22:19 +00:00", cookies.Expires.ToString());
         Assert.Equal(TimeSpan.FromSeconds(315360000), cookies.MaxAge);
         Assert.True(cookies.HttpOnly);
         Assert.True(cookies.Secure);
         Assert.Equal(SameSiteMode.None, cookies.SameSite);
-        Assert.Equal<StringSegment>("BDUSS_BFESS", cookies.Name);
-        Assert.Equal<StringSegment>(
+        Assert.Equal("BDUSS_BFESS", cookies.Name.ToString());
+        Assert.Equal(
             "hBSH5yRDI1a0Fzb2lMWllDYk0tRkZ0UEc2OW1URjBvLUtVckNMeFUyaUNxdWxtRVFBQUFBJCQAAAAAAAAAAAEAAADeGZbRsNnHqc34xcwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIIdwmaCHcJmUm",
-            cookies.Value);
+            cookies.Value.ToString());
 
         // ===============
 
@@ -287,17 +287,17 @@ public class HttpRemoteExtensionsTests
         Assert.Single(setCookies4);
 
         var cookies2 = setCookies4.First();
-        Assert.Equal<StringSegment>("baidu.com", cookies2.Domain);
-        Assert.Equal<StringSegment>("/", cookies2.Path);
+        Assert.Equal("baidu.com", cookies2.Domain.ToString());
+        Assert.Equal("/", cookies2.Path.ToString());
         Assert.Equal("2034/9/1 2:22:19 +00:00", cookies2.Expires.ToString());
         Assert.Equal(TimeSpan.FromSeconds(315360000), cookies2.MaxAge);
         Assert.True(cookies2.HttpOnly);
         Assert.True(cookies2.Secure);
         Assert.Equal(SameSiteMode.None, cookies2.SameSite);
-        Assert.Equal<StringSegment>("BDUSS_BFESS", cookies2.Name);
-        Assert.Equal<StringSegment>(
+        Assert.Equal("BDUSS_BFESS", cookies2.Name.ToString());
+        Assert.Equal(
             "hBSH5yRDI1a0Fzb2lMWllDYk0tRkZ0UEc2OW1URjBvLUtVckNMeFUyaUNxdWxtRVFBQUFBJCQAAAAAAAAAAAEAAADeGZbRsNnHqc34xcwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIIdwmaCHcJmUm",
-            cookies2.Value);
+            cookies2.Value.ToString());
     }
 
     [Fact]

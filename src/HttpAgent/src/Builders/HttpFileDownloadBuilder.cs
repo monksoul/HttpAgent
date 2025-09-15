@@ -37,7 +37,10 @@ public sealed class HttpFileDownloadBuilder
     /// <summary>
     ///     用于传输操作的缓冲区大小
     /// </summary>
-    /// <remarks>以字节为单位，默认值为 <c>80 KB</c>。</remarks>
+    /// <remarks>
+    ///     <para>以字节为单位，默认值为 <c>80 KB</c>。</para>
+    ///     <para>建议下载小于 <c>10M</c> 的文件使用默认配置，若文件较大，建议设置为 <c>1M</c>（即 <c>1024 * 1024</c>）。</para>
+    /// </remarks>
     public int BufferSize { get; private set; } = 80 * 1024;
 
     /// <summary>
@@ -56,6 +59,12 @@ public sealed class HttpFileDownloadBuilder
     /// </summary>
     /// <remarks>默认值为 1 秒。</remarks>
     public TimeSpan ProgressInterval { get; private set; } = TimeSpan.FromSeconds(1);
+
+    /// <summary>
+    ///     下载最大线程数
+    /// </summary>
+    /// <remarks>推荐值为 4 或 8。默认值为：1。</remarks>
+    public int MaxThreads { get; private set; } = 1;
 
     /// <summary>
     ///     用于处理在文件开始传输时的操作
@@ -96,7 +105,10 @@ public sealed class HttpFileDownloadBuilder
     ///     设置用于传输操作的缓冲区大小
     /// </summary>
     /// <param name="bufferSize">用于传输操作的缓冲区大小</param>
-    /// <remarks>以字节为单位，默认值为 <c>80 KB</c>。</remarks>
+    /// <remarks>
+    ///     <para>以字节为单位，默认值为 <c>80 KB</c>。</para>
+    ///     <para>建议下载小于 <c>10M</c> 的文件使用默认配置，若文件较大，建议设置为 <c>1M</c>（即 <c>1024 * 1024</c>）。</para>
+    /// </remarks>
     /// <returns>
     ///     <see cref="HttpFileDownloadBuilder" />
     /// </returns>
@@ -163,6 +175,7 @@ public sealed class HttpFileDownloadBuilder
     /// <returns>
     ///     <see cref="HttpFileDownloadBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentException"></exception>
     public HttpFileDownloadBuilder SetProgressInterval(TimeSpan progressInterval)
     {
         // 小于或等于 0 检查
@@ -172,6 +185,27 @@ public sealed class HttpFileDownloadBuilder
         }
 
         ProgressInterval = progressInterval;
+
+        return this;
+    }
+
+    /// <summary>
+    ///     设置下载最大线程数
+    /// </summary>
+    /// <param name="maxThreads">下载最大线程数，推荐值为 4 或 8</param>
+    /// <returns>
+    ///     <see cref="HttpFileDownloadBuilder" />
+    /// </returns>
+    /// <exception cref="ArgumentException"></exception>
+    public HttpFileDownloadBuilder SetMaxThreads(int maxThreads)
+    {
+        // 小于或等于 0 检查
+        if (maxThreads <= 0)
+        {
+            throw new ArgumentException("Max Threads must be greater than 0.", nameof(maxThreads));
+        }
+
+        MaxThreads = maxThreads;
 
         return this;
     }
@@ -333,6 +367,33 @@ public sealed class HttpFileDownloadBuilder
 
         return this;
     }
+
+    /// <summary>
+    ///     设置是否启用请求分析工具
+    /// </summary>
+    /// <returns>
+    ///     <see cref="HttpFileDownloadBuilder" />
+    /// </returns>
+    public HttpFileDownloadBuilder Profiler() => WithRequest(builder => builder.Profiler(true));
+
+    /// <summary>
+    ///     设置是否启用请求分析工具
+    /// </summary>
+    /// <param name="enabled">是否启用</param>
+    /// <returns>
+    ///     <see cref="HttpFileDownloadBuilder" />
+    /// </returns>
+    public HttpFileDownloadBuilder Profiler(bool enabled) => WithRequest(builder => builder.Profiler(enabled));
+
+    /// <summary>
+    ///     设置是否启用请求分析工具
+    /// </summary>
+    /// <param name="predicate">自定义处理委托</param>
+    /// <returns>
+    ///     <see cref="HttpFileDownloadBuilder" />
+    /// </returns>
+    public HttpFileDownloadBuilder Profiler(Action<HttpRemoteAnalyzer> predicate) =>
+        WithRequest(builder => builder.Profiler(predicate));
 
     /// <summary>
     ///     构建 <see cref="HttpRequestBuilder" /> 实例

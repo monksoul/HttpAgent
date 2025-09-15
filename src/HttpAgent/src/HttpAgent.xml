@@ -31,7 +31,10 @@
             <summary>
                 用于传输操作的缓冲区大小
             </summary>
-            <remarks>以字节为单位，默认值为 <c>80 KB</c>。</remarks>
+            <remarks>
+                <para>以字节为单位，默认值为 <c>80 KB</c>。</para>
+                <para>建议下载小于 <c>10M</c> 的文件使用默认配置，若文件较大，建议设置为 <c>1M</c>（即 <c>1024 * 1024</c>）。</para>
+            </remarks>
         </member>
         <member name="P:HttpAgent.HttpFileDownloadBuilder.DestinationPath">
             <summary>
@@ -49,6 +52,12 @@
                 进度更新（通知）的间隔时间
             </summary>
             <remarks>默认值为 1 秒。</remarks>
+        </member>
+        <member name="P:HttpAgent.HttpFileDownloadBuilder.MaxThreads">
+            <summary>
+                下载最大线程数
+            </summary>
+            <remarks>推荐值为 4 或 8。默认值为：1。</remarks>
         </member>
         <member name="P:HttpAgent.HttpFileDownloadBuilder.OnTransferStarted">
             <summary>
@@ -90,7 +99,10 @@
                 设置用于传输操作的缓冲区大小
             </summary>
             <param name="bufferSize">用于传输操作的缓冲区大小</param>
-            <remarks>以字节为单位，默认值为 <c>80 KB</c>。</remarks>
+            <remarks>
+                <para>以字节为单位，默认值为 <c>80 KB</c>。</para>
+                <para>建议下载小于 <c>10M</c> 的文件使用默认配置，若文件较大，建议设置为 <c>1M</c>（即 <c>1024 * 1024</c>）。</para>
+            </remarks>
             <returns>
                 <see cref="T:HttpAgent.HttpFileDownloadBuilder" />
             </returns>
@@ -127,6 +139,17 @@
             <returns>
                 <see cref="T:HttpAgent.HttpFileDownloadBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
+        <member name="M:HttpAgent.HttpFileDownloadBuilder.SetMaxThreads(System.Int32)">
+            <summary>
+                设置下载最大线程数
+            </summary>
+            <param name="maxThreads">下载最大线程数，推荐值为 4 或 8</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpFileDownloadBuilder" />
+            </returns>
+            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpFileDownloadBuilder.SetOnTransferStarted(System.Action)">
             <summary>
@@ -200,6 +223,32 @@
             </summary>
             <remarks>支持多次调用。</remarks>
             <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpFileDownloadBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpFileDownloadBuilder.Profiler">
+            <summary>
+                设置是否启用请求分析工具
+            </summary>
+            <returns>
+                <see cref="T:HttpAgent.HttpFileDownloadBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpFileDownloadBuilder.Profiler(System.Boolean)">
+            <summary>
+                设置是否启用请求分析工具
+            </summary>
+            <param name="enabled">是否启用</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpFileDownloadBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpFileDownloadBuilder.Profiler(System.Action{HttpAgent.HttpRemoteAnalyzer})">
+            <summary>
+                设置是否启用请求分析工具
+            </summary>
+            <param name="predicate">自定义处理委托</param>
             <returns>
                 <see cref="T:HttpAgent.HttpFileDownloadBuilder" />
             </returns>
@@ -420,6 +469,32 @@
                 <see cref="T:HttpAgent.HttpFileUploadBuilder" />
             </returns>
         </member>
+        <member name="M:HttpAgent.HttpFileUploadBuilder.Profiler">
+            <summary>
+                设置是否启用请求分析工具
+            </summary>
+            <returns>
+                <see cref="T:HttpAgent.HttpFileUploadBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpFileUploadBuilder.Profiler(System.Boolean)">
+            <summary>
+                设置是否启用请求分析工具
+            </summary>
+            <param name="enabled">是否启用</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpFileUploadBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpFileUploadBuilder.Profiler(System.Action{HttpAgent.HttpRemoteAnalyzer})">
+            <summary>
+                设置是否启用请求分析工具
+            </summary>
+            <param name="predicate">自定义处理委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpFileUploadBuilder" />
+            </returns>
+        </member>
         <member name="M:HttpAgent.HttpFileUploadBuilder.Build(HttpAgent.HttpRemoteOptions,System.Threading.Channels.Channel{HttpAgent.FileTransferProgress})">
             <summary>
                 构建 <see cref="T:HttpAgent.HttpRequestBuilder" /> 实例
@@ -598,6 +673,32 @@
             </summary>
             <remarks>支持多次调用。</remarks>
             <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpLongPollingBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpLongPollingBuilder.Profiler">
+            <summary>
+                设置是否启用请求分析工具
+            </summary>
+            <returns>
+                <see cref="T:HttpAgent.HttpLongPollingBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpLongPollingBuilder.Profiler(System.Boolean)">
+            <summary>
+                设置是否启用请求分析工具
+            </summary>
+            <param name="enabled">是否启用</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpLongPollingBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpLongPollingBuilder.Profiler(System.Action{HttpAgent.HttpRemoteAnalyzer})">
+            <summary>
+                设置是否启用请求分析工具
+            </summary>
+            <param name="predicate">自定义处理委托</param>
             <returns>
                 <see cref="T:HttpAgent.HttpLongPollingBuilder" />
             </returns>
@@ -2168,6 +2269,14 @@
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
         </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.Clone">
+            <summary>
+                克隆并返回新的 <see cref="T:HttpAgent.HttpRequestBuilder" /> 实例
+            </summary>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
         <member name="M:HttpAgent.HttpRequestBuilder.ReleaseDisposables">
             <summary>
                 释放可释放的对象集合
@@ -3065,6 +3174,32 @@
                 <see cref="T:HttpAgent.HttpServerSentEventsBuilder" />
             </returns>
         </member>
+        <member name="M:HttpAgent.HttpServerSentEventsBuilder.Profiler">
+            <summary>
+                设置是否启用请求分析工具
+            </summary>
+            <returns>
+                <see cref="T:HttpAgent.HttpServerSentEventsBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpServerSentEventsBuilder.Profiler(System.Boolean)">
+            <summary>
+                设置是否启用请求分析工具
+            </summary>
+            <param name="enabled">是否启用</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpServerSentEventsBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpServerSentEventsBuilder.Profiler(System.Action{HttpAgent.HttpRemoteAnalyzer})">
+            <summary>
+                设置是否启用请求分析工具
+            </summary>
+            <param name="predicate">自定义处理委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpServerSentEventsBuilder" />
+            </returns>
+        </member>
         <member name="M:HttpAgent.HttpServerSentEventsBuilder.Build(HttpAgent.HttpRemoteOptions)">
             <summary>
                 构建 <see cref="T:HttpAgent.HttpRequestBuilder" /> 实例
@@ -3531,6 +3666,37 @@
             </param>
             <returns>
                 <see cref="T:System.Text.Json.JsonSerializerOptions" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.ObjectContentConverter.HasXmlContentType(System.Net.Http.HttpResponseMessage)">
+            <summary>
+                检查 HTTP 响应的内容类型是否为 XML 媒体类型
+            </summary>
+            <param name="httpResponseMessage">
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </param>
+            <returns>
+                <see cref="T:System.Boolean" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.ObjectContentConverter.DeserializeXml(System.Type,System.String)">
+            <summary>
+                将 XML 字符串反序列化为转换的目标类型
+            </summary>
+            <param name="resultType">转换的目标类型</param>
+            <param name="xmlString">XML 字符串</param>
+            <returns>
+                <see cref="T:System.Object" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.ObjectContentConverter.DeserializeXml``1(System.String)">
+            <summary>
+                将 XML 字符串反序列化为 <typeparamref name="TResult" /> 类型
+            </summary>
+            <param name="xmlString">XML 字符串</param>
+            <typeparam name="TResult">转换的目标类型</typeparam>
+            <returns>
+                <typeparamref name="TResult" />
             </returns>
         </member>
         <member name="T:HttpAgent.ObjectContentConverter`1">
@@ -6699,6 +6865,12 @@
                 文件传输进度信息的通道
             </summary>
         </member>
+        <member name="F:HttpAgent.FileDownloadManager._totalBytesReceived">
+            <summary>
+                全局已接收字节数
+            </summary>
+            <remarks>用于多线程分块下载进度计算。</remarks>
+        </member>
         <member name="M:HttpAgent.FileDownloadManager.#ctor(HttpAgent.IHttpRemoteService,HttpAgent.HttpFileDownloadBuilder)">
             <summary>
                 <inheritdoc cref="T:HttpAgent.FileDownloadManager" />
@@ -6732,6 +6904,128 @@
             <summary>
                 开始下载
             </summary>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+        </member>
+        <member name="M:HttpAgent.FileDownloadManager.DownloadInChunksAsync(System.Int64,System.IO.FileStream,HttpAgent.FileTransferProgress,System.Diagnostics.Stopwatch,System.Threading.CancellationToken)">
+            <summary>
+                多线程分块下载
+            </summary>
+            <param name="contentLength">文件总大小</param>
+            <param name="fileStream">
+                <see cref="T:System.IO.FileStream" />
+            </param>
+            <param name="fileTransferProgress">
+                <see cref="T:HttpAgent.FileTransferProgress" />
+            </param>
+            <param name="stopwatch">
+                <see cref="T:System.Diagnostics.Stopwatch" />
+            </param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+        </member>
+        <member name="M:HttpAgent.FileDownloadManager.DownloadInChunks(System.Int64,System.IO.FileStream,HttpAgent.FileTransferProgress,System.Diagnostics.Stopwatch,System.Threading.CancellationToken)">
+            <summary>
+                多线程分块下载（同步）
+            </summary>
+            <param name="contentLength">文件总大小</param>
+            <param name="fileStream">
+                <see cref="T:System.IO.FileStream" />
+            </param>
+            <param name="fileTransferProgress">
+                <see cref="T:HttpAgent.FileTransferProgress" />
+            </param>
+            <param name="stopwatch">
+                <see cref="T:System.Diagnostics.Stopwatch" />
+            </param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+        </member>
+        <member name="M:HttpAgent.FileDownloadManager.DownloadChunkAsync(System.Int64,System.Int64,System.IO.FileStream,System.Threading.SemaphoreSlim,HttpAgent.FileTransferProgress,System.Diagnostics.Stopwatch,System.Threading.CancellationToken)">
+            <summary>
+                下载单个分块
+            </summary>
+            <param name="start">分块起始字节位置</param>
+            <param name="end">分块结束字节位置</param>
+            <param name="fileStream">
+                <see cref="T:System.IO.FileStream" />
+            </param>
+            <param name="fileWriteLock">
+                <see cref="T:System.Threading.SemaphoreSlim" />
+            </param>
+            <param name="fileTransferProgress">
+                <see cref="T:HttpAgent.FileTransferProgress" />
+            </param>
+            <param name="stopwatch">
+                <see cref="T:System.Diagnostics.Stopwatch" />
+            </param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <exception cref="T:System.InvalidOperationException"></exception>
+        </member>
+        <member name="M:HttpAgent.FileDownloadManager.DownloadChunk(System.Int64,System.Int64,System.IO.FileStream,System.Object,HttpAgent.FileTransferProgress,System.Diagnostics.Stopwatch,System.Threading.CancellationToken)">
+            <summary>
+                下载单个分块（同步）
+            </summary>
+            <param name="start">分块起始字节位置</param>
+            <param name="end">分块结束字节位置</param>
+            <param name="fileStream">
+                <see cref="T:System.IO.FileStream" />
+            </param>
+            <param name="fileWriteLock">同步锁</param>
+            <param name="fileTransferProgress">
+                <see cref="T:HttpAgent.FileTransferProgress" />
+            </param>
+            <param name="stopwatch">
+                <see cref="T:System.Diagnostics.Stopwatch" />
+            </param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <exception cref="T:System.InvalidOperationException"></exception>
+        </member>
+        <member name="M:HttpAgent.FileDownloadManager.DownloadSingleThreadedAsync(System.Net.Http.HttpResponseMessage,System.IO.FileStream,HttpAgent.FileTransferProgress,System.Diagnostics.Stopwatch,System.Threading.CancellationToken)">
+            <summary>
+                单线程下载
+            </summary>
+            <remarks>仅在单线程下载或服务器不支持 <c>Range</c> 请求时使用。</remarks>
+            <param name="httpResponseMessage">
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </param>
+            <param name="fileStream">
+                <see cref="T:System.IO.FileStream" />
+            </param>
+            <param name="fileTransferProgress">
+                <see cref="T:HttpAgent.FileTransferProgress" />
+            </param>
+            <param name="stopwatch">
+                <see cref="T:System.Diagnostics.Stopwatch" />
+            </param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+        </member>
+        <member name="M:HttpAgent.FileDownloadManager.DownloadSingleThreaded(System.Net.Http.HttpResponseMessage,System.IO.FileStream,HttpAgent.FileTransferProgress,System.Diagnostics.Stopwatch,System.Threading.CancellationToken)">
+            <summary>
+                单线程下载（同步）
+            </summary>
+            <remarks>仅在单线程下载或服务器不支持 <c>Range</c> 请求时使用。</remarks>
+            <param name="httpResponseMessage">
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </param>
+            <param name="fileStream">
+                <see cref="T:System.IO.FileStream" />
+            </param>
+            <param name="fileTransferProgress">
+                <see cref="T:HttpAgent.FileTransferProgress" />
+            </param>
+            <param name="stopwatch">
+                <see cref="T:System.Diagnostics.Stopwatch" />
+            </param>
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
             </param>

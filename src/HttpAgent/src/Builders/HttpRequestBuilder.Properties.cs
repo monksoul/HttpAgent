@@ -140,7 +140,8 @@ public sealed partial class HttpRequestBuilder
     ///     <see cref="HttpRequestMessage" /> 请求属性集合
     /// </summary>
     /// <remarks>用于添加 <see cref="HttpRequestMessage" /> 请求属性。该值将合并到 <c>HttpRequestMessage.Options</c> 属性中。</remarks>
-    public IDictionary<string, object?> Properties { get; } = new Dictionary<string, object?>();
+    // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local
+    public IDictionary<string, object?> Properties { get; private set; } = new Dictionary<string, object?>();
 
     /// <summary>
     ///     请求基地址

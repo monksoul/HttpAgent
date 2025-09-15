@@ -161,6 +161,25 @@ public class HttpServerSentEventsBuilderTests
     }
 
     [Fact]
+    public void Profiler_ReturnOK()
+    {
+        var builder = new HttpServerSentEventsBuilder(new Uri("http://localhost"));
+        builder.Profiler();
+
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, null);
+        builder.RequestConfigure?.Invoke(httpRequestBuilder);
+        Assert.True(httpRequestBuilder.ProfilerEnabled);
+
+        builder.Profiler(false);
+        builder.RequestConfigure?.Invoke(httpRequestBuilder);
+        Assert.False(httpRequestBuilder.ProfilerEnabled);
+
+        builder.Profiler(_ => { });
+        builder.RequestConfigure?.Invoke(httpRequestBuilder);
+        Assert.True(httpRequestBuilder.ProfilerEnabled);
+    }
+
+    [Fact]
     public void Build_Invalid_Parameters() =>
         Assert.Throws<ArgumentNullException>(() =>
             new HttpServerSentEventsBuilder(new Uri("http://localhost")).Build(null!));
@@ -169,7 +188,7 @@ public class HttpServerSentEventsBuilderTests
     public void Build_ReturnOK()
     {
         var httpRemoteOptions = new HttpRemoteOptions();
-        var httpServerSentEventsBuilder = new HttpServerSentEventsBuilder(new Uri("http://localhost"));
+        var httpServerSentEventsBuilder = new HttpServerSentEventsBuilder(new Uri("http://localhost")).Profiler();
 
         var httpRequestBuilder = httpServerSentEventsBuilder.Build(httpRemoteOptions);
         Assert.NotNull(httpRequestBuilder);
@@ -184,6 +203,7 @@ public class HttpServerSentEventsBuilderTests
         Assert.Single(httpRequestBuilder.Headers);
         Assert.Equal("Accept", httpRequestBuilder.Headers.Keys.First());
         Assert.Equal("text/event-stream", httpRequestBuilder.Headers["Accept"].First());
+        Assert.True(httpRequestBuilder.ProfilerEnabled);
 
         var httpRequestBuilder2 = httpServerSentEventsBuilder.SetEventHandler<CustomServerSentEventsEventHandler2>()
             .WithRequest(builder => builder.SetTimeout(100)).Build(httpRemoteOptions);

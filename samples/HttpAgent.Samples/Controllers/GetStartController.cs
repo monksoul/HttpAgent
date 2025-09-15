@@ -801,4 +801,24 @@ public class GetStartController(
     {
         return await httpContextAccessor.HttpContext.ForwardAsResultAsync(url);
     }
+
+    /// <summary>
+    ///     多线程下载网络资源
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    public async Task DownloadThreaded()
+    {
+        // 打印下载进度
+        await httpRemoteService.DownloadFileAsync(
+            "https://buildbot.libretro.com/stable/1.21.0/windows/x86_64/RetroArch-Win64-setup.exe"
+            , @"C:\Workspaces\"
+            , async progress =>
+            {
+                progress.UpdateConsoleProgress();
+                await Task.CompletedTask;
+            }
+            , FileExistsBehavior.Overwrite,
+            builder => builder.SetMaxThreads(4).Profiler(false));
+    }
 }

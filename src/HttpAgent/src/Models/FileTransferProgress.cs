@@ -138,7 +138,7 @@ public sealed class FileTransferProgress
 
         // 生成进度文本
         var progressText =
-            $"[{progressBar}] {PercentageComplete:F2}% ({Transferred.ToSizeUnits("MB"):F2}MB/{TotalFileSize.ToSizeUnits("MB"):F2}MB) Speed: {TransferRate.ToSizeUnits("MB"):F2}MB/s, Time: {TimeElapsed.TotalMilliseconds.FormatDuration()}, ETA: {EstimatedTimeRemaining.TotalMilliseconds.FormatDuration()}.";
+            $"[{progressBar}] {PercentageComplete:F2}% ({Transferred.ToSizeUnits("MB"):F2}MB/{TotalFileSize.ToSizeUnits("MB"):F2}MB) Speed: {TransferRate.ToSizeUnits("MB"):F2}MB/s, Time: {TimeElapsed.TotalMilliseconds.FormatDuration()}, ETA: {EstimatedTimeRemaining.TotalMilliseconds.FormatDuration()}.{(PercentageComplete >= 100.0 ? " \e[32mDone!\e[0m" : string.Empty)}";
 
         // 处理窗口过小问题（截断处理）
         if (progressText.Length >= windowWidth)

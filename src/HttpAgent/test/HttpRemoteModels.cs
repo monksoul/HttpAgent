@@ -29,6 +29,13 @@ public class ObjectModelSnakeCase
     public string? UserName { get; set; }
 }
 
+public class XmlModel
+{
+    [XmlElement("Name")] public string? Name { get; set; }
+
+    [XmlElement("Age")] public int Age { get; set; }
+}
+
 public class CustomObjectContentConverter<TResult> : ObjectContentConverter<TResult>;
 
 public class CustomObjectContentConverter : ObjectContentConverter;

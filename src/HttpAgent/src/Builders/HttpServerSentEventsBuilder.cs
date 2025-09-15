@@ -251,6 +251,33 @@ public sealed class HttpServerSentEventsBuilder
     }
 
     /// <summary>
+    ///     设置是否启用请求分析工具
+    /// </summary>
+    /// <returns>
+    ///     <see cref="HttpServerSentEventsBuilder" />
+    /// </returns>
+    public HttpServerSentEventsBuilder Profiler() => WithRequest(builder => builder.Profiler(true));
+
+    /// <summary>
+    ///     设置是否启用请求分析工具
+    /// </summary>
+    /// <param name="enabled">是否启用</param>
+    /// <returns>
+    ///     <see cref="HttpServerSentEventsBuilder" />
+    /// </returns>
+    public HttpServerSentEventsBuilder Profiler(bool enabled) => WithRequest(builder => builder.Profiler(enabled));
+
+    /// <summary>
+    ///     设置是否启用请求分析工具
+    /// </summary>
+    /// <param name="predicate">自定义处理委托</param>
+    /// <returns>
+    ///     <see cref="HttpServerSentEventsBuilder" />
+    /// </returns>
+    public HttpServerSentEventsBuilder Profiler(Action<HttpRemoteAnalyzer> predicate) =>
+        WithRequest(builder => builder.Profiler(predicate));
+
+    /// <summary>
     ///     构建 <see cref="HttpRequestBuilder" /> 实例
     /// </summary>
     /// <param name="httpRemoteOptions">

@@ -59,7 +59,9 @@ internal sealed class StressTestHarnessManager
     internal StressTestHarnessResult Start(
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         CancellationToken cancellationToken = default) =>
-        StartAsync(completionOption, cancellationToken).GetAwaiter().GetResult();
+        // 使用 Task.Run 在后台线程执行异步操作，避免同步上下文死锁
+        Task.Run(() => StartAsync(completionOption, cancellationToken), cancellationToken).GetAwaiter()
+            .GetResult();
 
     /// <summary>
     ///     开始测试

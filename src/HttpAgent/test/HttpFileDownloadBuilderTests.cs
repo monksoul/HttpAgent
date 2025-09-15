@@ -22,6 +22,7 @@ public class HttpFileDownloadBuilderTests
         Assert.NotNull(builder2.RequestUri);
         Assert.Equal("http://localhost/", builder2.RequestUri.ToString());
         Assert.Equal(80 * 1024, builder2.BufferSize);
+        Assert.Equal(1, builder2.MaxThreads);
         Assert.Null(builder2.OnProgressChanged);
         Assert.Null(builder2.DestinationPath);
         Assert.Equal(FileExistsBehavior.CreateNew, builder2.FileExistsBehavior);
@@ -117,6 +118,27 @@ public class HttpFileDownloadBuilderTests
         builder.SetProgressInterval(TimeSpan.FromSeconds(1));
 
         Assert.Equal(TimeSpan.FromSeconds(1), builder.ProgressInterval);
+    }
+
+    [Fact]
+    public void SetMaxThreads_Invalid_Parameters()
+    {
+        var builder = new HttpFileDownloadBuilder(HttpMethod.Get, null);
+
+        var exception = Assert.Throws<ArgumentException>(() => builder.SetMaxThreads(0));
+        Assert.Equal("Max Threads must be greater than 0. (Parameter 'maxThreads')", exception.Message);
+
+        var exception2 = Assert.Throws<ArgumentException>(() => builder.SetMaxThreads(-1));
+        Assert.Equal("Max Threads must be greater than 0. (Parameter 'maxThreads')", exception2.Message);
+    }
+
+    [Fact]
+    public void SetMaxThreads_ReturnOK()
+    {
+        var builder = new HttpFileDownloadBuilder(HttpMethod.Get, null);
+        builder.SetMaxThreads(2);
+
+        Assert.Equal(2, builder.MaxThreads);
     }
 
     [Fact]
@@ -227,6 +249,25 @@ public class HttpFileDownloadBuilderTests
     }
 
     [Fact]
+    public void Profiler_ReturnOK()
+    {
+        var builder = new HttpFileDownloadBuilder(HttpMethod.Get, null);
+        builder.Profiler();
+
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, null);
+        builder.RequestConfigure?.Invoke(httpRequestBuilder);
+        Assert.True(httpRequestBuilder.ProfilerEnabled);
+
+        builder.Profiler(false);
+        builder.RequestConfigure?.Invoke(httpRequestBuilder);
+        Assert.False(httpRequestBuilder.ProfilerEnabled);
+
+        builder.Profiler(_ => { });
+        builder.RequestConfigure?.Invoke(httpRequestBuilder);
+        Assert.True(httpRequestBuilder.ProfilerEnabled);
+    }
+
+    [Fact]
     public void Build_Invalid_Parameters()
     {
         var builder = new HttpFileDownloadBuilder(HttpMethod.Get, null);
@@ -243,7 +284,7 @@ public class HttpFileDownloadBuilderTests
     public void Build_ReturnOK()
     {
         var httpFileDownloadBuilder = new HttpFileDownloadBuilder(HttpMethod.Get, new Uri("http://localhost"));
-        httpFileDownloadBuilder.SetDestinationPath(@"C:\Workspaces");
+        httpFileDownloadBuilder.SetDestinationPath(@"C:\Workspaces").Profiler();
 
         var httpRemoteOptions = new HttpRemoteOptions();
 
@@ -255,6 +296,7 @@ public class HttpFileDownloadBuilderTests
         Assert.True(httpRequestBuilder.EnsureSuccessStatusCodeEnabled);
         Assert.Null(httpRequestBuilder.RequestEventHandlerType);
         Assert.True(httpRequestBuilder.PerformanceOptimizationEnabled);
+        Assert.True(httpRequestBuilder.ProfilerEnabled);
 
         var httpRequestBuilder2 = httpFileDownloadBuilder.SetEventHandler<CustomFileTransferEventHandler2>()
             .WithRequest(builder =>

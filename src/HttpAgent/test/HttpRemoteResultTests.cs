@@ -111,17 +111,17 @@ public class HttpRemoteResultTests
         Assert.Single(httpRemoteResult2.SetCookies);
 
         var cookies = httpRemoteResult2.SetCookies.First();
-        Assert.Equal<StringSegment>("baidu.com", cookies.Domain);
-        Assert.Equal<StringSegment>("/", cookies.Path);
+        Assert.Equal("baidu.com", cookies.Domain.ToString());
+        Assert.Equal("/", cookies.Path.ToString());
         Assert.Equal("2034/9/1 2:22:19 +00:00", cookies.Expires.ToString());
         Assert.Equal(TimeSpan.FromSeconds(315360000), cookies.MaxAge);
         Assert.True(cookies.HttpOnly);
         Assert.True(cookies.Secure);
         Assert.Equal(SameSiteMode.None, cookies.SameSite);
-        Assert.Equal<StringSegment>("BDUSS_BFESS", cookies.Name);
-        Assert.Equal<StringSegment>(
+        Assert.Equal("BDUSS_BFESS", cookies.Name.ToString());
+        Assert.Equal(
             "hBSH5yRDI1a0Fzb2lMWllDYk0tRkZ0UEc2OW1URjBvLUtVckNMeFUyaUNxdWxtRVFBQUFBJCQAAAAAAAAAAAEAAADeGZbRsNnHqc34xcwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIIdwmaCHcJmUm",
-            cookies.Value);
+            cookies.Value.ToString());
     }
 
     [Fact]
@@ -157,17 +157,17 @@ public class HttpRemoteResultTests
         Assert.Single(httpRemoteResult2.SetCookies);
 
         var cookies = httpRemoteResult2.SetCookies.First();
-        Assert.Equal<StringSegment>("baidu.com", cookies.Domain);
-        Assert.Equal<StringSegment>("/", cookies.Path);
+        Assert.Equal("baidu.com", cookies.Domain.ToString());
+        Assert.Equal("/", cookies.Path.ToString());
         Assert.Equal("2034/9/1 2:22:19 +00:00", cookies.Expires.ToString());
         Assert.Equal(TimeSpan.FromSeconds(315360000), cookies.MaxAge);
         Assert.True(cookies.HttpOnly);
         Assert.True(cookies.Secure);
         Assert.Equal(SameSiteMode.None, cookies.SameSite);
-        Assert.Equal<StringSegment>("BDUSS_BFESS", cookies.Name);
-        Assert.Equal<StringSegment>(
+        Assert.Equal("BDUSS_BFESS", cookies.Name.ToString());
+        Assert.Equal(
             "hBSH5yRDI1a0Fzb2lMWllDYk0tRkZ0UEc2OW1URjBvLUtVckNMeFUyaUNxdWxtRVFBQUFBJCQAAAAAAAAAAAEAAADeGZbRsNnHqc34xcwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIIdwmaCHcJmUm",
-            cookies.Value);
+            cookies.Value.ToString());
     }
 
     [Fact]
