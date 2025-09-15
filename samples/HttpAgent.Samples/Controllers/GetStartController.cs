@@ -819,6 +819,6 @@ public class GetStartController(
                 await Task.CompletedTask;
             }
             , FileExistsBehavior.Overwrite,
-            builder => builder.SetMaxThreads(4).Profiler(false));
+            builder => builder.SetBufferSize(1024 * 1024).SetMaxThreads(4).Profiler(false));
     }
 }
