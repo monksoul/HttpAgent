@@ -15,6 +15,21 @@ public sealed class FileTransferProgress
     internal const double _epsilon = double.Epsilon;
 
     /// <summary>
+    ///     速率计算的时间窗口（毫秒）
+    /// </summary>
+    internal const int SpeedCalculationWindowMs = 2000;
+
+    /// <summary>
+    ///     更新进度临时锁对象
+    /// </summary>
+    internal readonly object _historyLock = new();
+
+    /// <summary>
+    ///     最近传输记录（时间点 + 已传输字节数）
+    /// </summary>
+    internal readonly Queue<(DateTimeOffset Timestamp, long Bytes)> _transferHistory = new();
+
+    /// <summary>
     ///     标记是否已打印文件头
     /// </summary>
     /// <remarks>仅适用于 <see cref="UpdateConsoleProgress" /> 方法。</remarks>
@@ -108,6 +123,15 @@ public sealed class FileTransferProgress
     /// <summary>
     ///     在控制台中更新（打印）文件传输进度条
     /// </summary>
+    public async Task UpdateConsoleProgressAsync()
+    {
+        UpdateConsoleProgress();
+        await Task.CompletedTask;
+    }
+
+    /// <summary>
+    ///     在控制台中更新（打印）文件传输进度条
+    /// </summary>
     public void UpdateConsoleProgress()
     {
         // 获取控制台宽度
@@ -166,9 +190,47 @@ public sealed class FileTransferProgress
     /// <param name="timeElapsed">从开始传输到现在的持续时间</param>
     internal void UpdateProgress(long transferred, TimeSpan timeElapsed)
     {
-        // 计算已完成的传输百分比和当前的传输速率
+        // 获取当前 UTC 时间
+        var now = DateTimeOffset.UtcNow;
+
+        lock (_historyLock)
+        {
+            // 记录当前传输点
+            _transferHistory.Enqueue((now, transferred));
+
+            // 清理过期记录（早于当前时间 - 窗口大小）
+            while (_transferHistory.Count > 1 &&
+                   (now - _transferHistory.Peek().Timestamp).TotalMilliseconds > SpeedCalculationWindowMs)
+            {
+                _transferHistory.Dequeue();
+            }
+        }
+
+        // 计算瞬时速率：最近窗口内的字节数变化 / 时间变化
+        double transferRate;
+        lock (_historyLock)
+        {
+            // 数据不足，使用总平均速率
+            if (_transferHistory.Count < 2)
+            {
+                transferRate = timeElapsed.TotalSeconds > _epsilon ? transferred / timeElapsed.TotalSeconds : 0;
+            }
+            else
+            {
+                var first = _transferHistory.Peek();
+                var last = _transferHistory.ElementAt(_transferHistory.Count - 1);
+
+                // 计算窗口期内的字节增量和时间增量
+                var bytesDelta = last.Bytes - first.Bytes;
+                var timeDelta = (last.Timestamp - first.Timestamp).TotalSeconds;
+
+                // 计算瞬时速率（字节/秒）
+                transferRate = timeDelta > _epsilon ? bytesDelta / timeDelta : 0;
+            }
+        }
+
+        // 计算已完成的传输百分比
         var percentageComplete = TotalFileSize > 0 ? 100.0 * transferred / TotalFileSize : -1;
-        var transferRate = timeElapsed.TotalSeconds > _epsilon ? transferred / timeElapsed.TotalSeconds : 0;
 
         // 更新内部进度状态
         Transferred = transferred;

@@ -35,6 +35,9 @@ public class FileTransferProgressTests
         Assert.Equal(TimeSpan.Zero, fileTransferProgress.TimeElapsed);
         Assert.Equal(TimeSpan.Zero, fileTransferProgress.EstimatedTimeRemaining);
         Assert.False(fileTransferProgress._hasPrintedHeader);
+        Assert.Equal(2000, FileTransferProgress.SpeedCalculationWindowMs);
+        Assert.NotNull(fileTransferProgress._transferHistory);
+        Assert.NotNull(fileTransferProgress._historyLock);
     }
 
     [Fact]
@@ -117,5 +120,14 @@ public class FileTransferProgressTests
             new FileTransferProgress(@"C:\Workspaces\furion.index.html", 1000L);
 
         fileTransferProgress.UpdateConsoleProgress();
+    }
+
+    [Fact]
+    public async Task UpdateConsoleProgressAsync_ReturnOK()
+    {
+        var fileTransferProgress =
+            new FileTransferProgress(@"C:\Workspaces\furion.index.html", 1000L);
+
+        await fileTransferProgress.UpdateConsoleProgressAsync();
     }
 }

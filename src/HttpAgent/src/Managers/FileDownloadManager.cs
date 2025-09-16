@@ -856,12 +856,15 @@ internal sealed class FileDownloadManager
         if (!string.IsNullOrWhiteSpace(contentDisposition?.FileNameStar))
         {
             // 使用 UTF-8 解码文件的名称
-            fileName = Uri.UnescapeDataString(contentDisposition.FileNameStar).Trim('"');
+            fileName = Encoding.UTF8
+                .GetString(Encoding.GetEncoding("ISO-8859-1").GetBytes(contentDisposition.FileNameStar))
+                .Trim('"');
         }
         else if (!string.IsNullOrWhiteSpace(contentDisposition?.FileName))
         {
             // 使用 UTF-8 解码文件的名称
-            fileName = Uri.UnescapeDataString(contentDisposition.FileName).Trim('"');
+            fileName = Encoding.UTF8.GetString(Encoding.GetEncoding("ISO-8859-1").GetBytes(contentDisposition.FileName))
+                .Trim('"');
         }
 
         // 空检查
