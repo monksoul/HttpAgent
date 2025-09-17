@@ -855,16 +855,13 @@ internal sealed class FileDownloadManager
         var contentDisposition = httpResponseMessage.Content.Headers.ContentDisposition;
         if (!string.IsNullOrWhiteSpace(contentDisposition?.FileNameStar))
         {
-            // 使用 UTF-8 解码文件的名称
-            fileName = Encoding.UTF8
-                .GetString(Encoding.GetEncoding("ISO-8859-1").GetBytes(contentDisposition.FileNameStar))
-                .Trim('"');
+            // 将字符串转换为其未转义表示形式
+            fileName = Uri.UnescapeDataString(contentDisposition.FileNameStar).Trim('"');
         }
         else if (!string.IsNullOrWhiteSpace(contentDisposition?.FileName))
         {
-            // 使用 UTF-8 解码文件的名称
-            fileName = Encoding.UTF8.GetString(Encoding.GetEncoding("ISO-8859-1").GetBytes(contentDisposition.FileName))
-                .Trim('"');
+            // 将字符串转换为其未转义表示形式
+            fileName = Uri.UnescapeDataString(contentDisposition.FileName).Trim('"');
         }
 
         // 空检查

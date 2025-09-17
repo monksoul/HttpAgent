@@ -132,6 +132,42 @@ public class FileDownloadManagerTests(ITestOutputHelper output)
     }
 
     [Fact]
+    public async Task GetFileNameAsync_IfInContentDispositionAndIso88591FileName_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        await using var app = builder.Build();
+
+        app.MapGet("/test", async context =>
+        {
+            await Task.Delay(50);
+
+            context.Response.Headers.ContentDisposition =
+                new ContentDispositionHeaderValue("attachment") { FileName = "é¿é£.safetensors" }.ToString();
+            await context.Response.WriteAsync("Hello World!");
+        });
+
+        await app.StartAsync();
+
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
+        var httpFileDownloadBuilder =
+            new HttpFileDownloadBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test")).SetDestinationPath(
+                @"C:\Workspaces\");
+        var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
+
+        var httpResponseMessage =
+            await httpRemoteService.SendAsync(fileDownloadManager.RequestBuilder,
+                HttpCompletionOption.ResponseHeadersRead);
+
+        Assert.Equal("长风.safetensors", fileDownloadManager.GetFileName(httpResponseMessage!));
+
+        await app.StopAsync();
+        await serviceProvider.DisposeAsync();
+    }
+
+    [Fact]
     public void ShouldContinueWithDownload_Invalid_Parameters()
     {
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
