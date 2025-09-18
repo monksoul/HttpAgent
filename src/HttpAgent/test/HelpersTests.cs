@@ -170,4 +170,26 @@ public class HelpersTests
                 MultipartFile.CreateFromPath(Path.Combine(AppContext.BaseDirectory, "test.txt")),
                 MediaTypeNames.Application.Octet));
     }
+
+    [Fact]
+    public void ExtractFileNameFromContentDisposition_ReturnOK()
+    {
+        Assert.Null(HttpAgent.Helpers.ExtractFileNameFromContentDisposition(null));
+        Assert.Equal("长风.safetensors",
+            HttpAgent.Helpers.ExtractFileNameFromContentDisposition(
+                new ContentDispositionHeaderValue("attachment") { FileName = "长风.safetensors" }));
+        Assert.Equal("test.safetensors",
+            HttpAgent.Helpers.ExtractFileNameFromContentDisposition(
+                new ContentDispositionHeaderValue("attachment") { FileName = "test.safetensors" }));
+        Assert.Equal("test中文.safetensors",
+            HttpAgent.Helpers.ExtractFileNameFromContentDisposition(
+                new ContentDispositionHeaderValue("attachment") { FileName = "test中文.safetensors" }));
+
+        const string fileName = "\"é¿é£.safetensors\"";
+        var contentDisposition = new ContentDispositionHeaderValue("attachment") { FileName = fileName };
+        contentDisposition.Parameters.Clear();
+        contentDisposition.Parameters.Add(new NameValueHeaderValue("filename", fileName));
+        Assert.Equal("长风.safetensors",
+            HttpAgent.Helpers.ExtractFileNameFromContentDisposition(contentDisposition));
+    }
 }

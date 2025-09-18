@@ -47,21 +47,13 @@ public class IActionResultContentConverter : HttpContentConverterBase<IActionRes
                     Content = stringContent, StatusCode = (int)statusCode, ContentType = contentType?.ToString()
                 };
             default:
-                // 获取 ContentDisposition 实例
-                var contentDisposition = contentHeaders.ContentDisposition;
-
-                // 获取文件下载名
-                var fileDownloadName = contentDisposition?.FileNameStar ?? contentDisposition?.FileName;
-
                 // 读取流内容
                 var streamContent = httpResponseMessage.Content.ReadAsStream(cancellationToken);
 
                 return new FileStreamResult(streamContent, contentType!.ToString())
                 {
-                    FileDownloadName = string.IsNullOrWhiteSpace(fileDownloadName)
-                        ? fileDownloadName
-                        // 将字符串转换为其未转义表示形式
-                        : Uri.UnescapeDataString(fileDownloadName).Trim('"'),
+                    // 尝试从响应标头 Content-Disposition 中解析文件名
+                    FileDownloadName = Helpers.ExtractFileNameFromContentDisposition(contentHeaders.ContentDisposition),
                     LastModified = contentHeaders.LastModified?.UtcDateTime
                 };
         }
@@ -104,21 +96,13 @@ public class IActionResultContentConverter : HttpContentConverterBase<IActionRes
                     Content = stringContent, StatusCode = (int)statusCode, ContentType = contentType?.ToString()
                 };
             default:
-                // 获取 ContentDisposition 实例
-                var contentDisposition = contentHeaders.ContentDisposition;
-
-                // 获取文件下载名
-                var fileDownloadName = contentDisposition?.FileNameStar ?? contentDisposition?.FileName;
-
                 // 读取流内容
                 var streamContent = await httpResponseMessage.Content.ReadAsStreamAsync(cancellationToken);
 
                 return new FileStreamResult(streamContent, contentType!.ToString())
                 {
-                    FileDownloadName = string.IsNullOrWhiteSpace(fileDownloadName)
-                        ? fileDownloadName
-                        // 将字符串转换为其未转义表示形式
-                        : Uri.UnescapeDataString(fileDownloadName).Trim('"'),
+                    // 尝试从响应标头 Content-Disposition 中解析文件名
+                    FileDownloadName = Helpers.ExtractFileNameFromContentDisposition(contentHeaders.ContentDisposition),
                     LastModified = contentHeaders.LastModified?.UtcDateTime
                 };
         }

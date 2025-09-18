@@ -3,6 +3,7 @@
 // 此源代码遵循位于源代码树根目录中的 LICENSE 文件的许可证。
 
 using Microsoft.Net.Http.Headers;
+using ContentDispositionHeaderValue = System.Net.Http.Headers.ContentDispositionHeaderValue;
 
 namespace HttpAgent;
 
@@ -220,6 +221,55 @@ internal static partial class Helpers
             MultipartFile => MediaTypeNames.Application.Octet,
             _ => defaultContentType ?? Constants.TEXT_PLAIN_MIME_TYPE
         };
+
+    /// <summary>
+    ///     尝试从响应标头 <c>Content-Disposition</c> 中解析文件名
+    /// </summary>
+    /// <param name="contentDisposition">
+    ///     <see cref="ContentDispositionHeaderValue" />
+    /// </param>
+    /// <returns>
+    ///     <see cref="string" />
+    /// </returns>
+    internal static string? ExtractFileNameFromContentDisposition(ContentDispositionHeaderValue? contentDisposition)
+    {
+        // 空检查
+        if (!string.IsNullOrWhiteSpace(contentDisposition?.FileNameStar))
+        {
+            // 将字符串转换为其未转义表示形式
+            return Uri.UnescapeDataString(contentDisposition.FileNameStar.Trim('"'));
+        }
+
+        // 空检查
+        // ReSharper disable once InvertIf
+        if (!string.IsNullOrWhiteSpace(contentDisposition?.FileName))
+        {
+            var decodedFileName = contentDisposition.FileName.Trim('"');
+
+            // 获取原始 "filename=" 参数值
+            var rawFileName = contentDisposition.Parameters
+                .First(p => string.Equals(p.Name, "filename", StringComparison.OrdinalIgnoreCase)).Value!;
+
+            // 检查首尾是否包含双引号
+            // ReSharper disable once InvertIf
+            if (rawFileName.StartsWith('"') && rawFileName.EndsWith('"'))
+            {
+                rawFileName = rawFileName.Trim('"');
+
+                // 检查是否为 MIME 编码格式（如 =?UTF-8?B?...?=），若是则跳过乱码修复
+                if (!(rawFileName.StartsWith("=?") && rawFileName.EndsWith("?=")))
+                {
+                    // 尝试修复乱码，如 UTF-8 字节被错误解释为 ISO-8859-1
+                    decodedFileName = Encoding.UTF8.GetString(Encoding.GetEncoding("ISO-8859-1").GetBytes(rawFileName));
+                }
+            }
+
+            // 将字符串转换为其未转义表示形式
+            return Uri.UnescapeDataString(decodedFileName);
+        }
+
+        return null;
+    }
 
     /// <summary>
     ///     <c>application/x-www-form-urlencoded</c> 格式正则表达式

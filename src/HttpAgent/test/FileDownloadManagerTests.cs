@@ -131,8 +131,13 @@ public class FileDownloadManagerTests(ITestOutputHelper output)
         await serviceProvider.DisposeAsync();
     }
 
-    [Fact]
-    public async Task GetFileNameAsync_IfInContentDispositionAndIso88591FileName_ReturnOK()
+    [Theory]
+    [InlineData("长风.safetensors", "长风.safetensors", false)]
+    [InlineData("test.safetensors", "test.safetensors", false)]
+    [InlineData("test中文.safetensors", "test中文.safetensors", false)]
+    // [InlineData("\"é¿é£.safetensors\"", "长风.safetensors", true)]
+    public async Task GetFileNameAsync_IfInContentDispositionAndIso88591FileName_ReturnOK(string fileName,
+        string decodedFileName, bool latin1)
     {
         var port = NetworkUtility.FindAvailableTcpPort();
         var urls = new[] { "--urls", $"http://localhost:{port}" };
@@ -143,8 +148,15 @@ public class FileDownloadManagerTests(ITestOutputHelper output)
         {
             await Task.Delay(50);
 
-            context.Response.Headers.ContentDisposition =
-                new ContentDispositionHeaderValue("attachment") { FileName = "é¿é£.safetensors" }.ToString();
+            var contentDisposition = new ContentDispositionHeaderValue("attachment") { FileName = fileName };
+
+            if (latin1)
+            {
+                contentDisposition.Parameters.Clear();
+                contentDisposition.Parameters.Add(new NameValueHeaderValue("filename", fileName));
+            }
+
+            context.Response.Headers.ContentDisposition = contentDisposition.ToString();
             await context.Response.WriteAsync("Hello World!");
         });
 
@@ -161,7 +173,7 @@ public class FileDownloadManagerTests(ITestOutputHelper output)
             await httpRemoteService.SendAsync(fileDownloadManager.RequestBuilder,
                 HttpCompletionOption.ResponseHeadersRead);
 
-        Assert.Equal("长风.safetensors", fileDownloadManager.GetFileName(httpResponseMessage!));
+        Assert.Equal(decodedFileName, fileDownloadManager.GetFileName(httpResponseMessage!));
 
         await app.StopAsync();
         await serviceProvider.DisposeAsync();

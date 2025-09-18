@@ -851,18 +851,9 @@ internal sealed class FileDownloadManager
             return fileName;
         }
 
-        // 尝试从响应标头 Content-Disposition 中解析
-        var contentDisposition = httpResponseMessage.Content.Headers.ContentDisposition;
-        if (!string.IsNullOrWhiteSpace(contentDisposition?.FileNameStar))
-        {
-            // 将字符串转换为其未转义表示形式
-            fileName = Uri.UnescapeDataString(contentDisposition.FileNameStar).Trim('"');
-        }
-        else if (!string.IsNullOrWhiteSpace(contentDisposition?.FileName))
-        {
-            // 将字符串转换为其未转义表示形式
-            fileName = Uri.UnescapeDataString(contentDisposition.FileName).Trim('"');
-        }
+        // 尝试从响应标头 Content-Disposition 中解析文件名
+        fileName = Helpers.ExtractFileNameFromContentDisposition(httpResponseMessage.Content.Headers
+            .ContentDisposition);
 
         // 空检查
         if (string.IsNullOrWhiteSpace(fileName))
