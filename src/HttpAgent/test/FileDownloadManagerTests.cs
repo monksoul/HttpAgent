@@ -529,10 +529,20 @@ public class FileDownloadManagerTests(ITestOutputHelper output)
         var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         // ReSharper disable once MethodHasAsyncOverload
-        fileDownloadManager.Start();
+        var fileDownloadResult = fileDownloadManager.Start();
 
         Assert.True(File.Exists(destinationPath));
         Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
+
+        Assert.True(fileDownloadResult.IsSuccess);
+        Assert.Equal(12, fileDownloadResult.FileSize);
+        Assert.Equal(destinationPath, fileDownloadResult.FilePath);
+        Assert.Equal(HttpStatusCode.OK, fileDownloadResult.StatusCode);
+        Assert.False(fileDownloadResult.WasSkipped);
+        Assert.Equal(FileExistsBehavior.CreateNew, fileDownloadResult.FileExistsBehavior);
+        Assert.False(fileDownloadResult.UsedMultiThreadedDownload);
+        Assert.True(fileDownloadResult.ElapsedMilliseconds > 0);
+        Assert.Equal($"http://localhost:{port}/test", fileDownloadResult.RequestUri?.ToString());
 
         File.Delete(destinationPath);
 
@@ -579,7 +589,7 @@ public class FileDownloadManagerTests(ITestOutputHelper output)
         try
         {
             // ReSharper disable once MethodHasAsyncOverload
-            fileDownloadManager.Start(cancellationTokenSource.Token);
+            _ = fileDownloadManager.Start(cancellationTokenSource.Token);
         }
         catch (Exception e)
         {
@@ -628,11 +638,21 @@ public class FileDownloadManagerTests(ITestOutputHelper output)
         var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         // ReSharper disable once MethodHasAsyncOverload
-        fileDownloadManager.Start();
+        var fileDownloadResult = fileDownloadManager.Start();
 
         Assert.Equal(1, i);
         Assert.True(File.Exists(destinationPath));
         Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
+
+        Assert.True(fileDownloadResult.IsSuccess);
+        Assert.Equal(12, fileDownloadResult.FileSize);
+        Assert.Equal(destinationPath, fileDownloadResult.FilePath);
+        Assert.Equal(HttpStatusCode.OK, fileDownloadResult.StatusCode);
+        Assert.False(fileDownloadResult.WasSkipped);
+        Assert.Equal(FileExistsBehavior.CreateNew, fileDownloadResult.FileExistsBehavior);
+        Assert.False(fileDownloadResult.UsedMultiThreadedDownload);
+        Assert.True(fileDownloadResult.ElapsedMilliseconds > 0);
+        Assert.Equal($"http://localhost:{port}/test", fileDownloadResult.RequestUri?.ToString());
 
         File.Delete(destinationPath);
 
@@ -680,11 +700,21 @@ public class FileDownloadManagerTests(ITestOutputHelper output)
         var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         // ReSharper disable once MethodHasAsyncOverload
-        fileDownloadManager.Start();
+        var fileDownloadResult = fileDownloadManager.Start();
 
         Assert.Equal(2, i);
         Assert.True(File.Exists(destinationPath));
         Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
+
+        Assert.True(fileDownloadResult.IsSuccess);
+        Assert.Equal(12, fileDownloadResult.FileSize);
+        Assert.Equal(destinationPath, fileDownloadResult.FilePath);
+        Assert.Equal(HttpStatusCode.OK, fileDownloadResult.StatusCode);
+        Assert.False(fileDownloadResult.WasSkipped);
+        Assert.Equal(FileExistsBehavior.CreateNew, fileDownloadResult.FileExistsBehavior);
+        Assert.False(fileDownloadResult.UsedMultiThreadedDownload);
+        Assert.True(fileDownloadResult.ElapsedMilliseconds > 0);
+        Assert.Equal($"http://localhost:{port}/test", fileDownloadResult.RequestUri?.ToString());
 
         File.Delete(destinationPath);
 
@@ -735,12 +765,22 @@ public class FileDownloadManagerTests(ITestOutputHelper output)
         var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         // ReSharper disable once MethodHasAsyncOverload
-        fileDownloadManager.Start();
+        var fileDownloadResult = fileDownloadManager.Start();
 
         Assert.Equal(2, i);
         Assert.Equal(2, customFileTransferEventHandler.counter);
         Assert.True(File.Exists(destinationPath));
         Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
+
+        Assert.True(fileDownloadResult.IsSuccess);
+        Assert.Equal(12, fileDownloadResult.FileSize);
+        Assert.Equal(destinationPath, fileDownloadResult.FilePath);
+        Assert.Equal(HttpStatusCode.OK, fileDownloadResult.StatusCode);
+        Assert.False(fileDownloadResult.WasSkipped);
+        Assert.Equal(FileExistsBehavior.CreateNew, fileDownloadResult.FileExistsBehavior);
+        Assert.False(fileDownloadResult.UsedMultiThreadedDownload);
+        Assert.True(fileDownloadResult.ElapsedMilliseconds > 0);
+        Assert.Equal($"http://localhost:{port}/test", fileDownloadResult.RequestUri?.ToString());
 
         File.Delete(destinationPath);
 
@@ -797,7 +837,7 @@ public class FileDownloadManagerTests(ITestOutputHelper output)
         Assert.Throws<HttpRequestException>(() =>
         {
             // ReSharper disable once MethodHasAsyncOverload
-            fileDownloadManager.Start();
+            _ = fileDownloadManager.Start();
         });
         Assert.Equal(2, i);
 
@@ -837,10 +877,20 @@ public class FileDownloadManagerTests(ITestOutputHelper output)
                 destinationPath);
         var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
-        await fileDownloadManager.StartAsync();
+        var fileDownloadResult = await fileDownloadManager.StartAsync();
 
         Assert.True(File.Exists(destinationPath));
         Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
+
+        Assert.True(fileDownloadResult.IsSuccess);
+        Assert.Equal(12, fileDownloadResult.FileSize);
+        Assert.Equal(destinationPath, fileDownloadResult.FilePath);
+        Assert.Equal(HttpStatusCode.OK, fileDownloadResult.StatusCode);
+        Assert.False(fileDownloadResult.WasSkipped);
+        Assert.Equal(FileExistsBehavior.CreateNew, fileDownloadResult.FileExistsBehavior);
+        Assert.False(fileDownloadResult.UsedMultiThreadedDownload);
+        Assert.True(fileDownloadResult.ElapsedMilliseconds > 0);
+        Assert.Equal($"http://localhost:{port}/test", fileDownloadResult.RequestUri?.ToString());
 
         File.Delete(destinationPath);
 
@@ -886,7 +936,7 @@ public class FileDownloadManagerTests(ITestOutputHelper output)
 
         await Assert.ThrowsAsync<TaskCanceledException>(async () =>
         {
-            await fileDownloadManager.StartAsync(cancellationTokenSource.Token);
+            _ = await fileDownloadManager.StartAsync(cancellationTokenSource.Token);
         });
 
         Assert.False(File.Exists(destinationPath));
@@ -930,11 +980,21 @@ public class FileDownloadManagerTests(ITestOutputHelper output)
             });
         var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
-        await fileDownloadManager.StartAsync();
+        var fileDownloadResult = await fileDownloadManager.StartAsync();
 
         Assert.Equal(1, i);
         Assert.True(File.Exists(destinationPath));
         Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
+
+        Assert.True(fileDownloadResult.IsSuccess);
+        Assert.Equal(12, fileDownloadResult.FileSize);
+        Assert.Equal(destinationPath, fileDownloadResult.FilePath);
+        Assert.Equal(HttpStatusCode.OK, fileDownloadResult.StatusCode);
+        Assert.False(fileDownloadResult.WasSkipped);
+        Assert.Equal(FileExistsBehavior.CreateNew, fileDownloadResult.FileExistsBehavior);
+        Assert.False(fileDownloadResult.UsedMultiThreadedDownload);
+        Assert.True(fileDownloadResult.ElapsedMilliseconds > 0);
+        Assert.Equal($"http://localhost:{port}/test", fileDownloadResult.RequestUri?.ToString());
 
         File.Delete(destinationPath);
 
@@ -981,11 +1041,21 @@ public class FileDownloadManagerTests(ITestOutputHelper output)
             });
         var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
-        await fileDownloadManager.StartAsync();
+        var fileDownloadResult = await fileDownloadManager.StartAsync();
 
         Assert.Equal(2, i);
         Assert.True(File.Exists(destinationPath));
         Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
+
+        Assert.True(fileDownloadResult.IsSuccess);
+        Assert.Equal(12, fileDownloadResult.FileSize);
+        Assert.Equal(destinationPath, fileDownloadResult.FilePath);
+        Assert.Equal(HttpStatusCode.OK, fileDownloadResult.StatusCode);
+        Assert.False(fileDownloadResult.WasSkipped);
+        Assert.Equal(FileExistsBehavior.CreateNew, fileDownloadResult.FileExistsBehavior);
+        Assert.False(fileDownloadResult.UsedMultiThreadedDownload);
+        Assert.True(fileDownloadResult.ElapsedMilliseconds > 0);
+        Assert.Equal($"http://localhost:{port}/test", fileDownloadResult.RequestUri?.ToString());
 
         File.Delete(destinationPath);
 
@@ -1035,12 +1105,22 @@ public class FileDownloadManagerTests(ITestOutputHelper output)
 
         var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
-        await fileDownloadManager.StartAsync();
+        var fileDownloadResult = await fileDownloadManager.StartAsync();
 
         Assert.Equal(2, i);
         Assert.Equal(2, customFileTransferEventHandler.counter);
         Assert.True(File.Exists(destinationPath));
         Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
+
+        Assert.True(fileDownloadResult.IsSuccess);
+        Assert.Equal(12, fileDownloadResult.FileSize);
+        Assert.Equal(destinationPath, fileDownloadResult.FilePath);
+        Assert.Equal(HttpStatusCode.OK, fileDownloadResult.StatusCode);
+        Assert.False(fileDownloadResult.WasSkipped);
+        Assert.Equal(FileExistsBehavior.CreateNew, fileDownloadResult.FileExistsBehavior);
+        Assert.False(fileDownloadResult.UsedMultiThreadedDownload);
+        Assert.True(fileDownloadResult.ElapsedMilliseconds > 0);
+        Assert.Equal($"http://localhost:{port}/test", fileDownloadResult.RequestUri?.ToString());
 
         File.Delete(destinationPath);
 
@@ -1096,7 +1176,7 @@ public class FileDownloadManagerTests(ITestOutputHelper output)
 
         await Assert.ThrowsAsync<HttpRequestException>(async () =>
         {
-            await fileDownloadManager.StartAsync();
+            _ = await fileDownloadManager.StartAsync();
         });
         Assert.Equal(2, i);
 

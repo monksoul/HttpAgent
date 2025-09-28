@@ -75,8 +75,18 @@ internal sealed class FileDownloadManager
     /// <param name="cancellationToken">
     ///     <see cref="CancellationToken" />
     /// </param>
-    internal void Start(CancellationToken cancellationToken = default)
+    /// <returns>
+    ///     <see cref="FileDownloadResult" />
+    /// </returns>
+    internal FileDownloadResult Start(CancellationToken cancellationToken = default)
     {
+        // 初始化 FileDownloadResult 实例
+        var fileDownloadResult = new FileDownloadResult
+        {
+            UsedMultiThreadedDownload = _httpFileDownloadBuilder.MaxThreads > 1,
+            FileExistsBehavior = _httpFileDownloadBuilder.FileExistsBehavior
+        };
+
         // 创建进度报告任务取消标识
         using var progressCancellationTokenSource = new CancellationTokenSource();
 
@@ -101,14 +111,23 @@ internal sealed class FileDownloadManager
             var httpResponseMessage = _httpRemoteService.Send(RequestBuilder, HttpCompletionOption.ResponseHeadersRead,
                 cancellationToken);
 
+            // 设置下载的文件 URL
+            fileDownloadResult.RequestUri =
+                httpResponseMessage?.RequestMessage?.RequestUri ?? RequestBuilder.RequestUri;
+
             // 空检查
             if (httpResponseMessage is null)
             {
                 // 输出调试信息
                 Debugging.Error("The response content was not read, as it was empty.");
 
-                return;
+                // 设置文件下载结果信息
+                fileDownloadResult.IsSuccess = false;
+                return fileDownloadResult;
             }
+
+            // 更新响应状态码
+            fileDownloadResult.StatusCode = httpResponseMessage.StatusCode;
 
             // 根据文件是否存在及配置的行为来决定是否应继续进行文件下载
             if (!ShouldContinueWithDownload(httpResponseMessage, out var destinationPath))
@@ -116,7 +135,11 @@ internal sealed class FileDownloadManager
                 // 处理文件存在且配置为跳过时的操作
                 HandleFileExistAndSkip();
 
-                return;
+                // 设置文件下载结果信息
+                fileDownloadResult.WasSkipped = true;
+                fileDownloadResult.FilePath = destinationPath;
+                fileDownloadResult.IsSuccess = true; // 因文件存在而跳过也被视为成功
+                return fileDownloadResult;
             }
 
             // 获取文件总大小和服务器是否支持 Range 请求
@@ -151,8 +174,18 @@ internal sealed class FileDownloadManager
             // 移动临时文件至文件保存的目标路径
             MoveTempFileToDestinationPath(fileStream, tempDestinationPath, destinationPath);
 
-            // 计算文件传输总花费时间并处理文件传输完成
-            HandleTransferCompleted(stopwatch.ElapsedMilliseconds);
+            // 计算文件传输总花费时间
+            var elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
+
+            // 处理文件传输完成
+            HandleTransferCompleted(elapsedMilliseconds);
+
+            // 设置文件下载结果信息
+            fileDownloadResult.FilePath = destinationPath;
+            fileDownloadResult.FileSize = contentLength > 0 ? contentLength : new FileInfo(destinationPath).Length;
+            fileDownloadResult.ElapsedMilliseconds = elapsedMilliseconds;
+            fileDownloadResult.IsSuccess = true;
+            return fileDownloadResult;
         }
         catch (Exception e)
         {
@@ -191,8 +224,18 @@ internal sealed class FileDownloadManager
     /// <param name="cancellationToken">
     ///     <see cref="CancellationToken" />
     /// </param>
-    internal async Task StartAsync(CancellationToken cancellationToken = default)
+    /// <returns>
+    ///     <see cref="FileDownloadResult" />
+    /// </returns>
+    internal async Task<FileDownloadResult> StartAsync(CancellationToken cancellationToken = default)
     {
+        // 初始化 FileDownloadResult 实例
+        var fileDownloadResult = new FileDownloadResult
+        {
+            UsedMultiThreadedDownload = _httpFileDownloadBuilder.MaxThreads > 1,
+            FileExistsBehavior = _httpFileDownloadBuilder.FileExistsBehavior
+        };
+
         // 创建进度报告任务取消标识
         using var progressCancellationTokenSource = new CancellationTokenSource();
 
@@ -217,14 +260,23 @@ internal sealed class FileDownloadManager
             var httpResponseMessage = await _httpRemoteService.SendAsync(RequestBuilder,
                 HttpCompletionOption.ResponseHeadersRead, cancellationToken);
 
+            // 设置下载的文件 URL
+            fileDownloadResult.RequestUri =
+                httpResponseMessage?.RequestMessage?.RequestUri ?? RequestBuilder.RequestUri;
+
             // 空检查
             if (httpResponseMessage is null)
             {
                 // 输出调试信息
                 Debugging.Error("The response content was not read, as it was empty.");
 
-                return;
+                // 设置文件下载结果信息
+                fileDownloadResult.IsSuccess = false;
+                return fileDownloadResult;
             }
+
+            // 更新响应状态码
+            fileDownloadResult.StatusCode = httpResponseMessage.StatusCode;
 
             // 根据文件是否存在及配置的行为来决定是否应继续进行文件下载
             if (!ShouldContinueWithDownload(httpResponseMessage, out var destinationPath))
@@ -232,7 +284,11 @@ internal sealed class FileDownloadManager
                 // 处理文件存在且配置为跳过时的操作
                 HandleFileExistAndSkip();
 
-                return;
+                // 设置文件下载结果信息
+                fileDownloadResult.WasSkipped = true;
+                fileDownloadResult.FilePath = destinationPath;
+                fileDownloadResult.IsSuccess = true; // 因文件存在而跳过也被视为成功
+                return fileDownloadResult;
             }
 
             // 获取文件总大小和服务器是否支持 Range 请求
@@ -267,8 +323,18 @@ internal sealed class FileDownloadManager
             // 移动临时文件至文件保存的目标路径
             MoveTempFileToDestinationPath(fileStream, tempDestinationPath, destinationPath);
 
-            // 计算文件传输总花费时间并处理文件传输完成
-            HandleTransferCompleted(stopwatch.ElapsedMilliseconds);
+            // 计算文件传输总花费时间
+            var elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
+
+            // 处理文件传输完成
+            HandleTransferCompleted(elapsedMilliseconds);
+
+            // 设置文件下载结果信息
+            fileDownloadResult.FilePath = destinationPath;
+            fileDownloadResult.FileSize = contentLength > 0 ? contentLength : new FileInfo(destinationPath).Length;
+            fileDownloadResult.ElapsedMilliseconds = elapsedMilliseconds;
+            fileDownloadResult.IsSuccess = true;
+            return fileDownloadResult;
         }
         catch (Exception e)
         {

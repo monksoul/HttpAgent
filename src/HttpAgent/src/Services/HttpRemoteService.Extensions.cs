@@ -10,7 +10,7 @@ namespace HttpAgent;
 internal sealed partial class HttpRemoteService
 {
     /// <inheritdoc />
-    public void DownloadFile(string? requestUri, string? destinationPath,
+    public FileDownloadResult DownloadFile(string? requestUri, string? destinationPath,
         Func<FileTransferProgress, Task>? onProgressChanged = null,
         FileExistsBehavior fileExistsBehavior = FileExistsBehavior.CreateNew,
         Action<HttpFileDownloadBuilder>? configure = null, CancellationToken cancellationToken = default) =>
@@ -19,7 +19,7 @@ internal sealed partial class HttpRemoteService
                 configure), cancellationToken);
 
     /// <inheritdoc />
-    public Task DownloadFileAsync(string? requestUri, string? destinationPath,
+    public Task<FileDownloadResult> DownloadFileAsync(string? requestUri, string? destinationPath,
         Func<FileTransferProgress, Task>? onProgressChanged = null,
         FileExistsBehavior fileExistsBehavior = FileExistsBehavior.CreateNew,
         Action<HttpFileDownloadBuilder>? configure = null, CancellationToken cancellationToken = default) =>
@@ -28,11 +28,12 @@ internal sealed partial class HttpRemoteService
                 configure), cancellationToken);
 
     /// <inheritdoc />
-    public void Send(HttpFileDownloadBuilder httpFileDownloadBuilder, CancellationToken cancellationToken = default) =>
+    public FileDownloadResult Send(HttpFileDownloadBuilder httpFileDownloadBuilder,
+        CancellationToken cancellationToken = default) =>
         new FileDownloadManager(this, httpFileDownloadBuilder).Start(cancellationToken);
 
     /// <inheritdoc />
-    public Task SendAsync(HttpFileDownloadBuilder httpFileDownloadBuilder,
+    public Task<FileDownloadResult> SendAsync(HttpFileDownloadBuilder httpFileDownloadBuilder,
         CancellationToken cancellationToken = default) =>
         new FileDownloadManager(this, httpFileDownloadBuilder).StartAsync(cancellationToken);
 

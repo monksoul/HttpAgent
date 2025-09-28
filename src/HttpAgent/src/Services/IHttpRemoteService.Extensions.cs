@@ -22,7 +22,10 @@ public partial interface IHttpRemoteService
     /// <param name="cancellationToken">
     ///     <see cref="CancellationToken" />
     /// </param>
-    void DownloadFile(string? requestUri, string? destinationPath,
+    /// <returns>
+    ///     <see cref="FileDownloadResult" />
+    /// </returns>
+    FileDownloadResult DownloadFile(string? requestUri, string? destinationPath,
         Func<FileTransferProgress, Task>? onProgressChanged = null,
         FileExistsBehavior fileExistsBehavior = FileExistsBehavior.CreateNew,
         Action<HttpFileDownloadBuilder>? configure = null, CancellationToken cancellationToken = default);
@@ -41,9 +44,9 @@ public partial interface IHttpRemoteService
     ///     <see cref="CancellationToken" />
     /// </param>
     /// <returns>
-    ///     <see cref="Task" />
+    ///     <see cref="FileDownloadResult" />
     /// </returns>
-    Task DownloadFileAsync(string? requestUri, string? destinationPath,
+    Task<FileDownloadResult> DownloadFileAsync(string? requestUri, string? destinationPath,
         Func<FileTransferProgress, Task>? onProgressChanged = null,
         FileExistsBehavior fileExistsBehavior = FileExistsBehavior.CreateNew,
         Action<HttpFileDownloadBuilder>? configure = null, CancellationToken cancellationToken = default);
@@ -57,7 +60,11 @@ public partial interface IHttpRemoteService
     /// <param name="cancellationToken">
     ///     <see cref="CancellationToken" />
     /// </param>
-    void Send(HttpFileDownloadBuilder httpFileDownloadBuilder, CancellationToken cancellationToken = default);
+    /// <returns>
+    ///     <see cref="FileDownloadResult" />
+    /// </returns>
+    FileDownloadResult Send(HttpFileDownloadBuilder httpFileDownloadBuilder,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     ///     下载文件
@@ -69,9 +76,10 @@ public partial interface IHttpRemoteService
     ///     <see cref="CancellationToken" />
     /// </param>
     /// <returns>
-    ///     <see cref="Task" />
+    ///     <see cref="FileDownloadResult" />
     /// </returns>
-    Task SendAsync(HttpFileDownloadBuilder httpFileDownloadBuilder, CancellationToken cancellationToken = default);
+    Task<FileDownloadResult> SendAsync(HttpFileDownloadBuilder httpFileDownloadBuilder,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     ///     上传文件

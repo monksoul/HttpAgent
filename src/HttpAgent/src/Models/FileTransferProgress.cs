@@ -111,6 +111,9 @@ public sealed class FileTransferProgress
                 [$"{EstimatedTimeRemaining.TotalSeconds:F2}"])
         ], "Transfer Progress")!;
 
+    /// <inheritdoc cref="ToString" />
+    public Task<string> ToStringAsync() => Task.FromResult(ToString());
+
     /// <summary>
     ///     输出简要进度字符串
     /// </summary>
@@ -120,13 +123,16 @@ public sealed class FileTransferProgress
     public string ToSummaryString() =>
         $"Transferred {Transferred.ToSizeUnits("MB"):F2}MB of {TotalFileSize.ToSizeUnits("MB"):F2}MB ({PercentageComplete:F2}% complete, Speed: {TransferRate.ToSizeUnits("MB"):F2}MB/s, Time: {TimeElapsed.TotalSeconds:F2}s, ETA: {EstimatedTimeRemaining.TotalSeconds:F2}s), File: {FileName}, Path: {FilePath}.";
 
+    /// <inheritdoc cref="ToSummaryStringAsync" />
+    public Task<string> ToSummaryStringAsync() => Task.FromResult(ToSummaryString());
+
     /// <summary>
     ///     在控制台中更新（打印）文件传输进度条
     /// </summary>
-    public async Task UpdateConsoleProgressAsync()
+    public Task UpdateConsoleProgressAsync()
     {
         UpdateConsoleProgress();
-        await Task.CompletedTask;
+        return Task.CompletedTask;
     }
 
     /// <summary>

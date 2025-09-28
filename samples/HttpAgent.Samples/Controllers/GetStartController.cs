@@ -200,35 +200,40 @@ public class GetStartController(
     {
         // 从指定 URL 下载 ASP.NET Core 运行时，并保存到 C:\Workspaces\ 目录中
         // 如果未指定文件名，系统将自动从下载地址中解析出文件名，例如：aspnetcore-runtime-8.0.10-win-x64.exe
-        await httpRemoteService.DownloadFileAsync(
+        var fileDownloadResult = await httpRemoteService.DownloadFileAsync(
             "https://download.visualstudio.microsoft.com/download/pr/a17b907f-8457-45a8-90db-53f2665ee49e/49bccd33593ebceb2847674fe5fd768e/aspnetcore-runtime-8.0.10-win-x64.exe"
             , @"C:\Workspaces\"
             , fileExistsBehavior: FileExistsBehavior.Overwrite);
 
         // 打印下载进度
-        await httpRemoteService.DownloadFileAsync(
+        var fileDownloadResult2 = await httpRemoteService.DownloadFileAsync(
             "https://download.visualstudio.microsoft.com/download/pr/a17b907f-8457-45a8-90db-53f2665ee49e/49bccd33593ebceb2847674fe5fd768e/aspnetcore-runtime-8.0.10-win-x64.exe"
             , @"C:\Workspaces\"
             , async progress =>
             {
-                Console.WriteLine(progress.ToSummaryString()); // 输出简要进度字符串
-                await Task.CompletedTask;
+                Console.WriteLine(await progress.ToSummaryStringAsync()); // 输出简要进度字符串
             }
             , FileExistsBehavior.Overwrite);
 
         // 打印下载进度
-        await httpRemoteService.DownloadFileAsync(
+        var fileDownloadResult3 = await httpRemoteService.DownloadFileAsync(
             "https://download.visualstudio.microsoft.com/download/pr/a17b907f-8457-45a8-90db-53f2665ee49e/49bccd33593ebceb2847674fe5fd768e/aspnetcore-runtime-8.0.10-win-x64.exe"
             , @"C:\Workspaces\"
             , async progress =>
             {
-                Console.WriteLine(progress.ToString()); // 输出带缩进进度字符串
-                await Task.CompletedTask;
+                Console.WriteLine(await progress.ToStringAsync()); // 输出带缩进进度字符串
             }
             , FileExistsBehavior.Overwrite);
 
+        // 打印下载进度
+        var fileDownloadResult4 = await httpRemoteService.DownloadFileAsync(
+            "https://download.visualstudio.microsoft.com/download/pr/a17b907f-8457-45a8-90db-53f2665ee49e/49bccd33593ebceb2847674fe5fd768e/aspnetcore-runtime-8.0.10-win-x64.exe"
+            , @"C:\Workspaces\"
+            , progress => progress.UpdateConsoleProgressAsync() // 输出带进度条控制台内容
+            , FileExistsBehavior.Overwrite);
+
         // 使用构建器模式
-        await httpRemoteService.SendAsync(HttpRequestBuilder.DownloadFile(
+        var fileDownloadResult5 = await httpRemoteService.SendAsync(HttpRequestBuilder.DownloadFile(
             "https://download.visualstudio.microsoft.com/download/pr/a17b907f-8457-45a8-90db-53f2665ee49e/49bccd33593ebceb2847674fe5fd768e/aspnetcore-runtime-8.0.10-win-x64.exe"
             , @"C:\Workspaces\"
             , fileExistsBehavior: FileExistsBehavior.Overwrite));
@@ -266,8 +271,7 @@ public class GetStartController(
             @"C:\Workspaces\httptest.jpg", "file"
             , async progress =>
             {
-                Console.WriteLine(progress.ToSummaryString()); // 输出简要进度字符串
-                await Task.CompletedTask;
+                Console.WriteLine(await progress.ToSummaryStringAsync()); // 输出简要进度字符串
             });
 
         // 支持限制文件类型和大小
@@ -275,8 +279,7 @@ public class GetStartController(
                 @"C:\Workspaces\httptest.jpg", "file"
                 , async progress =>
                 {
-                    Console.WriteLine(progress.ToSummaryString()); // 输出简要进度字符串
-                    await Task.CompletedTask;
+                    Console.WriteLine(await progress.ToSummaryStringAsync()); // 输出简要进度字符串
                 })
             .SetAllowedFileExtensions(".jpg;.png") // 限制只允许 jpg 和 png 类型
             .SetMaxFileSizeInBytes(5 * 1024 * 1024)); // 限制 5MB
@@ -810,14 +813,10 @@ public class GetStartController(
     public async Task DownloadThreaded()
     {
         // 打印下载进度
-        await httpRemoteService.DownloadFileAsync(
+        var fileDownloadResult = await httpRemoteService.DownloadFileAsync(
             "https://buildbot.libretro.com/stable/1.21.0/windows/x86_64/RetroArch-Win64-setup.exe"
             , @"C:\Workspaces\"
-            , async progress =>
-            {
-                progress.UpdateConsoleProgress();
-                await Task.CompletedTask;
-            }
+            , progress => progress.UpdateConsoleProgressAsync()
             , FileExistsBehavior.Overwrite,
             builder => builder.SetBufferSize(1024 * 1024).SetMaxThreads(4).Profiler(false));
     }

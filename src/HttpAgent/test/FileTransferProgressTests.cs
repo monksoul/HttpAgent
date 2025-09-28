@@ -53,6 +53,18 @@ public class FileTransferProgressTests
     }
 
     [Fact]
+    public async Task ToStringAsync_ReturnOK()
+    {
+        var fileTransferProgress =
+            new FileTransferProgress(@"C:\Workspaces\furion.index.html", 1000000L);
+        fileTransferProgress.UpdateProgress(500000, TimeSpan.FromMilliseconds(200));
+
+        Assert.Equal(
+            "Transfer Progress: \r\n\tFile Name:                        furion.index.html\r\n\tFile Path:                        C:\\Workspaces\\furion.index.html\r\n\tTotal File Size:                  0.95MB\r\n\tTransferred:                      0.48MB\r\n\tPercentage Complete:              50.00%\r\n\tTransfer Rate:                    2.38MB/s\r\n\tTime Elapsed (s):                 0.20\r\n\tEstimated Time Remaining (s):     0.20",
+            await fileTransferProgress.ToStringAsync());
+    }
+
+    [Fact]
     public void ToSummaryString_ReturnOK()
     {
         var fileTransferProgress =
@@ -62,6 +74,18 @@ public class FileTransferProgressTests
         Assert.Equal(
             @"Transferred 0.48MB of 0.95MB (50.00% complete, Speed: 2.38MB/s, Time: 0.20s, ETA: 0.20s), File: furion.index.html, Path: C:\Workspaces\furion.index.html.",
             fileTransferProgress.ToSummaryString());
+    }
+
+    [Fact]
+    public async Task ToSummaryStringAsync_ReturnOK()
+    {
+        var fileTransferProgress =
+            new FileTransferProgress(@"C:\Workspaces\furion.index.html", 1000000L);
+        fileTransferProgress.UpdateProgress(500000, TimeSpan.FromMilliseconds(200));
+
+        Assert.Equal(
+            @"Transferred 0.48MB of 0.95MB (50.00% complete, Speed: 2.38MB/s, Time: 0.20s, ETA: 0.20s), File: furion.index.html, Path: C:\Workspaces\furion.index.html.",
+            await fileTransferProgress.ToSummaryStringAsync());
     }
 
     [Fact]
