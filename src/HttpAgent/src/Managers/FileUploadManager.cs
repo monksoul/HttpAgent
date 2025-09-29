@@ -92,11 +92,8 @@ internal sealed class FileUploadManager
             // 发送 HTTP 远程请求
             httpResponseMessage = _httpRemoteService.Send(RequestBuilder, cancellationToken);
 
-            // 计算文件传输总花费时间
-            var duration = stopwatch.ElapsedMilliseconds;
-
-            // 处理文件传输完成
-            HandleTransferCompleted(duration);
+            // 计算文件传输总花费时间并处理文件传输完成
+            HandleTransferCompleted(stopwatch.ElapsedMilliseconds);
         }
         catch (Exception e)
         {
@@ -151,11 +148,8 @@ internal sealed class FileUploadManager
             // 发送 HTTP 远程请求
             httpResponseMessage = await _httpRemoteService.SendAsync(RequestBuilder, cancellationToken);
 
-            // 计算文件传输总花费时间
-            var duration = stopwatch.ElapsedMilliseconds;
-
-            // 处理文件传输完成
-            HandleTransferCompleted(duration);
+            // 计算文件传输总花费时间并处理文件传输完成
+            HandleTransferCompleted(stopwatch.ElapsedMilliseconds);
         }
         catch (Exception e)
         {

@@ -38,22 +38,22 @@ public sealed class FileTransferProgress
     /// <summary>
     ///     <inheritdoc cref="FileTransferProgress" />
     /// </summary>
-    /// <param name="filePath">文件路径</param>
-    /// <param name="totalFileSize">文件的总大小</param>
+    /// <param name="filePath">文件的路径</param>
+    /// <param name="fileSize">文件的大小</param>
     /// <param name="fileName">文件的名称</param>
-    internal FileTransferProgress(string filePath, long totalFileSize, string? fileName = null)
+    internal FileTransferProgress(string filePath, long fileSize, string? fileName = null)
     {
         // 空检查
         ArgumentException.ThrowIfNullOrWhiteSpace(filePath);
 
-        TotalFileSize = totalFileSize;
+        FileSize = fileSize;
 
         FilePath = filePath;
         FileName = fileName ?? Path.GetFileName(filePath);
     }
 
     /// <summary>
-    ///     文件路径
+    ///     文件的路径
     /// </summary>
     public string FilePath { get; }
 
@@ -63,10 +63,10 @@ public sealed class FileTransferProgress
     public string FileName { get; }
 
     /// <summary>
-    ///     文件的总大小
+    ///     文件的大小
     /// </summary>
     /// <remarks>以字节为单位。</remarks>
-    public long TotalFileSize { get; }
+    public long FileSize { get; }
 
     /// <summary>
     ///     已传输的数据量
@@ -100,8 +100,7 @@ public sealed class FileTransferProgress
         StringUtility.FormatKeyValuesSummary([
             new KeyValuePair<string, IEnumerable<string>>("File Name", [FileName]),
             new KeyValuePair<string, IEnumerable<string>>("File Path", [FilePath]),
-            new KeyValuePair<string, IEnumerable<string>>("Total File Size",
-                [$"{TotalFileSize.ToSizeUnits("MB"):F2}MB"]),
+            new KeyValuePair<string, IEnumerable<string>>("File Size", [$"{FileSize.ToSizeUnits("MB"):F2}MB"]),
             new KeyValuePair<string, IEnumerable<string>>("Transferred", [$"{Transferred.ToSizeUnits("MB"):F2}MB"]),
             new KeyValuePair<string, IEnumerable<string>>("Percentage Complete", [$"{PercentageComplete:F2}%"]),
             new KeyValuePair<string, IEnumerable<string>>("Transfer Rate",
@@ -121,7 +120,7 @@ public sealed class FileTransferProgress
     ///     <see cref="string" />
     /// </returns>
     public string ToSummaryString() =>
-        $"Transferred {Transferred.ToSizeUnits("MB"):F2}MB of {TotalFileSize.ToSizeUnits("MB"):F2}MB ({PercentageComplete:F2}% complete, Speed: {TransferRate.ToSizeUnits("MB"):F2}MB/s, Time: {TimeElapsed.TotalSeconds:F2}s, ETA: {EstimatedTimeRemaining.TotalSeconds:F2}s), File: {FileName}, Path: {FilePath}.";
+        $"Transferred {Transferred.ToSizeUnits("MB"):F2}MB of {FileSize.ToSizeUnits("MB"):F2}MB ({PercentageComplete:F2}% complete, Speed: {TransferRate.ToSizeUnits("MB"):F2}MB/s, Time: {TimeElapsed.TotalSeconds:F2}s, ETA: {EstimatedTimeRemaining.TotalSeconds:F2}s), File: {FileName}, Path: {FilePath}.";
 
     /// <inheritdoc cref="ToSummaryStringAsync" />
     public Task<string> ToSummaryStringAsync() => Task.FromResult(ToSummaryString());
@@ -168,7 +167,7 @@ public sealed class FileTransferProgress
 
         // 生成进度文本
         var progressText =
-            $"[{progressBar}] {PercentageComplete:F2}% ({Transferred.ToSizeUnits("MB"):F2}MB/{TotalFileSize.ToSizeUnits("MB"):F2}MB) Speed: {TransferRate.ToSizeUnits("MB"):F2}MB/s, Time: {TimeElapsed.TotalMilliseconds.FormatDuration()}, ETA: {EstimatedTimeRemaining.TotalMilliseconds.FormatDuration()}.{(PercentageComplete >= 100.0 ? " \e[32mDone!\e[0m" : string.Empty)}";
+            $"[{progressBar}] {PercentageComplete:F2}% ({Transferred.ToSizeUnits("MB"):F2}MB/{FileSize.ToSizeUnits("MB"):F2}MB) Speed: {TransferRate.ToSizeUnits("MB"):F2}MB/s, Time: {TimeElapsed.TotalMilliseconds.FormatDuration()}, ETA: {EstimatedTimeRemaining.TotalMilliseconds.FormatDuration()}.{(PercentageComplete >= 100.0 ? " \e[32mDone!\e[0m" : string.Empty)}";
 
         // 处理窗口过小问题（截断处理）
         if (progressText.Length >= windowWidth)
@@ -236,7 +235,7 @@ public sealed class FileTransferProgress
         }
 
         // 计算已完成的传输百分比
-        var percentageComplete = TotalFileSize > 0 ? 100.0 * transferred / TotalFileSize : -1;
+        var percentageComplete = FileSize > 0 ? 100.0 * transferred / FileSize : -1;
 
         // 更新内部进度状态
         Transferred = transferred;
@@ -257,13 +256,13 @@ public sealed class FileTransferProgress
     internal TimeSpan CalculateEstimatedTimeRemaining()
     {
         // 如果文件大小小于等于 0 或传输速率为 0 或接近 0，则认为无法预估
-        if (TotalFileSize <= 0 || TransferRate <= _epsilon)
+        if (FileSize <= 0 || TransferRate <= _epsilon)
         {
             return TimeSpan.MaxValue;
         }
 
         // 计算剩余时间
-        var secondsRemaining = (TotalFileSize - Transferred) / TransferRate;
+        var secondsRemaining = (FileSize - Transferred) / TransferRate;
 
         // 如果剩余时间超过最大值，则返回最大值
         return secondsRemaining > TimeSpan.MaxValue.TotalSeconds

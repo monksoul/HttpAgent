@@ -200,13 +200,13 @@ public class GetStartController(
     {
         // 从指定 URL 下载 ASP.NET Core 运行时，并保存到 C:\Workspaces\ 目录中
         // 如果未指定文件名，系统将自动从下载地址中解析出文件名，例如：aspnetcore-runtime-8.0.10-win-x64.exe
-        var fileDownloadResult = await httpRemoteService.DownloadFileAsync(
+        var fileTransferResult = await httpRemoteService.DownloadFileAsync(
             "https://download.visualstudio.microsoft.com/download/pr/a17b907f-8457-45a8-90db-53f2665ee49e/49bccd33593ebceb2847674fe5fd768e/aspnetcore-runtime-8.0.10-win-x64.exe"
             , @"C:\Workspaces\"
             , fileExistsBehavior: FileExistsBehavior.Overwrite);
 
         // 打印下载进度
-        var fileDownloadResult2 = await httpRemoteService.DownloadFileAsync(
+        var fileTransferResult2 = await httpRemoteService.DownloadFileAsync(
             "https://download.visualstudio.microsoft.com/download/pr/a17b907f-8457-45a8-90db-53f2665ee49e/49bccd33593ebceb2847674fe5fd768e/aspnetcore-runtime-8.0.10-win-x64.exe"
             , @"C:\Workspaces\"
             , async progress =>
@@ -216,7 +216,7 @@ public class GetStartController(
             , FileExistsBehavior.Overwrite);
 
         // 打印下载进度
-        var fileDownloadResult3 = await httpRemoteService.DownloadFileAsync(
+        var fileTransferResult3 = await httpRemoteService.DownloadFileAsync(
             "https://download.visualstudio.microsoft.com/download/pr/a17b907f-8457-45a8-90db-53f2665ee49e/49bccd33593ebceb2847674fe5fd768e/aspnetcore-runtime-8.0.10-win-x64.exe"
             , @"C:\Workspaces\"
             , async progress =>
@@ -226,14 +226,14 @@ public class GetStartController(
             , FileExistsBehavior.Overwrite);
 
         // 打印下载进度
-        var fileDownloadResult4 = await httpRemoteService.DownloadFileAsync(
+        var fileTransferResult4 = await httpRemoteService.DownloadFileAsync(
             "https://download.visualstudio.microsoft.com/download/pr/a17b907f-8457-45a8-90db-53f2665ee49e/49bccd33593ebceb2847674fe5fd768e/aspnetcore-runtime-8.0.10-win-x64.exe"
             , @"C:\Workspaces\"
             , progress => progress.UpdateConsoleProgressAsync() // 输出带进度条控制台内容
             , FileExistsBehavior.Overwrite);
 
         // 使用构建器模式
-        var fileDownloadResult5 = await httpRemoteService.SendAsync(HttpRequestBuilder.DownloadFile(
+        var fileTransferResult5 = await httpRemoteService.SendAsync(HttpRequestBuilder.DownloadFile(
             "https://download.visualstudio.microsoft.com/download/pr/a17b907f-8457-45a8-90db-53f2665ee49e/49bccd33593ebceb2847674fe5fd768e/aspnetcore-runtime-8.0.10-win-x64.exe"
             , @"C:\Workspaces\"
             , fileExistsBehavior: FileExistsBehavior.Overwrite));
@@ -813,7 +813,7 @@ public class GetStartController(
     public async Task DownloadThreaded()
     {
         // 打印下载进度
-        var fileDownloadResult = await httpRemoteService.DownloadFileAsync(
+        var fileTransferResult = await httpRemoteService.DownloadFileAsync(
             "https://buildbot.libretro.com/stable/1.21.0/windows/x86_64/RetroArch-Win64-setup.exe"
             , @"C:\Workspaces\"
             , progress => progress.UpdateConsoleProgressAsync()

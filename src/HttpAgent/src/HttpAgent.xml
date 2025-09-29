@@ -6911,7 +6911,7 @@
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
             <returns>
-                <see cref="T:HttpAgent.FileDownloadResult" />
+                <see cref="T:HttpAgent.FileTransferResult" />
             </returns>
         </member>
         <member name="M:HttpAgent.FileDownloadManager.StartAsync(System.Threading.CancellationToken)">
@@ -6922,7 +6922,7 @@
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
             <returns>
-                <see cref="T:HttpAgent.FileDownloadResult" />
+                <see cref="T:HttpAgent.FileTransferResult" />
             </returns>
         </member>
         <member name="M:HttpAgent.FileDownloadManager.DownloadInChunksAsync(System.Int64,System.IO.FileStream,HttpAgent.FileTransferProgress,System.Diagnostics.Stopwatch,System.Threading.CancellationToken)">
@@ -7651,59 +7651,6 @@
                 <see cref="T:System.String" />
             </returns>
         </member>
-        <member name="T:HttpAgent.FileDownloadResult">
-            <summary>
-                文件下载结果信息
-            </summary>
-        </member>
-        <member name="P:HttpAgent.FileDownloadResult.IsSuccess">
-            <summary>
-                下载是否成功完成
-            </summary>
-            <remarks>因文件存在而跳过也被视为成功。</remarks>
-        </member>
-        <member name="P:HttpAgent.FileDownloadResult.RequestUri">
-            <summary>
-                下载的文件 URL
-            </summary>
-        </member>
-        <member name="P:HttpAgent.FileDownloadResult.FilePath">
-            <summary>
-                文件保存的目标路径
-            </summary>
-        </member>
-        <member name="P:HttpAgent.FileDownloadResult.FileSize">
-            <summary>
-                文件的总大小
-            </summary>
-            <remarks>以字节为单位。</remarks>
-        </member>
-        <member name="P:HttpAgent.FileDownloadResult.ElapsedMilliseconds">
-            <summary>
-                下载耗时
-            </summary>
-            <remarks>以毫秒为单位。</remarks>
-        </member>
-        <member name="P:HttpAgent.FileDownloadResult.StatusCode">
-            <summary>
-                响应状态码
-            </summary>
-        </member>
-        <member name="P:HttpAgent.FileDownloadResult.FileExistsBehavior">
-            <summary>
-                当目标文件已存在时的行为
-            </summary>
-        </member>
-        <member name="P:HttpAgent.FileDownloadResult.WasSkipped">
-            <summary>
-                是否因为文件已存在且配置为跳过而未执行下载
-            </summary>
-        </member>
-        <member name="P:HttpAgent.FileDownloadResult.UsedMultiThreadedDownload">
-            <summary>
-                下载是否使用了多线程分块
-            </summary>
-        </member>
         <member name="T:HttpAgent.FileTransferProgress">
             <summary>
                 文件传输的进度信息
@@ -7739,13 +7686,13 @@
             <summary>
                 <inheritdoc cref="T:HttpAgent.FileTransferProgress" />
             </summary>
-            <param name="filePath">文件路径</param>
-            <param name="totalFileSize">文件的总大小</param>
+            <param name="filePath">文件的路径</param>
+            <param name="fileSize">文件的大小</param>
             <param name="fileName">文件的名称</param>
         </member>
         <member name="P:HttpAgent.FileTransferProgress.FilePath">
             <summary>
-                文件路径
+                文件的路径
             </summary>
         </member>
         <member name="P:HttpAgent.FileTransferProgress.FileName">
@@ -7753,9 +7700,9 @@
                 文件的名称
             </summary>
         </member>
-        <member name="P:HttpAgent.FileTransferProgress.TotalFileSize">
+        <member name="P:HttpAgent.FileTransferProgress.FileSize">
             <summary>
-                文件的总大小
+                文件的大小
             </summary>
             <remarks>以字节为单位。</remarks>
         </member>
@@ -7827,6 +7774,43 @@
             <returns>
                 <see cref="T:System.TimeSpan" />
             </returns>
+        </member>
+        <member name="T:HttpAgent.FileTransferResult">
+            <summary>
+                文件传输结果信息
+            </summary>
+        </member>
+        <member name="P:HttpAgent.FileTransferResult.IsSuccess">
+            <summary>
+                传输是否成功完成
+            </summary>
+        </member>
+        <member name="P:HttpAgent.FileTransferResult.RequestUri">
+            <summary>
+                文件传输 URL
+            </summary>
+        </member>
+        <member name="P:HttpAgent.FileTransferResult.FilePath">
+            <summary>
+                文件的路径
+            </summary>
+        </member>
+        <member name="P:HttpAgent.FileTransferResult.FileSize">
+            <summary>
+                文件的大小
+            </summary>
+            <remarks>以字节为单位。</remarks>
+        </member>
+        <member name="P:HttpAgent.FileTransferResult.ElapsedMilliseconds">
+            <summary>
+                传输耗时
+            </summary>
+            <remarks>以毫秒为单位。</remarks>
+        </member>
+        <member name="P:HttpAgent.FileTransferResult.StatusCode">
+            <summary>
+                响应状态码
+            </summary>
         </member>
         <member name="T:HttpAgent.FileTypeMapper">
             <summary>
@@ -10471,7 +10455,7 @@
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
             <returns>
-                <see cref="T:HttpAgent.FileDownloadResult" />
+                <see cref="T:HttpAgent.FileTransferResult" />
             </returns>
         </member>
         <member name="M:HttpAgent.IHttpRemoteService.DownloadFileAsync(System.String,System.String,System.Func{HttpAgent.FileTransferProgress,System.Threading.Tasks.Task},HttpAgent.FileExistsBehavior,System.Action{HttpAgent.HttpFileDownloadBuilder},System.Threading.CancellationToken)">
@@ -10489,7 +10473,7 @@
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
             <returns>
-                <see cref="T:HttpAgent.FileDownloadResult" />
+                <see cref="T:HttpAgent.FileTransferResult" />
             </returns>
         </member>
         <member name="M:HttpAgent.IHttpRemoteService.Send(HttpAgent.HttpFileDownloadBuilder,System.Threading.CancellationToken)">
@@ -10503,7 +10487,7 @@
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
             <returns>
-                <see cref="T:HttpAgent.FileDownloadResult" />
+                <see cref="T:HttpAgent.FileTransferResult" />
             </returns>
         </member>
         <member name="M:HttpAgent.IHttpRemoteService.SendAsync(HttpAgent.HttpFileDownloadBuilder,System.Threading.CancellationToken)">
@@ -10517,7 +10501,7 @@
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
             <returns>
-                <see cref="T:HttpAgent.FileDownloadResult" />
+                <see cref="T:HttpAgent.FileTransferResult" />
             </returns>
         </member>
         <member name="M:HttpAgent.IHttpRemoteService.UploadFile(System.String,System.String,System.String,System.Func{HttpAgent.FileTransferProgress,System.Threading.Tasks.Task},System.String,System.Action{HttpAgent.HttpFileUploadBuilder},System.Threading.CancellationToken)">

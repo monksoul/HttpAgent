@@ -76,16 +76,12 @@ internal sealed class FileDownloadManager
     ///     <see cref="CancellationToken" />
     /// </param>
     /// <returns>
-    ///     <see cref="FileDownloadResult" />
+    ///     <see cref="FileTransferResult" />
     /// </returns>
-    internal FileDownloadResult Start(CancellationToken cancellationToken = default)
+    internal FileTransferResult Start(CancellationToken cancellationToken = default)
     {
-        // 初始化 FileDownloadResult 实例
-        var fileDownloadResult = new FileDownloadResult
-        {
-            UsedMultiThreadedDownload = _httpFileDownloadBuilder.MaxThreads > 1,
-            FileExistsBehavior = _httpFileDownloadBuilder.FileExistsBehavior
-        };
+        // 初始化 FileTransferResult 实例
+        var fileTransferResult = new FileTransferResult();
 
         // 创建进度报告任务取消标识
         using var progressCancellationTokenSource = new CancellationTokenSource();
@@ -111,8 +107,8 @@ internal sealed class FileDownloadManager
             var httpResponseMessage = _httpRemoteService.Send(RequestBuilder, HttpCompletionOption.ResponseHeadersRead,
                 cancellationToken);
 
-            // 设置下载的文件 URL
-            fileDownloadResult.RequestUri =
+            // 设置文件传输 URL
+            fileTransferResult.RequestUri =
                 httpResponseMessage?.RequestMessage?.RequestUri ?? RequestBuilder.RequestUri;
 
             // 空检查
@@ -121,13 +117,13 @@ internal sealed class FileDownloadManager
                 // 输出调试信息
                 Debugging.Error("The response content was not read, as it was empty.");
 
-                // 设置文件下载结果信息
-                fileDownloadResult.IsSuccess = false;
-                return fileDownloadResult;
+                // 设置文件传输结果信息
+                fileTransferResult.IsSuccess = false;
+                return fileTransferResult;
             }
 
             // 更新响应状态码
-            fileDownloadResult.StatusCode = httpResponseMessage.StatusCode;
+            fileTransferResult.StatusCode = httpResponseMessage.StatusCode;
 
             // 根据文件是否存在及配置的行为来决定是否应继续进行文件下载
             if (!ShouldContinueWithDownload(httpResponseMessage, out var destinationPath))
@@ -135,11 +131,11 @@ internal sealed class FileDownloadManager
                 // 处理文件存在且配置为跳过时的操作
                 HandleFileExistAndSkip();
 
-                // 设置文件下载结果信息
-                fileDownloadResult.WasSkipped = true;
-                fileDownloadResult.FilePath = destinationPath;
-                fileDownloadResult.IsSuccess = true; // 因文件存在而跳过也被视为成功
-                return fileDownloadResult;
+                // 设置文件传输结果信息
+                fileTransferResult.FilePath = destinationPath;
+                fileTransferResult.FileSize = new FileInfo(destinationPath).Length;
+                fileTransferResult.IsSuccess = true; // 因文件存在而跳过也被视为成功
+                return fileTransferResult;
             }
 
             // 获取文件总大小和服务器是否支持 Range 请求
@@ -180,12 +176,12 @@ internal sealed class FileDownloadManager
             // 处理文件传输完成
             HandleTransferCompleted(elapsedMilliseconds);
 
-            // 设置文件下载结果信息
-            fileDownloadResult.FilePath = destinationPath;
-            fileDownloadResult.FileSize = contentLength > 0 ? contentLength : new FileInfo(destinationPath).Length;
-            fileDownloadResult.ElapsedMilliseconds = elapsedMilliseconds;
-            fileDownloadResult.IsSuccess = true;
-            return fileDownloadResult;
+            // 设置文件传输结果信息
+            fileTransferResult.FilePath = destinationPath;
+            fileTransferResult.FileSize = contentLength > 0 ? contentLength : new FileInfo(destinationPath).Length;
+            fileTransferResult.ElapsedMilliseconds = elapsedMilliseconds;
+            fileTransferResult.IsSuccess = true;
+            return fileTransferResult;
         }
         catch (Exception e)
         {
@@ -225,16 +221,12 @@ internal sealed class FileDownloadManager
     ///     <see cref="CancellationToken" />
     /// </param>
     /// <returns>
-    ///     <see cref="FileDownloadResult" />
+    ///     <see cref="FileTransferResult" />
     /// </returns>
-    internal async Task<FileDownloadResult> StartAsync(CancellationToken cancellationToken = default)
+    internal async Task<FileTransferResult> StartAsync(CancellationToken cancellationToken = default)
     {
-        // 初始化 FileDownloadResult 实例
-        var fileDownloadResult = new FileDownloadResult
-        {
-            UsedMultiThreadedDownload = _httpFileDownloadBuilder.MaxThreads > 1,
-            FileExistsBehavior = _httpFileDownloadBuilder.FileExistsBehavior
-        };
+        // 初始化 FileTransferResult 实例
+        var fileTransferResult = new FileTransferResult();
 
         // 创建进度报告任务取消标识
         using var progressCancellationTokenSource = new CancellationTokenSource();
@@ -260,8 +252,8 @@ internal sealed class FileDownloadManager
             var httpResponseMessage = await _httpRemoteService.SendAsync(RequestBuilder,
                 HttpCompletionOption.ResponseHeadersRead, cancellationToken);
 
-            // 设置下载的文件 URL
-            fileDownloadResult.RequestUri =
+            // 设置文件传输 URL
+            fileTransferResult.RequestUri =
                 httpResponseMessage?.RequestMessage?.RequestUri ?? RequestBuilder.RequestUri;
 
             // 空检查
@@ -270,13 +262,13 @@ internal sealed class FileDownloadManager
                 // 输出调试信息
                 Debugging.Error("The response content was not read, as it was empty.");
 
-                // 设置文件下载结果信息
-                fileDownloadResult.IsSuccess = false;
-                return fileDownloadResult;
+                // 设置文件传输结果信息
+                fileTransferResult.IsSuccess = false;
+                return fileTransferResult;
             }
 
             // 更新响应状态码
-            fileDownloadResult.StatusCode = httpResponseMessage.StatusCode;
+            fileTransferResult.StatusCode = httpResponseMessage.StatusCode;
 
             // 根据文件是否存在及配置的行为来决定是否应继续进行文件下载
             if (!ShouldContinueWithDownload(httpResponseMessage, out var destinationPath))
@@ -284,11 +276,11 @@ internal sealed class FileDownloadManager
                 // 处理文件存在且配置为跳过时的操作
                 HandleFileExistAndSkip();
 
-                // 设置文件下载结果信息
-                fileDownloadResult.WasSkipped = true;
-                fileDownloadResult.FilePath = destinationPath;
-                fileDownloadResult.IsSuccess = true; // 因文件存在而跳过也被视为成功
-                return fileDownloadResult;
+                // 设置文件传输结果信息
+                fileTransferResult.FilePath = destinationPath;
+                fileTransferResult.FileSize = new FileInfo(destinationPath).Length;
+                fileTransferResult.IsSuccess = true; // 因文件存在而跳过也被视为成功
+                return fileTransferResult;
             }
 
             // 获取文件总大小和服务器是否支持 Range 请求
@@ -329,12 +321,12 @@ internal sealed class FileDownloadManager
             // 处理文件传输完成
             HandleTransferCompleted(elapsedMilliseconds);
 
-            // 设置文件下载结果信息
-            fileDownloadResult.FilePath = destinationPath;
-            fileDownloadResult.FileSize = contentLength > 0 ? contentLength : new FileInfo(destinationPath).Length;
-            fileDownloadResult.ElapsedMilliseconds = elapsedMilliseconds;
-            fileDownloadResult.IsSuccess = true;
-            return fileDownloadResult;
+            // 设置文件传输结果信息
+            fileTransferResult.FilePath = destinationPath;
+            fileTransferResult.FileSize = contentLength > 0 ? contentLength : new FileInfo(destinationPath).Length;
+            fileTransferResult.ElapsedMilliseconds = elapsedMilliseconds;
+            fileTransferResult.IsSuccess = true;
+            return fileTransferResult;
         }
         catch (Exception e)
         {

@@ -32,20 +32,17 @@ public class HttpRemoteServiceExtensionsTests
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
-        var fileDownloadResult = httpRemoteService.DownloadFile($"http://localhost:{port}/test", destinationPath);
+        var fileTransferResult = httpRemoteService.DownloadFile($"http://localhost:{port}/test", destinationPath);
 
         Assert.True(File.Exists(destinationPath));
         Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
 
-        Assert.True(fileDownloadResult.IsSuccess);
-        Assert.Equal(12, fileDownloadResult.FileSize);
-        Assert.Equal(destinationPath, fileDownloadResult.FilePath);
-        Assert.Equal(HttpStatusCode.OK, fileDownloadResult.StatusCode);
-        Assert.False(fileDownloadResult.WasSkipped);
-        Assert.Equal(FileExistsBehavior.CreateNew, fileDownloadResult.FileExistsBehavior);
-        Assert.False(fileDownloadResult.UsedMultiThreadedDownload);
-        Assert.True(fileDownloadResult.ElapsedMilliseconds > 0);
-        Assert.Equal($"http://localhost:{port}/test", fileDownloadResult.RequestUri?.ToString());
+        Assert.True(fileTransferResult.IsSuccess);
+        Assert.Equal(12, fileTransferResult.FileSize);
+        Assert.Equal(destinationPath, fileTransferResult.FilePath);
+        Assert.Equal(HttpStatusCode.OK, fileTransferResult.StatusCode);
+        Assert.True(fileTransferResult.ElapsedMilliseconds > 0);
+        Assert.Equal($"http://localhost:{port}/test", fileTransferResult.RequestUri?.ToString());
 
         File.Delete(destinationPath);
 
@@ -120,7 +117,7 @@ public class HttpRemoteServiceExtensionsTests
 
         var i = 0;
         // ReSharper disable once MethodHasAsyncOverload
-        var fileDownloadResult = httpRemoteService.DownloadFile($"http://localhost:{port}/test", destinationPath,
+        var fileTransferResult = httpRemoteService.DownloadFile($"http://localhost:{port}/test", destinationPath,
             configure: downloadBuilder => downloadBuilder.WithRequest(requestBuilder =>
                 requestBuilder.SetOnPreSendRequest(_ =>
                 {
@@ -131,15 +128,12 @@ public class HttpRemoteServiceExtensionsTests
         Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
         Assert.Equal(1, i);
 
-        Assert.True(fileDownloadResult.IsSuccess);
-        Assert.Equal(12, fileDownloadResult.FileSize);
-        Assert.Equal(destinationPath, fileDownloadResult.FilePath);
-        Assert.Equal(HttpStatusCode.OK, fileDownloadResult.StatusCode);
-        Assert.False(fileDownloadResult.WasSkipped);
-        Assert.Equal(FileExistsBehavior.CreateNew, fileDownloadResult.FileExistsBehavior);
-        Assert.False(fileDownloadResult.UsedMultiThreadedDownload);
-        Assert.True(fileDownloadResult.ElapsedMilliseconds > 0);
-        Assert.Equal($"http://localhost:{port}/test", fileDownloadResult.RequestUri?.ToString());
+        Assert.True(fileTransferResult.IsSuccess);
+        Assert.Equal(12, fileTransferResult.FileSize);
+        Assert.Equal(destinationPath, fileTransferResult.FilePath);
+        Assert.Equal(HttpStatusCode.OK, fileTransferResult.StatusCode);
+        Assert.True(fileTransferResult.ElapsedMilliseconds > 0);
+        Assert.Equal($"http://localhost:{port}/test", fileTransferResult.RequestUri?.ToString());
 
         File.Delete(destinationPath);
 
@@ -172,21 +166,18 @@ public class HttpRemoteServiceExtensionsTests
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        var fileDownloadResult =
+        var fileTransferResult =
             await httpRemoteService.DownloadFileAsync($"http://localhost:{port}/test", destinationPath);
 
         Assert.True(File.Exists(destinationPath));
         Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
 
-        Assert.True(fileDownloadResult.IsSuccess);
-        Assert.Equal(12, fileDownloadResult.FileSize);
-        Assert.Equal(destinationPath, fileDownloadResult.FilePath);
-        Assert.Equal(HttpStatusCode.OK, fileDownloadResult.StatusCode);
-        Assert.False(fileDownloadResult.WasSkipped);
-        Assert.Equal(FileExistsBehavior.CreateNew, fileDownloadResult.FileExistsBehavior);
-        Assert.False(fileDownloadResult.UsedMultiThreadedDownload);
-        Assert.True(fileDownloadResult.ElapsedMilliseconds > 0);
-        Assert.Equal($"http://localhost:{port}/test", fileDownloadResult.RequestUri?.ToString());
+        Assert.True(fileTransferResult.IsSuccess);
+        Assert.Equal(12, fileTransferResult.FileSize);
+        Assert.Equal(destinationPath, fileTransferResult.FilePath);
+        Assert.Equal(HttpStatusCode.OK, fileTransferResult.StatusCode);
+        Assert.True(fileTransferResult.ElapsedMilliseconds > 0);
+        Assert.Equal($"http://localhost:{port}/test", fileTransferResult.RequestUri?.ToString());
 
         File.Delete(destinationPath);
 
@@ -260,7 +251,7 @@ public class HttpRemoteServiceExtensionsTests
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var i = 0;
-        var fileDownloadResult = await httpRemoteService.DownloadFileAsync($"http://localhost:{port}/test",
+        var fileTransferResult = await httpRemoteService.DownloadFileAsync($"http://localhost:{port}/test",
             destinationPath,
             configure: downloadBuilder => downloadBuilder.WithRequest(requestBuilder =>
                 requestBuilder.SetOnPreSendRequest(_ =>
@@ -272,15 +263,12 @@ public class HttpRemoteServiceExtensionsTests
         Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
         Assert.Equal(1, i);
 
-        Assert.True(fileDownloadResult.IsSuccess);
-        Assert.Equal(12, fileDownloadResult.FileSize);
-        Assert.Equal(destinationPath, fileDownloadResult.FilePath);
-        Assert.Equal(HttpStatusCode.OK, fileDownloadResult.StatusCode);
-        Assert.False(fileDownloadResult.WasSkipped);
-        Assert.Equal(FileExistsBehavior.CreateNew, fileDownloadResult.FileExistsBehavior);
-        Assert.False(fileDownloadResult.UsedMultiThreadedDownload);
-        Assert.True(fileDownloadResult.ElapsedMilliseconds > 0);
-        Assert.Equal($"http://localhost:{port}/test", fileDownloadResult.RequestUri?.ToString());
+        Assert.True(fileTransferResult.IsSuccess);
+        Assert.Equal(12, fileTransferResult.FileSize);
+        Assert.Equal(destinationPath, fileTransferResult.FilePath);
+        Assert.Equal(HttpStatusCode.OK, fileTransferResult.StatusCode);
+        Assert.True(fileTransferResult.ElapsedMilliseconds > 0);
+        Assert.Equal($"http://localhost:{port}/test", fileTransferResult.RequestUri?.ToString());
 
         File.Delete(destinationPath);
 
@@ -317,20 +305,17 @@ public class HttpRemoteServiceExtensionsTests
             HttpRequestBuilder.DownloadFile(new Uri($"http://localhost:{port}/test"), destinationPath);
 
         // ReSharper disable once MethodHasAsyncOverload
-        var fileDownloadResult = httpRemoteService.Send(httpFileDownloadBuilder);
+        var fileTransferResult = httpRemoteService.Send(httpFileDownloadBuilder);
 
         Assert.True(File.Exists(destinationPath));
         Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
 
-        Assert.True(fileDownloadResult.IsSuccess);
-        Assert.Equal(12, fileDownloadResult.FileSize);
-        Assert.Equal(destinationPath, fileDownloadResult.FilePath);
-        Assert.Equal(HttpStatusCode.OK, fileDownloadResult.StatusCode);
-        Assert.False(fileDownloadResult.WasSkipped);
-        Assert.Equal(FileExistsBehavior.CreateNew, fileDownloadResult.FileExistsBehavior);
-        Assert.False(fileDownloadResult.UsedMultiThreadedDownload);
-        Assert.True(fileDownloadResult.ElapsedMilliseconds > 0);
-        Assert.Equal($"http://localhost:{port}/test", fileDownloadResult.RequestUri?.ToString());
+        Assert.True(fileTransferResult.IsSuccess);
+        Assert.Equal(12, fileTransferResult.FileSize);
+        Assert.Equal(destinationPath, fileTransferResult.FilePath);
+        Assert.Equal(HttpStatusCode.OK, fileTransferResult.StatusCode);
+        Assert.True(fileTransferResult.ElapsedMilliseconds > 0);
+        Assert.Equal($"http://localhost:{port}/test", fileTransferResult.RequestUri?.ToString());
 
         File.Delete(destinationPath);
 
@@ -419,21 +404,18 @@ public class HttpRemoteServiceExtensionsTests
                 });
 
         // ReSharper disable once MethodHasAsyncOverload
-        var fileDownloadResult = httpRemoteService.Send(httpFileDownloadBuilder);
+        var fileTransferResult = httpRemoteService.Send(httpFileDownloadBuilder);
 
         Assert.Equal(1, i);
         Assert.True(File.Exists(destinationPath));
         Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
 
-        Assert.True(fileDownloadResult.IsSuccess);
-        Assert.Equal(12, fileDownloadResult.FileSize);
-        Assert.Equal(destinationPath, fileDownloadResult.FilePath);
-        Assert.Equal(HttpStatusCode.OK, fileDownloadResult.StatusCode);
-        Assert.False(fileDownloadResult.WasSkipped);
-        Assert.Equal(FileExistsBehavior.CreateNew, fileDownloadResult.FileExistsBehavior);
-        Assert.False(fileDownloadResult.UsedMultiThreadedDownload);
-        Assert.True(fileDownloadResult.ElapsedMilliseconds > 0);
-        Assert.Equal($"http://localhost:{port}/test", fileDownloadResult.RequestUri?.ToString());
+        Assert.True(fileTransferResult.IsSuccess);
+        Assert.Equal(12, fileTransferResult.FileSize);
+        Assert.Equal(destinationPath, fileTransferResult.FilePath);
+        Assert.Equal(HttpStatusCode.OK, fileTransferResult.StatusCode);
+        Assert.True(fileTransferResult.ElapsedMilliseconds > 0);
+        Assert.Equal($"http://localhost:{port}/test", fileTransferResult.RequestUri?.ToString());
 
         File.Delete(destinationPath);
 
@@ -471,7 +453,7 @@ public class HttpRemoteServiceExtensionsTests
 
         var i = 0;
         // ReSharper disable once MethodHasAsyncOverload
-        var fileDownloadResult = httpRemoteService.Send(httpFileDownloadBuilder.WithRequest(requestBuilder =>
+        var fileTransferResult = httpRemoteService.Send(httpFileDownloadBuilder.WithRequest(requestBuilder =>
             requestBuilder.SetOnPreSendRequest(_ =>
             {
                 i += 1;
@@ -481,15 +463,12 @@ public class HttpRemoteServiceExtensionsTests
         Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
         Assert.Equal(1, i);
 
-        Assert.True(fileDownloadResult.IsSuccess);
-        Assert.Equal(12, fileDownloadResult.FileSize);
-        Assert.Equal(destinationPath, fileDownloadResult.FilePath);
-        Assert.Equal(HttpStatusCode.OK, fileDownloadResult.StatusCode);
-        Assert.False(fileDownloadResult.WasSkipped);
-        Assert.Equal(FileExistsBehavior.CreateNew, fileDownloadResult.FileExistsBehavior);
-        Assert.False(fileDownloadResult.UsedMultiThreadedDownload);
-        Assert.True(fileDownloadResult.ElapsedMilliseconds > 0);
-        Assert.Equal($"http://localhost:{port}/test", fileDownloadResult.RequestUri?.ToString());
+        Assert.True(fileTransferResult.IsSuccess);
+        Assert.Equal(12, fileTransferResult.FileSize);
+        Assert.Equal(destinationPath, fileTransferResult.FilePath);
+        Assert.Equal(HttpStatusCode.OK, fileTransferResult.StatusCode);
+        Assert.True(fileTransferResult.ElapsedMilliseconds > 0);
+        Assert.Equal($"http://localhost:{port}/test", fileTransferResult.RequestUri?.ToString());
 
         File.Delete(destinationPath);
 
@@ -528,22 +507,19 @@ public class HttpRemoteServiceExtensionsTests
             HttpRequestBuilder.DownloadFile(new Uri($"http://localhost:{port}/test"), destinationPath);
 
         // ReSharper disable once MethodHasAsyncOverload
-        var fileDownloadResult =
+        var fileTransferResult =
             httpRemoteService.Send(httpFileDownloadBuilder.SetEventHandler<CustomFileTransferEventHandler>());
 
         Assert.True(File.Exists(destinationPath));
         Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
         Assert.Equal(2, customFileTransferEventHandler.counter);
 
-        Assert.True(fileDownloadResult.IsSuccess);
-        Assert.Equal(12, fileDownloadResult.FileSize);
-        Assert.Equal(destinationPath, fileDownloadResult.FilePath);
-        Assert.Equal(HttpStatusCode.OK, fileDownloadResult.StatusCode);
-        Assert.False(fileDownloadResult.WasSkipped);
-        Assert.Equal(FileExistsBehavior.CreateNew, fileDownloadResult.FileExistsBehavior);
-        Assert.False(fileDownloadResult.UsedMultiThreadedDownload);
-        Assert.True(fileDownloadResult.ElapsedMilliseconds > 0);
-        Assert.Equal($"http://localhost:{port}/test", fileDownloadResult.RequestUri?.ToString());
+        Assert.True(fileTransferResult.IsSuccess);
+        Assert.Equal(12, fileTransferResult.FileSize);
+        Assert.Equal(destinationPath, fileTransferResult.FilePath);
+        Assert.Equal(HttpStatusCode.OK, fileTransferResult.StatusCode);
+        Assert.True(fileTransferResult.ElapsedMilliseconds > 0);
+        Assert.Equal($"http://localhost:{port}/test", fileTransferResult.RequestUri?.ToString());
 
         File.Delete(destinationPath);
 
@@ -579,20 +555,17 @@ public class HttpRemoteServiceExtensionsTests
         var httpFileDownloadBuilder =
             HttpRequestBuilder.DownloadFile(new Uri($"http://localhost:{port}/test"), destinationPath);
 
-        var fileDownloadResult = await httpRemoteService.SendAsync(httpFileDownloadBuilder);
+        var fileTransferResult = await httpRemoteService.SendAsync(httpFileDownloadBuilder);
 
         Assert.True(File.Exists(destinationPath));
         Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
 
-        Assert.True(fileDownloadResult.IsSuccess);
-        Assert.Equal(12, fileDownloadResult.FileSize);
-        Assert.Equal(destinationPath, fileDownloadResult.FilePath);
-        Assert.Equal(HttpStatusCode.OK, fileDownloadResult.StatusCode);
-        Assert.False(fileDownloadResult.WasSkipped);
-        Assert.Equal(FileExistsBehavior.CreateNew, fileDownloadResult.FileExistsBehavior);
-        Assert.False(fileDownloadResult.UsedMultiThreadedDownload);
-        Assert.True(fileDownloadResult.ElapsedMilliseconds > 0);
-        Assert.Equal($"http://localhost:{port}/test", fileDownloadResult.RequestUri?.ToString());
+        Assert.True(fileTransferResult.IsSuccess);
+        Assert.Equal(12, fileTransferResult.FileSize);
+        Assert.Equal(destinationPath, fileTransferResult.FilePath);
+        Assert.Equal(HttpStatusCode.OK, fileTransferResult.StatusCode);
+        Assert.True(fileTransferResult.ElapsedMilliseconds > 0);
+        Assert.Equal($"http://localhost:{port}/test", fileTransferResult.RequestUri?.ToString());
 
         File.Delete(destinationPath);
 
@@ -680,21 +653,18 @@ public class HttpRemoteServiceExtensionsTests
                     await Task.CompletedTask;
                 });
 
-        var fileDownloadResult = await httpRemoteService.SendAsync(httpFileDownloadBuilder);
+        var fileTransferResult = await httpRemoteService.SendAsync(httpFileDownloadBuilder);
 
         Assert.Equal(1, i);
         Assert.True(File.Exists(destinationPath));
         Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
 
-        Assert.True(fileDownloadResult.IsSuccess);
-        Assert.Equal(12, fileDownloadResult.FileSize);
-        Assert.Equal(destinationPath, fileDownloadResult.FilePath);
-        Assert.Equal(HttpStatusCode.OK, fileDownloadResult.StatusCode);
-        Assert.False(fileDownloadResult.WasSkipped);
-        Assert.Equal(FileExistsBehavior.CreateNew, fileDownloadResult.FileExistsBehavior);
-        Assert.False(fileDownloadResult.UsedMultiThreadedDownload);
-        Assert.True(fileDownloadResult.ElapsedMilliseconds > 0);
-        Assert.Equal($"http://localhost:{port}/test", fileDownloadResult.RequestUri?.ToString());
+        Assert.True(fileTransferResult.IsSuccess);
+        Assert.Equal(12, fileTransferResult.FileSize);
+        Assert.Equal(destinationPath, fileTransferResult.FilePath);
+        Assert.Equal(HttpStatusCode.OK, fileTransferResult.StatusCode);
+        Assert.True(fileTransferResult.ElapsedMilliseconds > 0);
+        Assert.Equal($"http://localhost:{port}/test", fileTransferResult.RequestUri?.ToString());
 
         File.Delete(destinationPath);
 
@@ -731,7 +701,7 @@ public class HttpRemoteServiceExtensionsTests
             HttpRequestBuilder.DownloadFile(new Uri($"http://localhost:{port}/test"), destinationPath);
 
         var i = 0;
-        var fileDownloadResult = await httpRemoteService.SendAsync(httpFileDownloadBuilder.WithRequest(requestBuilder =>
+        var fileTransferResult = await httpRemoteService.SendAsync(httpFileDownloadBuilder.WithRequest(requestBuilder =>
             requestBuilder.SetOnPreSendRequest(_ =>
             {
                 i += 1;
@@ -741,15 +711,12 @@ public class HttpRemoteServiceExtensionsTests
         Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
         Assert.Equal(1, i);
 
-        Assert.True(fileDownloadResult.IsSuccess);
-        Assert.Equal(12, fileDownloadResult.FileSize);
-        Assert.Equal(destinationPath, fileDownloadResult.FilePath);
-        Assert.Equal(HttpStatusCode.OK, fileDownloadResult.StatusCode);
-        Assert.False(fileDownloadResult.WasSkipped);
-        Assert.Equal(FileExistsBehavior.CreateNew, fileDownloadResult.FileExistsBehavior);
-        Assert.False(fileDownloadResult.UsedMultiThreadedDownload);
-        Assert.True(fileDownloadResult.ElapsedMilliseconds > 0);
-        Assert.Equal($"http://localhost:{port}/test", fileDownloadResult.RequestUri?.ToString());
+        Assert.True(fileTransferResult.IsSuccess);
+        Assert.Equal(12, fileTransferResult.FileSize);
+        Assert.Equal(destinationPath, fileTransferResult.FilePath);
+        Assert.Equal(HttpStatusCode.OK, fileTransferResult.StatusCode);
+        Assert.True(fileTransferResult.ElapsedMilliseconds > 0);
+        Assert.Equal($"http://localhost:{port}/test", fileTransferResult.RequestUri?.ToString());
 
         File.Delete(destinationPath);
 
@@ -787,22 +754,19 @@ public class HttpRemoteServiceExtensionsTests
         var httpFileDownloadBuilder =
             HttpRequestBuilder.DownloadFile(new Uri($"http://localhost:{port}/test"), destinationPath);
 
-        var fileDownloadResult = await httpRemoteService.SendAsync(httpFileDownloadBuilder
+        var fileTransferResult = await httpRemoteService.SendAsync(httpFileDownloadBuilder
             .SetEventHandler<CustomFileTransferEventHandler>());
 
         Assert.True(File.Exists(destinationPath));
         Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
         Assert.Equal(2, customFileTransferEventHandler.counter);
 
-        Assert.True(fileDownloadResult.IsSuccess);
-        Assert.Equal(12, fileDownloadResult.FileSize);
-        Assert.Equal(destinationPath, fileDownloadResult.FilePath);
-        Assert.Equal(HttpStatusCode.OK, fileDownloadResult.StatusCode);
-        Assert.False(fileDownloadResult.WasSkipped);
-        Assert.Equal(FileExistsBehavior.CreateNew, fileDownloadResult.FileExistsBehavior);
-        Assert.False(fileDownloadResult.UsedMultiThreadedDownload);
-        Assert.True(fileDownloadResult.ElapsedMilliseconds > 0);
-        Assert.Equal($"http://localhost:{port}/test", fileDownloadResult.RequestUri?.ToString());
+        Assert.True(fileTransferResult.IsSuccess);
+        Assert.Equal(12, fileTransferResult.FileSize);
+        Assert.Equal(destinationPath, fileTransferResult.FilePath);
+        Assert.Equal(HttpStatusCode.OK, fileTransferResult.StatusCode);
+        Assert.True(fileTransferResult.ElapsedMilliseconds > 0);
+        Assert.Equal($"http://localhost:{port}/test", fileTransferResult.RequestUri?.ToString());
 
         File.Delete(destinationPath);
 

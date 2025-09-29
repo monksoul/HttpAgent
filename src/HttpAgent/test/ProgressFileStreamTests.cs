@@ -33,7 +33,7 @@ public class ProgressFileStreamTests(ITestOutputHelper output)
         Assert.Equal(21, progressFileStream._fileLength);
         Assert.Equal(fileStream, progressFileStream._fileStream);
         Assert.NotNull(progressFileStream._fileTransferProgress);
-        Assert.Equal(21, progressFileStream._fileTransferProgress.TotalFileSize);
+        Assert.Equal(21, progressFileStream._fileTransferProgress.FileSize);
         Assert.Equal("test.txt", progressFileStream._fileTransferProgress.FileName);
         Assert.Equal(filePath, progressFileStream._fileTransferProgress.FilePath);
         Assert.NotNull(progressFileStream._stopwatch);
