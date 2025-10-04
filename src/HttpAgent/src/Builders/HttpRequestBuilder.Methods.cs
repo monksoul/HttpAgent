@@ -1673,15 +1673,14 @@ public sealed partial class HttpRequestBuilder
     /// </returns>
     public HttpRequestBuilder Clone()
     {
-        // 获取 HttpRequestBuilder 类型的所有实例属性
-        var properties = GetType().GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance |
-                                                 BindingFlags.DeclaredOnly);
+        // 空检查
+        ArgumentNullException.ThrowIfNull(HttpMethod);
 
         // 初始化新的 HttpRequestBuilder 实例
-        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod!, RequestUri);
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod, RequestUri);
 
         // 遍历所有属性并设置给 httpRequestBuilder 实例
-        foreach (var property in properties)
+        foreach (var property in _cachedProperties.Value)
         {
             property.SetValue(httpRequestBuilder, property.GetValue(this));
         }
@@ -1724,7 +1723,7 @@ public sealed partial class HttpRequestBuilder
             }
 
             _isAddedStringContentForFormUrlEncodedContentProcessor = true;
-            AddHttpContentProcessors(() => [_stringContentForFormUrlEncodedContentProcessorInstance.Value]);
+            AddHttpContentProcessors(() => [_stringContentForFormUrlEncodedContentProcessor.Value]);
         }
     }
 

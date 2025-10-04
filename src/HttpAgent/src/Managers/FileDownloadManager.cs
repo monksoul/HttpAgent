@@ -107,9 +107,10 @@ internal sealed class FileDownloadManager
             var httpResponseMessage = _httpRemoteService.Send(RequestBuilder, HttpCompletionOption.ResponseHeadersRead,
                 cancellationToken);
 
-            // 设置文件传输 URL
+            // 设置文件下载地址和响应状态码
             fileTransferResult.RequestUri =
                 httpResponseMessage?.RequestMessage?.RequestUri ?? RequestBuilder.RequestUri;
+            fileTransferResult.StatusCode = httpResponseMessage?.StatusCode;
 
             // 空检查
             if (httpResponseMessage is null)
@@ -121,9 +122,6 @@ internal sealed class FileDownloadManager
                 fileTransferResult.IsSuccess = false;
                 return fileTransferResult;
             }
-
-            // 更新响应状态码
-            fileTransferResult.StatusCode = httpResponseMessage.StatusCode;
 
             // 根据文件是否存在及配置的行为来决定是否应继续进行文件下载
             if (!ShouldContinueWithDownload(httpResponseMessage, out var destinationPath))
@@ -252,9 +250,10 @@ internal sealed class FileDownloadManager
             var httpResponseMessage = await _httpRemoteService.SendAsync(RequestBuilder,
                 HttpCompletionOption.ResponseHeadersRead, cancellationToken);
 
-            // 设置文件传输 URL
+            // 设置文件下载地址和响应状态码
             fileTransferResult.RequestUri =
                 httpResponseMessage?.RequestMessage?.RequestUri ?? RequestBuilder.RequestUri;
+            fileTransferResult.StatusCode = httpResponseMessage?.StatusCode;
 
             // 空检查
             if (httpResponseMessage is null)
@@ -266,9 +265,6 @@ internal sealed class FileDownloadManager
                 fileTransferResult.IsSuccess = false;
                 return fileTransferResult;
             }
-
-            // 更新响应状态码
-            fileTransferResult.StatusCode = httpResponseMessage.StatusCode;
 
             // 根据文件是否存在及配置的行为来决定是否应继续进行文件下载
             if (!ShouldContinueWithDownload(httpResponseMessage, out var destinationPath))

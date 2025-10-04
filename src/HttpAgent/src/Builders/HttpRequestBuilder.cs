@@ -17,7 +17,7 @@ public sealed partial class HttpRequestBuilder
     ///     <see cref="StringContentForFormUrlEncodedContentProcessor" /> 实例
     /// </summary>
     internal static readonly Lazy<StringContentForFormUrlEncodedContentProcessor>
-        _stringContentForFormUrlEncodedContentProcessorInstance =
+        _stringContentForFormUrlEncodedContentProcessor =
             new(() => new StringContentForFormUrlEncodedContentProcessor());
 
     /// <summary>

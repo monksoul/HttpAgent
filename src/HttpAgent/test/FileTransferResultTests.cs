@@ -15,6 +15,6 @@ public class FileTransferResultTests
         Assert.Null(fileTransferResult.FilePath);
         Assert.Equal(0, fileTransferResult.FileSize);
         Assert.Equal(0, fileTransferResult.ElapsedMilliseconds);
-        Assert.Equal(0, (int)fileTransferResult.StatusCode);
+        Assert.Null(fileTransferResult.StatusCode);
     }
 }

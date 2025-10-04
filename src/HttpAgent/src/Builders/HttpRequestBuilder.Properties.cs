@@ -10,6 +10,14 @@ namespace HttpAgent;
 public sealed partial class HttpRequestBuilder
 {
     /// <summary>
+    ///     <see cref="HttpRequestBuilder" /> 类型的所有实例属性信息
+    /// </summary>
+    /// <remarks>避免在每次调用 <see cref="Clone" /> 方法时重复进行反射操作，提升性能。</remarks>
+    internal static readonly Lazy<PropertyInfo[]> _cachedProperties = new(() =>
+        typeof(HttpRequestBuilder).GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance |
+                                                 BindingFlags.DeclaredOnly));
+
+    /// <summary>
     ///     请求地址
     /// </summary>
     public Uri? RequestUri { get; private set; }
