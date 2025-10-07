@@ -18,11 +18,8 @@ public class MultipartFormDataContentProcessor : HttpContentProcessorBase
     public override HttpContent? Process(object? rawContent, string contentType, Encoding? encoding)
     {
         // 尝试解析 HttpContent 类型
-        if (TryProcess(rawContent, contentType, encoding, out var httpContent))
-        {
-            return httpContent;
-        }
-
-        throw new NotImplementedException();
+        return TryProcess(rawContent, contentType, encoding, out var httpContent)
+            ? httpContent
+            : throw new NotImplementedException();
     }
 }

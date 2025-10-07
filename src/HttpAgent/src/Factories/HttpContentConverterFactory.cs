@@ -45,14 +45,15 @@ internal sealed class HttpContentConverterFactory : IHttpContentConverterFactory
         CancellationToken cancellationToken = default) =>
         httpResponseMessage is null
             ? default
-            : GetConverter<TResult>(converters).Read(httpResponseMessage, cancellationToken);
+            : GetConverter<TResult>(httpResponseMessage, converters).Read(httpResponseMessage, cancellationToken);
 
     /// <inheritdoc />
     public object? Read(Type resultType, HttpResponseMessage? httpResponseMessage,
         IHttpContentConverter[]? converters = null, CancellationToken cancellationToken = default) =>
         httpResponseMessage is null
             ? null
-            : GetConverter(resultType, converters).Read(resultType, httpResponseMessage, cancellationToken);
+            : GetConverter(resultType, httpResponseMessage, converters)
+                .Read(resultType, httpResponseMessage, cancellationToken);
 
     /// <inheritdoc />
     public async Task<TResult?> ReadAsync<TResult>(HttpResponseMessage? httpResponseMessage,
@@ -64,7 +65,8 @@ internal sealed class HttpContentConverterFactory : IHttpContentConverterFactory
             return default;
         }
 
-        return await GetConverter<TResult>(converters).ReadAsync(httpResponseMessage, cancellationToken);
+        return await GetConverter<TResult>(httpResponseMessage, converters)
+            .ReadAsync(httpResponseMessage, cancellationToken);
     }
 
     /// <inheritdoc />
@@ -77,18 +79,23 @@ internal sealed class HttpContentConverterFactory : IHttpContentConverterFactory
             return null;
         }
 
-        return await GetConverter(resultType, converters).ReadAsync(resultType, httpResponseMessage, cancellationToken);
+        return await GetConverter(resultType, httpResponseMessage, converters)
+            .ReadAsync(resultType, httpResponseMessage, cancellationToken);
     }
 
     /// <summary>
     ///     获取 <see cref="IHttpContentConverter{TResult}" /> 实例
     /// </summary>
+    /// <param name="httpResponseMessage">
+    ///     <see cref="HttpResponseMessage" />
+    /// </param>
     /// <param name="converters"><see cref="IHttpContentConverter{TResult}" /> 数组</param>
     /// <typeparam name="TResult">转换的目标类型</typeparam>
     /// <returns>
     ///     <see cref="IHttpContentConverter{TResult}" />
     /// </returns>
-    internal IHttpContentConverter<TResult> GetConverter<TResult>(params IHttpContentConverter[]? converters)
+    internal IHttpContentConverter<TResult> GetConverter<TResult>(HttpResponseMessage httpResponseMessage,
+        params IHttpContentConverter[]? converters)
     {
         // 初始化新的 IHttpContentConverter 字典集合
         var unionConverters = new Dictionary<Type, IHttpContentConverter>(_converters);
@@ -101,7 +108,7 @@ internal sealed class HttpContentConverterFactory : IHttpContentConverterFactory
 
         // 如果未找到，则调用 IObjectContentConverterFactory 实例的 GetConverter<TResult> 返回
         var converter = typeConverter ?? ServiceProvider.GetRequiredService<IObjectContentConverterFactory>()
-            .GetConverter<TResult>();
+            .GetConverter<TResult>(httpResponseMessage);
 
         // 设置服务提供器
         converter.ServiceProvider ??= ServiceProvider;
@@ -112,12 +119,16 @@ internal sealed class HttpContentConverterFactory : IHttpContentConverterFactory
     /// <summary>
     ///     获取 <see cref="IHttpContentConverter" /> 实例
     /// </summary>
+    /// <param name="httpResponseMessage">
+    ///     <see cref="HttpResponseMessage" />
+    /// </param>
     /// <param name="resultType">转换的目标类型</param>
     /// <param name="converters"><see cref="IHttpContentConverter{TResult}" /> 数组</param>
     /// <returns>
     ///     <see cref="IHttpContentConverter" />
     /// </returns>
-    internal IHttpContentConverter GetConverter(Type resultType, params IHttpContentConverter[]? converters)
+    internal IHttpContentConverter GetConverter(Type resultType, HttpResponseMessage httpResponseMessage,
+        params IHttpContentConverter[]? converters)
     {
         // 初始化新的 IHttpContentConverter 字典集合
         var unionConverters = new Dictionary<Type, IHttpContentConverter>(_converters);
@@ -131,7 +142,7 @@ internal sealed class HttpContentConverterFactory : IHttpContentConverterFactory
 
         // 如果未找到，则调用 IObjectContentConverterFactory 实例的 GetConverter 返回
         var converter = typeConverter ?? ServiceProvider.GetRequiredService<IObjectContentConverterFactory>()
-            .GetConverter(resultType);
+            .GetConverter(resultType, httpResponseMessage);
 
         // 设置服务提供器
         converter.ServiceProvider ??= ServiceProvider;

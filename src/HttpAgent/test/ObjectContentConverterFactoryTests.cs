@@ -17,7 +17,30 @@ public class ObjectContentConverterFactoryTests
     public void GetConverter_ReturnOK()
     {
         var factory = new ObjectContentConverterFactory();
-        Assert.True(factory.GetConverter(typeof(object)).GetType() == typeof(ObjectContentConverter));
-        Assert.True(factory.GetConverter<object>().GetType() == typeof(ObjectContentConverter<object>));
+        var httpResponseMessage = new HttpResponseMessage();
+        httpResponseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+        Assert.True(factory.GetConverter(typeof(object), httpResponseMessage).GetType() ==
+                    typeof(ObjectContentConverter));
+        Assert.True(factory.GetConverter<object>(httpResponseMessage).GetType() ==
+                    typeof(ObjectContentConverter<object>));
+
+        httpResponseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/xml");
+        Assert.True(factory.GetConverter(typeof(object), httpResponseMessage).GetType() ==
+                    typeof(XmlObjectContentConverter));
+        Assert.True(factory.GetConverter<object>(httpResponseMessage).GetType() ==
+                    typeof(XmlObjectContentConverter<object>));
+
+        httpResponseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/xml-patch+xml");
+        Assert.True(factory.GetConverter(typeof(object), httpResponseMessage).GetType() ==
+                    typeof(XmlObjectContentConverter));
+        Assert.True(factory.GetConverter<object>(httpResponseMessage).GetType() ==
+                    typeof(XmlObjectContentConverter<object>));
+
+        httpResponseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("text/xml");
+        Assert.True(factory.GetConverter(typeof(object), httpResponseMessage).GetType() ==
+                    typeof(XmlObjectContentConverter));
+        Assert.True(factory.GetConverter<object>(httpResponseMessage).GetType() ==
+                    typeof(XmlObjectContentConverter<object>));
     }
 }

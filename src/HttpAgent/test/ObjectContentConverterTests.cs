@@ -37,22 +37,6 @@ public class ObjectContentConverterTests
         Assert.NotNull(objectModel2);
         Assert.Equal(10, objectModel2.Id);
         Assert.Equal("furion", objectModel2.Name);
-
-        using var stringContent3 = new StringContent("""
-                                                     <XmlModel>
-                                                        <Name>Furion</Name>
-                                                        <Age>30</Age>
-                                                     </XmlModel>
-                                                     """, Encoding.UTF8,
-            new MediaTypeHeaderValue("application/xml"));
-        var httpResponseMessage3 = new HttpResponseMessage();
-        httpResponseMessage3.Content = stringContent3;
-
-        var converter3 = new ObjectContentConverter<XmlModel>();
-        var xmlModel = converter3.Read(httpResponseMessage3);
-        Assert.NotNull(xmlModel);
-        Assert.Equal("Furion", xmlModel.Name);
-        Assert.Equal(30, xmlModel.Age);
     }
 
     [Fact]
@@ -77,23 +61,6 @@ public class ObjectContentConverterTests
         Assert.NotNull(objectModel2);
         Assert.Equal(10, objectModel2.Id);
         Assert.Equal("furion", objectModel2.Name);
-
-
-        using var stringContent3 = new StringContent("""
-                                                     <XmlModel>
-                                                        <Name>Furion</Name>
-                                                        <Age>30</Age>
-                                                     </XmlModel>
-                                                     """, Encoding.UTF8,
-            new MediaTypeHeaderValue("application/xml"));
-        var httpResponseMessage3 = new HttpResponseMessage();
-        httpResponseMessage3.Content = stringContent3;
-
-        var converter3 = new ObjectContentConverter<XmlModel>();
-        var xmlModel = await converter3.ReadAsync(httpResponseMessage3);
-        Assert.NotNull(xmlModel);
-        Assert.Equal("Furion", xmlModel.Name);
-        Assert.Equal(30, xmlModel.Age);
     }
 
     [Fact]
@@ -147,22 +114,6 @@ public class ObjectContentConverterTests
         Assert.NotNull(objectModel2);
         Assert.Equal(10, objectModel2.Id);
         Assert.Equal("furion", objectModel2.Name);
-
-        using var stringContent3 = new StringContent("""
-                                                     <XmlModel>
-                                                        <Name>Furion</Name>
-                                                        <Age>30</Age>
-                                                     </XmlModel>
-                                                     """, Encoding.UTF8,
-            new MediaTypeHeaderValue("application/xml"));
-        var httpResponseMessage3 = new HttpResponseMessage();
-        httpResponseMessage3.Content = stringContent3;
-
-        var converter3 = new ObjectContentConverter();
-        var xmlModel = converter3.Read(typeof(XmlModel), httpResponseMessage3) as XmlModel;
-        Assert.NotNull(xmlModel);
-        Assert.Equal("Furion", xmlModel.Name);
-        Assert.Equal(30, xmlModel.Age);
     }
 
     [Fact]
@@ -187,22 +138,6 @@ public class ObjectContentConverterTests
         Assert.NotNull(objectModel2);
         Assert.Equal(10, objectModel2.Id);
         Assert.Equal("furion", objectModel2.Name);
-
-        using var stringContent3 = new StringContent("""
-                                                     <XmlModel>
-                                                        <Name>Furion</Name>
-                                                        <Age>30</Age>
-                                                     </XmlModel>
-                                                     """, Encoding.UTF8,
-            new MediaTypeHeaderValue("application/xml"));
-        var httpResponseMessage3 = new HttpResponseMessage();
-        httpResponseMessage3.Content = stringContent3;
-
-        var converter3 = new ObjectContentConverter();
-        var xmlModel = await converter3.ReadAsync(typeof(XmlModel), httpResponseMessage3) as XmlModel;
-        Assert.NotNull(xmlModel);
-        Assert.Equal("Furion", xmlModel.Name);
-        Assert.Equal(30, xmlModel.Age);
     }
 
     [Fact]
@@ -343,76 +278,5 @@ public class ObjectContentConverterTests
         Assert.True(jsonSerializerOptions.IncludeFields);
 
         serviceProvider.Dispose();
-    }
-
-    [Fact]
-    public void HasXmlContentType_ReturnOK()
-    {
-        var httpResponseMessage = new HttpResponseMessage();
-        httpResponseMessage.Content = new StringContent("""{"id":10, "name":"furion"}""", Encoding.UTF8,
-            new MediaTypeHeaderValue("application/json"));
-
-        var converter = new ObjectContentConverter<ObjectModel>();
-        var hasXmlContentTypeMethod = typeof(ObjectContentConverter).GetMethod("HasXmlContentType",
-            BindingFlags.NonPublic | BindingFlags.Instance)!;
-        Assert.False((bool)hasXmlContentTypeMethod.Invoke(converter, [httpResponseMessage])!);
-
-        httpResponseMessage.Content = new StringContent("""
-                                                        <XmlModel>
-                                                           <Name>Furion</Name>
-                                                           <Age>30</Age>
-                                                        </XmlModel>
-                                                        """, Encoding.UTF8,
-            new MediaTypeHeaderValue("application/xml"));
-        Assert.True((bool)hasXmlContentTypeMethod.Invoke(converter, [httpResponseMessage])!);
-
-        httpResponseMessage.Content = new StringContent("""
-                                                        <XmlModel>
-                                                           <Name>Furion</Name>
-                                                           <Age>30</Age>
-                                                        </XmlModel>
-                                                        """, Encoding.UTF8,
-            new MediaTypeHeaderValue("text/xml"));
-        Assert.True((bool)hasXmlContentTypeMethod.Invoke(converter, [httpResponseMessage])!);
-
-        httpResponseMessage.Content = new StringContent("""
-                                                        <XmlModel>
-                                                           <Name>Furion</Name>
-                                                           <Age>30</Age>
-                                                        </XmlModel>
-                                                        """, Encoding.UTF8,
-            new MediaTypeHeaderValue("application/xml-patch+xml"));
-        Assert.True((bool)hasXmlContentTypeMethod.Invoke(converter, [httpResponseMessage])!);
-    }
-
-    [Fact]
-    public void DeserializeXml_ReturnOK()
-    {
-        var converter = new ObjectContentConverter<XmlModel>();
-        var deserializeXmlMethod = typeof(ObjectContentConverter)
-            .GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
-            .FirstOrDefault(m => m is { Name: "DeserializeXml", IsGenericMethod: false })!;
-
-        const string xmlString = """
-                                 <XmlModel>
-                                    <Name>Furion</Name>
-                                    <Age>30</Age>
-                                 </XmlModel>
-                                 """;
-
-        var xmlModel = deserializeXmlMethod.Invoke(converter, [typeof(XmlModel), xmlString]) as XmlModel;
-        Assert.NotNull(xmlModel);
-        Assert.Equal("Furion", xmlModel.Name);
-        Assert.Equal(30, xmlModel.Age);
-
-        var deserializeXmlGenericMethod = typeof(ObjectContentConverter)
-            .GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
-            .FirstOrDefault(m => m is { Name: "DeserializeXml", IsGenericMethod: true })!;
-
-        var xmlModel2 =
-            deserializeXmlGenericMethod.MakeGenericMethod(typeof(XmlModel)).Invoke(converter, [xmlString]) as XmlModel;
-        Assert.NotNull(xmlModel2);
-        Assert.Equal("Furion", xmlModel2.Name);
-        Assert.Equal(30, xmlModel2.Age);
     }
 }

@@ -95,7 +95,7 @@ public class MessagePackContentProcessor : HttpContentProcessorBase
 
             // 创建 MessagePack 序列化器委托
             serializer = o =>
-                (byte[])serializeMethod.MakeGenericMethod(objType).Invoke(null, [o, null, default(CancellationToken)])!;
+                (byte[])serializeMethod.MakeGenericMethod(objType).Invoke(null, [o, null, CancellationToken.None])!;
 
             // 添加到 MessagePack 序列化器委托字典缓存中
             _serializerCache.TryAdd(objType, serializer);

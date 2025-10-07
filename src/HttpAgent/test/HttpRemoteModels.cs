@@ -45,10 +45,12 @@ public class NotImplementObjectContentConverterFactory;
 public class CustomObjectContentConverterFactory : IObjectContentConverterFactory
 {
     /// <inheritdoc />
-    public ObjectContentConverter<TResult> GetConverter<TResult>() => new CustomObjectContentConverter<TResult>();
+    public IHttpContentConverter<TResult> GetConverter<TResult>(HttpResponseMessage httpResponseMessage) =>
+        new CustomObjectContentConverter<TResult>();
 
     /// <inheritdoc />
-    public ObjectContentConverter GetConverter(Type resultType) => new CustomObjectContentConverter();
+    public IHttpContentConverter GetConverter(Type resultType, HttpResponseMessage httpResponseMessage) =>
+        new CustomObjectContentConverter();
 }
 
 public class MultipartModel

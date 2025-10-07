@@ -355,4 +355,45 @@ public class HttpRemoteExtensionsTests
 
         serviceProvider.Dispose();
     }
+
+    [Fact]
+    public void IsXmlContent_ReturnOK()
+    {
+        var httpResponseMessage = new HttpResponseMessage();
+        httpResponseMessage.Content = new StringContent("""{"id":10, "name":"furion"}""", Encoding.UTF8,
+            new MediaTypeHeaderValue("application/json"));
+
+        httpResponseMessage.Content = new StringContent("""
+                                                        <XmlModel>
+                                                           <Name>Furion</Name>
+                                                           <Age>30</Age>
+                                                        </XmlModel>
+                                                        """, Encoding.UTF8,
+            new MediaTypeHeaderValue("application/xml"));
+        Assert.True(httpResponseMessage.IsXmlContent());
+
+        httpResponseMessage.Content = new StringContent("""
+                                                        <XmlModel>
+                                                           <Name>Furion</Name>
+                                                           <Age>30</Age>
+                                                        </XmlModel>
+                                                        """, Encoding.UTF8,
+            new MediaTypeHeaderValue("text/xml"));
+        Assert.True(httpResponseMessage.IsXmlContent());
+
+        httpResponseMessage.Content = new StringContent("""
+                                                        <XmlModel>
+                                                           <Name>Furion</Name>
+                                                           <Age>30</Age>
+                                                        </XmlModel>
+                                                        """, Encoding.UTF8,
+            new MediaTypeHeaderValue("application/xml-patch+xml"));
+        Assert.True(httpResponseMessage.IsXmlContent());
+
+        httpResponseMessage.Content = new StringContent("""
+                                                        {"id":1,"name":"Furion"}
+                                                        """, Encoding.UTF8,
+            new MediaTypeHeaderValue("application/json"));
+        Assert.False(httpResponseMessage.IsXmlContent());
+    }
 }

@@ -53,17 +53,23 @@ public class HttpContentConverterFactoryTests
         services.TryAddSingleton<IObjectContentConverterFactory, ObjectContentConverterFactory>();
         using var serviceProvider = services.BuildServiceProvider();
         var httpContentConverterFactory = new HttpContentConverterFactory(serviceProvider, null);
+        var httpResponseMessage = new HttpResponseMessage();
+        httpResponseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
         Assert.Equal(typeof(HttpResponseMessageConverter),
-            httpContentConverterFactory.GetConverter<HttpResponseMessage>().GetType());
-        Assert.Equal(typeof(StringContentConverter), httpContentConverterFactory.GetConverter<string>().GetType());
-        Assert.Equal(typeof(ByteArrayContentConverter), httpContentConverterFactory.GetConverter<byte[]>().GetType());
-        Assert.Equal(typeof(StreamContentConverter), httpContentConverterFactory.GetConverter<Stream>().GetType());
+            httpContentConverterFactory.GetConverter<HttpResponseMessage>(httpResponseMessage).GetType());
+        Assert.Equal(typeof(StringContentConverter),
+            httpContentConverterFactory.GetConverter<string>(httpResponseMessage).GetType());
+        Assert.Equal(typeof(ByteArrayContentConverter),
+            httpContentConverterFactory.GetConverter<byte[]>(httpResponseMessage).GetType());
+        Assert.Equal(typeof(StreamContentConverter),
+            httpContentConverterFactory.GetConverter<Stream>(httpResponseMessage).GetType());
         Assert.Equal(typeof(VoidContentConverter),
-            httpContentConverterFactory.GetConverter<VoidContent>().GetType());
-        Assert.Equal(typeof(ObjectContentConverter<int>), httpContentConverterFactory.GetConverter<int>().GetType());
+            httpContentConverterFactory.GetConverter<VoidContent>(httpResponseMessage).GetType());
+        Assert.Equal(typeof(ObjectContentConverter<int>),
+            httpContentConverterFactory.GetConverter<int>(httpResponseMessage).GetType());
         Assert.Equal(typeof(ObjectContentConverter<ObjectModel>),
-            httpContentConverterFactory.GetConverter<ObjectModel>().GetType());
+            httpContentConverterFactory.GetConverter<ObjectModel>(httpResponseMessage).GetType());
     }
 
     [Fact]
@@ -78,9 +84,11 @@ public class HttpContentConverterFactoryTests
         using var serviceProvider = services.BuildServiceProvider();
         var httpContentConverterFactory =
             serviceProvider.GetRequiredService<IHttpContentConverterFactory>() as HttpContentConverterFactory;
+        var httpResponseMessage = new HttpResponseMessage();
+        httpResponseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
         Assert.Equal(typeof(CustomObjectContentConverter<ObjectModel>),
-            httpContentConverterFactory!.GetConverter<ObjectModel>().GetType());
+            httpContentConverterFactory!.GetConverter<ObjectModel>(httpResponseMessage).GetType());
     }
 
     [Fact]
@@ -89,11 +97,14 @@ public class HttpContentConverterFactoryTests
         using var serviceProvider = new ServiceCollection().BuildServiceProvider();
         var httpContentConverterFactory =
             new HttpContentConverterFactory(serviceProvider, [new CustomByteArrayContentConverter()]);
+        var httpResponseMessage = new HttpResponseMessage();
+        httpResponseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
         Assert.Equal(typeof(CustomStringContentConverter),
-            httpContentConverterFactory.GetConverter<string>(new CustomStringContentConverter()).GetType());
+            httpContentConverterFactory.GetConverter<string>(httpResponseMessage, new CustomStringContentConverter())
+                .GetType());
         Assert.Equal(typeof(CustomByteArrayContentConverter),
-            httpContentConverterFactory.GetConverter<byte[]>().GetType());
+            httpContentConverterFactory.GetConverter<byte[]>(httpResponseMessage).GetType());
     }
 
     [Fact]
@@ -157,16 +168,19 @@ public class HttpContentConverterFactoryTests
         services.TryAddSingleton<IObjectContentConverterFactory, ObjectContentConverterFactory>();
         using var serviceProvider = services.BuildServiceProvider();
         var httpContentConverterFactory = new HttpContentConverterFactory(serviceProvider, null);
+        var httpResponseMessage = new HttpResponseMessage();
+        httpResponseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
         Assert.Equal(typeof(StringContentConverter),
-            httpContentConverterFactory.GetConverter(typeof(string)).GetType());
+            httpContentConverterFactory.GetConverter(typeof(string), httpResponseMessage).GetType());
         Assert.Equal(typeof(ByteArrayContentConverter),
-            httpContentConverterFactory.GetConverter(typeof(byte[])).GetType());
+            httpContentConverterFactory.GetConverter(typeof(byte[]), httpResponseMessage).GetType());
         Assert.Equal(typeof(StreamContentConverter),
-            httpContentConverterFactory.GetConverter(typeof(Stream)).GetType());
-        Assert.Equal(typeof(ObjectContentConverter), httpContentConverterFactory.GetConverter(typeof(int)).GetType());
+            httpContentConverterFactory.GetConverter(typeof(Stream), httpResponseMessage).GetType());
         Assert.Equal(typeof(ObjectContentConverter),
-            httpContentConverterFactory.GetConverter(typeof(ObjectModel)).GetType());
+            httpContentConverterFactory.GetConverter(typeof(int), httpResponseMessage).GetType());
+        Assert.Equal(typeof(ObjectContentConverter),
+            httpContentConverterFactory.GetConverter(typeof(ObjectModel), httpResponseMessage).GetType());
     }
 
     [Fact]
@@ -181,9 +195,11 @@ public class HttpContentConverterFactoryTests
         using var serviceProvider = services.BuildServiceProvider();
         var httpContentConverterFactory =
             serviceProvider.GetRequiredService<IHttpContentConverterFactory>() as HttpContentConverterFactory;
+        var httpResponseMessage = new HttpResponseMessage();
+        httpResponseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
         Assert.Equal(typeof(CustomObjectContentConverter),
-            httpContentConverterFactory!.GetConverter(typeof(ObjectModel)).GetType());
+            httpContentConverterFactory!.GetConverter(typeof(ObjectModel), httpResponseMessage).GetType());
     }
 
     [Fact]
@@ -192,11 +208,14 @@ public class HttpContentConverterFactoryTests
         using var serviceProvider = new ServiceCollection().BuildServiceProvider();
         var httpContentConverterFactory =
             new HttpContentConverterFactory(serviceProvider, [new CustomByteArrayContentConverter()]);
+        var httpResponseMessage = new HttpResponseMessage();
+        httpResponseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
         Assert.Equal(typeof(CustomStringContentConverter),
-            httpContentConverterFactory.GetConverter(typeof(string), new CustomStringContentConverter()).GetType());
+            httpContentConverterFactory
+                .GetConverter(typeof(string), httpResponseMessage, new CustomStringContentConverter()).GetType());
         Assert.Equal(typeof(CustomByteArrayContentConverter),
-            httpContentConverterFactory.GetConverter(typeof(byte[])).GetType());
+            httpContentConverterFactory.GetConverter(typeof(byte[]), httpResponseMessage).GetType());
     }
 
     [Fact]

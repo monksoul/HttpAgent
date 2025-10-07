@@ -13,17 +13,23 @@ public interface IObjectContentConverterFactory
     ///     获取 <see cref="ObjectContentConverter{TResult}" /> 实例
     /// </summary>
     /// <typeparam name="TResult">转换的目标类型</typeparam>
+    /// <param name="httpResponseMessage">
+    ///     <see cref="HttpResponseMessage" />
+    /// </param>
     /// <returns>
-    ///     <see cref="ObjectContentConverter{TResult}" />
+    ///     <see cref="IHttpContentConverter{TResult}" />
     /// </returns>
-    ObjectContentConverter<TResult> GetConverter<TResult>();
+    IHttpContentConverter<TResult> GetConverter<TResult>(HttpResponseMessage httpResponseMessage);
 
     /// <summary>
     ///     获取 <see cref="ObjectContentConverter" /> 实例
     /// </summary>
     /// <param name="resultType">转换的目标类型</param>
+    /// <param name="httpResponseMessage">
+    ///     <see cref="HttpResponseMessage" />
+    /// </param>
     /// <returns>
-    ///     <see cref="ObjectContentConverter" />
+    ///     <see cref="IHttpContentConverter" />
     /// </returns>
-    ObjectContentConverter GetConverter(Type resultType);
+    IHttpContentConverter GetConverter(Type resultType, HttpResponseMessage httpResponseMessage);
 }

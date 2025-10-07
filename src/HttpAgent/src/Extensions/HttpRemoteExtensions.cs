@@ -410,6 +410,20 @@ public static partial class HttpRemoteExtensions
     }
 
     /// <summary>
+    ///     检查 HTTP 响应的内容类型是否为 XML 媒体类型
+    /// </summary>
+    /// <param name="httpResponseMessage">
+    ///     <see cref="HttpResponseMessage" />
+    /// </param>
+    /// <returns>
+    ///     <see cref="bool" />
+    /// </returns>
+    public static bool IsXmlContent(this HttpResponseMessage httpResponseMessage) =>
+        httpResponseMessage.Content.Headers.ContentType?.MediaType.IsIn(
+            [MediaTypeNames.Application.Xml, MediaTypeNames.Application.XmlPatch, MediaTypeNames.Text.Xml],
+            StringComparer.OrdinalIgnoreCase) == true;
+
+    /// <summary>
     ///     获取主机环境名
     /// </summary>
     /// <param name="services">
