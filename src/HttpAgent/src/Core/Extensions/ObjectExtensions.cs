@@ -225,8 +225,11 @@ internal static class ObjectExtensions
             var getters = keyValuePairType.GetKeyValuePairOrJPropertyGetters();
 
             // 转换为字典类型并返回
-            return keyValuePairs.ToDictionary(keyValuePair => getters.KeyGetter(keyValuePair!)!,
-                keyValuePair => getters.ValueGetter(keyValuePair!));
+            return keyValuePairs.GroupBy(keyValuePair => getters.KeyGetter(keyValuePair!)!).ToDictionary(
+                group => group.Key,
+                group => group.Count() == 1
+                    ? getters.ValueGetter(group.First()!)
+                    : group.Select(keyValuePair => getters.ValueGetter(keyValuePair!)).ToArray());
         }
 
         try

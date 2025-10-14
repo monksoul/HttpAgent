@@ -14,6 +14,7 @@ global using Microsoft.Extensions.Options;
 global using Microsoft.Extensions.Primitives;
 global using Shapeless;
 global using System.Collections.ObjectModel;
+global using System.Collections.Specialized;
 global using System.ComponentModel.DataAnnotations;
 global using System.Diagnostics;
 global using System.Globalization;

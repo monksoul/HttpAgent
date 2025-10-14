@@ -34,6 +34,36 @@ public sealed class WebSocketClientOptions
     }
 
     /// <summary>
+    ///     <inheritdoc cref="WebSocketClientOptions" />
+    /// </summary>
+    /// <param name="serverUri">服务器地址</param>
+    /// <param name="configure">用于配置 <see cref="ClientWebSocketOptions" /> 的操作</param>
+    public WebSocketClientOptions(string serverUri, Action<ClientWebSocketOptions> configure)
+    {
+        // 空检查
+        ArgumentException.ThrowIfNullOrWhiteSpace(serverUri);
+        ArgumentNullException.ThrowIfNull(configure);
+
+        ServerUri = new Uri(serverUri);
+        Configure = configure;
+    }
+
+    /// <summary>
+    ///     <inheritdoc cref="WebSocketClientOptions" />
+    /// </summary>
+    /// <param name="serverUri">服务器地址</param>
+    /// <param name="configure">用于配置 <see cref="ClientWebSocketOptions" /> 的操作</param>
+    public WebSocketClientOptions(Uri serverUri, Action<ClientWebSocketOptions> configure)
+    {
+        // 空检查
+        ArgumentNullException.ThrowIfNull(serverUri);
+        ArgumentNullException.ThrowIfNull(configure);
+
+        ServerUri = serverUri;
+        Configure = configure;
+    }
+
+    /// <summary>
     ///     服务器地址
     /// </summary>
     public Uri ServerUri { get; }
@@ -62,7 +92,7 @@ public sealed class WebSocketClientOptions
     public int ReceiveBufferSize { get; set; } = 1024 * 4;
 
     /// <summary>
-    ///     用于配置 <see cref="ConfigureClientWebSocketOptions" /> 的操作
+    ///     用于配置 <see cref="ClientWebSocketOptions" /> 的操作
     /// </summary>
-    public Action<ClientWebSocketOptions>? ConfigureClientWebSocketOptions { get; set; }
+    public Action<ClientWebSocketOptions>? Configure { get; set; }
 }

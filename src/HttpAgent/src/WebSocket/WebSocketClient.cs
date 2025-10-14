@@ -43,6 +43,26 @@ public sealed partial class WebSocketClient : IDisposable
     /// <summary>
     ///     <inheritdoc cref="WebSocketClient" />
     /// </summary>
+    /// <param name="serverUri">服务器地址</param>
+    /// <param name="configure">用于配置 <see cref="ClientWebSocketOptions" /> 的操作</param>
+    public WebSocketClient(string serverUri, Action<ClientWebSocketOptions> configure)
+        : this(new WebSocketClientOptions(serverUri, configure))
+    {
+    }
+
+    /// <summary>
+    ///     <inheritdoc cref="WebSocketClient" />
+    /// </summary>
+    /// <param name="serverUri">服务器地址</param>
+    /// <param name="configure">用于配置 <see cref="ClientWebSocketOptions" /> 的操作</param>
+    public WebSocketClient(Uri serverUri, Action<ClientWebSocketOptions> configure)
+        : this(new WebSocketClientOptions(serverUri, configure))
+    {
+    }
+
+    /// <summary>
+    ///     <inheritdoc cref="WebSocketClient" />
+    /// </summary>
     /// <param name="options">
     ///     <see cref="WebSocketClientOptions" />
     /// </param>
@@ -94,8 +114,8 @@ public sealed partial class WebSocketClient : IDisposable
         // 初始化 ClientWebSocket 实例
         _clientWebSocket ??= new ClientWebSocket();
 
-        // 调用用于配置 ConfigureClientWebSocketOptions 的操作
-        Options.ConfigureClientWebSocketOptions?.Invoke(_clientWebSocket.Options);
+        // 调用用于配置 ClientWebSocketOptions 的操作
+        Options.Configure?.Invoke(_clientWebSocket.Options);
 
         // 检查连接是否处于正在连接或打开状态，如果是则跳过
         if (State is WebSocketState.Connecting or WebSocketState.Open)
@@ -316,6 +336,11 @@ public sealed partial class WebSocketClient : IDisposable
                 catch (Exception e) when (cancellationToken.IsCancellationRequested || e is OperationCanceledException)
                 {
                     break;
+                }
+                catch (Exception e)
+                {
+                    // 输出调试事件
+                    Debugging.Error(e.Message);
                 }
             }
         }

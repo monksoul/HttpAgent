@@ -1009,6 +1009,24 @@ public class HttpRequestBuilderMethodsTests
         Assert.Equal("10", httpRequestBuilder3.Cookies!["id"]);
         Assert.Equal(2, httpRequestBuilder3.Cookies.Count);
         Assert.Equal("furion2", httpRequestBuilder3.Cookies!["name"]);
+
+        var httpRequestBuilder4 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+
+        httpRequestBuilder4.WithCookies(new KeyValuePair<string, object?>[]
+        {
+            new("name", "furion"), new("name", "monksoul"), new("id", "1")
+        });
+        Assert.Equal("1", httpRequestBuilder4.Cookies!["id"]);
+        Assert.Equal("furion,monksoul", httpRequestBuilder4.Cookies!["name"]);
+
+        var httpRequestBuilder5 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+
+        httpRequestBuilder5.WithCookies(new NameValueCollection
+        {
+            { "name", "furion" }, { "name", "monksoul" }, { "id", "1" }
+        });
+        Assert.Equal("1", httpRequestBuilder5.Cookies!["id"]);
+        Assert.Equal("furion,monksoul", httpRequestBuilder5.Cookies!["name"]);
     }
 
     [Fact]

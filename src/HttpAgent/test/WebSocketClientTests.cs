@@ -15,6 +15,9 @@ public class WebSocketClientTests
 
         Assert.Throws<ArgumentNullException>(() => new WebSocketClient((Uri)null!));
         Assert.Throws<ArgumentNullException>(() => new WebSocketClient((WebSocketClientOptions)null!));
+
+        Assert.Throws<ArgumentNullException>(() => new WebSocketClient("ws://localhost:12345", null!));
+        Assert.Throws<ArgumentNullException>(() => new WebSocketClient(new Uri("ws://localhost:12345"), null!));
     }
 
     [Fact]
@@ -36,6 +39,16 @@ public class WebSocketClientTests
         Assert.Null(webSocketClient3._receiveMessageTask);
         Assert.Null(webSocketClient3.State);
         Assert.Equal(0, webSocketClient3.CurrentReconnectRetries);
+
+        using var webSocketClient4 =
+            new WebSocketClient("ws://localhost:12345", o => o.SetRequestHeader("cookie", "furion"));
+        Assert.NotNull(webSocketClient4.Options);
+        Assert.Equal("ws://localhost:12345/", webSocketClient4.Options.ServerUri.ToString());
+
+        using var webSocketClient5 =
+            new WebSocketClient(new Uri("ws://localhost:12345"), o => o.SetRequestHeader("cookie", "furion"));
+        Assert.NotNull(webSocketClient5.Options);
+        Assert.Equal("ws://localhost:12345/", webSocketClient5.Options.ServerUri.ToString());
     }
 
     [Fact]
@@ -289,7 +302,7 @@ public class WebSocketClientTests
 
         var options = new WebSocketClientOptions($"ws://localhost:{port}/ws")
         {
-            ConfigureClientWebSocketOptions = o =>
+            Configure = o =>
             {
                 i++;
             }

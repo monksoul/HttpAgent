@@ -15,11 +15,9 @@ public class MultipartFormDataContentProcessor : HttpContentProcessorBase
         contentType.IsIn([MediaTypeNames.Multipart.FormData], StringComparer.OrdinalIgnoreCase);
 
     /// <inheritdoc />
-    public override HttpContent? Process(object? rawContent, string contentType, Encoding? encoding)
-    {
+    public override HttpContent? Process(object? rawContent, string contentType, Encoding? encoding) =>
         // 尝试解析 HttpContent 类型
-        return TryProcess(rawContent, contentType, encoding, out var httpContent)
+        TryProcess(rawContent, contentType, encoding, out var httpContent)
             ? httpContent
             : throw new NotImplementedException();
-    }
 }

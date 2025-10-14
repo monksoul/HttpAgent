@@ -13790,6 +13790,20 @@
             </summary>
             <param name="serverUri">服务器地址</param>
         </member>
+        <member name="M:HttpAgent.WebSocketClient.#ctor(System.String,System.Action{System.Net.WebSockets.ClientWebSocketOptions})">
+            <summary>
+                <inheritdoc cref="T:HttpAgent.WebSocketClient" />
+            </summary>
+            <param name="serverUri">服务器地址</param>
+            <param name="configure">用于配置 <see cref="T:System.Net.WebSockets.ClientWebSocketOptions" /> 的操作</param>
+        </member>
+        <member name="M:HttpAgent.WebSocketClient.#ctor(System.Uri,System.Action{System.Net.WebSockets.ClientWebSocketOptions})">
+            <summary>
+                <inheritdoc cref="T:HttpAgent.WebSocketClient" />
+            </summary>
+            <param name="serverUri">服务器地址</param>
+            <param name="configure">用于配置 <see cref="T:System.Net.WebSockets.ClientWebSocketOptions" /> 的操作</param>
+        </member>
         <member name="M:HttpAgent.WebSocketClient.#ctor(HttpAgent.WebSocketClientOptions)">
             <summary>
                 <inheritdoc cref="T:HttpAgent.WebSocketClient" />
@@ -14033,6 +14047,20 @@
             </summary>
             <param name="serverUri">服务器地址</param>
         </member>
+        <member name="M:HttpAgent.WebSocketClientOptions.#ctor(System.String,System.Action{System.Net.WebSockets.ClientWebSocketOptions})">
+            <summary>
+                <inheritdoc cref="T:HttpAgent.WebSocketClientOptions" />
+            </summary>
+            <param name="serverUri">服务器地址</param>
+            <param name="configure">用于配置 <see cref="T:System.Net.WebSockets.ClientWebSocketOptions" /> 的操作</param>
+        </member>
+        <member name="M:HttpAgent.WebSocketClientOptions.#ctor(System.Uri,System.Action{System.Net.WebSockets.ClientWebSocketOptions})">
+            <summary>
+                <inheritdoc cref="T:HttpAgent.WebSocketClientOptions" />
+            </summary>
+            <param name="serverUri">服务器地址</param>
+            <param name="configure">用于配置 <see cref="T:System.Net.WebSockets.ClientWebSocketOptions" /> 的操作</param>
+        </member>
         <member name="P:HttpAgent.WebSocketClientOptions.ServerUri">
             <summary>
                 服务器地址
@@ -14061,9 +14089,9 @@
             </summary>
             <remarks>以字节为单位，默认值为 <c>4 KB</c>。</remarks>
         </member>
-        <member name="P:HttpAgent.WebSocketClientOptions.ConfigureClientWebSocketOptions">
+        <member name="P:HttpAgent.WebSocketClientOptions.Configure">
             <summary>
-                用于配置 <see cref="P:HttpAgent.WebSocketClientOptions.ConfigureClientWebSocketOptions" /> 的操作
+                用于配置 <see cref="T:System.Net.WebSockets.ClientWebSocketOptions" /> 的操作
             </summary>
         </member>
         <member name="T:HttpAgent.WebSocketTextReceiveResult">
