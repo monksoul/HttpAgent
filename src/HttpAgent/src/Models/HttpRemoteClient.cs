@@ -17,7 +17,7 @@ public static class HttpRemoteClient
     /// <summary>
     ///     延迟加载的 <see cref="IHttpRemoteService" /> 实例
     /// </summary>
-    internal static Lazy<IHttpRemoteService> _lazyService;
+    internal static Lazy<IHttpRemoteService> _httpRemoteService;
 
     /// <summary>
     ///     并发锁对象
@@ -37,24 +37,14 @@ public static class HttpRemoteClient
     /// <summary>
     ///     <inheritdoc cref="HttpRemoteClient" />
     /// </summary>
-    static HttpRemoteClient() => _lazyService = new Lazy<IHttpRemoteService>(CreateService);
+    static HttpRemoteClient() => _httpRemoteService = new Lazy<IHttpRemoteService>(CreateService);
 
     /// <summary>
     ///     获取当前配置下的 <see cref="IHttpRemoteService" /> 实例
     /// </summary>
     /// <exception cref="ObjectDisposedException"></exception>
-    public static IHttpRemoteService Service
-    {
-        get
-        {
-            if (_isDisposed)
-            {
-                throw new ObjectDisposedException(nameof(HttpRemoteClient));
-            }
-
-            return _lazyService.Value;
-        }
-    }
+    public static IHttpRemoteService Service =>
+        _isDisposed ? throw new ObjectDisposedException(nameof(HttpRemoteClient)) : _httpRemoteService.Value;
 
     /// <summary>
     ///     自定义服务注册逻辑
@@ -114,9 +104,9 @@ public static class HttpRemoteClient
             }
 
             // 如果值已创建，直接返回
-            if (_lazyService.IsValueCreated)
+            if (_httpRemoteService.IsValueCreated)
             {
-                return _lazyService.Value;
+                return _httpRemoteService.Value;
             }
 
             try
@@ -160,7 +150,8 @@ public static class HttpRemoteClient
             ReleaseServiceProvider();
 
             // 重新创建延迟加载实例
-            _lazyService = new Lazy<IHttpRemoteService>(CreateService, LazyThreadSafetyMode.ExecutionAndPublication);
+            _httpRemoteService =
+                new Lazy<IHttpRemoteService>(CreateService, LazyThreadSafetyMode.ExecutionAndPublication);
         }
     }
 

@@ -135,7 +135,7 @@ public sealed class DigestCredentials
         var nonce = ExtractParameterValueFromHeader("nonce", wwwAuthenticateValue);
         var qop = ExtractParameterValueFromHeader("qop", wwwAuthenticateValue);
         var opaque = ExtractParameterValueFromHeader("opaque", wwwAuthenticateValue);
-        var cnonce = RandomNumberGenerator.GetInt32(123400, 9999999).ToString();
+        var cNonce = RandomNumberGenerator.GetInt32(123400, 9999999).ToString();
 
         // 初始化 DigestCredentials 实例
         return new DigestCredentials
@@ -146,7 +146,7 @@ public sealed class DigestCredentials
             Nonce = nonce,
             Qop = qop,
             Nc = 1, // 注意
-            CNonce = cnonce,
+            CNonce = cNonce,
             Opaque = opaque
         };
     }
