@@ -214,18 +214,14 @@ public sealed partial class HttpRequestBuilder
         var queryParameters = uriBuilder.Query.ParseFormatKeyValueString(['&'], '?');
 
         // 初始化 URL 参数格式化委托
-        Func<object?, UrlFormattingContext, string?> format = formatter is not null
-            ? formatter.Format
-            : (value, _) => value?.ToCultureString(CultureInfo.InvariantCulture);
-
-        // 初始化 URL 参数格式化上下文
-        var urlFormattingContext = new UrlFormattingContext();
+        Func<object?, UrlFormattingContext, string?> format =
+            formatter is not null ? formatter.Format : UrlParameterFormatter.DefaultFormatter;
 
         // 追加查询参数
         foreach (var (key, values) in QueryParameters.ConcatIgnoreNull([]))
         {
             queryParameters.AddRange(values.Select(value =>
-                new KeyValuePair<string, string?>(key, format(value, urlFormattingContext))));
+                new KeyValuePair<string, string?>(key, format(value, new UrlFormattingContext(key)))));
         }
 
         // 构建最终的查询参数

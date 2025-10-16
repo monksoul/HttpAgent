@@ -644,9 +644,12 @@ public class HttpRequestBuilderMethodsTests
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
 
-        Assert.Throws<ArgumentNullException>(() => httpRequestBuilder.WithQueryParameter(null!, null));
-        Assert.Throws<ArgumentException>(() => httpRequestBuilder.WithQueryParameter(string.Empty, null));
-        Assert.Throws<ArgumentException>(() => httpRequestBuilder.WithQueryParameter(" ", null));
+        Assert.Throws<ArgumentNullException>(() => httpRequestBuilder.WithQueryParameter(null!, (object?)null));
+        Assert.Throws<ArgumentException>(() => httpRequestBuilder.WithQueryParameter(string.Empty, (object?)null));
+        Assert.Throws<ArgumentException>(() => httpRequestBuilder.WithQueryParameter(" ", (object?)null));
+        Assert.Throws<ArgumentNullException>(() => httpRequestBuilder.WithQueryParameter(null!, (Func<object?>)null!));
+        Assert.Throws<ArgumentNullException>(() =>
+            httpRequestBuilder.WithQueryParameter(null!, (Func<UrlFormattingContext, object?>)null!));
     }
 
     [Fact]
@@ -674,6 +677,27 @@ public class HttpRequestBuilderMethodsTests
 
         httpRequestBuilder.WithQueryParameter("name", new[] { "furion", "age" });
         Assert.Equal(["furion", "age"], httpRequestBuilder.QueryParameters["name"]);
+
+        httpRequestBuilder.QueryParameters.Clear();
+
+        httpRequestBuilder.WithQueryParameter("name", () => "furion");
+        Assert.Single(httpRequestBuilder.QueryParameters);
+        var valueProvider = httpRequestBuilder.QueryParameters["name"].First() as Func<object?>;
+        Assert.NotNull(valueProvider);
+        Assert.Equal("furion", valueProvider());
+
+        httpRequestBuilder.QueryParameters.Clear();
+
+        httpRequestBuilder.WithQueryParameter("name", context => "furion_" + context.Key);
+        Assert.Single(httpRequestBuilder.QueryParameters);
+        var valueProvider2 = httpRequestBuilder.QueryParameters["name"].First() as Func<UrlFormattingContext, object?>;
+        Assert.NotNull(valueProvider2);
+        Assert.Equal("furion_name", valueProvider2(new UrlFormattingContext("name")));
+
+        httpRequestBuilder.QueryParameters.Clear();
+
+        httpRequestBuilder.WithQueryParameter("name", (object?)null);
+        Assert.Null(httpRequestBuilder.QueryParameters["name"].First());
     }
 
     [Fact]

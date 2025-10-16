@@ -157,6 +157,24 @@ public sealed class HttpStressTestHarnessBuilder
     }
 
     /// <summary>
+    ///     设置禁用 HTTP 缓存
+    /// </summary>
+    /// <returns>
+    ///     <see cref="HttpStressTestHarnessBuilder" />
+    /// </returns>
+    public HttpStressTestHarnessBuilder DisableCache() => WithRequest(builder => builder.DisableCache());
+
+    /// <summary>
+    ///     设置禁用 HTTP 缓存
+    /// </summary>
+    /// <param name="disabled">是否禁用</param>
+    /// <returns>
+    ///     <see cref="HttpStressTestHarnessBuilder" />
+    /// </returns>
+    public HttpStressTestHarnessBuilder DisableCache(bool disabled) =>
+        WithRequest(builder => builder.DisableCache(disabled));
+
+    /// <summary>
     ///     构建 <see cref="HttpRequestBuilder" /> 实例
     /// </summary>
     /// <param name="httpRemoteOptions">

@@ -596,6 +596,46 @@ public sealed partial class HttpRequestBuilder
     ///     设置查询参数
     /// </summary>
     /// <remarks>支持多次调用。</remarks>
+    /// <param name="key">键</param>
+    /// <param name="valueProvider">值提供器</param>
+    /// <param name="replace">是否替换已存在的查询参数。默认值为 <c>false</c></param>
+    /// <param name="ignoreNullValues">是否忽略空值。默认值为 <c>false</c></param>
+    /// <returns>
+    ///     <see cref="HttpRequestBuilder" />
+    /// </returns>
+    public HttpRequestBuilder WithQueryParameter(string key, Func<object?> valueProvider, bool replace = false,
+        bool ignoreNullValues = false)
+    {
+        // 空检查
+        ArgumentNullException.ThrowIfNull(valueProvider);
+
+        return WithQueryParameter(key, (object?)valueProvider, replace, ignoreNullValues);
+    }
+
+    /// <summary>
+    ///     设置查询参数
+    /// </summary>
+    /// <remarks>支持多次调用。</remarks>
+    /// <param name="key">键</param>
+    /// <param name="valueProvider">值提供器</param>
+    /// <param name="replace">是否替换已存在的查询参数。默认值为 <c>false</c></param>
+    /// <param name="ignoreNullValues">是否忽略空值。默认值为 <c>false</c></param>
+    /// <returns>
+    ///     <see cref="HttpRequestBuilder" />
+    /// </returns>
+    public HttpRequestBuilder WithQueryParameter(string key, Func<UrlFormattingContext, object?> valueProvider,
+        bool replace = false, bool ignoreNullValues = false)
+    {
+        // 空检查
+        ArgumentNullException.ThrowIfNull(valueProvider);
+
+        return WithQueryParameter(key, (object?)valueProvider, replace, ignoreNullValues);
+    }
+
+    /// <summary>
+    ///     设置查询参数
+    /// </summary>
+    /// <remarks>支持多次调用。</remarks>
     /// <param name="parameters">查询参数集合</param>
     /// <param name="replace">是否替换已存在的查询参数。默认值为 <c>false</c></param>
     /// <param name="ignoreNullValues">是否忽略空值。默认值为 <c>false</c></param>

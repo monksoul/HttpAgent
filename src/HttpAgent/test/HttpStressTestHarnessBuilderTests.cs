@@ -100,6 +100,21 @@ public class HttpStressTestHarnessBuilderTests
     }
 
     [Fact]
+    public void DisableCache_ReturnOK()
+    {
+        var builder = new HttpStressTestHarnessBuilder(HttpMethod.Get, null);
+        builder.DisableCache();
+
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, null);
+        builder.RequestConfigure?.Invoke(httpRequestBuilder);
+        Assert.True(httpRequestBuilder.DisableCacheEnabled);
+
+        builder.DisableCache(false);
+        builder.RequestConfigure?.Invoke(httpRequestBuilder);
+        Assert.False(httpRequestBuilder.DisableCacheEnabled);
+    }
+
+    [Fact]
     public void Build_Invalid_Parameters() =>
         Assert.Throws<ArgumentNullException>(() =>
             new HttpStressTestHarnessBuilder(HttpMethod.Post, new Uri("http://localhost")).Build(null!));

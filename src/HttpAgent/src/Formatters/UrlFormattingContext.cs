@@ -7,4 +7,22 @@ namespace HttpAgent;
 /// <summary>
 ///     URL 参数格式化上下文
 /// </summary>
-public sealed class UrlFormattingContext;
+public sealed class UrlFormattingContext
+{
+    /// <summary>
+    ///     <inheritdoc cref="UrlFormattingContext" />
+    /// </summary>
+    /// <param name="key">URL 参数名（键）</param>
+    public UrlFormattingContext(string key)
+    {
+        // 空检查
+        ArgumentException.ThrowIfNullOrWhiteSpace(key);
+
+        Key = key;
+    }
+
+    /// <summary>
+    ///     URL 参数名（键）
+    /// </summary>
+    public string Key { get; }
+}

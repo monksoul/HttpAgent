@@ -1669,6 +1669,32 @@
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
         </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.WithQueryParameter(System.String,System.Func{System.Object},System.Boolean,System.Boolean)">
+            <summary>
+                设置查询参数
+            </summary>
+            <remarks>支持多次调用。</remarks>
+            <param name="key">键</param>
+            <param name="valueProvider">值提供器</param>
+            <param name="replace">是否替换已存在的查询参数。默认值为 <c>false</c></param>
+            <param name="ignoreNullValues">是否忽略空值。默认值为 <c>false</c></param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.WithQueryParameter(System.String,System.Func{HttpAgent.UrlFormattingContext,System.Object},System.Boolean,System.Boolean)">
+            <summary>
+                设置查询参数
+            </summary>
+            <remarks>支持多次调用。</remarks>
+            <param name="key">键</param>
+            <param name="valueProvider">值提供器</param>
+            <param name="replace">是否替换已存在的查询参数。默认值为 <c>false</c></param>
+            <param name="ignoreNullValues">是否忽略空值。默认值为 <c>false</c></param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
         <member name="M:HttpAgent.HttpRequestBuilder.WithQueryParameters(System.Collections.Generic.IDictionary{System.String,System.Object},System.Boolean,System.Boolean)">
             <summary>
                 设置查询参数
@@ -3299,6 +3325,23 @@
             </summary>
             <remarks>支持多次调用。</remarks>
             <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpStressTestHarnessBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpStressTestHarnessBuilder.DisableCache">
+            <summary>
+                设置禁用 HTTP 缓存
+            </summary>
+            <returns>
+                <see cref="T:HttpAgent.HttpStressTestHarnessBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpStressTestHarnessBuilder.DisableCache(System.Boolean)">
+            <summary>
+                设置禁用 HTTP 缓存
+            </summary>
+            <param name="disabled">是否禁用</param>
             <returns>
                 <see cref="T:HttpAgent.HttpStressTestHarnessBuilder" />
             </returns>
@@ -6606,11 +6649,26 @@
                 URL 参数格式化上下文
             </summary>
         </member>
+        <member name="M:HttpAgent.UrlFormattingContext.#ctor(System.String)">
+            <summary>
+                <inheritdoc cref="T:HttpAgent.UrlFormattingContext" />
+            </summary>
+            <param name="key">URL 参数名（键）</param>
+        </member>
+        <member name="P:HttpAgent.UrlFormattingContext.Key">
+            <summary>
+                URL 参数名（键）
+            </summary>
+        </member>
         <member name="T:HttpAgent.UrlParameterFormatter">
             <inheritdoc cref="T:HttpAgent.IUrlParameterFormatter" />
         </member>
         <member name="M:HttpAgent.UrlParameterFormatter.Format(System.Object,HttpAgent.UrlFormattingContext)">
             <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.UrlParameterFormatter.DefaultFormatter(System.Object,HttpAgent.UrlFormattingContext)">
+            <inheritdoc cref="M:HttpAgent.UrlParameterFormatter.Format(System.Object,HttpAgent.UrlFormattingContext)" />
+            <remarks>默认格式化行为。</remarks>
         </member>
         <member name="T:HttpAgent.IHttpFileTransferEventHandler">
             <summary>
@@ -14498,6 +14556,12 @@
         <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_ascii_60FF03FEFFFF87FEFFFF47">
             <summary>Supports searching for characters in or not in "-.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz~".</summary>
         </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_1F52B1A4D2E82B6FEDE25EC8C55F85BB36775196837076691C96925040F90D32">
+            <summary>Supports searching for the string "\\u".</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_EBC667BDABA1472FA863B5B39B31251EF2B4C95DD643BDECF694CB1CE7BDC178">
+            <summary>Supports searching for the string "[[".</summary>
+        </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions">
             <summary>
                 HTTP 远程请求模块 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" /> 拓展类
@@ -14518,20 +14582,6 @@
         <member name="M:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions.AddHttpRemote(Microsoft.Extensions.DependencyInjection.IServiceCollection,HttpAgent.HttpRemoteBuilder)">
             <summary>
                 添加 HTTP 远程请求服务
-            </summary>
-            <param name="services">
-                <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
-            </param>
-            <param name="httpRemoteBuilder">
-                <see cref="T:HttpAgent.HttpRemoteBuilder" />
-            </param>
-            <returns>
-                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
-            </returns>
-        </member>
-    </members>
-</doc>
-         添加 HTTP 远程请求服务
             </summary>
             <param name="services">
                 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />

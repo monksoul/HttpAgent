@@ -7,9 +7,18 @@ namespace HttpAgent.Tests;
 public class UrlFormattingContextTests
 {
     [Fact]
+    public void New_Invalid_Parameters()
+    {
+        Assert.Throws<ArgumentNullException>(() => new UrlFormattingContext(null!));
+        Assert.Throws<ArgumentException>(() => new UrlFormattingContext(string.Empty));
+        Assert.Throws<ArgumentException>(() => new UrlFormattingContext(" "));
+    }
+
+    [Fact]
     public void New_ReturnOK()
     {
-        var context = new UrlFormattingContext();
+        var context = new UrlFormattingContext("id");
         Assert.NotNull(context);
+        Assert.Equal("id", context.Key);
     }
 }
