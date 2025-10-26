@@ -11,6 +11,11 @@ namespace HttpAgent;
 public sealed class HttpFileUploadBuilder
 {
     /// <summary>
+    ///     <see cref="HttpRequestBuilder" /> 配置委托
+    /// </summary>
+    internal Action<HttpRequestBuilder>? _requestConfigure;
+
+    /// <summary>
     ///     <inheritdoc cref="HttpFileUploadBuilder" />
     /// </summary>
     /// <param name="httpMethod">请求方式</param>
@@ -104,11 +109,6 @@ public sealed class HttpFileUploadBuilder
     ///     实现 <see cref="IHttpFileTransferEventHandler" /> 的类型
     /// </summary>
     internal Type? FileTransferEventHandlerType { get; private set; }
-
-    /// <summary>
-    ///     <see cref="HttpRequestBuilder" /> 配置委托
-    /// </summary>
-    internal Action<HttpRequestBuilder>? RequestConfigure { get; private set; }
 
     /// <summary>
     ///     设置内容类型（文件类型）
@@ -323,26 +323,7 @@ public sealed class HttpFileUploadBuilder
     /// </returns>
     public HttpFileUploadBuilder WithRequest(Action<HttpRequestBuilder> configure)
     {
-        // 空检查
-        ArgumentNullException.ThrowIfNull(configure);
-
-        // 如果 RequestConfigure 未设置则直接赋值
-        if (RequestConfigure is null)
-        {
-            RequestConfigure = configure;
-        }
-        // 否则创建级联调用委托
-        else
-        {
-            // 复制一个新的委托避免死循环
-            var originalRequestConfigure = RequestConfigure;
-
-            RequestConfigure = httpRequestBuilder =>
-            {
-                originalRequestConfigure.Invoke(httpRequestBuilder);
-                configure.Invoke(httpRequestBuilder);
-            };
-        }
+        configure.Combine(ref _requestConfigure);
 
         return this;
     }
@@ -406,7 +387,7 @@ public sealed class HttpFileUploadBuilder
         }
 
         // 调用自定义配置委托
-        RequestConfigure?.Invoke(httpRequestBuilder);
+        _requestConfigure?.Invoke(httpRequestBuilder);
 
         return httpRequestBuilder;
     }

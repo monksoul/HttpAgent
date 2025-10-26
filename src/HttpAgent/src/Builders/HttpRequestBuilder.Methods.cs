@@ -994,26 +994,7 @@ public sealed partial class HttpRequestBuilder
     /// </returns>
     public HttpRequestBuilder SetOnPreSetContent(Action<HttpContent?> configure)
     {
-        // 空检查
-        ArgumentNullException.ThrowIfNull(configure);
-
-        // 如果 OnPreSetContent 未设置则直接赋值
-        if (OnPreSetContent is null)
-        {
-            OnPreSetContent = configure;
-        }
-        // 否则创建级联调用委托
-        else
-        {
-            // 复制一个新的委托避免死循环
-            var originalOnPreSetContent = OnPreSetContent;
-
-            OnPreSetContent = content =>
-            {
-                originalOnPreSetContent.Invoke(content);
-                configure.Invoke(content);
-            };
-        }
+        configure.Combine(ref _onPreSetContent);
 
         return this;
     }

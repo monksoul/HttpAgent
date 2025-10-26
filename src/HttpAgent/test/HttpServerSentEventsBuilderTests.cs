@@ -24,7 +24,7 @@ public class HttpServerSentEventsBuilderTests
         Assert.Null(builder2.OnMessage);
         Assert.Null(builder2.OnError);
         Assert.Null(builder2.ServerSentEventsEventHandlerType);
-        Assert.Null(builder2.RequestConfigure);
+        Assert.Null(builder2._requestConfigure);
 
         var builder3 = new HttpServerSentEventsBuilder(HttpMethod.Post, new Uri("http://localhost"));
         Assert.NotNull(builder3);
@@ -155,9 +155,9 @@ public class HttpServerSentEventsBuilderTests
     public void WithRequest_ReturnOK()
     {
         var builder = new HttpServerSentEventsBuilder(new Uri("http://localhost"));
-        Assert.Null(builder.RequestConfigure);
+        Assert.Null(builder._requestConfigure);
         builder.WithRequest(requestBuilder => requestBuilder.WithHeader("framework", "Furion"));
-        Assert.NotNull(builder.RequestConfigure);
+        Assert.NotNull(builder._requestConfigure);
     }
 
     [Fact]
@@ -167,15 +167,15 @@ public class HttpServerSentEventsBuilderTests
         builder.Profiler();
 
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, null);
-        builder.RequestConfigure?.Invoke(httpRequestBuilder);
+        builder._requestConfigure?.Invoke(httpRequestBuilder);
         Assert.True(httpRequestBuilder.ProfilerEnabled);
 
         builder.Profiler(false);
-        builder.RequestConfigure?.Invoke(httpRequestBuilder);
+        builder._requestConfigure?.Invoke(httpRequestBuilder);
         Assert.False(httpRequestBuilder.ProfilerEnabled);
 
         builder.Profiler(_ => { });
-        builder.RequestConfigure?.Invoke(httpRequestBuilder);
+        builder._requestConfigure?.Invoke(httpRequestBuilder);
         Assert.True(httpRequestBuilder.ProfilerEnabled);
     }
 

@@ -17,6 +17,9 @@ public sealed class HttpMultipartFormDataBuilder
     /// </summary>
     internal readonly List<MultipartFormDataItem> _partContents;
 
+    /// <inheritdoc cref="OnPreAddContent" />
+    internal Action<HttpContent, string>? _onPreAddContent;
+
     /// <summary>
     ///     <inheritdoc cref="HttpMultipartFormDataBuilder" />
     /// </summary>
@@ -46,7 +49,11 @@ public sealed class HttpMultipartFormDataBuilder
     /// <summary>
     ///     用于处理在添加 <see cref="HttpContent" /> 表单项内容时的操作
     /// </summary>
-    internal Action<HttpContent, string>? OnPreAddContent { get; private set; }
+    internal Action<HttpContent, string>? OnPreAddContent
+    {
+        get => _onPreAddContent;
+        private set => _onPreAddContent = value;
+    }
 
     /// <summary>
     ///     设置多部分表单内容的边界
@@ -72,26 +79,7 @@ public sealed class HttpMultipartFormDataBuilder
     /// </returns>
     public HttpMultipartFormDataBuilder SetOnPreAddContent(Action<HttpContent, string> configure)
     {
-        // 空检查
-        ArgumentNullException.ThrowIfNull(configure);
-
-        // 如果 OnPreAddContent 未设置则直接赋值
-        if (OnPreAddContent is null)
-        {
-            OnPreAddContent = configure;
-        }
-        // 否则创建级联调用委托
-        else
-        {
-            // 复制一个新的委托避免死循环
-            var originalOnPreAddContent = OnPreAddContent;
-
-            OnPreAddContent = (content, name) =>
-            {
-                originalOnPreAddContent.Invoke(content, name);
-                configure.Invoke(content, name);
-            };
-        }
+        configure.Combine(ref _onPreAddContent);
 
         return this;
     }

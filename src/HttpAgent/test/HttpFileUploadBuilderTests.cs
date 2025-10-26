@@ -44,7 +44,7 @@ public class HttpFileUploadBuilderTests
         Assert.Null(builder2.AllowedFileExtensions);
         Assert.Null(builder2.MaxFileSizeInBytes);
         Assert.Null(builder2.FileName);
-        Assert.Null(builder2.RequestConfigure);
+        Assert.Null(builder2._requestConfigure);
 
         var builder3 =
             new HttpFileUploadBuilder(HttpMethod.Post, null, @"C:\Workspaces\index.html", "file", "myindex.html");
@@ -289,9 +289,9 @@ public class HttpFileUploadBuilderTests
     {
         var builder = new HttpFileUploadBuilder(HttpMethod.Post, new Uri("http://localhost"),
             @"C:\Workspaces\index.html", "file");
-        Assert.Null(builder.RequestConfigure);
+        Assert.Null(builder._requestConfigure);
         builder.WithRequest(requestBuilder => requestBuilder.WithHeader("framework", "Furion"));
-        Assert.NotNull(builder.RequestConfigure);
+        Assert.NotNull(builder._requestConfigure);
     }
 
     [Fact]
@@ -302,15 +302,15 @@ public class HttpFileUploadBuilderTests
         builder.Profiler();
 
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, null);
-        builder.RequestConfigure?.Invoke(httpRequestBuilder);
+        builder._requestConfigure?.Invoke(httpRequestBuilder);
         Assert.True(httpRequestBuilder.ProfilerEnabled);
 
         builder.Profiler(false);
-        builder.RequestConfigure?.Invoke(httpRequestBuilder);
+        builder._requestConfigure?.Invoke(httpRequestBuilder);
         Assert.False(httpRequestBuilder.ProfilerEnabled);
 
         builder.Profiler(_ => { });
-        builder.RequestConfigure?.Invoke(httpRequestBuilder);
+        builder._requestConfigure?.Invoke(httpRequestBuilder);
         Assert.True(httpRequestBuilder.ProfilerEnabled);
     }
 

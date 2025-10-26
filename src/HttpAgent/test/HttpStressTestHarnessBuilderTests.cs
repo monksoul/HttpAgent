@@ -21,7 +21,7 @@ public class HttpStressTestHarnessBuilderTests
         Assert.Equal(100, builder.NumberOfRequests);
         Assert.Equal(100, builder.MaxDegreeOfParallelism);
         Assert.Equal(1, builder.NumberOfRounds);
-        Assert.Null(builder.RequestConfigure);
+        Assert.Null(builder._requestConfigure);
     }
 
     [Fact]
@@ -94,9 +94,9 @@ public class HttpStressTestHarnessBuilderTests
     public void WithRequest_ReturnOK()
     {
         var builder = new HttpStressTestHarnessBuilder(HttpMethod.Get, new Uri("http://localhost"));
-        Assert.Null(builder.RequestConfigure);
+        Assert.Null(builder._requestConfigure);
         builder.WithRequest(requestBuilder => requestBuilder.WithHeader("framework", "Furion"));
-        Assert.NotNull(builder.RequestConfigure);
+        Assert.NotNull(builder._requestConfigure);
     }
 
     [Fact]
@@ -106,11 +106,11 @@ public class HttpStressTestHarnessBuilderTests
         builder.DisableCache();
 
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, null);
-        builder.RequestConfigure?.Invoke(httpRequestBuilder);
+        builder._requestConfigure?.Invoke(httpRequestBuilder);
         Assert.True(httpRequestBuilder.DisableCacheEnabled);
 
         builder.DisableCache(false);
-        builder.RequestConfigure?.Invoke(httpRequestBuilder);
+        builder._requestConfigure?.Invoke(httpRequestBuilder);
         Assert.False(httpRequestBuilder.DisableCacheEnabled);
     }
 

@@ -32,7 +32,7 @@ public class HttpFileDownloadBuilderTests
         Assert.Null(builder2.OnTransferFailed);
         Assert.Null(builder2.OnFileExistAndSkip);
         Assert.Null(builder2.FileTransferEventHandlerType);
-        Assert.Null(builder2.RequestConfigure);
+        Assert.Null(builder2._requestConfigure);
     }
 
     [Fact]
@@ -243,9 +243,9 @@ public class HttpFileDownloadBuilderTests
     public void WithRequest_ReturnOK()
     {
         var builder = new HttpFileDownloadBuilder(HttpMethod.Get, null);
-        Assert.Null(builder.RequestConfigure);
+        Assert.Null(builder._requestConfigure);
         builder.WithRequest(requestBuilder => requestBuilder.WithHeader("framework", "Furion"));
-        Assert.NotNull(builder.RequestConfigure);
+        Assert.NotNull(builder._requestConfigure);
     }
 
     [Fact]
@@ -255,15 +255,15 @@ public class HttpFileDownloadBuilderTests
         builder.Profiler();
 
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, null);
-        builder.RequestConfigure?.Invoke(httpRequestBuilder);
+        builder._requestConfigure?.Invoke(httpRequestBuilder);
         Assert.True(httpRequestBuilder.ProfilerEnabled);
 
         builder.Profiler(false);
-        builder.RequestConfigure?.Invoke(httpRequestBuilder);
+        builder._requestConfigure?.Invoke(httpRequestBuilder);
         Assert.False(httpRequestBuilder.ProfilerEnabled);
 
         builder.Profiler(_ => { });
-        builder.RequestConfigure?.Invoke(httpRequestBuilder);
+        builder._requestConfigure?.Invoke(httpRequestBuilder);
         Assert.True(httpRequestBuilder.ProfilerEnabled);
     }
 

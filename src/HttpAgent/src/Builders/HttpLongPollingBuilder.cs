@@ -11,6 +11,11 @@ namespace HttpAgent;
 public sealed class HttpLongPollingBuilder
 {
     /// <summary>
+    ///     <see cref="HttpRequestBuilder" /> 配置委托
+    /// </summary>
+    internal Action<HttpRequestBuilder>? _requestConfigure;
+
+    /// <summary>
     ///     <inheritdoc cref="HttpLongPollingBuilder" />
     /// </summary>
     /// <param name="httpMethod">请求方式</param>
@@ -71,11 +76,6 @@ public sealed class HttpLongPollingBuilder
     ///     实现 <see cref="IHttpLongPollingEventHandler" /> 的类型
     /// </summary>
     internal Type? LongPollingEventHandlerType { get; private set; }
-
-    /// <summary>
-    ///     <see cref="HttpRequestBuilder" /> 配置委托
-    /// </summary>
-    internal Action<HttpRequestBuilder>? RequestConfigure { get; private set; }
 
     /// <summary>
     ///     设置轮询重试间隔
@@ -253,26 +253,7 @@ public sealed class HttpLongPollingBuilder
     /// </returns>
     public HttpLongPollingBuilder WithRequest(Action<HttpRequestBuilder> configure)
     {
-        // 空检查
-        ArgumentNullException.ThrowIfNull(configure);
-
-        // 如果 RequestConfigure 未设置则直接赋值
-        if (RequestConfigure is null)
-        {
-            RequestConfigure = configure;
-        }
-        // 否则创建级联调用委托
-        else
-        {
-            // 复制一个新的委托避免死循环
-            var originalRequestConfigure = RequestConfigure;
-
-            RequestConfigure = httpRequestBuilder =>
-            {
-                originalRequestConfigure.Invoke(httpRequestBuilder);
-                configure.Invoke(httpRequestBuilder);
-            };
-        }
+        configure.Combine(ref _requestConfigure);
 
         return this;
     }
@@ -335,7 +316,7 @@ public sealed class HttpLongPollingBuilder
         }
 
         // 调用自定义配置委托
-        RequestConfigure?.Invoke(httpRequestBuilder);
+        _requestConfigure?.Invoke(httpRequestBuilder);
 
         return httpRequestBuilder;
     }

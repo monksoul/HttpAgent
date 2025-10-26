@@ -135,4 +135,67 @@ internal static class DelegateExtensions
             Debugging.Error(e.Message);
         }
     }
+
+    /// <summary>
+    ///     将当前配置委托合并到目标委托字段中
+    /// </summary>
+    /// <remarks>支持多次调用。</remarks>
+    /// <param name="configure">自定义配置委托</param>
+    /// <param name="field">目标委托字段</param>
+    /// <typeparam name="T">委托参数类型</typeparam>
+    internal static void Combine<T>(this Action<T> configure, ref Action<T>? field)
+    {
+        // 空检查
+        ArgumentNullException.ThrowIfNull(configure);
+
+        // 如果 field 未设置则直接赋值
+        if (field is null)
+        {
+            field = configure;
+        }
+        // 否则创建级联调用委托
+        else
+        {
+            // 复制一个新的委托避免死循环
+            var original = field;
+
+            field = value =>
+            {
+                original.Invoke(value);
+                configure.Invoke(value);
+            };
+        }
+    }
+
+    /// <summary>
+    ///     将当前配置委托合并到目标委托字段中
+    /// </summary>
+    /// <remarks>支持多次调用。</remarks>
+    /// <param name="configure">自定义配置委托</param>
+    /// <param name="field">目标委托字段</param>
+    /// <typeparam name="T1">委托参数类型</typeparam>
+    /// <typeparam name="T2">委托参数类型</typeparam>
+    internal static void Combine<T1, T2>(this Action<T1, T2> configure, ref Action<T1, T2>? field)
+    {
+        // 空检查
+        ArgumentNullException.ThrowIfNull(configure);
+
+        // 如果 field 未设置则直接赋值
+        if (field is null)
+        {
+            field = configure;
+        }
+        // 否则创建级联调用委托
+        else
+        {
+            // 复制一个新的委托避免死循环
+            var original = field;
+
+            field = (value1, value2) =>
+            {
+                original.Invoke(value1, value2);
+                configure.Invoke(value1, value2);
+            };
+        }
+    }
 }

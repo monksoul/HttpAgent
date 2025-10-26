@@ -10,6 +10,11 @@
             </summary>
             <remarks>使用 <c>HttpRequestBuilder.DownloadFile(requestUri, destinationPath)</c> 静态方法创建。</remarks>
         </member>
+        <member name="F:HttpAgent.HttpFileDownloadBuilder._requestConfigure">
+            <summary>
+                <see cref="T:HttpAgent.HttpRequestBuilder" /> 配置委托
+            </summary>
+        </member>
         <member name="M:HttpAgent.HttpFileDownloadBuilder.#ctor(System.Net.Http.HttpMethod,System.Uri)">
             <summary>
                 <inheritdoc cref="T:HttpAgent.HttpFileDownloadBuilder" />
@@ -87,11 +92,6 @@
         <member name="P:HttpAgent.HttpFileDownloadBuilder.FileTransferEventHandlerType">
             <summary>
                 实现 <see cref="T:HttpAgent.IHttpFileTransferEventHandler" /> 的类型
-            </summary>
-        </member>
-        <member name="P:HttpAgent.HttpFileDownloadBuilder.RequestConfigure">
-            <summary>
-                <see cref="T:HttpAgent.HttpRequestBuilder" /> 配置委托
             </summary>
         </member>
         <member name="M:HttpAgent.HttpFileDownloadBuilder.SetBufferSize(System.Int32)">
@@ -270,6 +270,11 @@
             </summary>
             <remarks>使用 <c>HttpRequestBuilder.UploadFile(requestUri, filePath, name)</c> 静态方法创建。</remarks>
         </member>
+        <member name="F:HttpAgent.HttpFileUploadBuilder._requestConfigure">
+            <summary>
+                <see cref="T:HttpAgent.HttpRequestBuilder" /> 配置委托
+            </summary>
+        </member>
         <member name="M:HttpAgent.HttpFileUploadBuilder.#ctor(System.Net.Http.HttpMethod,System.Uri,System.String,System.String,System.String)">
             <summary>
                 <inheritdoc cref="T:HttpAgent.HttpFileUploadBuilder" />
@@ -349,11 +354,6 @@
         <member name="P:HttpAgent.HttpFileUploadBuilder.FileTransferEventHandlerType">
             <summary>
                 实现 <see cref="T:HttpAgent.IHttpFileTransferEventHandler" /> 的类型
-            </summary>
-        </member>
-        <member name="P:HttpAgent.HttpFileUploadBuilder.RequestConfigure">
-            <summary>
-                <see cref="T:HttpAgent.HttpRequestBuilder" /> 配置委托
             </summary>
         </member>
         <member name="M:HttpAgent.HttpFileUploadBuilder.SetContentType(System.String)">
@@ -521,6 +521,11 @@
             </summary>
             <remarks>使用 <c>HttpRequestBuilder.LongPolling(httpMethod, requestUri, onDataReceived)</c> 静态方法创建。</remarks>
         </member>
+        <member name="F:HttpAgent.HttpLongPollingBuilder._requestConfigure">
+            <summary>
+                <see cref="T:HttpAgent.HttpRequestBuilder" /> 配置委托
+            </summary>
+        </member>
         <member name="M:HttpAgent.HttpLongPollingBuilder.#ctor(System.Net.Http.HttpMethod,System.Uri)">
             <summary>
                 <inheritdoc cref="T:HttpAgent.HttpLongPollingBuilder" />
@@ -574,11 +579,6 @@
         <member name="P:HttpAgent.HttpLongPollingBuilder.LongPollingEventHandlerType">
             <summary>
                 实现 <see cref="T:HttpAgent.IHttpLongPollingEventHandler" /> 的类型
-            </summary>
-        </member>
-        <member name="P:HttpAgent.HttpLongPollingBuilder.RequestConfigure">
-            <summary>
-                <see cref="T:HttpAgent.HttpRequestBuilder" /> 配置委托
             </summary>
         </member>
         <member name="M:HttpAgent.HttpLongPollingBuilder.SetRetryInterval(System.TimeSpan)">
@@ -726,6 +726,9 @@
             <summary>
                 <see cref="T:HttpAgent.MultipartFormDataItem" /> 集合
             </summary>
+        </member>
+        <member name="F:HttpAgent.HttpMultipartFormDataBuilder._onPreAddContent">
+            <inheritdoc cref="P:HttpAgent.HttpMultipartFormDataBuilder.OnPreAddContent" />
         </member>
         <member name="M:HttpAgent.HttpMultipartFormDataBuilder.#ctor(HttpAgent.HttpRequestBuilder)">
             <summary>
@@ -2329,6 +2332,9 @@
             </summary>
             <remarks>避免在每次调用 <see cref="M:HttpAgent.HttpRequestBuilder.Clone" /> 方法时重复进行反射操作，提升性能。</remarks>
         </member>
+        <member name="F:HttpAgent.HttpRequestBuilder._onPreSetContent">
+            <inheritdoc cref="P:HttpAgent.HttpRequestBuilder.OnPreSetContent" />
+        </member>
         <member name="P:HttpAgent.HttpRequestBuilder.RequestUri">
             <summary>
                 请求地址
@@ -3067,6 +3073,11 @@
                 <para>参考文献：https://developer.mozilla.org/zh-CN/docs/Web/API/Server-sent_events/Using_server-sent_events。</para>
             </remarks>
         </member>
+        <member name="F:HttpAgent.HttpServerSentEventsBuilder._requestConfigure">
+            <summary>
+                <see cref="T:HttpAgent.HttpRequestBuilder" /> 配置委托
+            </summary>
+        </member>
         <member name="M:HttpAgent.HttpServerSentEventsBuilder.#ctor(System.Uri)">
             <summary>
                 <inheritdoc cref="T:HttpAgent.HttpServerSentEventsBuilder" />
@@ -3121,11 +3132,6 @@
         <member name="P:HttpAgent.HttpServerSentEventsBuilder.ServerSentEventsEventHandlerType">
             <summary>
                 实现 <see cref="T:HttpAgent.IHttpServerSentEventsEventHandler" /> 的类型
-            </summary>
-        </member>
-        <member name="P:HttpAgent.HttpServerSentEventsBuilder.RequestConfigure">
-            <summary>
-                <see cref="T:HttpAgent.HttpRequestBuilder" /> 配置委托
             </summary>
         </member>
         <member name="M:HttpAgent.HttpServerSentEventsBuilder.SetDefaultRetryInterval(System.Int32)">
@@ -3249,6 +3255,11 @@
             </summary>
             <remarks>使用 <c>HttpRequestBuilder.StressTestHarness(requestUri, numberOfRequests)</c> 静态方法创建。</remarks>
         </member>
+        <member name="F:HttpAgent.HttpStressTestHarnessBuilder._requestConfigure">
+            <summary>
+                <see cref="T:HttpAgent.HttpRequestBuilder" /> 配置委托
+            </summary>
+        </member>
         <member name="M:HttpAgent.HttpStressTestHarnessBuilder.#ctor(System.Net.Http.HttpMethod,System.Uri)">
             <summary>
                 <inheritdoc cref="T:HttpAgent.HttpStressTestHarnessBuilder" />
@@ -3283,11 +3294,6 @@
                 压测轮次
             </summary>
             <remarks>默认值为：1。</remarks>
-        </member>
-        <member name="P:HttpAgent.HttpStressTestHarnessBuilder.RequestConfigure">
-            <summary>
-                <see cref="T:HttpAgent.HttpRequestBuilder" /> 配置委托
-            </summary>
         </member>
         <member name="M:HttpAgent.HttpStressTestHarnessBuilder.SetNumberOfRequests(System.Int32)">
             <summary>
@@ -3917,6 +3923,25 @@
                 尝试执行同步委托
             </summary>
             <param name="action">同步委托</param>
+        </member>
+        <member name="M:HttpAgent.Core.Extensions.DelegateExtensions.Combine``1(System.Action{``0},System.Action{``0}@)">
+            <summary>
+                将当前配置委托合并到目标委托字段中
+            </summary>
+            <remarks>支持多次调用。</remarks>
+            <param name="configure">自定义配置委托</param>
+            <param name="field">目标委托字段</param>
+            <typeparam name="T">委托参数类型</typeparam>
+        </member>
+        <member name="M:HttpAgent.Core.Extensions.DelegateExtensions.Combine``2(System.Action{``0,``1},System.Action{``0,``1}@)">
+            <summary>
+                将当前配置委托合并到目标委托字段中
+            </summary>
+            <remarks>支持多次调用。</remarks>
+            <param name="configure">自定义配置委托</param>
+            <param name="field">目标委托字段</param>
+            <typeparam name="T1">委托参数类型</typeparam>
+            <typeparam name="T2">委托参数类型</typeparam>
         </member>
         <member name="T:HttpAgent.Core.Extensions.EventHandlerExtensions">
             <summary>
@@ -14556,12 +14581,6 @@
         <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_ascii_60FF03FEFFFF87FEFFFF47">
             <summary>Supports searching for characters in or not in "-.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz~".</summary>
         </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_1F52B1A4D2E82B6FEDE25EC8C55F85BB36775196837076691C96925040F90D32">
-            <summary>Supports searching for the string "\\u".</summary>
-        </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_EBC667BDABA1472FA863B5B39B31251EF2B4C95DD643BDECF694CB1CE7BDC178">
-            <summary>Supports searching for the string "[[".</summary>
-        </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions">
             <summary>
                 HTTP 远程请求模块 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" /> 拓展类
@@ -14595,7 +14614,16 @@
         </member>
     </members>
 </doc>
-tensions.DependencyInjection.IServiceCollection" />
+  <returns>
+                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
+            </returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions.AddHttpRemote(Microsoft.Extensions.DependencyInjection.IServiceCollection,HttpAgent.HttpRemoteBuilder)">
+            <summary>
+                添加 HTTP 远程请求服务
+            </summary>
+            <param name="services">
+                <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
             </param>
             <param name="httpRemoteBuilder">
                 <see cref="T:HttpAgent.HttpRemoteBuilder" />
