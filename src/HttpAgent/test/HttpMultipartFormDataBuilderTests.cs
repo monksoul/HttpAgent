@@ -21,6 +21,7 @@ public class HttpMultipartFormDataBuilderTests
         Assert.NotNull(builder.Boundary);
         Assert.StartsWith("--------------------------", builder.Boundary);
         Assert.True(builder.OmitContentType);
+        Assert.Null(builder._onPreAddContent);
         Assert.Null(builder.OnPreAddContent);
     }
 

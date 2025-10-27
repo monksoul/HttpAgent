@@ -45,6 +45,7 @@ public class HttpRequestBuilderPropertiesTests
         Assert.Null(httpRequestBuilder2.HttpClientProvider);
         Assert.Null(httpRequestBuilder2.HttpContentProcessorProviders);
         Assert.Null(httpRequestBuilder2.HttpContentConverterProviders);
+        Assert.Null(httpRequestBuilder2._onPreSetContent);
         Assert.Null(httpRequestBuilder2.OnPreSetContent);
         Assert.Null(httpRequestBuilder2.OnPreSendRequest);
         Assert.Null(httpRequestBuilder2.OnPostReceiveResponse);
