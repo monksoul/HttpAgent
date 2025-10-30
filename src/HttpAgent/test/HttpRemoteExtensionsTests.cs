@@ -396,4 +396,14 @@ public class HttpRemoteExtensionsTests
             new MediaTypeHeaderValue("application/json"));
         Assert.False(httpResponseMessage.IsXmlContent());
     }
+
+    [Fact]
+    public void ToJsonString_ReturnOK()
+    {
+        Assert.Equal("null", HttpRemoteExtensions.ToJsonString(null));
+        Assert.Equal("{\"id\":1,\"name\":\"百小僧\",\"age\":30}",
+            new { Id = 1, Name = "百小僧", Age = 30 }.ToJsonString());
+        Assert.Equal("{\"Id\":1,\"Name\":\"\\u767E\\u5C0F\\u50E7\",\"Age\":30}",
+            new { Id = 1, Name = "百小僧", Age = 30 }.ToJsonString(JsonSerializerOptions.Default));
+    }
 }

@@ -4424,6 +4424,48 @@
             </code>
             </remarks>
         </member>
+        <member name="T:HttpAgent.Core.Extensions.TaskExtensions">
+            <summary>
+                <see cref="T:System.Threading.Tasks.Task" /> 拓展类
+            </summary>
+        </member>
+        <member name="M:HttpAgent.Core.Extensions.TaskExtensions.ThrowIfNull``1(System.Threading.Tasks.Task{``0})">
+            <summary>
+                确保异步返回值不为 <code>null</code>
+            </summary>
+            <param name="task">
+                <see cref="T:System.Threading.Tasks.Task" />
+            </param>
+            <typeparam name="T">异步类型</typeparam>
+            <returns>
+                <typeparamref name="T" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Core.Extensions.TaskExtensions.OrDefault``1(System.Threading.Tasks.Task{``0})">
+            <summary>
+                异步返回值为 <code>null</code> 时返回默认值
+            </summary>
+            <param name="task">
+                <see cref="T:System.Threading.Tasks.Task" />
+            </param>
+            <typeparam name="T">异步类型</typeparam>
+            <returns>
+                <typeparamref name="T" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Core.Extensions.TaskExtensions.OrDefault``1(System.Threading.Tasks.Task{``0},``0)">
+            <summary>
+                异步返回值为 <code>null</code> 时返回默认值
+            </summary>
+            <param name="task">
+                <see cref="T:System.Threading.Tasks.Task" />
+            </param>
+            <param name="defaultValue">默认值</param>
+            <typeparam name="T">异步类型</typeparam>
+            <returns>
+                <typeparamref name="T" />
+            </returns>
+        </member>
         <member name="T:HttpAgent.Core.Extensions.TypeExtensions">
             <summary>
                 <see cref="T:System.Type" /> 拓展类
@@ -6397,6 +6439,20 @@
             </param>
             <returns>
                 <see cref="T:System.Boolean" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.ToJsonString(System.Object,System.Text.Json.JsonSerializerOptions)">
+            <summary>
+                将对象转换为 JSON 字符串
+            </summary>
+            <param name="obj">
+                <see cref="T:System.Object" />
+            </param>
+            <param name="jsonSerializerOptions">
+                <see cref="T:System.Text.Json.JsonSerializerOptions" />
+            </param>
+            <returns>
+                <see cref="T:System.String" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.GetHostEnvironmentName(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
@@ -14614,16 +14670,21 @@
         </member>
     </members>
 </doc>
-  <returns>
-                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
-            </returns>
-        </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions.AddHttpRemote(Microsoft.Extensions.DependencyInjection.IServiceCollection,HttpAgent.HttpRemoteBuilder)">
-            <summary>
-                添加 HTTP 远程请求服务
+         添加 HTTP 远程请求服务
             </summary>
             <param name="services">
                 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
+            </param>
+            <param name="httpRemoteBuilder">
+                <see cref="T:HttpAgent.HttpRemoteBuilder" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
+            </returns>
+        </member>
+    </members>
+</doc>
+tensions.DependencyInjection.IServiceCollection" />
             </param>
             <param name="httpRemoteBuilder">
                 <see cref="T:HttpAgent.HttpRemoteBuilder" />

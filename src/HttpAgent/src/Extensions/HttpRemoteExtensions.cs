@@ -424,6 +424,21 @@ public static partial class HttpRemoteExtensions
             StringComparer.OrdinalIgnoreCase) == true;
 
     /// <summary>
+    ///     将对象转换为 JSON 字符串
+    /// </summary>
+    /// <param name="obj">
+    ///     <see cref="object" />
+    /// </param>
+    /// <param name="jsonSerializerOptions">
+    ///     <see cref="JsonSerializerOptions" />
+    /// </param>
+    /// <returns>
+    ///     <see cref="string" />
+    /// </returns>
+    public static string ToJsonString(this object? obj, JsonSerializerOptions? jsonSerializerOptions = null) =>
+        JsonSerializer.Serialize(obj, jsonSerializerOptions ?? HttpRemoteOptions.JsonSerializerOptionsDefault);
+
+    /// <summary>
     ///     获取主机环境名
     /// </summary>
     /// <param name="services">

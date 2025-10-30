@@ -8,7 +8,7 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.ServiceDiscovery" Version="9.5.2"/>
-        <PackageReference Include="Shapeless" Version="1.0.42"/>
+        <PackageReference Include="Shapeless" Version="1.0.44"/>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.6"/>
     </ItemGroup>
 

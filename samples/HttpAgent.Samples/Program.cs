@@ -4,6 +4,7 @@ using HttpAgent;
 using HttpAgent.AspNetCore.Extensions;
 using HttpAgent.Samples;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Shapeless.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,7 +48,7 @@ builder.Services.AddHttpRemote(options =>
         options.AddHttpDeclarativeFromAssemblies(Assembly.GetEntryAssembly());
         options.AddHttpDeclarativeExtractorFromAssemblies(Assembly.GetEntryAssembly());
         options.AddHttpContentConverters(() => [new ClayContentConverter()]);
-    }).ConfigureOptions(options => { options.JsonSerializerOptions.Converters.Add(new ClayJsonConverter()); })
+    }).ConfigureOptions(options => options.JsonSerializerOptions.AddClayConverters())
     .ConfigureHttpClientDefaults(clientBuilder =>
     {
         clientBuilder.AddServiceDiscovery();
