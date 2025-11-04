@@ -256,7 +256,12 @@ public sealed class HttpRemoteBuilder
         // 注册默认 HttpClient 客户端
         if (services.All(u => u.ServiceType != typeof(IHttpClientFactory)))
         {
-            services.AddHttpClient();
+            services.AddHttpClient(string.Empty)
+                // 默认启用 gzip、deflate 和 brotli 自动解压
+                .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
+                {
+                    AutomaticDecompression = DecompressionMethods.All
+                });
         }
 
         // 检查是否配置（注册）了日志程序
