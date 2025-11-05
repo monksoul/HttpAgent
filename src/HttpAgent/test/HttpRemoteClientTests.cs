@@ -14,7 +14,7 @@ public class HttpRemoteClientTests
         Assert.NotNull(HttpRemoteClient._serviceProvider);
         Assert.NotNull(HttpRemoteClient._httpRemoteService);
         Assert.NotNull(HttpRemoteClient._httpRemoteService.Value);
-        Assert.NotNull(HttpRemoteClient._lock);
+        Assert.NotNull(HttpRemoteClient._initializationLock);
         Assert.NotNull(HttpRemoteClient._configure);
         Assert.False(HttpRemoteClient._isDisposed);
         Assert.NotNull(HttpRemoteClient.Service);

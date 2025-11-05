@@ -1631,6 +1631,20 @@ public class HttpRequestBuilderMethodsTests
     }
 
     [Fact]
+    public void Debugger_ReturnOK()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        httpRequestBuilder.Debugger();
+
+        Assert.True(httpRequestBuilder.ProfilerEnabled);
+        Assert.False(httpRequestBuilder.__Disabled_Profiler__);
+
+        httpRequestBuilder.Debugger(false);
+        Assert.False(httpRequestBuilder.ProfilerEnabled);
+        Assert.True(httpRequestBuilder.__Disabled_Profiler__);
+    }
+
+    [Fact]
     public void Profiler_ReturnOK()
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
@@ -1954,5 +1968,39 @@ public class HttpRequestBuilderMethodsTests
         Assert.Equal(HttpMethod.Get, builder.HttpMethod);
         Assert.Equal("http://localhost/", builder.RequestUri?.ToString());
         Assert.Equal("User", builder.Fragment);
+    }
+
+    [Fact]
+    public void EnableAssertions_ReturnOK()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        httpRequestBuilder.EnableAssertions();
+
+        Assert.True(httpRequestBuilder.AssertionsEnabled);
+
+        httpRequestBuilder.EnableAssertions(false);
+        Assert.False(httpRequestBuilder.AssertionsEnabled);
+    }
+
+    [Fact]
+    public void Asserts_Invalid_Parameters()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        Assert.Throws<ArgumentNullException>(() => httpRequestBuilder.Asserts(null!));
+    }
+
+    [Fact]
+    public void Asserts_ReturnOK()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        Assert.Null(httpRequestBuilder.Assertions);
+
+        httpRequestBuilder.Asserts(builder => builder.StatusCode(200).HeaderExists("framework"));
+        Assert.Null(httpRequestBuilder.Assertions);
+
+        httpRequestBuilder.EnableAssertions()
+            .Asserts(builder => builder.StatusCode(200).HeaderExists("framework"));
+        Assert.NotNull(httpRequestBuilder.Assertions);
+        Assert.Equal(2, httpRequestBuilder.Assertions.Count);
     }
 }

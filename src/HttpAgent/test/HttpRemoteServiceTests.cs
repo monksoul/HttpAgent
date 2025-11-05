@@ -1632,6 +1632,54 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
 
         await app.StopAsync();
     }
+
+    [Fact]
+    public async Task ExecuteAssertionsAsync_ReturnOK()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        httpRequestBuilder.Asserts(u => u.StatusCode(200));
+
+        var services = new ServiceCollection();
+        await using var serviceProvider = services.BuildServiceProvider();
+
+        var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.NoContent);
+        await HttpRemoteService.ExecuteAssertionsAsync(httpRequestBuilder, httpResponseMessage, 100, serviceProvider);
+
+        httpRequestBuilder.EnableAssertions().Asserts(u => u.StatusCode(200));
+
+        var exception = await Assert.ThrowsAsync<HttpAssertionException>(async () =>
+            await HttpRemoteService.ExecuteAssertionsAsync(httpRequestBuilder, httpResponseMessage, 100,
+                serviceProvider));
+        Assert.Equal("Expected status code to be 200, but found 204.", exception.Message);
+    }
+
+    [Fact]
+    public async Task SendAsync_WithAsserts_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        builder.Services.AddHttpRemote();
+
+        await using var app = builder.Build();
+
+        app.MapGet("/test", async httpContext =>
+        {
+            await Task.Delay(50);
+            throw new Exception("出错了");
+        });
+
+        await app.StartAsync();
+
+        var httpRemoteService = app.Services.GetRequiredService<IHttpRemoteService>();
+
+        var exception = await Assert.ThrowsAsync<HttpAssertionException>(async () => await httpRemoteService.SendAsync(
+            HttpRequestBuilder.Get($"http://localhost:{port}/test").EnableAssertions()
+                .Asserts(u => u.StatusCode(200))));
+        Assert.Equal("Expected status code to be 200, but found 500.", exception.Message);
+
+        await app.StopAsync();
+    }
 }
 
 public class NoISO8601TimeClass

@@ -297,4 +297,15 @@ public sealed partial class HttpRequestBuilder
     ///     超时发生时要执行的操作
     /// </summary>
     internal Action? TimeoutAction { get; private set; }
+
+    /// <summary>
+    ///     是否开启断言功能
+    /// </summary>
+    /// <remarks>默认值为：<c>false</c>。</remarks>
+    internal bool AssertionsEnabled { get; private set; }
+
+    /// <summary>
+    ///     断言委托集合
+    /// </summary>
+    internal List<HttpAssertion>? Assertions { get; private set; }
 }

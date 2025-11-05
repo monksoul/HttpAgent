@@ -70,12 +70,14 @@ public class HttpRequestBuilderPropertiesTests
         Assert.Null(httpRequestBuilder2.Version);
         Assert.Null(httpRequestBuilder2.SuppressExceptionTypes);
         Assert.Null(httpRequestBuilder2.TimeoutAction);
+        Assert.False(httpRequestBuilder2.AssertionsEnabled);
+        Assert.Null(httpRequestBuilder2.Assertions);
 
         Assert.NotNull(HttpRequestBuilder._cachedProperties);
-        Assert.Equal(47, HttpRequestBuilder._cachedProperties.Value.Length);
+        Assert.Equal(49, HttpRequestBuilder._cachedProperties.Value.Length);
 
         Assert.Equal(
-            "RequestUri|HttpMethod|TraceIdentifier|ContentType|ContentEncoding|RawContent|Headers|HeadersToRemove|Fragment|Timeout|PathSegments|PathSegmentsToRemove|QueryParameters|QueryParametersToRemove|PathParameters|ObjectPathParameters|Cookies|CookiesToRemove|HttpClientName|MaxResponseContentBufferSize|AuthenticationHeader|Properties|BaseAddress|Version|HttpClientProvider|HttpContentProcessorProviders|HttpContentConverterProviders|OnPreSetContent|OnPreSendRequest|OnPostReceiveResponse|OnRequestFailed|MultipartFormDataBuilder|OmitContentType|EnsureSuccessStatusCodeEnabled|DisableCacheEnabled|RequestEventHandlerType|Disposables|HttpClientPooling|HttpClientPoolingEnabled|ProfilerEnabled|ProfilerPredicate|PerformanceOptimizationEnabled|AutoSetHostHeaderEnabled|__Disabled_Profiler__|StatusCodeHandlers|SuppressExceptionTypes|TimeoutAction",
+            "RequestUri|HttpMethod|TraceIdentifier|ContentType|ContentEncoding|RawContent|Headers|HeadersToRemove|Fragment|Timeout|PathSegments|PathSegmentsToRemove|QueryParameters|QueryParametersToRemove|PathParameters|ObjectPathParameters|Cookies|CookiesToRemove|HttpClientName|MaxResponseContentBufferSize|AuthenticationHeader|Properties|BaseAddress|Version|HttpClientProvider|HttpContentProcessorProviders|HttpContentConverterProviders|OnPreSetContent|OnPreSendRequest|OnPostReceiveResponse|OnRequestFailed|MultipartFormDataBuilder|OmitContentType|EnsureSuccessStatusCodeEnabled|DisableCacheEnabled|RequestEventHandlerType|Disposables|HttpClientPooling|HttpClientPoolingEnabled|ProfilerEnabled|ProfilerPredicate|PerformanceOptimizationEnabled|AutoSetHostHeaderEnabled|__Disabled_Profiler__|StatusCodeHandlers|SuppressExceptionTypes|TimeoutAction|AssertionsEnabled|Assertions",
             string.Join('|', HttpRequestBuilder._cachedProperties.Value.Select(u => u.Name)));
     }
 }

@@ -8,7 +8,6 @@ namespace HttpAgent;
 ///     提供静态访问 <see cref="IHttpRemoteService" /> 服务的方式
 /// </summary>
 /// <remarks>支持服务的延迟初始化、配置更新以及资源释放。</remarks>
-#pragma warning disable CA1513
 public static class HttpRemoteClient
 {
     /// <inheritdoc cref="IServiceProvider" />
@@ -22,7 +21,7 @@ public static class HttpRemoteClient
     /// <summary>
     ///     并发锁对象
     /// </summary>
-    internal static readonly object _lock = new();
+    internal static readonly SemaphoreSlim _initializationLock = new(1, 1);
 
     /// <summary>
     ///     标记服务是否已释放
@@ -42,9 +41,16 @@ public static class HttpRemoteClient
     /// <summary>
     ///     获取当前配置下的 <see cref="IHttpRemoteService" /> 实例
     /// </summary>
-    /// <exception cref="ObjectDisposedException"></exception>
-    public static IHttpRemoteService Service =>
-        _isDisposed ? throw new ObjectDisposedException(nameof(HttpRemoteClient)) : _httpRemoteService.Value;
+    public static IHttpRemoteService Service
+    {
+        get
+        {
+            // 释放检查
+            ObjectDisposedException.ThrowIf(_isDisposed, typeof(HttpRemoteClient));
+
+            return _httpRemoteService.Value;
+        }
+    }
 
     /// <summary>
     ///     自定义服务注册逻辑
@@ -54,13 +60,24 @@ public static class HttpRemoteClient
         // 空检查
         ArgumentNullException.ThrowIfNull(configure);
 
-        // 线程安全执行
-        lock (_lock)
+        // 初始化锁
+        _initializationLock.Wait();
+
+        try
         {
+            // 释放检查
+            ObjectDisposedException.ThrowIf(_isDisposed, typeof(HttpRemoteClient));
+
+            // 更新配置委托
             _configure = configure;
 
             // 重新初始化服务
             Reinitialize();
+        }
+        finally
+        {
+            // 释放锁
+            _initializationLock.Release();
         }
     }
 
@@ -70,18 +87,27 @@ public static class HttpRemoteClient
     /// <remarks>通常在应用程序关闭或不再需要 HTTP 远程请求服务时调用。</remarks>
     public static void Dispose()
     {
-        // 线程安全执行
-        lock (_lock)
+        // 初始化锁
+        _initializationLock.Wait();
+
+        try
         {
+            // 幂等性处理
             if (_isDisposed)
             {
                 return;
             }
 
-            // 释放服务提供器
-            ReleaseServiceProvider();
+            // 重新初始化服务
+            Reinitialize();
 
+            // 标记为已释放状态
             _isDisposed = true;
+        }
+        finally
+        {
+            // 释放锁
+            _initializationLock.Release();
         }
     }
 
@@ -91,17 +117,16 @@ public static class HttpRemoteClient
     /// <returns>
     ///     <see cref="IHttpRemoteService" />
     /// </returns>
-    /// <exception cref="ObjectDisposedException"></exception>
     /// <exception cref="InvalidOperationException"></exception>
     internal static IHttpRemoteService CreateService()
     {
-        // 线程安全执行
-        lock (_lock)
+        // 初始化锁
+        _initializationLock.Wait();
+
+        try
         {
-            if (_isDisposed)
-            {
-                throw new ObjectDisposedException(nameof(HttpRemoteClient));
-            }
+            // 释放检查
+            ObjectDisposedException.ThrowIf(_isDisposed, typeof(HttpRemoteClient));
 
             // 如果值已创建，直接返回
             if (_httpRemoteService.IsValueCreated)
@@ -120,39 +145,37 @@ public static class HttpRemoteClient
                 // 构建服务提供器
                 _serviceProvider = services.BuildServiceProvider();
 
-                // 解析 IHttpRemoteService 实例
-                var service = _serviceProvider.GetRequiredService<IHttpRemoteService>();
-
-                return service;
+                // 解析 IHttpRemoteService 实例并返回
+                return _serviceProvider.GetRequiredService<IHttpRemoteService>();
             }
             catch (Exception ex)
             {
+                // 重新初始化服务
+                Reinitialize();
+
                 throw new InvalidOperationException("Failed to initialize IHttpRemoteService.", ex);
             }
+        }
+        finally
+        {
+            // 释放锁
+            _initializationLock.Release();
         }
     }
 
     /// <summary>
     ///     使用最新的 <see cref="Configure" /> 配置重新初始化服务
     /// </summary>
-    /// <exception cref="ObjectDisposedException"></exception>
     internal static void Reinitialize()
     {
-        // 线程安全执行
-        lock (_lock)
-        {
-            if (_isDisposed)
-            {
-                throw new ObjectDisposedException(nameof(HttpRemoteClient));
-            }
+        // 释放检查
+        ObjectDisposedException.ThrowIf(_isDisposed, typeof(HttpRemoteClient));
 
-            // 释放当前的服务提供器
-            ReleaseServiceProvider();
+        // 释放旧资源
+        ReleaseServiceProvider();
 
-            // 重新创建延迟加载实例
-            _httpRemoteService =
-                new Lazy<IHttpRemoteService>(CreateService, LazyThreadSafetyMode.ExecutionAndPublication);
-        }
+        // 重置延迟加载实例
+        _httpRemoteService = new Lazy<IHttpRemoteService>(CreateService);
     }
 
     /// <summary>
@@ -169,4 +192,3 @@ public static class HttpRemoteClient
         _serviceProvider = null;
     }
 }
-#pragma warning restore CA1513

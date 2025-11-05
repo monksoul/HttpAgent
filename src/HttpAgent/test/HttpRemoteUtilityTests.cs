@@ -95,4 +95,64 @@ public class HttpRemoteUtilityTests
         var response = await httpClient.GetAsync("https://www.baidu.com");
         response.EnsureSuccessStatusCode();
     }
+
+    [Fact]
+    public void ResolveJsonSerializerOptions_WithDefault_ReturnOK()
+    {
+        using var stringContent = new StringContent("""{"id":10, "name":"furion"}""");
+        var httpResponseMessage = new HttpResponseMessage();
+        httpResponseMessage.Content = stringContent;
+
+        var jsonSerializerOptions = HttpRemoteUtility.ResolveJsonSerializerOptions(httpResponseMessage, null);
+        Assert.NotNull(jsonSerializerOptions);
+        Assert.False(jsonSerializerOptions.IncludeFields);
+
+        var jsonSerializerOptions2 = HttpRemoteUtility.ResolveJsonSerializerOptions(null, null);
+        Assert.NotNull(jsonSerializerOptions2);
+        Assert.False(jsonSerializerOptions2.IncludeFields);
+    }
+
+    [Fact]
+    public void ResolveJsonSerializerOptions_WithHttpClientOptions_ReturnOK()
+    {
+        var services = new ServiceCollection();
+        services.AddHttpClient(string.Empty).ConfigureOptions(options =>
+        {
+            options.JsonSerializerOptions.IncludeFields = true;
+        });
+        var serviceProvider = services.BuildServiceProvider();
+
+        using var stringContent = new StringContent("""{"id":10, "name":"furion"}""");
+        var httpResponseMessage = new HttpResponseMessage();
+        httpResponseMessage.Content = stringContent;
+
+        var jsonSerializerOptions =
+            HttpRemoteUtility.ResolveJsonSerializerOptions(httpResponseMessage, serviceProvider);
+        Assert.NotNull(jsonSerializerOptions);
+        Assert.True(jsonSerializerOptions.IncludeFields);
+
+        serviceProvider.Dispose();
+    }
+
+    [Fact]
+    public void ResolveJsonSerializerOptions_WithHttpRemoteOptions_ReturnOK()
+    {
+        var services = new ServiceCollection();
+        services.AddHttpRemote().ConfigureOptions(options =>
+        {
+            options.JsonSerializerOptions.IncludeFields = true;
+        });
+        var serviceProvider = services.BuildServiceProvider();
+
+        using var stringContent = new StringContent("""{"id":10, "name":"furion"}""");
+        var httpResponseMessage = new HttpResponseMessage();
+        httpResponseMessage.Content = stringContent;
+
+        var jsonSerializerOptions =
+            HttpRemoteUtility.ResolveJsonSerializerOptions(httpResponseMessage, serviceProvider);
+        Assert.NotNull(jsonSerializerOptions);
+        Assert.True(jsonSerializerOptions.IncludeFields);
+
+        serviceProvider.Dispose();
+    }
 }

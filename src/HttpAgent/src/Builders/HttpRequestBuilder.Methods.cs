@@ -1371,7 +1371,24 @@ public sealed partial class HttpRequestBuilder
     }
 
     /// <summary>
-    ///     设置是否启用请求分析工具
+    ///     启用请求分析工具（调试）
+    /// </summary>
+    /// <returns>
+    ///     <see cref="HttpRequestBuilder" />
+    /// </returns>
+    public HttpRequestBuilder Debugger() => Profiler(true);
+
+    /// <summary>
+    ///     设置是否启用请求分析工具（调试）
+    /// </summary>
+    /// <param name="enabled">是否启用</param>
+    /// <returns>
+    ///     <see cref="HttpRequestBuilder" />
+    /// </returns>
+    public HttpRequestBuilder Debugger(bool enabled) => Profiler(enabled);
+
+    /// <summary>
+    ///     启用请求分析工具
     /// </summary>
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
@@ -1707,6 +1724,63 @@ public sealed partial class HttpRequestBuilder
         }
 
         return httpRequestBuilder;
+    }
+
+    /// <summary>
+    ///     启用断言功能
+    /// </summary>
+    /// <returns>
+    ///     <see cref="HttpRequestBuilder" />
+    /// </returns>
+    public HttpRequestBuilder EnableAssertions() => EnableAssertions(true);
+
+    /// <summary>
+    ///     设置是否开启断言功能
+    /// </summary>
+    /// <param name="enabled">是否启用</param>
+    /// <returns>
+    ///     <see cref="HttpRequestBuilder" />
+    /// </returns>
+    public HttpRequestBuilder EnableAssertions(bool enabled)
+    {
+        AssertionsEnabled = enabled;
+
+        return this;
+    }
+
+    /// <summary>
+    ///     配置断言逻辑
+    /// </summary>
+    /// <remarks>
+    ///     <para>当 <see cref="EnableAssertions()" /> 处于启用状态有效。</para>
+    ///     <para>支持多次调用。</para>
+    /// </remarks>
+    /// <param name="configure">自定义配置委托</param>
+    /// <returns>
+    ///     <see cref="HttpRequestBuilder" />
+    /// </returns>
+    public HttpRequestBuilder Asserts(Action<HttpAssertionBuilder> configure)
+    {
+        // 空检查
+        ArgumentNullException.ThrowIfNull(configure);
+
+        // 检查断言是否开启
+        if (!AssertionsEnabled)
+        {
+            return this;
+        }
+
+        // 初始化 HttpAssertionBuilder 实例
+        var httpAssertionBuilder = new HttpAssertionBuilder();
+
+        // 调用自定义配置委托
+        configure(httpAssertionBuilder);
+
+        // 添加断言委托集合
+        Assertions ??= [];
+        Assertions.AddRange(httpAssertionBuilder.GetAssertions());
+
+        return this;
     }
 
     /// <summary>

@@ -149,7 +149,7 @@ internal sealed class MultipartDeclarativeExtractor : IFrozenHttpDeclarativeExtr
         HttpMultipartFormDataBuilder httpMultipartFormDataBuilder, Encoding? contentEncoding)
     {
         // 空检查
-        ArgumentException.ThrowIfNullOrWhiteSpace(fileSource, nameof(fileSource));
+        ArgumentException.ThrowIfNullOrWhiteSpace(fileSource);
 
         // 获取内容类型
         var contentType = multipartAttribute.ContentType ?? MediaTypeNames.Application.Octet;

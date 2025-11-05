@@ -196,14 +196,14 @@ public class ObjectContentConverterTests
     }
 
     [Fact]
-    public void GetJsonSerializerOptions_Invalid_Parameters()
+    public void ResolveJsonSerializerOptions_Invalid_Parameters()
     {
         using var stringContent = new StringContent("""{"id":10, "name":"furion"}""");
         var httpResponseMessage = new HttpResponseMessage();
         httpResponseMessage.Content = stringContent;
 
         var converter = new ObjectContentConverter<ObjectModel>();
-        var getJsonSerializerOptionsMethod = typeof(ObjectContentConverter).GetMethod("GetJsonSerializerOptions",
+        var getJsonSerializerOptionsMethod = typeof(ObjectContentConverter).GetMethod("ResolveJsonSerializerOptions",
             BindingFlags.NonPublic | BindingFlags.Instance)!;
 
         var exception = Assert.Throws<TargetInvocationException>(() =>
@@ -212,14 +212,14 @@ public class ObjectContentConverterTests
     }
 
     [Fact]
-    public void GetJsonSerializerOptions_WithDefault_ReturnOK()
+    public void ResolveJsonSerializerOptions_WithDefault_ReturnOK()
     {
         using var stringContent = new StringContent("""{"id":10, "name":"furion"}""");
         var httpResponseMessage = new HttpResponseMessage();
         httpResponseMessage.Content = stringContent;
 
         var converter = new ObjectContentConverter<ObjectModel>();
-        var getJsonSerializerOptionsMethod = typeof(ObjectContentConverter).GetMethod("GetJsonSerializerOptions",
+        var getJsonSerializerOptionsMethod = typeof(ObjectContentConverter).GetMethod("ResolveJsonSerializerOptions",
             BindingFlags.NonPublic | BindingFlags.Instance)!;
 
         var jsonSerializerOptions =
@@ -229,7 +229,7 @@ public class ObjectContentConverterTests
     }
 
     [Fact]
-    public void GetJsonSerializerOptions_WithHttpClientOptions_ReturnOK()
+    public void ResolveJsonSerializerOptions_WithHttpClientOptions_ReturnOK()
     {
         var services = new ServiceCollection();
         services.AddHttpClient(string.Empty).ConfigureOptions(options =>
@@ -243,7 +243,7 @@ public class ObjectContentConverterTests
         httpResponseMessage.Content = stringContent;
 
         var converter = new ObjectContentConverter<ObjectModel> { ServiceProvider = serviceProvider };
-        var getJsonSerializerOptionsMethod = typeof(ObjectContentConverter).GetMethod("GetJsonSerializerOptions",
+        var getJsonSerializerOptionsMethod = typeof(ObjectContentConverter).GetMethod("ResolveJsonSerializerOptions",
             BindingFlags.NonPublic | BindingFlags.Instance)!;
 
         var jsonSerializerOptions =
@@ -255,7 +255,7 @@ public class ObjectContentConverterTests
     }
 
     [Fact]
-    public void GetJsonSerializerOptions_WithHttpRemoteOptions_ReturnOK()
+    public void ResolveJsonSerializerOptions_WithHttpRemoteOptions_ReturnOK()
     {
         var services = new ServiceCollection();
         services.AddHttpRemote().ConfigureOptions(options =>
@@ -269,7 +269,7 @@ public class ObjectContentConverterTests
         httpResponseMessage.Content = stringContent;
 
         var converter = new ObjectContentConverter<ObjectModel> { ServiceProvider = serviceProvider };
-        var getJsonSerializerOptionsMethod = typeof(ObjectContentConverter).GetMethod("GetJsonSerializerOptions",
+        var getJsonSerializerOptionsMethod = typeof(ObjectContentConverter).GetMethod("ResolveJsonSerializerOptions",
             BindingFlags.NonPublic | BindingFlags.Instance)!;
 
         var jsonSerializerOptions =

@@ -540,6 +540,9 @@ internal sealed partial class HttpRemoteService : IHttpRemoteService
                 httpResponseMessage.EnsureSuccessStatusCode();
             }
 
+            // 执行断言委托操作
+            await ExecuteAssertionsAsync(httpRequestBuilder, httpResponseMessage, requestDuration, ServiceProvider);
+
             return (httpResponseMessage, requestDuration);
         }
         catch (Exception e)
@@ -1001,6 +1004,36 @@ internal sealed partial class HttpRemoteService : IHttpRemoteService
         }
 
         return suppressExceptionTypes.Any(u => u.IsInstanceOfType(exception));
+    }
+
+    /// <summary>
+    ///     执行断言委托操作
+    /// </summary>
+    /// <param name="httpRequestBuilder">
+    ///     <see cref="HttpRequestBuilder" />
+    /// </param>
+    /// <param name="httpResponseMessage">
+    ///     <see cref="HttpResponseMessage" />
+    /// </param>
+    /// <param name="requestDuration">请求耗时（毫秒）</param>
+    /// <param name="serviceProvider">
+    ///     <see cref="IServiceProvider" />
+    /// </param>
+    internal static async Task ExecuteAssertionsAsync(HttpRequestBuilder httpRequestBuilder,
+        HttpResponseMessage httpResponseMessage, long requestDuration, IServiceProvider serviceProvider)
+    {
+        // 检查是否开启断言并配置有断言委托集合
+        if (httpRequestBuilder is { AssertionsEnabled: true, Assertions.Count: > 0 })
+        {
+            // 初始化 HttpAssertionContext 实例
+            var httpAssertionContext = new HttpAssertionContext(httpResponseMessage, requestDuration, serviceProvider);
+
+            // 逐条调用断言委托
+            foreach (var httpAssertion in httpRequestBuilder.Assertions)
+            {
+                await httpAssertion(httpAssertionContext);
+            }
+        }
     }
 
     /// <summary>
