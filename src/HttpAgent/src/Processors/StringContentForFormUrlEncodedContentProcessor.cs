@@ -31,10 +31,8 @@ public class StringContentForFormUrlEncodedContentProcessor : FormUrlEncodedCont
         // 将原始请求内容转换为字符串
         var content = rawContent as string ?? GetContentString(
             // 将原始请求类型转换为字符串字典类型
-            rawContent.ObjectToDictionary()!
-                .ToDictionary(u => u.Key.ToCultureString(CultureInfo.InvariantCulture)!,
-                    u => u.Value?.ToCultureString(CultureInfo.InvariantCulture)
-                )
+            rawContent.ObjectToDictionary()!.ToDictionary(u => u.Key.ToInvariantCultureString()!,
+                u => u.Value?.ToInvariantCultureString())
         );
 
         // 初始化 StringContent 实例

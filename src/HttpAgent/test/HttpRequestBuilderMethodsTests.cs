@@ -752,7 +752,7 @@ public class HttpRequestBuilderMethodsTests
         var dateNow = new DateTime(2024, 08, 30, 23, 59, 59, 999, DateTimeKind.Local);
         httpRequestBuilder.WithQueryParameters(new { date = dateNow });
         Assert.Equal("2024-08-30T23:59:59.9990000+08:00",
-            httpRequestBuilder.QueryParameters["date"].First()?.ToCultureString(CultureInfo.InvariantCulture));
+            httpRequestBuilder.QueryParameters["date"].First()?.ToInvariantCultureString());
 
         httpRequestBuilder.QueryParameters.Clear();
 

@@ -230,7 +230,7 @@ internal static partial class StringExtensions
 
                     return isMatch
                         // 如果找到匹配则替换
-                        ? replacement?.ToCultureString(CultureInfo.InvariantCulture) ?? string.Empty
+                        ? replacement?.ToInvariantCultureString() ?? string.Empty
                         // 否则保留原样
                         : match.ToString();
                 });

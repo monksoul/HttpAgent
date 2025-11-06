@@ -947,6 +947,11 @@
         <member name="F:HttpAgent.HttpMultipartFormDataBuilder._onPreAddContent">
             <inheritdoc cref="P:HttpAgent.HttpMultipartFormDataBuilder.OnPreAddContent" />
         </member>
+        <member name="F:HttpAgent.HttpMultipartFormDataBuilder.FormNameTransformer">
+            <summary>
+                用于处理在添加 <see cref="T:System.Net.Http.HttpContent" /> 表单项内容前，对表单名称进行自定义转换的转换器
+            </summary>
+        </member>
         <member name="M:HttpAgent.HttpMultipartFormDataBuilder.#ctor(HttpAgent.HttpRequestBuilder)">
             <summary>
                 <inheritdoc cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
@@ -989,6 +994,27 @@
             <returns>
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
+        </member>
+        <member name="M:HttpAgent.HttpMultipartFormDataBuilder.SetFormNameTransformer(System.Func{System.String,System.String})">
+            <summary>
+                设置用于处理在添加 <see cref="T:System.Net.Http.HttpContent" /> 表单项内容前，对表单名称进行自定义转换的转换器
+            </summary>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpMultipartFormDataBuilder.SetFormNameTransformer(HttpAgent.FormNamingPolicy)">
+            <summary>
+                设置用于处理在添加 <see cref="T:System.Net.Http.HttpContent" /> 表单项内容前，对表单名称进行自定义转换的转换器
+            </summary>
+            <param name="namingPolicy">
+                <see cref="T:HttpAgent.FormNamingPolicy" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
+            </returns>
+            <exception cref="T:System.ArgumentOutOfRangeException"></exception>
         </member>
         <member name="M:HttpAgent.HttpMultipartFormDataBuilder.AddJson(System.Object,System.String,System.Text.Encoding,System.String)">
             <summary>
@@ -1131,7 +1157,7 @@
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpMultipartFormDataBuilder.AddFile(HttpAgent.MultipartFile)">
+        <member name="M:HttpAgent.HttpMultipartFormDataBuilder.AddFile(HttpAgent.MultipartFile,System.String)">
             <summary>
                 添加文件
             </summary>
@@ -1139,6 +1165,7 @@
             <param name="multipartFile">
                 <see cref="T:HttpAgent.MultipartFile" />
             </param>
+            <param name="name">表单名称</param>
             <returns>
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
@@ -1236,13 +1263,14 @@
                 <see cref="T:System.Net.Http.MultipartFormDataContent" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpMultipartFormDataBuilder.BuildHttpContent(HttpAgent.MultipartFormDataItem,HttpAgent.IHttpContentProcessorFactory,HttpAgent.IHttpContentProcessor[])">
+        <member name="M:HttpAgent.HttpMultipartFormDataBuilder.BuildHttpContent(HttpAgent.MultipartFormDataItem,System.String,HttpAgent.IHttpContentProcessorFactory,HttpAgent.IHttpContentProcessor[])">
             <summary>
                 构建 <see cref="T:System.Net.Http.HttpContent" /> 实例
             </summary>
             <param name="multipartFormDataItem">
                 <see cref="T:HttpAgent.MultipartFormDataItem" />
             </param>
+            <param name="name">表单名称</param>
             <param name="httpContentProcessorFactory">
                 <see cref="T:HttpAgent.IHttpContentProcessorFactory" />
             </param>
@@ -3856,6 +3884,41 @@
                 字节数组
             </summary>
         </member>
+        <member name="T:HttpAgent.FormNamingPolicy">
+            <summary>
+                表单名称命名策略（转换器）
+            </summary>
+        </member>
+        <member name="F:HttpAgent.FormNamingPolicy.None">
+            <summary>
+                缺省值
+            </summary>
+        </member>
+        <member name="F:HttpAgent.FormNamingPolicy.CamelCase">
+            <summary>
+                小驼峰命名法
+            </summary>
+        </member>
+        <member name="F:HttpAgent.FormNamingPolicy.SnakeCaseLower">
+            <summary>
+                小写蛇形命名法
+            </summary>
+        </member>
+        <member name="F:HttpAgent.FormNamingPolicy.SnakeCaseUpper">
+            <summary>
+                大写蛇形命名法
+            </summary>
+        </member>
+        <member name="F:HttpAgent.FormNamingPolicy.KebabCaseLower">
+            <summary>
+                小写短横线命名法
+            </summary>
+        </member>
+        <member name="F:HttpAgent.FormNamingPolicy.KebabCaseUpper">
+            <summary>
+                写短横线命名法
+            </summary>
+        </member>
         <member name="T:HttpAgent.ByteArrayContentConverter">
             <summary>
                 字节数组内容转换器
@@ -4098,7 +4161,7 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Match the string "/Date(".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [+-] atomically any number of times.<br/>
+                ○ Match a character in the set [+\-] atomically any number of times.<br/>
                 ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match the string ")/".<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
@@ -4127,10 +4190,10 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Match the string "/Date(".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [+-] atomically any number of times.<br/>
+                ○ Match a character in the set [+\-] atomically any number of times.<br/>
                 ○ Match a Unicode digit atomically at least once.<br/>
             ○ 2nd capture group.<br/>
-                ○ Match a character in the set [+-].<br/>
+                ○ Match a character in the set [+\-].<br/>
             ○ 3rd capture group.<br/>
                 ○ Match a Unicode digit exactly 2 times.<br/>
             ○ 4th capture group.<br/>
@@ -4501,6 +4564,19 @@
                 <see cref="T:System.String" />
             </returns>
         </member>
+        <member name="M:HttpAgent.Core.Extensions.ObjectExtensions.ToInvariantCultureString(System.Object,System.Boolean,System.String)">
+            <summary>
+                将对象转换为基于 <see cref="P:System.Globalization.CultureInfo.InvariantCulture" /> 文化的字符串表示形式
+            </summary>
+            <param name="obj">
+                <see cref="T:System.Object" />
+            </param>
+            <param name="enumAsString">指示是否将枚举类型的值作为名称输出，默认值为：<c>true</c>。若为 <c>false</c>，则输出枚举的值</param>
+            <param name="separator">集合类型分隔符</param>
+            <returns>
+                <see cref="T:System.String" />
+            </returns>
+        </member>
         <member name="M:HttpAgent.Core.Extensions.ObjectExtensions.TryGetCount(System.Object,System.Int32@)">
             <summary>
                 尝试获取对象的数量
@@ -4681,13 +4757,13 @@
             ○ Match the string "[[".<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [-:\w] greedily at least once.<br/>
+                ○ Match a character in the set [\-:\w] greedily at least once.<br/>
             ○ 2nd capture group.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match a whitespace character atomically any number of times.<br/>
                     ○ Match '|'.<br/>
                     ○ Match a whitespace character greedily any number of times.<br/>
-                    ○ Match a character in the set [-:\w] greedily at least once.<br/>
+                    ○ Match a character in the set [\-:\w] greedily at least once.<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ Optional (greedy).<br/>
                 ○ Match the string "||".<br/>
@@ -5580,6 +5656,10 @@
                 是否移除默认的多部分内容的 <c>Content-Type</c>
             </summary>
             <remarks>默认值为：<c>true</c>。</remarks>
+        </member>
+        <member name="P:HttpAgent.MultipartFormAttribute.NamingPolicy">
+            <inheritdoc cref="T:HttpAgent.FormNamingPolicy" />
+            <remarks>默认值为：<see cref="F:HttpAgent.FormNamingPolicy.None" />。</remarks>
         </member>
         <member name="T:HttpAgent.MultipartObjectAttribute">
             <summary>
@@ -6749,7 +6829,7 @@
             <code>
             ○ Match the string "\\u".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [0-9A-Fa-f] exactly 4 times.<br/>
+                ○ Match a hexadecimal digit exactly 4 times.<br/>
             </code>
             </remarks>
         </member>
@@ -7275,32 +7355,32 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Loop greedily at least once.<br/>
                 ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [-.0-9A-Z_a-z~] greedily at least once.<br/>
+                    ○ Match a character in the set [\-.0-9A-Z_a-z~] greedily at least once.<br/>
                     ○ Match a sequence of expressions.<br/>
                         ○ Match '%'.<br/>
-                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
+                        ○ Match a hexadecimal digit exactly 2 times.<br/>
             ○ Match '='.<br/>
             ○ Loop greedily at least once.<br/>
                 ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [-.0-9A-Z_a-z~] greedily any number of times.<br/>
+                    ○ Match a character in the set [\-.0-9A-Z_a-z~] greedily any number of times.<br/>
                     ○ Match a sequence of expressions.<br/>
                         ○ Match '%'.<br/>
-                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
+                        ○ Match a hexadecimal digit exactly 2 times.<br/>
             ○ Loop greedily any number of times.<br/>
                 ○ Match '&amp;'.<br/>
                 ○ Loop greedily at least once.<br/>
                     ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [-.0-9A-Z_a-z~] greedily at least once.<br/>
+                        ○ Match a character in the set [\-.0-9A-Z_a-z~] greedily at least once.<br/>
                         ○ Match a sequence of expressions.<br/>
                             ○ Match '%'.<br/>
-                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
+                            ○ Match a hexadecimal digit exactly 2 times.<br/>
                 ○ Match '='.<br/>
                 ○ Loop greedily at least once.<br/>
                     ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [-.0-9A-Z_a-z~] greedily any number of times.<br/>
+                        ○ Match a character in the set [\-.0-9A-Z_a-z~] greedily any number of times.<br/>
                         ○ Match a sequence of expressions.<br/>
                             ○ Match '%'.<br/>
-                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
+                            ○ Match a hexadecimal digit exactly 2 times.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
             </remarks>
@@ -9763,7 +9843,7 @@
             <code>
             ○ Match if at the beginning of the string.<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
-            ○ Match a character in the set [-~].<br/>
+            ○ Match a character in the set [\-~].<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
@@ -14935,8 +15015,20 @@
         <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32,System.Int32,System.Int32)">
             <summary>Pushes 3 values onto the backtracking stack.</summary>
         </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.WordCategoriesMask">
+            <summary>Provides a mask of Unicode categories that combine to form [\w].</summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.Generated.Utilities.WordCharBitmap">
+            <summary>Gets a bitmap for whether each character 0 through 127 is in [\w]</summary>
+        </member>
         <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_ascii_60FF03FEFFFF87FEFFFF47">
             <summary>Supports searching for characters in or not in "-.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz~".</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_1F52B1A4D2E82B6FEDE25EC8C55F85BB36775196837076691C96925040F90D32">
+            <summary>Supports searching for the string "\\u".</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_EBC667BDABA1472FA863B5B39B31251EF2B4C95DD643BDECF694CB1CE7BDC178">
+            <summary>Supports searching for the string "[[".</summary>
         </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions">
             <summary>
@@ -14952,26 +15044,6 @@
             </param>
             <param name="configure">自定义配置委托</param>
             <returns>
-                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
-            </returns>
-        </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions.AddHttpRemote(Microsoft.Extensions.DependencyInjection.IServiceCollection,HttpAgent.HttpRemoteBuilder)">
-            <summary>
-                添加 HTTP 远程请求服务
-            </summary>
-            <param name="services">
-                <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
-            </param>
-            <param name="httpRemoteBuilder">
-                <see cref="T:HttpAgent.HttpRemoteBuilder" />
-            </param>
-            <returns>
-                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
-            </returns>
-        </member>
-    </members>
-</doc>
-  <returns>
                 <see cref="T:HttpAgent.IHttpRemoteBuilder" />
             </returns>
         </member>

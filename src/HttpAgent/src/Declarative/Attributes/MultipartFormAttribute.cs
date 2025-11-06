@@ -34,4 +34,8 @@ public sealed class MultipartFormAttribute : Attribute
     /// </summary>
     /// <remarks>默认值为：<c>true</c>。</remarks>
     public bool OmitContentType { get; set; } = true;
+
+    /// <inheritdoc cref="FormNamingPolicy" />
+    /// <remarks>默认值为：<see cref="FormNamingPolicy.None" />。</remarks>
+    public FormNamingPolicy NamingPolicy { get; set; } = FormNamingPolicy.None;
 }

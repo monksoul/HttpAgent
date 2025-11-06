@@ -24,10 +24,8 @@ public class FormUrlEncodedContentProcessor : HttpContentProcessorBase
         }
 
         // 将原始请求类型转换为字符串字典类型
-        var nameValueCollection = rawContent.ObjectToDictionary()!
-            .ToDictionary(u => u.Key.ToCultureString(CultureInfo.InvariantCulture)!,
-                u => u.Value?.ToCultureString(CultureInfo.InvariantCulture)
-            );
+        var nameValueCollection = rawContent.ObjectToDictionary()!.ToDictionary(u => u.Key.ToInvariantCultureString()!,
+            u => u.Value?.ToInvariantCultureString());
 
         // 初始化 FormUrlEncodedContent 实例
         var formUrlEncodedContent = new FormUrlEncodedContent(nameValueCollection);

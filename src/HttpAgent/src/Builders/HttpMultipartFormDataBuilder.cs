@@ -21,6 +21,11 @@ public sealed class HttpMultipartFormDataBuilder
     internal Action<HttpContent, string>? _onPreAddContent;
 
     /// <summary>
+    ///     用于处理在添加 <see cref="HttpContent" /> 表单项内容前，对表单名称进行自定义转换的转换器
+    /// </summary>
+    internal Func<string, string?>? FormNameTransformer;
+
+    /// <summary>
     ///     <inheritdoc cref="HttpMultipartFormDataBuilder" />
     /// </summary>
     /// <param name="httpRequestBuilder">
@@ -83,6 +88,42 @@ public sealed class HttpMultipartFormDataBuilder
 
         return this;
     }
+
+    /// <summary>
+    ///     设置用于处理在添加 <see cref="HttpContent" /> 表单项内容前，对表单名称进行自定义转换的转换器
+    /// </summary>
+    /// <param name="configure">自定义配置委托</param>
+    /// <returns>
+    ///     <see cref="HttpMultipartFormDataBuilder" />
+    /// </returns>
+    public HttpMultipartFormDataBuilder SetFormNameTransformer(Func<string, string>? configure)
+    {
+        FormNameTransformer = configure;
+
+        return this;
+    }
+
+    /// <summary>
+    ///     设置用于处理在添加 <see cref="HttpContent" /> 表单项内容前，对表单名称进行自定义转换的转换器
+    /// </summary>
+    /// <param name="namingPolicy">
+    ///     <see cref="FormNamingPolicy" />
+    /// </param>
+    /// <returns>
+    ///     <see cref="HttpMultipartFormDataBuilder" />
+    /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
+    public HttpMultipartFormDataBuilder SetFormNameTransformer(FormNamingPolicy namingPolicy) =>
+        SetFormNameTransformer(namingPolicy switch
+        {
+            FormNamingPolicy.None => null,
+            FormNamingPolicy.CamelCase => JsonNamingPolicy.CamelCase.ConvertName,
+            FormNamingPolicy.SnakeCaseLower => JsonNamingPolicy.SnakeCaseLower.ConvertName,
+            FormNamingPolicy.SnakeCaseUpper => JsonNamingPolicy.SnakeCaseUpper.ConvertName,
+            FormNamingPolicy.KebabCaseLower => JsonNamingPolicy.KebabCaseLower.ConvertName,
+            FormNamingPolicy.KebabCaseUpper => JsonNamingPolicy.KebabCaseUpper.ConvertName,
+            _ => throw new ArgumentOutOfRangeException(nameof(namingPolicy), namingPolicy, null)
+        });
 
     /// <summary>
     ///     添加 JSON 内容
@@ -223,7 +264,7 @@ public sealed class HttpMultipartFormDataBuilder
         var formDataItems = rawObject.ObjectToDictionary()!;
 
         // 遍历字典集合并逐条追加
-        foreach (var (key, rawContent) in formDataItems)
+        foreach (var (itemName, rawContent) in formDataItems)
         {
             // 检查原始请求内容是否是 MultipartFile 类型
             if (rawContent is MultipartFile multipartFile)
@@ -232,7 +273,7 @@ public sealed class HttpMultipartFormDataBuilder
             }
             else
             {
-                _partContents.Add(new MultipartFormDataItem(key.ToCultureString(CultureInfo.InvariantCulture)!)
+                _partContents.Add(new MultipartFormDataItem(itemName.ToInvariantCultureString()!)
                 {
                     ContentType = Helpers.GetContentTypeOrDefault(rawContent, MediaTypeNames.Text.Plain),
                     RawContent = rawContent,
@@ -426,35 +467,39 @@ public sealed class HttpMultipartFormDataBuilder
     /// <param name="multipartFile">
     ///     <see cref="MultipartFile" />
     /// </param>
+    /// <param name="name">表单名称</param>
     /// <returns>
     ///     <see cref="HttpMultipartFormDataBuilder" />
     /// </returns>
-    public HttpMultipartFormDataBuilder AddFile(MultipartFile multipartFile)
+    public HttpMultipartFormDataBuilder AddFile(MultipartFile multipartFile, string? name = null)
     {
         // 空检查
         ArgumentNullException.ThrowIfNull(multipartFile);
+
+        // 获取表单名称
+        var formName = name ?? multipartFile.Name!;
 
         switch (multipartFile.FileSourceType)
         {
             // 字节数组
             case FileSourceType.ByteArray:
-                return AddByteArray((byte[])multipartFile.Source!, multipartFile.Name!, multipartFile.FileName,
+                return AddByteArray((byte[])multipartFile.Source!, formName, multipartFile.FileName,
                     multipartFile.ContentType, multipartFile.ContentEncoding);
             // Stream
             case FileSourceType.Stream:
-                return AddStream((Stream)multipartFile.Source!, multipartFile.Name!, multipartFile.FileName,
+                return AddStream((Stream)multipartFile.Source!, formName, multipartFile.FileName,
                     multipartFile.ContentType, multipartFile.ContentEncoding);
             // 本地文件路径
             case FileSourceType.Path:
-                return AddFileAsStream((string)multipartFile.Source!, multipartFile.Name!, multipartFile.FileName,
+                return AddFileAsStream((string)multipartFile.Source!, formName, multipartFile.FileName,
                     multipartFile.ContentType, multipartFile.ContentEncoding);
             // Base64 字符串文件
             case FileSourceType.Base64String:
-                return AddFileFromBase64String((string)multipartFile.Source!, multipartFile.Name!,
+                return AddFileFromBase64String((string)multipartFile.Source!, formName,
                     multipartFile.FileName, multipartFile.ContentType, multipartFile.ContentEncoding);
             // 互联网文件地址
             case FileSourceType.Remote:
-                return AddFileFromRemote((string)multipartFile.Source!, multipartFile.Name!, multipartFile.FileName,
+                return AddFileFromRemote((string)multipartFile.Source!, formName, multipartFile.FileName,
                     multipartFile.ContentType, multipartFile.ContentEncoding);
             // 不做处理
             case FileSourceType.None:
@@ -728,8 +773,11 @@ public sealed class HttpMultipartFormDataBuilder
         // 逐条遍历添加
         foreach (var dataItem in _partContents)
         {
+            // 尝试获取转换后的表单名称
+            var transformedName = FormNameTransformer?.Invoke(dataItem.Name) ?? dataItem.Name;
+
             // 构建 HttpContent 实例
-            var httpContent = BuildHttpContent(dataItem, httpContentProcessorFactory, processors);
+            var httpContent = BuildHttpContent(dataItem, transformedName, httpContentProcessorFactory, processors);
 
             // 空检查
             if (httpContent is null)
@@ -744,10 +792,10 @@ public sealed class HttpMultipartFormDataBuilder
             }
 
             // 调用用于处理在添加 HttpContent 表单项内容时的操作
-            OnPreAddContent?.Invoke(httpContent, dataItem.Name);
+            OnPreAddContent?.Invoke(httpContent, transformedName);
 
             // 添加 HttpContent 表单项内容
-            multipartFormDataContent.Add(httpContent, dataItem.Name);
+            multipartFormDataContent.Add(httpContent, transformedName);
         }
 
         return multipartFormDataContent;
@@ -759,6 +807,7 @@ public sealed class HttpMultipartFormDataBuilder
     /// <param name="multipartFormDataItem">
     ///     <see cref="MultipartFormDataItem" />
     /// </param>
+    /// <param name="name">表单名称</param>
     /// <param name="httpContentProcessorFactory">
     ///     <see cref="IHttpContentProcessorFactory" />
     /// </param>
@@ -766,11 +815,12 @@ public sealed class HttpMultipartFormDataBuilder
     /// <returns>
     ///     <see cref="HttpContent" />
     /// </returns>
-    internal static HttpContent? BuildHttpContent(MultipartFormDataItem multipartFormDataItem,
+    internal static HttpContent? BuildHttpContent(MultipartFormDataItem multipartFormDataItem, string name,
         IHttpContentProcessorFactory httpContentProcessorFactory, params IHttpContentProcessor[]? processors)
     {
         // 空检查
         ArgumentNullException.ThrowIfNull(multipartFormDataItem);
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
         ArgumentNullException.ThrowIfNull(httpContentProcessorFactory);
 
         // 空检查
@@ -788,7 +838,7 @@ public sealed class HttpMultipartFormDataBuilder
             httpContent.Headers.ContentDisposition =
                 new ContentDispositionHeaderValue(Constants.FORM_DATA_DISPOSITION_TYPE)
                 {
-                    Name = multipartFormDataItem.Name.AddQuotes(),
+                    Name = name.AddQuotes(),
                     FileName =
                         (string.IsNullOrWhiteSpace(multipartFormDataItem.FileName) &&
                          contentType.IsIn([MediaTypeNames.Application.Octet], StringComparer.OrdinalIgnoreCase)

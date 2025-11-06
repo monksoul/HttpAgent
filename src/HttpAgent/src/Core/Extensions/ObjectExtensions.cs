@@ -46,6 +46,21 @@ internal static class ObjectExtensions
     }
 
     /// <summary>
+    ///     将对象转换为基于 <see cref="CultureInfo.InvariantCulture" /> 文化的字符串表示形式
+    /// </summary>
+    /// <param name="obj">
+    ///     <see cref="object" />
+    /// </param>
+    /// <param name="enumAsString">指示是否将枚举类型的值作为名称输出，默认值为：<c>true</c>。若为 <c>false</c>，则输出枚举的值</param>
+    /// <param name="separator">集合类型分隔符</param>
+    /// <returns>
+    ///     <see cref="string" />
+    /// </returns>
+    internal static string?
+        ToInvariantCultureString(this object? obj, bool enumAsString = true, string separator = ",") =>
+        ToCultureString(obj, CultureInfo.InvariantCulture, enumAsString, separator);
+
+    /// <summary>
     ///     尝试获取对象的数量
     /// </summary>
     /// <param name="obj">

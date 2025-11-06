@@ -139,6 +139,15 @@ public class MultipartDeclarativeExtractorTests
         Assert.NotNull(httpMultipartFormDataBuilder2.Boundary);
         Assert.StartsWith("--------------------", httpMultipartFormDataBuilder2.Boundary);
         Assert.True(httpMultipartFormDataBuilder2.OmitContentType);
+
+        var method3 =
+            typeof(IMultipartDeclarativeExtractorTest).GetMethod(nameof(IMultipartDeclarativeExtractorTest.Test6))!;
+        var httpRequestBuilder3 = HttpRequestBuilder.Get("http://localhost");
+        var httpMultipartFormDataBuilder3 = new HttpMultipartFormDataBuilder(httpRequestBuilder3);
+
+        MultipartDeclarativeExtractor.SetMultipartFormData(method3, httpMultipartFormDataBuilder3);
+        Assert.NotNull(httpMultipartFormDataBuilder3.FormNameTransformer);
+        Assert.Equal("tempCelsius", httpMultipartFormDataBuilder3.FormNameTransformer("TempCelsius"));
     }
 
     [Fact]
@@ -339,4 +348,8 @@ public interface IMultipartDeclarativeExtractorTest : IHttpDeclarative
 
     [Post("http://localhost:5000")]
     Task Test5([MultipartObject] HttpRemoteMultipartModel2 data);
+
+    [Post("http://localhost:5000")]
+    [MultipartForm(NamingPolicy = FormNamingPolicy.CamelCase)]
+    Task Test6();
 }

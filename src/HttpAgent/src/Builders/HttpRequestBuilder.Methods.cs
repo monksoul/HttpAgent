@@ -362,8 +362,8 @@ public sealed partial class HttpRequestBuilder
 
         // 设置请求标头
         Headers = objectHeaders.ToDictionary(kvp => kvp.Key,
-            kvp => kvp.Value.Select(u => u.ToCultureString(CultureInfo.InvariantCulture)?.EscapeDataString(escape))
-                .ToList(), StringComparer.OrdinalIgnoreCase);
+            kvp => kvp.Value.Select(u => u.ToInvariantCultureString()?.EscapeDataString(escape)).ToList(),
+            StringComparer.OrdinalIgnoreCase);
 
         return this;
     }
@@ -384,8 +384,8 @@ public sealed partial class HttpRequestBuilder
         ArgumentNullException.ThrowIfNull(headerSource);
 
         return WithHeaders(
-            headerSource.ObjectToDictionary()!.ToDictionary(u => u.Key.ToCultureString(CultureInfo.InvariantCulture)!,
-                u => u.Value), escape, replace);
+            headerSource.ObjectToDictionary()!.ToDictionary(u => u.Key.ToInvariantCultureString()!, u => u.Value),
+            escape, replace);
     }
 
     /// <summary>
@@ -677,8 +677,7 @@ public sealed partial class HttpRequestBuilder
 
         return WithQueryParameters(
             parameterSource.ObjectToDictionary()!.ToDictionary(
-                u =>
-                    $"{(string.IsNullOrWhiteSpace(prefix) ? null : $"{prefix}.")}{u.Key.ToCultureString(CultureInfo.InvariantCulture)}",
+                u => $"{(string.IsNullOrWhiteSpace(prefix) ? null : $"{prefix}.")}{u.Key.ToInvariantCultureString()}",
                 u => u.Value), replace, ignoreNullValues);
     }
 
@@ -748,8 +747,8 @@ public sealed partial class HttpRequestBuilder
         PathParameters ??= new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
 
         // 存在则更新否则添加
-        PathParameters.AddOrUpdate(parameters.ToDictionary(u => u.Key,
-            u => u.Value?.ToCultureString(CultureInfo.InvariantCulture), StringComparer.OrdinalIgnoreCase));
+        PathParameters.AddOrUpdate(parameters.ToDictionary(u => u.Key, u => u.Value?.ToInvariantCultureString(),
+            StringComparer.OrdinalIgnoreCase));
 
         return this;
     }
@@ -772,8 +771,8 @@ public sealed partial class HttpRequestBuilder
             ArgumentNullException.ThrowIfNull(parameterSource);
 
             return WithPathParameters(
-                parameterSource.ObjectToDictionary()!.ToDictionary(
-                    u => u.Key.ToCultureString(CultureInfo.InvariantCulture)!, u => u.Value));
+                parameterSource.ObjectToDictionary()!.ToDictionary(u => u.Key.ToInvariantCultureString()!,
+                    u => u.Value));
         }
 
         ObjectPathParameters ??= new Dictionary<string, object?>();
@@ -833,8 +832,8 @@ public sealed partial class HttpRequestBuilder
         Cookies ??= new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
 
         // 存在则更新否则添加
-        Cookies.AddOrUpdate(cookies.ToDictionary(u => u.Key,
-            u => u.Value?.ToCultureString(CultureInfo.InvariantCulture), StringComparer.OrdinalIgnoreCase));
+        Cookies.AddOrUpdate(cookies.ToDictionary(u => u.Key, u => u.Value?.ToInvariantCultureString(),
+            StringComparer.OrdinalIgnoreCase));
 
         return this;
     }
@@ -854,8 +853,7 @@ public sealed partial class HttpRequestBuilder
 
         // 存在则更新否则添加
         return WithCookies(
-            cookieSource.ObjectToDictionary()!.ToDictionary(
-                u => u.Key.ToCultureString(CultureInfo.InvariantCulture)!, u => u.Value));
+            cookieSource.ObjectToDictionary()!.ToDictionary(u => u.Key.ToInvariantCultureString()!, u => u.Value));
     }
 
     /// <summary>
@@ -1497,8 +1495,7 @@ public sealed partial class HttpRequestBuilder
         ArgumentNullException.ThrowIfNull(propertySource);
 
         return WithProperties(
-            propertySource.ObjectToDictionary()!.ToDictionary(u => u.Key.ToCultureString(CultureInfo.InvariantCulture)!,
-                u => u.Value));
+            propertySource.ObjectToDictionary()!.ToDictionary(u => u.Key.ToInvariantCultureString()!, u => u.Value));
     }
 
     /// <summary>

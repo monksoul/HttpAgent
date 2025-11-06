@@ -66,6 +66,9 @@ internal sealed class MultipartDeclarativeExtractor : IFrozenHttpDeclarativeExtr
         // 设置多部分表单内容的边界
         httpMultipartFormDataBuilder.SetBoundary(multipartFormAttribute.Boundary);
 
+        // 设置用于处理在添加 HttpContent 表单项内容前，对表单名称进行自定义转换的转换器
+        httpMultipartFormDataBuilder.SetFormNameTransformer(multipartFormAttribute.NamingPolicy);
+
         // 设置是否移除默认的多部分内容的 Content-Type
         httpMultipartFormDataBuilder.OmitContentType = multipartFormAttribute.OmitContentType;
     }
@@ -203,8 +206,7 @@ internal sealed class MultipartDeclarativeExtractor : IFrozenHttpDeclarativeExtr
         if (parameterType.IsBaseTypeOrEnumOrCollection())
         {
             // 添加单个表单项内容
-            httpMultipartFormDataBuilder.AddFormItem(value.ToCultureString(CultureInfo.InvariantCulture), name,
-                contentEncoding);
+            httpMultipartFormDataBuilder.AddFormItem(value.ToInvariantCultureString(), name, contentEncoding);
         }
         // 添加原始内容
         else
