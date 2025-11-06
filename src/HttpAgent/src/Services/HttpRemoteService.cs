@@ -1022,13 +1022,13 @@ internal sealed partial class HttpRemoteService : IHttpRemoteService
     internal static async Task ExecuteAssertionsAsync(HttpRequestBuilder httpRequestBuilder,
         HttpResponseMessage httpResponseMessage, long requestDuration, IServiceProvider serviceProvider)
     {
-        // 检查是否开启断言并配置有断言委托集合
+        // 检查断言是否启用且已配置委托集合
         if (httpRequestBuilder is { AssertionsEnabled: true, Assertions.Count: > 0 })
         {
             // 初始化 HttpAssertionContext 实例
             var httpAssertionContext = new HttpAssertionContext(httpResponseMessage, requestDuration, serviceProvider);
 
-            // 逐条调用断言委托
+            // 逐个调用断言委托
             foreach (var httpAssertion in httpRequestBuilder.Assertions)
             {
                 await httpAssertion(httpAssertionContext);
