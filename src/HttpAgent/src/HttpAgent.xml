@@ -6772,6 +6772,22 @@
                 <see cref="T:System.Boolean" />
             </returns>
         </member>
+        <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.FixInvalidCharset(System.Net.Http.HttpResponseMessage)">
+            <summary>
+                修复无效的响应内容字符编码
+            </summary>
+            <param name="httpResponseMessage">
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </param>
+        </member>
+        <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.FixInvalidCharset(System.Net.Http.HttpContent)">
+            <summary>
+                修复无效的响应内容字符编码
+            </summary>
+            <param name="httpContent">
+                <see cref="T:System.Net.Http.HttpContent" />
+            </param>
+        </member>
         <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.TryGetSetCookies(System.Net.Http.Headers.HttpResponseHeaders,System.Collections.Generic.IList{Microsoft.Net.Http.Headers.SetCookieHeaderValue}@,System.Collections.Generic.List{System.String}@)">
             <summary>
                 尝试获取响应标头 <c>Set-Cookie</c> 集合

@@ -242,6 +242,9 @@ public static partial class HttpRemoteExtensions
             return null;
         }
 
+        // 修复无效的响应内容字符编码
+        httpContent.FixInvalidCharset();
+
         // 默认只读取 5KB 的内容
         const int maxBytesToDisplay = 5120;
 
@@ -374,6 +377,41 @@ public static partial class HttpRemoteExtensions
         ArgumentNullException.ThrowIfNull(httpResponseMessage);
 
         return httpResponseMessage.Headers.TryGetSetCookies(out setCookies, out rawSetCookies);
+    }
+
+    /// <summary>
+    ///     修复无效的响应内容字符编码
+    /// </summary>
+    /// <param name="httpResponseMessage">
+    ///     <see cref="HttpResponseMessage" />
+    /// </param>
+    public static void FixInvalidCharset(this HttpResponseMessage? httpResponseMessage) =>
+        httpResponseMessage?.Content.FixInvalidCharset();
+
+    /// <summary>
+    ///     修复无效的响应内容字符编码
+    /// </summary>
+    /// <param name="httpContent">
+    ///     <see cref="HttpContent" />
+    /// </param>
+    public static void FixInvalidCharset(this HttpContent? httpContent)
+    {
+        // 空检查
+        if (httpContent?.Headers.ContentType?.CharSet is null)
+        {
+            return;
+        }
+
+        // 获取内容字符编码
+        var charset = httpContent.Headers.ContentType.CharSet.Trim();
+
+        // 修复 "utf8"、"utf 8" 和 "utf-8;" 的错误写法（不区分大小写/空格）
+        if (charset.Equals("utf8", StringComparison.OrdinalIgnoreCase) ||
+            charset.Equals("utf 8", StringComparison.OrdinalIgnoreCase) ||
+            charset.Equals("utf-8;", StringComparison.OrdinalIgnoreCase))
+        {
+            httpContent.Headers.ContentType.CharSet = "utf-8";
+        }
     }
 
     /// <summary>

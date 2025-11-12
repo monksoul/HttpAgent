@@ -406,4 +406,36 @@ public class HttpRemoteExtensionsTests
         Assert.Equal("{\"Id\":1,\"Name\":\"\\u767E\\u5C0F\\u50E7\",\"Age\":30}",
             new { Id = 1, Name = "百小僧", Age = 30 }.ToJsonString(JsonSerializerOptions.Default));
     }
+
+    [Fact]
+    public void FixInvalidCharset_ReturnOK()
+    {
+        ((HttpResponseMessage?)null).FixInvalidCharset();
+        var httpResponseMessage = new HttpResponseMessage();
+        httpResponseMessage.Content.FixInvalidCharset();
+
+        httpResponseMessage.Content.Headers.ContentType =
+            new MediaTypeHeaderValue("application/json") { CharSet = "utf8" };
+        httpResponseMessage.FixInvalidCharset();
+
+        Assert.Equal("utf-8", httpResponseMessage.Content.Headers.ContentType?.CharSet);
+
+        httpResponseMessage.Content.Headers.ContentType =
+            new MediaTypeHeaderValue("application/json") { CharSet = "utf 8" };
+        httpResponseMessage.FixInvalidCharset();
+
+        Assert.Equal("utf-8", httpResponseMessage.Content.Headers.ContentType?.CharSet);
+
+        httpResponseMessage.Content.Headers.ContentType =
+            new MediaTypeHeaderValue("application/json") { CharSet = "utf-8;" };
+        httpResponseMessage.FixInvalidCharset();
+
+        Assert.Equal("utf-8", httpResponseMessage.Content.Headers.ContentType?.CharSet);
+
+        httpResponseMessage.Content.Headers.ContentType =
+            new MediaTypeHeaderValue("application/json") { CharSet = "UTF8" };
+        httpResponseMessage.FixInvalidCharset();
+
+        Assert.Equal("utf-8", httpResponseMessage.Content.Headers.ContentType?.CharSet);
+    }
 }

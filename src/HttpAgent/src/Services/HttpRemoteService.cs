@@ -477,6 +477,9 @@ internal sealed partial class HttpRemoteService : IHttpRemoteService
                 ? await sendAsyncMethod(httpClient, httpRequestMessage, completionOption, timeoutCancellationToken)
                 : sendMethod!(httpClient, httpRequestMessage, completionOption, timeoutCancellationToken);
 
+            // 修复无效的响应内容字符编码
+            httpResponseMessage.FixInvalidCharset();
+
             // 初始化当前重定向次数和原始请求方法
             var redirections = 0;
             var originalHttpMethod = httpRequestBuilder.HttpMethod!;
@@ -512,6 +515,9 @@ internal sealed partial class HttpRemoteService : IHttpRemoteService
                     ? await sendAsyncMethod(httpClient, redirectHttpRequestMessage, completionOption,
                         timeoutCancellationToken)
                     : sendMethod!(httpClient, redirectHttpRequestMessage, completionOption, timeoutCancellationToken);
+
+                // 修复无效的响应内容字符编码
+                httpResponseMessage.FixInvalidCharset();
 
                 // 递增重定向次数
                 redirections++;
