@@ -1680,6 +1680,34 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
 
         await app.StopAsync();
     }
+
+    [Fact]
+    public async Task SendAsync_WithFixInvalidCharset_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        builder.Services.AddHttpRemote();
+
+        await using var app = builder.Build();
+
+        app.MapGet("/test", async httpContext =>
+        {
+            httpContext.Response.ContentType = "application/json; charset=utf8";
+            await httpContext.Response.WriteAsync("""{"id":1,"name":"Furion"}""");
+        });
+
+        await app.StartAsync();
+
+        var httpRemoteService = app.Services.GetRequiredService<IHttpRemoteService>();
+
+        var httpResponseMessage =
+            await httpRemoteService.SendAsync(HttpRequestBuilder.Get($"http://localhost:{port}/test"));
+
+        Assert.Equal("application/json; charset=utf-8", httpResponseMessage?.Content.Headers.ContentType?.ToString());
+
+        await app.StopAsync();
+    }
 }
 
 public class NoISO8601TimeClass
