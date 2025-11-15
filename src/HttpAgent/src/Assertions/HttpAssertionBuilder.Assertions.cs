@@ -92,8 +92,7 @@ public sealed partial class HttpAssertionBuilder
     /// <returns>
     ///     <see cref="HttpAssertionBuilder" />
     /// </returns>
-    public HttpAssertionBuilder
-        ContentContains(string expectedSubstring, CancellationToken cancellationToken = default)
+    public HttpAssertionBuilder ContentContains(string expectedSubstring, CancellationToken cancellationToken = default)
     {
         // 空检查
         ArgumentException.ThrowIfNullOrEmpty(expectedSubstring);

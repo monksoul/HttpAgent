@@ -1658,13 +1658,16 @@
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpRequestBuilder.SetJsonContent(System.Object,System.Text.Encoding,System.String)">
+        <member name="M:HttpAgent.HttpRequestBuilder.SetJsonContent(System.Object,System.Text.Encoding,System.String,System.Text.Json.JsonSerializerOptions)">
             <summary>
                 设置 JSON 内容
             </summary>
             <param name="rawJson">JSON 字符串/原始对象</param>
             <param name="contentEncoding">内容编码</param>
             <param name="contentType">内容类型</param>
+            <param name="jsonSerializerOptions">
+                <see cref="T:System.Text.Json.JsonSerializerOptions" />
+            </param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>

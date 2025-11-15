@@ -106,17 +106,25 @@ public sealed partial class HttpRequestBuilder
     /// <param name="rawJson">JSON 字符串/原始对象</param>
     /// <param name="contentEncoding">内容编码</param>
     /// <param name="contentType">内容类型</param>
+    /// <param name="jsonSerializerOptions">
+    ///     <see cref="JsonSerializerOptions" />
+    /// </param>
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
     /// <exception cref="JsonException"></exception>
     public HttpRequestBuilder SetJsonContent(object? rawJson, Encoding? contentEncoding = null,
-        string? contentType = null)
+        string? contentType = null, JsonSerializerOptions? jsonSerializerOptions = null)
     {
         // 检查是否是字符串类型
         if (rawJson is not string rawString)
         {
-            return SetContent(rawJson, contentType ?? MediaTypeNames.Application.Json, contentEncoding);
+            // 当传入 jsonSerializerOptions 参数时，直接进行序列化后再传入
+            var extractedJson = jsonSerializerOptions is null
+                ? rawJson
+                : JsonSerializer.Serialize(rawJson, jsonSerializerOptions);
+
+            return SetContent(extractedJson, contentType ?? MediaTypeNames.Application.Json, contentEncoding);
         }
 
         // 尝试验证并获取 JsonDocument 实例（需 using）

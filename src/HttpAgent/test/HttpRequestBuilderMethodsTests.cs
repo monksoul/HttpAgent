@@ -166,6 +166,13 @@ public class HttpRequestBuilderMethodsTests
         Assert.NotNull(httpRequestBuilder.Disposables);
         Assert.Single(httpRequestBuilder.Disposables);
         Assert.True(httpRequestBuilder.Disposables.Single() is JsonDocument);
+
+        httpRequestBuilder.SetJsonContent(new { Id = 1, Name = "furion" },
+            jsonSerializerOptions: new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+        Assert.NotNull(httpRequestBuilder.RawContent);
+        Assert.Equal("{\"id\":1,\"name\":\"furion\"}", httpRequestBuilder.RawContent);
+        Assert.Equal("application/json", httpRequestBuilder.ContentType);
+        Assert.Null(httpRequestBuilder.ContentEncoding);
     }
 
     [Fact]
@@ -1504,7 +1511,7 @@ public class HttpRequestBuilderMethodsTests
         Assert.NotNull(httpRequestBuilder.Headers);
         Assert.Single(httpRequestBuilder.Headers);
         Assert.Equal(
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0",
             httpRequestBuilder.Headers["User-Agent"].First());
 
         httpRequestBuilder.SimulateBrowser(true);
@@ -1512,7 +1519,7 @@ public class HttpRequestBuilderMethodsTests
         Assert.NotNull(httpRequestBuilder.Headers);
         Assert.Single(httpRequestBuilder.Headers);
         Assert.Equal(
-            "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Mobile Safari/537.36 Edg/135.0.0.0",
+            "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Mobile Safari/537.36 Edg/142.0.0.0",
             httpRequestBuilder.Headers["User-Agent"].First());
     }
 
@@ -1527,7 +1534,7 @@ public class HttpRequestBuilderMethodsTests
         Assert.Single(httpRequestBuilder.Headers);
         Assert.Single(httpRequestBuilder.Headers["User-Agent"]);
         Assert.Equal(
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0",
             httpRequestBuilder.Headers["User-Agent"].First());
     }
 
