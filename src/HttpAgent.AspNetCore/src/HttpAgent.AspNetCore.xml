@@ -194,15 +194,15 @@
         <member name="M:HttpAgent.IActionResultContentConverter.ReadAsync(System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.IActionResultContentConverter.TryGetStatusCodeResult(System.Net.Http.HttpResponseMessage,System.Net.HttpStatusCode@,Microsoft.AspNetCore.Mvc.IActionResult@)">
+        <member name="M:HttpAgent.IActionResultContentConverter.TryGetEmptyContentResult(System.Net.Http.HttpResponseMessage,System.Net.HttpStatusCode@,Microsoft.AspNetCore.Mvc.IActionResult@)">
             <summary>
-                处理特定状态码结果
+                尝试为无内容响应生成对应的 <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult" />
             </summary>
             <param name="httpResponseMessage">
                 <see cref="T:System.Net.Http.HttpResponseMessage" />
             </param>
             <param name="statusCode">HTTP 状态码</param>
-            <param name="statusCodeResult">
+            <param name="emptyContentResult">
                 <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult" />
             </param>
             <returns>

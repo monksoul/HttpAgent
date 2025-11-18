@@ -9,17 +9,21 @@ public class IActionResultContentConverterTests
     [Theory]
     [InlineData(200, null)]
     [InlineData(204, typeof(NoContentResult))]
-    [InlineData(400, typeof(BadRequestResult))]
-    [InlineData(401, typeof(UnauthorizedResult))]
-    [InlineData(404, typeof(NotFoundResult))]
-    [InlineData(409, typeof(ConflictResult))]
-    [InlineData(415, typeof(UnsupportedMediaTypeResult))]
-    [InlineData(422, typeof(UnprocessableEntityResult))]
+    [InlineData(205, typeof(StatusCodeResult))]
+    [InlineData(304, typeof(StatusCodeResult))]
+    [InlineData(101, typeof(StatusCodeResult))]
+    [InlineData(102, typeof(StatusCodeResult))]
+    [InlineData(400, null)]
+    [InlineData(401, null)]
+    [InlineData(404, null)]
+    [InlineData(409, null)]
+    [InlineData(415, null)]
+    [InlineData(422, null)]
     [InlineData(500, null)]
-    public void TryGetStatusCodeResult_ReturnOK(int statusCode, Type? actionResultType)
+    public void TryGetEmptyContentResult_ReturnOK(int statusCode, Type? actionResultType)
     {
         var httpResponseMessage = new HttpResponseMessage { StatusCode = (HttpStatusCode)statusCode };
-        IActionResultContentConverter.TryGetStatusCodeResult(httpResponseMessage, out var httpStatusCode,
+        IActionResultContentConverter.TryGetEmptyContentResult(httpResponseMessage, out var httpStatusCode,
             out var actionResult);
 
         Assert.True((int)httpStatusCode > 0);
@@ -34,7 +38,8 @@ public class IActionResultContentConverterTests
     [InlineData("text/xml")]
     [InlineData("text/html")]
     [InlineData("text/plain")]
-    public void Read_ContentResult_ReturnOk(string contentType)
+    [InlineData("application/soap+xml")]
+    public void Read_ContentResult_ReturnOK(string contentType)
     {
         var actionResultContentConverter = new IActionResultContentConverter();
 
@@ -55,7 +60,7 @@ public class IActionResultContentConverterTests
     [InlineData("application/pdf")]
     [InlineData("application/octet-stream")]
     [InlineData("image/jpeg")]
-    public void Read_FileStreamResult_ReturnOk(string contentType)
+    public void Read_FileStreamResult_ReturnOK(string contentType)
     {
         var actionResultContentConverter = new IActionResultContentConverter();
 
@@ -82,7 +87,8 @@ public class IActionResultContentConverterTests
     [InlineData("text/xml")]
     [InlineData("text/html")]
     [InlineData("text/plain")]
-    public async Task ReadAsync_ContentResult_ReturnOk(string contentType)
+    [InlineData("application/soap+xml")]
+    public async Task ReadAsync_ContentResult_ReturnOK(string contentType)
     {
         var actionResultContentConverter = new IActionResultContentConverter();
 
@@ -103,7 +109,7 @@ public class IActionResultContentConverterTests
     [InlineData("application/pdf")]
     [InlineData("application/octet-stream")]
     [InlineData("image/jpeg")]
-    public async Task ReadAsync_FileStreamResult_ReturnOk(string contentType)
+    public async Task ReadAsync_FileStreamResult_ReturnOK(string contentType)
     {
         var actionResultContentConverter = new IActionResultContentConverter();
 
@@ -130,7 +136,8 @@ public class IActionResultContentConverterTests
     [InlineData("text/xml")]
     [InlineData("text/html")]
     [InlineData("text/plain")]
-    public void Read_WithType_ContentResult_ReturnOk(string contentType)
+    [InlineData("application/soap+xml")]
+    public void Read_WithType_ContentResult_ReturnOK(string contentType)
     {
         var actionResultContentConverter = new IActionResultContentConverter();
 
@@ -151,7 +158,7 @@ public class IActionResultContentConverterTests
     [InlineData("application/pdf")]
     [InlineData("application/octet-stream")]
     [InlineData("image/jpeg")]
-    public void Read_WithType_FileStreamResult_ReturnOk(string contentType)
+    public void Read_WithType_FileStreamResult_ReturnOK(string contentType)
     {
         var actionResultContentConverter = new IActionResultContentConverter();
 
@@ -178,7 +185,8 @@ public class IActionResultContentConverterTests
     [InlineData("text/xml")]
     [InlineData("text/html")]
     [InlineData("text/plain")]
-    public async Task ReadAsync_WithType_ContentResult_ReturnOk(string contentType)
+    [InlineData("application/soap+xml")]
+    public async Task ReadAsync_WithType_ContentResult_ReturnOK(string contentType)
     {
         var actionResultContentConverter = new IActionResultContentConverter();
 
@@ -199,7 +207,7 @@ public class IActionResultContentConverterTests
     [InlineData("application/pdf")]
     [InlineData("application/octet-stream")]
     [InlineData("image/jpeg")]
-    public async Task ReadAsync_WithType_FileStreamResult_ReturnOk(string contentType)
+    public async Task ReadAsync_WithType_FileStreamResult_ReturnOK(string contentType)
     {
         var actionResultContentConverter = new IActionResultContentConverter();
 
