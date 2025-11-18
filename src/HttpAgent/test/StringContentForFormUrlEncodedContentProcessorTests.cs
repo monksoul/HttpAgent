@@ -93,12 +93,12 @@ public class StringContentForFormUrlEncodedContentProcessorTests
     {
         var result =
             StringContentForFormUrlEncodedContentProcessor.GetContentString(
-                [new KeyValuePair<string, string?>("id", "1"), new KeyValuePair<string, string?>("name", "furion")]);
+                new KeyValuePair<string, string?>("id", "1"), new KeyValuePair<string, string?>("name", "furion"));
         Assert.Equal("id=1&name=furion", result);
 
         var result2 =
             StringContentForFormUrlEncodedContentProcessor.GetContentString(
-                [new KeyValuePair<string, string?>("id", "1"), new KeyValuePair<string, string?>("name", "fur ion")]);
+                new KeyValuePair<string, string?>("id", "1"), new KeyValuePair<string, string?>("name", "fur ion"));
         Assert.Equal("id=1&name=fur+ion", result2);
     }
 

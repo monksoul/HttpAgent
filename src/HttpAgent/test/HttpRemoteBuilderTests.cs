@@ -233,7 +233,7 @@ public class HttpRemoteBuilderTests
     {
         var builder = new HttpRemoteBuilder();
 
-        builder.AddHttpDeclarativeExtractorFromAssemblies([typeof(HttpRemoteBuilderTests).Assembly, null]);
+        builder.AddHttpDeclarativeExtractorFromAssemblies(typeof(HttpRemoteBuilderTests).Assembly, null);
         Assert.NotNull(builder._httpDeclarativeExtractors);
         Assert.Single(builder._httpDeclarativeExtractors);
     }
