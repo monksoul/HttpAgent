@@ -12,8 +12,12 @@ public class ProfilerDelegatingHandlerTests
         var services = new ServiceCollection();
         services.AddLogging();
         services.Configure<HttpRemoteOptions>(options => { });
+        var isLoggingRegistered = services.Any(u => u.ServiceType == typeof(ILoggerProvider));
+        services.TryAddSingleton<IHttpRemoteLogger>(provider =>
+            ActivatorUtilities.CreateInstance<HttpRemoteLogger>(provider, isLoggingRegistered));
+
         using var provider = services.BuildServiceProvider();
-        var logger = provider.GetRequiredService<ILogger<Logging>>();
+        var logger = provider.GetRequiredService<IHttpRemoteLogger>();
 
         var handler = new ProfilerDelegatingHandler(logger, provider.GetRequiredService<IOptions<HttpRemoteOptions>>());
         Assert.NotNull(handler);
@@ -24,15 +28,19 @@ public class ProfilerDelegatingHandlerTests
     {
         var services = new ServiceCollection();
         services.AddLogging();
+        var isLoggingRegistered = services.Any(u => u.ServiceType == typeof(ILoggerProvider));
+        services.TryAddSingleton<IHttpRemoteLogger>(provider =>
+            ActivatorUtilities.CreateInstance<HttpRemoteLogger>(provider, isLoggingRegistered));
+
         await using var provider = services.BuildServiceProvider();
-        var logger = provider.GetRequiredService<ILogger<Logging>>();
+        var logger = provider.GetRequiredService<IHttpRemoteLogger>();
 
         var httpRequestMessage = new HttpRequestMessage();
         httpRequestMessage.Headers.TryAddWithoutValidation("Accept", "application/json");
         httpRequestMessage.Headers.TryAddWithoutValidation("Accept-Encoding", "gzip, deflate");
 
         await ProfilerDelegatingHandler.LogRequestAsync(logger,
-            new HttpRemoteOptions { ProfilerLogLevel = LogLevel.Warning, IsLoggingRegistered = false },
+            new HttpRemoteOptions { ProfilerLogLevel = LogLevel.Warning },
             httpRequestMessage);
     }
 
@@ -41,8 +49,12 @@ public class ProfilerDelegatingHandlerTests
     {
         var services = new ServiceCollection();
         services.AddLogging();
+        var isLoggingRegistered = services.Any(u => u.ServiceType == typeof(ILoggerProvider));
+        services.TryAddSingleton<IHttpRemoteLogger>(provider =>
+            ActivatorUtilities.CreateInstance<HttpRemoteLogger>(provider, isLoggingRegistered));
+
         await using var provider = services.BuildServiceProvider();
-        var logger = provider.GetRequiredService<ILogger<Logging>>();
+        var logger = provider.GetRequiredService<IHttpRemoteLogger>();
 
         var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, new Uri("http://localhost"));
         httpRequestMessage.Headers.TryAddWithoutValidation("Accept", "application/json");
@@ -55,23 +67,27 @@ public class ProfilerDelegatingHandlerTests
         httpResponseMessage.Content.Headers.TryAddWithoutValidation("Content-Type", "application/json");
 
         await ProfilerDelegatingHandler.LogResponseAsync(logger,
-            new HttpRemoteOptions { ProfilerLogLevel = LogLevel.Warning, IsLoggingRegistered = false },
+            new HttpRemoteOptions { ProfilerLogLevel = LogLevel.Warning },
             httpResponseMessage, 200);
     }
 
     [Fact]
     public void Log_Invalid_Parameters() =>
         Assert.Throws<ArgumentNullException>(() => ProfilerDelegatingHandler.Log(null!,
-            new HttpRemoteOptions { ProfilerLogLevel = LogLevel.Warning, IsLoggingRegistered = false }, null!));
+            new HttpRemoteOptions { ProfilerLogLevel = LogLevel.Warning }, null!));
 
     [Fact]
     public void Log_ReturnOK()
     {
         var services = new ServiceCollection();
         services.AddLogging();
+        var isLoggingRegistered = services.Any(u => u.ServiceType == typeof(ILoggerProvider));
+        services.TryAddSingleton<IHttpRemoteLogger>(provider =>
+            ActivatorUtilities.CreateInstance<HttpRemoteLogger>(provider, isLoggingRegistered));
+
         using var provider = services.BuildServiceProvider();
-        var logger = provider.GetRequiredService<ILogger<Logging>>();
-        var remoteOptions = new HttpRemoteOptions { ProfilerLogLevel = LogLevel.Warning, IsLoggingRegistered = false };
+        var logger = provider.GetRequiredService<IHttpRemoteLogger>();
+        var remoteOptions = new HttpRemoteOptions { ProfilerLogLevel = LogLevel.Warning };
 
         ProfilerDelegatingHandler.Log(logger, remoteOptions, null);
         ProfilerDelegatingHandler.Log(logger, remoteOptions, string.Empty);
@@ -84,9 +100,12 @@ public class ProfilerDelegatingHandlerTests
     {
         var services = new ServiceCollection();
         services.AddLogging();
+        var isLoggingRegistered = services.Any(u => u.ServiceType == typeof(ILoggerProvider));
+        services.TryAddSingleton<IHttpRemoteLogger>(provider =>
+            ActivatorUtilities.CreateInstance<HttpRemoteLogger>(provider, isLoggingRegistered));
         using var provider = services.BuildServiceProvider();
-        var logger = provider.GetRequiredService<ILogger<Logging>>();
-        var remoteOptions = new HttpRemoteOptions { ProfilerLogLevel = LogLevel.Warning, IsLoggingRegistered = false };
+        var logger = provider.GetRequiredService<IHttpRemoteLogger>();
+        var remoteOptions = new HttpRemoteOptions { ProfilerLogLevel = LogLevel.Warning };
 
         var httpRemoteProfiler = new HttpRemoteAnalyzer();
         ProfilerDelegatingHandler.Log(logger, remoteOptions, null, httpRemoteProfiler);
@@ -117,6 +136,10 @@ public class ProfilerDelegatingHandlerTests
         services.AddLogging();
         services.TryAddTransient<ProfilerDelegatingHandler>();
         services.AddHttpClient(string.Empty).AddProfilerDelegatingHandler();
+        var isLoggingRegistered = services.Any(u => u.ServiceType == typeof(ILoggerProvider));
+        services.TryAddSingleton<IHttpRemoteLogger>(provider =>
+            ActivatorUtilities.CreateInstance<HttpRemoteLogger>(provider, isLoggingRegistered));
+
         using var provider = services.BuildServiceProvider();
 
         var handler = provider.GetRequiredService<ProfilerDelegatingHandler>();
@@ -128,11 +151,14 @@ public class ProfilerDelegatingHandlerTests
     {
         var services = new ServiceCollection();
         services.AddLogging();
+        var isLoggingRegistered = services.Any(u => u.ServiceType == typeof(ILoggerProvider));
+        services.TryAddSingleton<IHttpRemoteLogger>(provider =>
+            ActivatorUtilities.CreateInstance<HttpRemoteLogger>(provider, isLoggingRegistered));
         using var provider = services.BuildServiceProvider();
-        var logger = provider.GetRequiredService<ILogger<Logging>>();
+        var logger = provider.GetRequiredService<IHttpRemoteLogger>();
 
         var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, new Uri("http://localhost"));
-        var remoteOptions = new HttpRemoteOptions { ProfilerLogLevel = LogLevel.Warning, IsLoggingRegistered = false };
+        var remoteOptions = new HttpRemoteOptions { ProfilerLogLevel = LogLevel.Warning };
 
         ProfilerDelegatingHandler.LogCookieContainer(logger, remoteOptions, httpRequestMessage, null);
 

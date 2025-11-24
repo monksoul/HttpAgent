@@ -23,8 +23,8 @@ internal sealed partial class HttpRemoteService : IHttpRemoteService
     /// <inheritdoc cref="HttpRemoteOptions" />
     internal readonly HttpRemoteOptions _httpRemoteOptions;
 
-    /// <inheritdoc cref="ILogger{T}" />
-    internal readonly ILogger<Logging> _logger;
+    /// <inheritdoc cref="IHttpRemoteLogger" />
+    internal readonly IHttpRemoteLogger _logger;
 
     /// <summary>
     ///     <inheritdoc cref="HttpRemoteService" />
@@ -33,7 +33,7 @@ internal sealed partial class HttpRemoteService : IHttpRemoteService
     ///     <see cref="IServiceProvider" />
     /// </param>
     /// <param name="logger">
-    ///     <see cref="Logger{T}" />
+    ///     <see cref="IHttpRemoteLogger" />
     /// </param>
     /// <param name="httpClientFactory">
     ///     <see cref="IHttpClientFactory" />
@@ -47,7 +47,7 @@ internal sealed partial class HttpRemoteService : IHttpRemoteService
     /// <param name="httpRemoteOptions">
     ///     <see cref="IOptions{TOptions}" />
     /// </param>
-    public HttpRemoteService(IServiceProvider serviceProvider, ILogger<Logging> logger,
+    public HttpRemoteService(IServiceProvider serviceProvider, IHttpRemoteLogger logger,
         IHttpClientFactory httpClientFactory,
         IHttpContentProcessorFactory httpContentProcessorFactory,
         IHttpContentConverterFactory httpContentConverterFactory,
@@ -553,6 +553,10 @@ internal sealed partial class HttpRemoteService : IHttpRemoteService
         }
         catch (Exception e)
         {
+            // 输出请求异常日志
+            _logger.LogError(e, "An error occurred while sending HTTP request to {Url} using {Method}.",
+                httpRequestMessage.RequestUri?.ToString() ?? "unknown", httpRequestMessage.Method);
+
             // 处理发送 HTTP 请求发生异常
             HandleRequestFailed(httpRequestBuilder, requestEventHandler, e, httpResponseMessage);
 

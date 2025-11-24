@@ -267,11 +267,14 @@ public sealed class HttpRemoteBuilder
         // 检查是否配置（注册）了日志程序
         var isLoggingRegistered = services.Any(u => u.ServiceType == typeof(ILoggerProvider));
 
+        // 注册 HTTP 远程请求日志服务
+        services.TryAddSingleton<IHttpRemoteLogger>(provider =>
+            ActivatorUtilities.CreateInstance<HttpRemoteLogger>(provider, isLoggingRegistered));
+
         // 注册并配置 HttpRemoteOptions 选项服务
         services.Configure<HttpRemoteOptions>(options =>
         {
             options.HttpDeclarativeExtractors = _httpDeclarativeExtractors?.AsReadOnly();
-            options.IsLoggingRegistered = isLoggingRegistered;
         });
 
         // 注册 HttpContent 内容处理器工厂
@@ -281,7 +284,7 @@ public sealed class HttpRemoteBuilder
 
         // 注册 HttpContent 内容转换器工厂
         services.TryAddSingleton<IHttpContentConverterFactory>(provider =>
-            new HttpContentConverterFactory(provider,
+            new HttpContentConverterFactory(provider, provider.GetRequiredService<IHttpRemoteLogger>(),
                 _httpContentConverterProviders?.SelectMany(u => u.Invoke()).ToArray()));
 
         // 注册对象内容转换器工厂

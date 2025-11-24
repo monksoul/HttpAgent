@@ -245,13 +245,14 @@ public class HttpRemoteBuilderTests
         var builder = new HttpRemoteBuilder();
 
         builder.Build(services);
+        Assert.Contains(services, u => u.ServiceType == typeof(IHttpRemoteLogger));
         Assert.Contains(services, u => u.ServiceType == typeof(IHttpClientFactory));
         Assert.Contains(services, u => u.ServiceType == typeof(IHttpContentProcessorFactory));
         Assert.Contains(services, u => u.ServiceType == typeof(IHttpContentConverterFactory));
         Assert.Contains(services, u => u.ServiceType == typeof(IHttpRemoteService));
         Assert.True(services.First(u => u.ServiceType == typeof(IObjectContentConverterFactory)).ImplementationType ==
                     typeof(ObjectContentConverterFactory));
-        Assert.Equal(31, services.Count);
+        Assert.Equal(32, services.Count);
     }
 
     [Fact]
@@ -264,11 +265,14 @@ public class HttpRemoteBuilderTests
         builder.Build(services);
         builder.Build(services);
 
+        Assert.Contains(services, u => u.ServiceType == typeof(IHttpRemoteLogger));
         Assert.Contains(services, u => u.ServiceType == typeof(IHttpClientFactory));
         Assert.Contains(services, u => u.ServiceType == typeof(IHttpContentProcessorFactory));
         Assert.Contains(services, u => u.ServiceType == typeof(IHttpContentConverterFactory));
         Assert.Contains(services, u => u.ServiceType == typeof(IHttpRemoteService));
-        Assert.Equal(33, services.Count);
+        Assert.True(services.First(u => u.ServiceType == typeof(IObjectContentConverterFactory)).ImplementationType ==
+                    typeof(ObjectContentConverterFactory));
+        Assert.Equal(34, services.Count);
     }
 
     [Fact]
@@ -278,6 +282,7 @@ public class HttpRemoteBuilderTests
         var builder = new HttpRemoteBuilder().UseObjectContentConverterFactory<CustomObjectContentConverterFactory>();
 
         builder.Build(services);
+        Assert.Contains(services, u => u.ServiceType == typeof(IHttpRemoteLogger));
         Assert.Contains(services, u => u.ServiceType == typeof(IHttpClientFactory));
         Assert.Contains(services, u => u.ServiceType == typeof(IHttpContentProcessorFactory));
         Assert.Contains(services, u => u.ServiceType == typeof(IHttpContentConverterFactory));
@@ -285,7 +290,7 @@ public class HttpRemoteBuilderTests
         Assert.Contains(services, u => u.ServiceType == typeof(IObjectContentConverterFactory));
         Assert.True(services.First(u => u.ServiceType == typeof(IObjectContentConverterFactory)).ImplementationType ==
                     typeof(CustomObjectContentConverterFactory));
-        Assert.Equal(31, services.Count);
+        Assert.Equal(32, services.Count);
     }
 
     [Fact]
@@ -297,12 +302,15 @@ public class HttpRemoteBuilderTests
         builder.Build(services);
         builder.Build(services);
         builder.Build(services);
+        Assert.Contains(services, u => u.ServiceType == typeof(IHttpRemoteLogger));
         Assert.Contains(services, u => u.ServiceType == typeof(IHttpClientFactory));
         Assert.Contains(services, u => u.ServiceType == typeof(IHttpContentProcessorFactory));
         Assert.Contains(services, u => u.ServiceType == typeof(IHttpContentConverterFactory));
         Assert.Contains(services, u => u.ServiceType == typeof(IHttpRemoteService));
         Assert.Contains(services, u => u.ServiceType == typeof(IObjectContentConverterFactory));
-        Assert.Equal(33, services.Count);
+        Assert.True(services.First(u => u.ServiceType == typeof(IObjectContentConverterFactory)).ImplementationType ==
+                    typeof(CustomObjectContentConverterFactory));
+        Assert.Equal(34, services.Count);
     }
 
     [Fact]
@@ -339,7 +347,6 @@ public class HttpRemoteBuilderTests
 
         using var serviceProvider = services.BuildServiceProvider();
         var remoteOptions = serviceProvider.GetRequiredService<IOptions<HttpRemoteOptions>>().Value;
-        Assert.False(remoteOptions.IsLoggingRegistered);
 
         Assert.Equal("application/json", remoteOptions.DefaultContentType);
         Assert.Equal(@"C:\Workspaces", remoteOptions.DefaultFileDownloadDirectory);
@@ -376,16 +383,5 @@ public class HttpRemoteBuilderTests
 
         Assert.NotNull(remoteOptions.HttpDeclarativeExtractors);
         Assert.Single(remoteOptions.HttpDeclarativeExtractors);
-    }
-
-    [Fact]
-    public void Build_WithCheckLogging_ReturnOK()
-    {
-        var builder = WebApplication.CreateBuilder();
-        builder.Services.AddHttpRemote();
-
-        using var app = builder.Build();
-        var remoteOptions = app.Services.GetRequiredService<IOptions<HttpRemoteOptions>>().Value;
-        Assert.True(remoteOptions.IsLoggingRegistered);
     }
 }

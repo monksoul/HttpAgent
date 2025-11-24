@@ -12,16 +12,24 @@ internal sealed class HttpContentConverterFactory : IHttpContentConverterFactory
     /// </summary>
     internal readonly Dictionary<Type, IHttpContentConverter> _converters;
 
+    /// <inheritdoc cref="IHttpRemoteLogger" />
+    internal readonly IHttpRemoteLogger _logger;
+
     /// <summary>
     ///     <inheritdoc cref="HttpContentConverterFactory" />
     /// </summary>
     /// <param name="serviceProvider">
     ///     <see cref="IServiceProvider" />
     /// </param>
+    /// <param name="logger">
+    ///     <see cref="IHttpRemoteLogger" />
+    /// </param>
     /// <param name="converters"><see cref="IHttpContentConverter{TResult}" /> 数组</param>
-    public HttpContentConverterFactory(IServiceProvider serviceProvider, IHttpContentConverter[]? converters)
+    public HttpContentConverterFactory(IServiceProvider serviceProvider, IHttpRemoteLogger logger,
+        IHttpContentConverter[]? converters)
     {
         ServiceProvider = serviceProvider;
+        _logger = logger;
 
         // 初始化响应内容转换器
         _converters = new Dictionary<Type, IHttpContentConverter>
@@ -42,18 +50,50 @@ internal sealed class HttpContentConverterFactory : IHttpContentConverterFactory
 
     /// <inheritdoc />
     public TResult? Read<TResult>(HttpResponseMessage? httpResponseMessage, IHttpContentConverter[]? converters = null,
-        CancellationToken cancellationToken = default) =>
-        httpResponseMessage is null
-            ? default
-            : GetConverter<TResult>(httpResponseMessage, converters).Read(httpResponseMessage, cancellationToken);
+        CancellationToken cancellationToken = default)
+    {
+        // 空检查
+        if (httpResponseMessage is null)
+        {
+            return default;
+        }
+
+        try
+        {
+            return GetConverter<TResult>(httpResponseMessage, converters).Read(httpResponseMessage, cancellationToken);
+        }
+        catch (Exception e)
+        {
+            // 输出转换异常日志
+            LogContentConversionError(typeof(TResult), httpResponseMessage, e);
+
+            throw;
+        }
+    }
 
     /// <inheritdoc />
     public object? Read(Type resultType, HttpResponseMessage? httpResponseMessage,
-        IHttpContentConverter[]? converters = null, CancellationToken cancellationToken = default) =>
-        httpResponseMessage is null
-            ? null
-            : GetConverter(resultType, httpResponseMessage, converters)
+        IHttpContentConverter[]? converters = null, CancellationToken cancellationToken = default)
+    {
+        // 空检查
+        if (httpResponseMessage is null)
+        {
+            return null;
+        }
+
+        try
+        {
+            return GetConverter(resultType, httpResponseMessage, converters)
                 .Read(resultType, httpResponseMessage, cancellationToken);
+        }
+        catch (Exception e)
+        {
+            // 输出转换异常日志
+            LogContentConversionError(resultType, httpResponseMessage, e);
+
+            throw;
+        }
+    }
 
     /// <inheritdoc />
     public async Task<TResult?> ReadAsync<TResult>(HttpResponseMessage? httpResponseMessage,
@@ -65,8 +105,18 @@ internal sealed class HttpContentConverterFactory : IHttpContentConverterFactory
             return default;
         }
 
-        return await GetConverter<TResult>(httpResponseMessage, converters)
-            .ReadAsync(httpResponseMessage, cancellationToken);
+        try
+        {
+            return await GetConverter<TResult>(httpResponseMessage, converters)
+                .ReadAsync(httpResponseMessage, cancellationToken);
+        }
+        catch (Exception e)
+        {
+            // 输出转换异常日志
+            LogContentConversionError(typeof(TResult), httpResponseMessage, e);
+
+            throw;
+        }
     }
 
     /// <inheritdoc />
@@ -79,8 +129,18 @@ internal sealed class HttpContentConverterFactory : IHttpContentConverterFactory
             return null;
         }
 
-        return await GetConverter(resultType, httpResponseMessage, converters)
-            .ReadAsync(resultType, httpResponseMessage, cancellationToken);
+        try
+        {
+            return await GetConverter(resultType, httpResponseMessage, converters)
+                .ReadAsync(resultType, httpResponseMessage, cancellationToken);
+        }
+        catch (Exception e)
+        {
+            // 输出转换异常日志
+            LogContentConversionError(resultType, httpResponseMessage, e);
+
+            throw;
+        }
     }
 
     /// <summary>
@@ -149,4 +209,21 @@ internal sealed class HttpContentConverterFactory : IHttpContentConverterFactory
 
         return converter;
     }
+
+    /// <summary>
+    ///     输出转换异常日志
+    /// </summary>
+    /// <param name="resultType">转换的目标类型</param>
+    /// <param name="httpResponseMessage">
+    ///     <see cref="HttpResponseMessage" />
+    /// </param>
+    /// <param name="exception">
+    ///     <see cref="Exception" />
+    /// </param>
+    internal void LogContentConversionError(Type resultType, HttpResponseMessage httpResponseMessage,
+        Exception exception) =>
+        _logger.LogError(exception,
+            "Failed to convert HTTP response to type {ResultType}. Status: {StatusCode} {StatusDescription}, URI: {RequestUri}",
+            resultType.FullName!, (int)httpResponseMessage.StatusCode, httpResponseMessage.StatusCode.ToString(),
+            httpResponseMessage.RequestMessage?.RequestUri?.ToString() ?? "unknown");
 }

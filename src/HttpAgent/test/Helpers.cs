@@ -26,6 +26,10 @@ public class Helpers
             remoteOptions.AllowAutoRedirect = frameworkAllowAutoRedirect;
         });
 
+        var isLoggingRegistered = services.Any(u => u.ServiceType == typeof(ILoggerProvider));
+        services.TryAddSingleton<IHttpRemoteLogger>(provider =>
+            ActivatorUtilities.CreateInstance<HttpRemoteLogger>(provider, isLoggingRegistered));
+
         if (requestEventHandler is not null)
         {
             services.AddTransient(sp => requestEventHandler);
@@ -48,13 +52,13 @@ public class Helpers
 
         var serviceProvider = services.BuildServiceProvider();
         var options = serviceProvider.GetRequiredService<IOptions<HttpRemoteOptions>>();
-        var logger = serviceProvider.GetRequiredService<ILogger<Logging>>();
+        var logger = serviceProvider.GetRequiredService<IHttpRemoteLogger>();
         var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
 
         var httpContentProcessorFactory = new HttpContentProcessorFactory(serviceProvider, null);
         var httpRemoteService = new HttpRemoteService(serviceProvider, logger, httpClientFactory,
             httpContentProcessorFactory,
-            new HttpContentConverterFactory(serviceProvider,
+            new HttpContentConverterFactory(serviceProvider, logger,
                 [new ClayContentConverter(), new DynamicContentConverter()]), options);
 
         return (httpRemoteService, serviceProvider);

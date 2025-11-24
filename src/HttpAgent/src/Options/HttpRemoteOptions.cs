@@ -86,9 +86,4 @@ public sealed class HttpRemoteOptions
     /// </summary>
     /// <value>返回多个包含实现 <see cref="IHttpDeclarativeExtractor" /> 集合的集合。</value>
     internal IReadOnlyList<Func<IEnumerable<IHttpDeclarativeExtractor>>>? HttpDeclarativeExtractors { get; set; }
-
-    /// <summary>
-    ///     指示是否配置（注册）了日志程序
-    /// </summary>
-    internal bool IsLoggingRegistered { get; set; }
 }

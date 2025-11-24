@@ -16,12 +16,16 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
             client.BaseAddress = new Uri("http://localhost/test/");
         });
 
+        var isLoggingRegistered = services.Any(u => u.ServiceType == typeof(ILoggerProvider));
+        services.TryAddSingleton<IHttpRemoteLogger>(provider =>
+            ActivatorUtilities.CreateInstance<HttpRemoteLogger>(provider, isLoggingRegistered));
+
         var serviceProvider = services.BuildServiceProvider();
-        var logger = serviceProvider.GetRequiredService<ILogger<Logging>>();
+        var logger = serviceProvider.GetRequiredService<IHttpRemoteLogger>();
         var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
 
         var httpContentProcessorFactory = new HttpContentProcessorFactory(serviceProvider, null);
-        var httpContentConverterFactory = new HttpContentConverterFactory(serviceProvider, null);
+        var httpContentConverterFactory = new HttpContentConverterFactory(serviceProvider, logger, null);
 
         Assert.Throws<ArgumentNullException>(() => new HttpRemoteService(null!, null!, null!, null!, null!, null!));
         Assert.Throws<ArgumentNullException>(() =>
@@ -980,7 +984,7 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
         var i = 0;
         var httpRequestBuilder =
             new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test")).WithStatusCodeHandler(200,
-                (r, t) =>
+                (_, _) =>
                 {
                     i++;
                     return Task.CompletedTask;
@@ -1018,7 +1022,7 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
         var i = 0;
         var httpRequestBuilder =
             new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test")).WithStatusCodeHandler(200,
-                (r, t) =>
+                (_, _) =>
                 {
                     i++;
                     return Task.CompletedTask;
@@ -1626,9 +1630,9 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
             HttpRequestBuilder.Get($"http://localhost:{port}/test"));
 
         Assert.NotNull(result?.Result);
-        Assert.Equal("2020-05-30T18:30:00.0000000", result?.Result.DateTime.ToString("O", CultureInfo.CurrentCulture));
+        Assert.Equal("2020-05-30T18:30:00.0000000", result.Result.DateTime.ToString("O", CultureInfo.CurrentCulture));
         Assert.Equal("2020-05-30T11:30:00.0000000-07:00",
-            result?.Result.DateTimeOffset.ToString("O", CultureInfo.CurrentCulture));
+            result.Result.DateTimeOffset.ToString("O", CultureInfo.CurrentCulture));
 
         await app.StopAsync();
     }
@@ -1663,7 +1667,7 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
 
         await using var app = builder.Build();
 
-        app.MapGet("/test", async httpContext =>
+        app.MapGet("/test", async _ =>
         {
             await Task.Delay(50);
             throw new Exception("出错了");
