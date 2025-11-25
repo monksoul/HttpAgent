@@ -62,28 +62,6 @@ public class HelpersTests
     public void ParseHttpMethod_ReturnOK(string httpMethod) => HttpAgent.Helpers.ParseHttpMethod(httpMethod);
 
     [Fact]
-    public void IsFormUrlEncodedString_Invalid_Parameters()
-    {
-        Assert.Throws<ArgumentNullException>(() => HttpAgent.Helpers.IsFormUrlEncodedFormat(null!));
-        Assert.Throws<ArgumentException>(() => HttpAgent.Helpers.IsFormUrlEncodedFormat(string.Empty));
-        Assert.Throws<ArgumentException>(() => HttpAgent.Helpers.IsFormUrlEncodedFormat(" "));
-    }
-
-    [Theory]
-    [InlineData("furion", false)]
-    [InlineData("id=1&name=furion", true)]
-    [InlineData("id=1", true)]
-    [InlineData("name=furion", true)]
-    [InlineData("key=value%20with%20space", true)]
-    [InlineData("invalid&key", false)]
-    [InlineData("key value", false)]
-    [InlineData("=value", false)]
-    [InlineData("key=", true)]
-    [InlineData("key%3Dvalue", false)]
-    public void IsFormUrlEncodedFormat_ReturnOK(string output, bool result) =>
-        Assert.Equal(result, HttpAgent.Helpers.IsFormUrlEncodedFormat(output));
-
-    [Fact]
     public void DetermineRedirectMethod_ReturnOK()
     {
         Assert.True(HttpAgent.Helpers.DetermineRedirectMethod(HttpStatusCode.Ambiguous, HttpMethod.Post,

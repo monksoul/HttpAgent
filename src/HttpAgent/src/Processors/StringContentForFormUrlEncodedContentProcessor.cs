@@ -23,7 +23,7 @@ public class StringContentForFormUrlEncodedContentProcessor : FormUrlEncodedCont
         }
 
         // 如果原始内容是字符串类型且不是有效的 application/x-www-form-urlencoded 格式
-        if (rawContent is string rawString && !Helpers.IsFormUrlEncodedFormat(rawString))
+        if (rawContent is string rawString && !rawString.IsUrlEncodedFormFormat())
         {
             throw new FormatException("The content must contain only form url encoded string.");
         }

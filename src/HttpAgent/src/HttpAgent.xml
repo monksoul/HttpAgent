@@ -4729,6 +4729,15 @@
                 <see cref="T:System.String" />
             </returns>
         </member>
+        <member name="M:HttpAgent.Core.Extensions.StringExtensions.IsUrlEncodedFormFormat(System.String)">
+            <summary>
+                验证字符串是否是 <c>application/x-www-form-urlencoded</c> 格式
+            </summary>
+            <param name="output">字符串</param>
+            <returns>
+                <see cref="T:System.Boolean" />
+            </returns>
+        </member>
         <member name="M:HttpAgent.Core.Extensions.StringExtensions.PlaceholderRegex">
             <remarks>
             Pattern:<br/>
@@ -4775,6 +4784,47 @@
                     ○ Match a character other than ']' greedily any number of times.<br/>
             ○ Match a whitespace character atomically any number of times.<br/>
             ○ Match the string "]]".<br/>
+            </code>
+            </remarks>
+        </member>
+        <member name="M:HttpAgent.Core.Extensions.StringExtensions.UrlEncodedFormFormatRegex">
+            <remarks>
+            Pattern:<br/>
+            <code>^(?:(?:[a-zA-Z0-9-._~]|%[0-9A-Fa-f]{2})+=(?:[a-zA-Z0-9-._~+]|%[0-9A-Fa-f]{2})*)(?:&amp;(?:[a-zA-Z0-9-._~]|%[0-9A-Fa-f]{2})+=(?:[a-zA-Z0-9-._~+]|%[0-9A-Fa-f]{2})*)*$</code><br/>
+            Options:<br/>
+            <code>RegexOptions.IgnorePatternWhitespace</code><br/>
+            Explanation:<br/>
+            <code>
+            ○ Match if at the beginning of the string.<br/>
+            ○ Loop greedily at least once.<br/>
+                ○ Match with 2 alternative expressions.<br/>
+                    ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
+                    ○ Match a sequence of expressions.<br/>
+                        ○ Match '%'.<br/>
+                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
+            ○ Match '='.<br/>
+            ○ Loop greedily any number of times.<br/>
+                ○ Match with 2 alternative expressions.<br/>
+                    ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
+                    ○ Match a sequence of expressions.<br/>
+                        ○ Match '%'.<br/>
+                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
+            ○ Loop greedily any number of times.<br/>
+                ○ Match '&amp;'.<br/>
+                ○ Loop greedily at least once.<br/>
+                    ○ Match with 2 alternative expressions.<br/>
+                        ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
+                        ○ Match a sequence of expressions.<br/>
+                            ○ Match '%'.<br/>
+                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
+                ○ Match '='.<br/>
+                ○ Loop greedily any number of times.<br/>
+                    ○ Match with 2 alternative expressions.<br/>
+                        ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
+                        ○ Match a sequence of expressions.<br/>
+                            ○ Match '%'.<br/>
+                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
+            ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
             </remarks>
         </member>
@@ -7326,15 +7376,6 @@
                 <see cref="T:System.Net.Http.HttpMethod" />
             </returns>
         </member>
-        <member name="M:HttpAgent.Helpers.IsFormUrlEncodedFormat(System.String)">
-            <summary>
-                验证字符串是否是 <c>application/x-www-form-urlencoded</c> 格式
-            </summary>
-            <param name="output">字符串</param>
-            <returns>
-                <see cref="T:System.Boolean" />
-            </returns>
-        </member>
         <member name="M:HttpAgent.Helpers.DetermineRedirectMethod(System.Net.HttpStatusCode,System.Net.Http.HttpMethod,System.Net.Http.HttpMethod@)">
             <summary>
                 检查 HTTP 状态码是否是重定向状态码并返回重定向时应使用的 HTTP 请求方法
@@ -7382,45 +7423,6 @@
             <returns>
                 <see cref="T:System.String" />
             </returns>
-        </member>
-        <member name="M:HttpAgent.Helpers.FormUrlEncodedFormatRegex">
-            <remarks>
-            Pattern:<br/>
-            <code>^(?:(?:[a-zA-Z0-9-._~]+|%(?:[0-9A-Fa-f]{2}))+=(?:[a-zA-Z0-9-._~]*|%(?:[0-9A-Fa-f]{2}))+)(?:&amp;(?:[a-zA-Z0-9-._~]+|%(?:[0-9A-Fa-f]{2}))+=(?:[a-zA-Z0-9-._~]*|%(?:[0-9A-Fa-f]{2}))+)*$</code><br/>
-            Explanation:<br/>
-            <code>
-            ○ Match if at the beginning of the string.<br/>
-            ○ Loop greedily at least once.<br/>
-                ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [-.0-9A-Z_a-z~] greedily at least once.<br/>
-                    ○ Match a sequence of expressions.<br/>
-                        ○ Match '%'.<br/>
-                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
-            ○ Match '='.<br/>
-            ○ Loop greedily at least once.<br/>
-                ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [-.0-9A-Z_a-z~] greedily any number of times.<br/>
-                    ○ Match a sequence of expressions.<br/>
-                        ○ Match '%'.<br/>
-                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
-            ○ Loop greedily any number of times.<br/>
-                ○ Match '&amp;'.<br/>
-                ○ Loop greedily at least once.<br/>
-                    ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [-.0-9A-Z_a-z~] greedily at least once.<br/>
-                        ○ Match a sequence of expressions.<br/>
-                            ○ Match '%'.<br/>
-                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
-                ○ Match '='.<br/>
-                ○ Loop greedily at least once.<br/>
-                    ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [-.0-9A-Z_a-z~] greedily any number of times.<br/>
-                        ○ Match a sequence of expressions.<br/>
-                            ○ Match '%'.<br/>
-                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
-            ○ Match if at the end of the string or if before an ending newline.<br/>
-            </code>
-            </remarks>
         </member>
         <member name="T:HttpAgent.HttpRemoteLogger">
             <inheritdoc />
@@ -14987,66 +14989,66 @@
             <param name="inputSpan">The text being scanned by the regular expression.</param>
             <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
         </member>
-        <member name="T:System.Text.RegularExpressions.Generated.UnicodeEscapeRegex_4">
-            <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the UnicodeEscapeRegex method.</summary>
+        <member name="T:System.Text.RegularExpressions.Generated.UrlEncodedFormFormatRegex_4">
+            <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the UrlEncodedFormFormatRegex method.</summary>
         </member>
-        <member name="F:System.Text.RegularExpressions.Generated.UnicodeEscapeRegex_4.Instance">
+        <member name="F:System.Text.RegularExpressions.Generated.UrlEncodedFormFormatRegex_4.Instance">
             <summary>Cached, thread-safe singleton instance.</summary>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.UnicodeEscapeRegex_4.#ctor">
+        <member name="M:System.Text.RegularExpressions.Generated.UrlEncodedFormFormatRegex_4.#ctor">
             <summary>Initializes the instance.</summary>
         </member>
-        <member name="T:System.Text.RegularExpressions.Generated.UnicodeEscapeRegex_4.RunnerFactory">
+        <member name="T:System.Text.RegularExpressions.Generated.UrlEncodedFormFormatRegex_4.RunnerFactory">
             <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.UnicodeEscapeRegex_4.RunnerFactory.CreateInstance">
+        <member name="M:System.Text.RegularExpressions.Generated.UrlEncodedFormFormatRegex_4.RunnerFactory.CreateInstance">
             <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
         </member>
-        <member name="T:System.Text.RegularExpressions.Generated.UnicodeEscapeRegex_4.RunnerFactory.Runner">
+        <member name="T:System.Text.RegularExpressions.Generated.UrlEncodedFormFormatRegex_4.RunnerFactory.Runner">
             <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.UnicodeEscapeRegex_4.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
+        <member name="M:System.Text.RegularExpressions.Generated.UrlEncodedFormFormatRegex_4.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
             <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
             <param name="inputSpan">The text being scanned by the regular expression.</param>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.UnicodeEscapeRegex_4.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
+        <member name="M:System.Text.RegularExpressions.Generated.UrlEncodedFormFormatRegex_4.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
             <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
             <param name="inputSpan">The text being scanned by the regular expression.</param>
             <returns>true if a possible match was found; false if no more matches are possible.</returns>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.UnicodeEscapeRegex_4.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
+        <member name="M:System.Text.RegularExpressions.Generated.UrlEncodedFormFormatRegex_4.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
             <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
             <param name="inputSpan">The text being scanned by the regular expression.</param>
             <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
         </member>
-        <member name="T:System.Text.RegularExpressions.Generated.FormUrlEncodedFormatRegex_5">
-            <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the FormUrlEncodedFormatRegex method.</summary>
+        <member name="T:System.Text.RegularExpressions.Generated.UnicodeEscapeRegex_5">
+            <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the UnicodeEscapeRegex method.</summary>
         </member>
-        <member name="F:System.Text.RegularExpressions.Generated.FormUrlEncodedFormatRegex_5.Instance">
+        <member name="F:System.Text.RegularExpressions.Generated.UnicodeEscapeRegex_5.Instance">
             <summary>Cached, thread-safe singleton instance.</summary>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.FormUrlEncodedFormatRegex_5.#ctor">
+        <member name="M:System.Text.RegularExpressions.Generated.UnicodeEscapeRegex_5.#ctor">
             <summary>Initializes the instance.</summary>
         </member>
-        <member name="T:System.Text.RegularExpressions.Generated.FormUrlEncodedFormatRegex_5.RunnerFactory">
+        <member name="T:System.Text.RegularExpressions.Generated.UnicodeEscapeRegex_5.RunnerFactory">
             <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.FormUrlEncodedFormatRegex_5.RunnerFactory.CreateInstance">
+        <member name="M:System.Text.RegularExpressions.Generated.UnicodeEscapeRegex_5.RunnerFactory.CreateInstance">
             <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
         </member>
-        <member name="T:System.Text.RegularExpressions.Generated.FormUrlEncodedFormatRegex_5.RunnerFactory.Runner">
+        <member name="T:System.Text.RegularExpressions.Generated.UnicodeEscapeRegex_5.RunnerFactory.Runner">
             <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.FormUrlEncodedFormatRegex_5.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
+        <member name="M:System.Text.RegularExpressions.Generated.UnicodeEscapeRegex_5.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
             <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
             <param name="inputSpan">The text being scanned by the regular expression.</param>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.FormUrlEncodedFormatRegex_5.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
+        <member name="M:System.Text.RegularExpressions.Generated.UnicodeEscapeRegex_5.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
             <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
             <param name="inputSpan">The text being scanned by the regular expression.</param>
             <returns>true if a possible match was found; false if no more matches are possible.</returns>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.FormUrlEncodedFormatRegex_5.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
+        <member name="M:System.Text.RegularExpressions.Generated.UnicodeEscapeRegex_5.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
             <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
             <param name="inputSpan">The text being scanned by the regular expression.</param>
             <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
@@ -15139,9 +15141,6 @@
         <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32,System.Int32,System.Int32)">
             <summary>Pushes 3 values onto the backtracking stack.</summary>
         </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_ascii_60FF03FEFFFF87FEFFFF47">
-            <summary>Supports searching for characters in or not in "-.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz~".</summary>
-        </member>
         <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_1F52B1A4D2E82B6FEDE25EC8C55F85BB36775196837076691C96925040F90D32">
             <summary>Supports searching for the string "\\u".</summary>
         </member>
@@ -15171,6 +15170,17 @@
             </summary>
             <param name="services">
                 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
+            </param>
+            <param name="httpRemoteBuilder">
+                <see cref="T:HttpAgent.HttpRemoteBuilder" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
+            </returns>
+        </member>
+    </members>
+</doc>
+tensions.DependencyInjection.IServiceCollection" />
             </param>
             <param name="httpRemoteBuilder">
                 <see cref="T:HttpAgent.HttpRemoteBuilder" />

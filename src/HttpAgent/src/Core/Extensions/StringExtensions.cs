@@ -287,6 +287,21 @@ internal static partial class StringExtensions
                         : match.Value;
                 });
     }
+    
+    /// <summary>
+    ///     验证字符串是否是 <c>application/x-www-form-urlencoded</c> 格式
+    /// </summary>
+    /// <param name="output">字符串</param>
+    /// <returns>
+    ///     <see cref="bool" />
+    /// </returns>
+    internal static bool IsUrlEncodedFormFormat(this string output)
+    {
+        // 空检查
+        ArgumentException.ThrowIfNullOrWhiteSpace(output);
+
+        return UrlEncodedFormFormatRegex().IsMatch(output);
+    }
 
     /// <summary>
     ///     占位符匹配正则表达式
@@ -310,4 +325,9 @@ internal static partial class StringExtensions
     /// </returns>
     [GeneratedRegex(@"\[\[\s*([\w\-:]+)((?:\s*\|\s*[\w\-:]+)*)\s*(?:\|\|\s*([^\]]*))?\s*\]\]")]
     private static partial Regex ConfigurationKeyRegex();
+    
+    [GeneratedRegex(
+        "^(?:(?:[a-zA-Z0-9-._~]|%[0-9A-Fa-f]{2})+=(?:[a-zA-Z0-9-._~+]|%[0-9A-Fa-f]{2})*)(?:&(?:[a-zA-Z0-9-._~]|%[0-9A-Fa-f]{2})+=(?:[a-zA-Z0-9-._~+]|%[0-9A-Fa-f]{2})*)*$",
+        RegexOptions.IgnorePatternWhitespace)]
+    private static partial Regex UrlEncodedFormFormatRegex();
 }
