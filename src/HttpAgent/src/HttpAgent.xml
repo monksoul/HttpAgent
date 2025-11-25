@@ -7429,12 +7429,18 @@
             <param name="logger">
                 <see cref="T:Microsoft.Extensions.Logging.Logger`1" />
             </param>
+            <param name="httpRemoteOptions">
+                <see cref="T:Microsoft.Extensions.Options.IOptions`1" />
+            </param>
             <param name="isLoggingRegistered">是否配置（注册）了日志程序</param>
         </member>
-        <member name="M:HttpAgent.HttpRemoteLogger.#ctor(Microsoft.Extensions.Logging.ILogger{HttpAgent.Logging},System.Boolean)">
+        <member name="M:HttpAgent.HttpRemoteLogger.#ctor(Microsoft.Extensions.Logging.ILogger{HttpAgent.Logging},Microsoft.Extensions.Options.IOptions{HttpAgent.HttpRemoteOptions},System.Boolean)">
             <inheritdoc />
             <param name="logger">
                 <see cref="T:Microsoft.Extensions.Logging.Logger`1" />
+            </param>
+            <param name="httpRemoteOptions">
+                <see cref="T:Microsoft.Extensions.Options.IOptions`1" />
             </param>
             <param name="isLoggingRegistered">是否配置（注册）了日志程序</param>
         </member>
@@ -9433,6 +9439,12 @@
             <summary>
                 URL 参数格式化程序
             </summary>
+        </member>
+        <member name="P:HttpAgent.HttpRemoteOptions.FallbackLogger">
+            <summary>
+                未注册日志服务时的备用日志输出委托
+            </summary>
+            <remarks>日志消息的实际类型为 <see cref="T:System.String" />，但为了便于使用 <c>Debug.WriteLine</c> 进行替换，参数类型被调整为 <see cref="T:System.Object" />。</remarks>
         </member>
         <member name="P:HttpAgent.HttpRemoteOptions.HttpDeclarativeExtractors">
             <summary>

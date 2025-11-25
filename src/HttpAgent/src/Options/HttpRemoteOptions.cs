@@ -82,6 +82,12 @@ public sealed class HttpRemoteOptions
     public IUrlParameterFormatter? UrlParameterFormatter { get; set; } = new UrlParameterFormatter();
 
     /// <summary>
+    ///     未注册日志服务时的备用日志输出委托
+    /// </summary>
+    /// <remarks>日志消息的实际类型为 <see cref="string" />，但为了便于使用 <c>Debug.WriteLine</c> 进行替换，参数类型被调整为 <see cref="object" />。</remarks>
+    public Action<object?>? FallbackLogger { get; set; } = Console.WriteLine;
+
+    /// <summary>
     ///     自定义 HTTP 声明式 <see cref="IHttpDeclarativeExtractor" /> 集合提供器
     /// </summary>
     /// <value>返回多个包含实现 <see cref="IHttpDeclarativeExtractor" /> 集合的集合。</value>

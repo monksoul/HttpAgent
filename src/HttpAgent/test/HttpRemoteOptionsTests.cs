@@ -19,6 +19,7 @@ public class HttpRemoteOptionsTests
         Assert.Null(httpRemoteOptions.FallbackBaseAddress);
         Assert.Null(httpRemoteOptions.Configuration);
         Assert.NotNull(httpRemoteOptions.UrlParameterFormatter);
+        Assert.NotNull(httpRemoteOptions.FallbackLogger);
 
         Assert.True(HttpRemoteOptions.JsonSerializerOptionsDefault.PropertyNameCaseInsensitive);
         Assert.Equal(JsonNamingPolicy.CamelCase, HttpRemoteOptions.JsonSerializerOptionsDefault.PropertyNamingPolicy);

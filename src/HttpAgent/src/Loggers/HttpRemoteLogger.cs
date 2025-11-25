@@ -8,8 +8,14 @@ namespace HttpAgent;
 /// <param name="logger">
 ///     <see cref="Logger{T}" />
 /// </param>
+/// <param name="httpRemoteOptions">
+///     <see cref="IOptions{TOptions}" />
+/// </param>
 /// <param name="isLoggingRegistered">是否配置（注册）了日志程序</param>
-internal sealed class HttpRemoteLogger(ILogger<Logging> logger, bool isLoggingRegistered) : IHttpRemoteLogger
+internal sealed class HttpRemoteLogger(
+    ILogger<Logging> logger,
+    IOptions<HttpRemoteOptions> httpRemoteOptions,
+    bool isLoggingRegistered) : IHttpRemoteLogger
 {
     /// <inheritdoc />
     public void LogInformation(string message, params object?[] args) => Log(LogLevel.Information, null, message, args);
@@ -40,8 +46,8 @@ internal sealed class HttpRemoteLogger(ILogger<Logging> logger, bool isLoggingRe
         }
         else
         {
-            // TODO: 简单输出 message 内容，并未应用到结构化参数
-            Console.WriteLine(message);
+            // 调用备用日志输出委托
+            httpRemoteOptions.Value.FallbackLogger?.Invoke(message); // TODO: 简单输出 message 内容，并未应用到结构化参数
         }
     }
 }

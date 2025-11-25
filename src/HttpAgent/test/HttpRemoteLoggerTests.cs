@@ -11,9 +11,11 @@ public class HttpRemoteLoggerTests
     {
         var services = new ServiceCollection();
         services.AddLogging();
+        services.Configure<HttpRemoteOptions>(_ => { });
         using var serviceProvider = services.BuildServiceProvider();
 
-        var logger = new HttpRemoteLogger(serviceProvider.GetRequiredService<ILogger<Logging>>(), false);
+        var logger = new HttpRemoteLogger(serviceProvider.GetRequiredService<ILogger<Logging>>(),
+            serviceProvider.GetRequiredService<IOptions<HttpRemoteOptions>>(), false);
         Assert.NotNull(logger);
     }
 
@@ -22,9 +24,11 @@ public class HttpRemoteLoggerTests
     {
         var services = new ServiceCollection();
         services.AddLogging();
+        services.Configure<HttpRemoteOptions>(_ => { });
         using var serviceProvider = services.BuildServiceProvider();
 
-        var logger = new HttpRemoteLogger(serviceProvider.GetRequiredService<ILogger<Logging>>(), false);
+        var logger = new HttpRemoteLogger(serviceProvider.GetRequiredService<ILogger<Logging>>(),
+            serviceProvider.GetRequiredService<IOptions<HttpRemoteOptions>>(), false);
 
         logger.LogInformation("Message");
         logger.LogTrace("Message");
@@ -40,9 +44,11 @@ public class HttpRemoteLoggerTests
     {
         var services = new ServiceCollection();
         services.AddLogging();
+        services.Configure<HttpRemoteOptions>(_ => { });
         using var serviceProvider = services.BuildServiceProvider();
 
-        var logger = new HttpRemoteLogger(serviceProvider.GetRequiredService<ILogger<Logging>>(), true);
+        var logger = new HttpRemoteLogger(serviceProvider.GetRequiredService<ILogger<Logging>>(),
+            serviceProvider.GetRequiredService<IOptions<HttpRemoteOptions>>(), true);
 
         logger.LogInformation("Message");
         logger.LogTrace("Message");
