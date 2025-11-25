@@ -27,7 +27,7 @@ public sealed class ProfilerDelegatingHandler(IHttpRemoteLogger logger, IOptions
     ///     <see cref="bool" />
     /// </returns>
     internal static bool IsEnabled(HttpRequestMessage httpRequestMessage) =>
-        !(httpRequestMessage.Options.TryGetValue(new HttpRequestOptionsKey<string>(Constants.DISABLED_PROFILER_KEY),
+        !(httpRequestMessage.Options.TryGetValue(new HttpRequestOptionsKey<string>(Constants.DISABLE_PROFILER_KEY),
             out var value) && value == "TRUE");
 
     /// <inheritdoc />

@@ -52,8 +52,12 @@ public class ConstantsTests
         Assert.Equal("Harness", Constants.X_STRESS_TEST_VALUE);
 
     [Fact]
-    public void DISABLED_PROFILER_KEY() =>
-        Assert.Equal("__Disabled_Profiler__", Constants.DISABLED_PROFILER_KEY);
+    public void DISABLE_PROFILER_KEY() =>
+        Assert.Equal("__Disable_Profiler__", Constants.DISABLE_PROFILER_KEY);
+
+    [Fact]
+    public void DISABLE_JSON_RESPONSE_WRAPPING_KEY() =>
+        Assert.Equal("__Disable_JsonResponseWrapping__", Constants.DISABLE_JSON_RESPONSE_WRAPPING_KEY);
 
     [Fact]
     public void DECLARATIVE_METHOD_KEY() =>

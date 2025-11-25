@@ -54,6 +54,7 @@ public class HttpDeclarativeBuilderTests
             { typeof(PropertyDeclarativeExtractor), new PropertyDeclarativeExtractor() },
             { typeof(HttpVersionDeclarativeExtractor), new HttpVersionDeclarativeExtractor() },
             { typeof(SuppressExceptionsDeclarativeExtractor), new SuppressExceptionsDeclarativeExtractor() },
+            { typeof(JsonResponseWrappingDeclarativeExtractor), new JsonResponseWrappingDeclarativeExtractor() },
             { typeof(BodyDeclarativeExtractor), new BodyDeclarativeExtractor() }
         };
 
@@ -145,6 +146,7 @@ public class HttpDeclarativeBuilderTests
             { typeof(PropertyDeclarativeExtractor), new PropertyDeclarativeExtractor() },
             { typeof(HttpVersionDeclarativeExtractor), new HttpVersionDeclarativeExtractor() },
             { typeof(SuppressExceptionsDeclarativeExtractor), new SuppressExceptionsDeclarativeExtractor() },
+            { typeof(JsonResponseWrappingDeclarativeExtractor), new JsonResponseWrappingDeclarativeExtractor() },
             { typeof(BodyDeclarativeExtractor), new BodyDeclarativeExtractor() },
             { typeof(CustomHttpDeclarativeExtractor), new CustomHttpDeclarativeExtractor() }
         };

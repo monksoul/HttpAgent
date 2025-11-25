@@ -2353,6 +2353,14 @@
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
         </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.DisableDebugger">
+            <summary>
+                禁用请求分析工具（调试）
+            </summary>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
         <member name="M:HttpAgent.HttpRequestBuilder.Debugger(System.Boolean)">
             <summary>
                 设置是否启用请求分析工具（调试）
@@ -2365,6 +2373,14 @@
         <member name="M:HttpAgent.HttpRequestBuilder.Profiler">
             <summary>
                 启用请求分析工具
+            </summary>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.DisableProfiler">
+            <summary>
+                禁用请求分析工具
             </summary>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
@@ -2597,6 +2613,25 @@
                 <para>支持多次调用。</para>
             </remarks>
             <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.JsonResponseWrapping(System.Boolean)">
+            <summary>
+                设置是否启用 JSON 响应反序列化包装器
+            </summary>
+            <remarks>当配置了 <see cref="P:HttpAgent.HttpClientOptions.JsonResponseWrapper" /> 时有效。</remarks>
+            <param name="enabled">是否启用</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.DisableJsonResponseWrapping">
+            <summary>
+                设置禁用 JSON 响应反序列化包装器
+            </summary>
+            <remarks>当配置了 <see cref="P:HttpAgent.HttpClientOptions.JsonResponseWrapper" /> 时有效。</remarks>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
@@ -2881,11 +2916,11 @@
             </summary>
             <remarks><c>Host</c> 标头是 <c>HTTP/1.1</c> 协议中的一个必需标头。默认值为：<c>false</c>，表示不默认添加 <c>Host</c> 标头。</remarks>
         </member>
-        <member name="P:HttpAgent.HttpRequestBuilder.__Disabled_Profiler__">
+        <member name="P:HttpAgent.HttpRequestBuilder.__Disable_Profiler__">
             <summary>
                 表示禁用请求分析工具标识
             </summary>
-            <remarks>用于禁用全局请求分析工具。</remarks>
+            <remarks>用于禁用全局请求分析工具。配置信息将写入到 <see cref="P:System.Net.Http.HttpRequestMessage.Options" /> 中。</remarks>
         </member>
         <member name="P:HttpAgent.HttpRequestBuilder.StatusCodeHandlers">
             <summary>
@@ -2913,6 +2948,15 @@
             <summary>
                 断言委托集合
             </summary>
+        </member>
+        <member name="P:HttpAgent.HttpRequestBuilder.__Disable_JsonResponseWrapping__">
+            <summary>
+                表示禁用 JSON 响应反序列化包装器
+            </summary>
+            <remarks>
+                当配置了 <see cref="P:HttpAgent.HttpClientOptions.JsonResponseWrapper" /> 时有效。配置信息将写入到
+                <see cref="P:System.Net.Http.HttpRequestMessage.Options" /> 中。
+            </remarks>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.Get(System.String,System.Action{HttpAgent.HttpRequestBuilder})">
             <summary>
@@ -3796,9 +3840,15 @@
                 压力测试标头值
             </summary>
         </member>
-        <member name="F:HttpAgent.Constants.DISABLED_PROFILER_KEY">
+        <member name="F:HttpAgent.Constants.DISABLE_PROFILER_KEY">
             <summary>
                 禁用请求分析工具键
+            </summary>
+            <remarks>被用于从 <see cref="T:System.Net.Http.HttpRequestMessage" /> 的 <c>Options</c> 属性中读取。</remarks>
+        </member>
+        <member name="F:HttpAgent.Constants.DISABLE_JSON_RESPONSE_WRAPPING_KEY">
+            <summary>
+                禁用 JSON 响应反序列化包装器键
             </summary>
             <remarks>被用于从 <see cref="T:System.Net.Http.HttpRequestMessage" /> 的 <c>Options</c> 属性中读取。</remarks>
         </member>
@@ -4053,17 +4103,6 @@
         </member>
         <member name="M:HttpAgent.ObjectContentConverter.ReadAsync(System.Type,System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
             <inheritdoc />
-        </member>
-        <member name="M:HttpAgent.ObjectContentConverter.ResolveJsonSerializerOptions(System.Net.Http.HttpResponseMessage)">
-            <summary>
-                根据 HTTP 响应消息和服务提供器，解析出最终生效的 <see cref="T:System.Text.Json.JsonSerializerOptions" /> 实例
-            </summary>
-            <param name="httpResponseMessage">
-                <see cref="T:System.Net.Http.HttpResponseMessage" />
-            </param>
-            <returns>
-                <see cref="T:System.Text.Json.JsonSerializerOptions" />
-            </returns>
         </member>
         <member name="T:HttpAgent.ObjectContentConverter`1">
             <inheritdoc cref="T:HttpAgent.ObjectContentConverter" />
@@ -5514,6 +5553,27 @@
                 HTTP 版本
             </summary>
         </member>
+        <member name="T:HttpAgent.JsonResponseWrappingAttribute">
+            <summary>
+                HTTP 声明式启用 JSON 响应反序列化包装器
+            </summary>
+        </member>
+        <member name="M:HttpAgent.JsonResponseWrappingAttribute.#ctor">
+            <summary>
+                <inheritdoc cref="T:HttpAgent.JsonResponseWrappingAttribute" />
+            </summary>
+        </member>
+        <member name="M:HttpAgent.JsonResponseWrappingAttribute.#ctor(System.Boolean)">
+            <summary>
+                <inheritdoc cref="T:HttpAgent.JsonResponseWrappingAttribute" />
+            </summary>
+            <param name="enabled">是否启用</param>
+        </member>
+        <member name="P:HttpAgent.JsonResponseWrappingAttribute.Enabled">
+            <summary>
+                是否启用
+            </summary>
+        </member>
         <member name="T:HttpAgent.DeleteAttribute">
             <summary>
                 HTTP 声明式 DELETE 请求方式特性
@@ -6275,6 +6335,14 @@
             <param name="context">
                 <see cref="T:HttpAgent.HttpDeclarativeExtractorContext" />
             </param>
+        </member>
+        <member name="T:HttpAgent.JsonResponseWrappingDeclarativeExtractor">
+            <summary>
+                HTTP 声明式 <see cref="T:HttpAgent.JsonResponseWrappingAttribute" /> 特性提取器
+            </summary>
+        </member>
+        <member name="M:HttpAgent.JsonResponseWrappingDeclarativeExtractor.Extract(HttpAgent.HttpRequestBuilder,HttpAgent.HttpDeclarativeExtractorContext)">
+            <inheritdoc />
         </member>
         <member name="T:HttpAgent.MultipartDeclarativeExtractor">
             <summary>
@@ -8421,11 +8489,13 @@
             <summary>
                 在控制台中更新（打印）文件传输进度条
             </summary>
+            <remarks>需确保应用项目支持 <see cref="T:System.Console" /> 输出。</remarks>
         </member>
         <member name="M:HttpAgent.FileTransferProgress.UpdateConsoleProgress">
             <summary>
                 在控制台中更新（打印）文件传输进度条
             </summary>
+            <remarks>需确保应用项目支持 <see cref="T:System.Console" /> 输出。</remarks>
         </member>
         <member name="M:HttpAgent.FileTransferProgress.UpdateProgress(System.Int64,System.TimeSpan)">
             <summary>
@@ -8820,6 +8890,58 @@
         </member>
         <member name="M:HttpAgent.HttpRemoteResult`1.ToString">
             <inheritdoc />
+        </member>
+        <member name="T:HttpAgent.JsonResponseWrapper">
+            <summary>
+                JSON 响应反序列化包装器
+            </summary>
+        </member>
+        <member name="F:HttpAgent.JsonResponseWrapper._getterCache">
+            <summary>
+                目标结果属性值访问器缓存字典
+            </summary>
+        </member>
+        <member name="M:HttpAgent.JsonResponseWrapper.#ctor(System.Type,System.String)">
+            <summary>
+                <inheritdoc cref="T:HttpAgent.JsonResponseWrapper" />
+            </summary>
+            <param name="genericType">包装泛型类型定义类型</param>
+            <param name="propertyName">目标结果属性名</param>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
+        <member name="P:HttpAgent.JsonResponseWrapper.GenericType">
+            <summary>
+                包装泛型类型定义类型
+            </summary>
+        </member>
+        <member name="P:HttpAgent.JsonResponseWrapper.PropertyName">
+            <summary>
+                目标结果属性名
+            </summary>
+        </member>
+        <member name="M:HttpAgent.JsonResponseWrapper.GetResultValue(System.Object)">
+            <summary>
+                获取目标结果值
+            </summary>
+            <param name="instance">
+                包装类型的具体实例（例如 <![CDATA[ApiResult<T>]]> 的实例）
+            </param>
+            <returns>
+                <see cref="T:System.Object" />
+            </returns>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
+        <member name="M:HttpAgent.JsonResponseWrapper.BuildGetter(System.Type)">
+            <summary>
+                为指定的具体泛型类型动态构建属性值访问器
+            </summary>
+            <param name="concreteType">
+                已构造的泛型类型（例如 <![CDATA[ApiResult<string>]]>）
+            </param>
+            <returns>
+                <see cref="T:System.Func`2" />
+            </returns>
+            <exception cref="T:System.InvalidOperationException"></exception>
         </member>
         <member name="T:HttpAgent.MultipartFile">
             <summary>
@@ -9378,6 +9500,11 @@
                 标识选项是否配置为默认值（未配置）
             </summary>
             <remarks>用于避免通过 <see cref="T:Microsoft.Extensions.Options.IOptionsSnapshot`1" /> 获取选项时无法确定是否已配置该选项。默认值为：<c>true</c>。</remarks>
+        </member>
+        <member name="P:HttpAgent.HttpClientOptions.JsonResponseWrapper">
+            <summary>
+                指定 JSON 响应反序列化包装器
+            </summary>
         </member>
         <member name="T:HttpAgent.HttpRemoteOptions">
             <summary>
@@ -14368,10 +14495,11 @@
                 <see cref="T:System.IO.Stream" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpRemoteUtility.ResolveJsonSerializerOptions(System.Net.Http.HttpResponseMessage,System.IServiceProvider)">
+        <member name="M:HttpAgent.HttpRemoteUtility.ResolveJsonSerializationContext(System.Type,System.Net.Http.HttpResponseMessage,System.IServiceProvider)">
             <summary>
-                根据 HTTP 响应消息和服务提供器，解析出最终生效的 <see cref="T:System.Text.Json.JsonSerializerOptions" /> 实例
+                根据 HTTP 响应消息和服务提供器，解析出 <see cref="T:System.Net.Http.HttpClient" /> 客户端对应的 JSON 响应反序列化时的上下文信息
             </summary>
+            <param name="resultType">转换的目标类型</param>
             <param name="httpResponseMessage">
                 <see cref="T:System.Net.Http.HttpResponseMessage" />
             </param>
@@ -14379,7 +14507,7 @@
                 <see cref="T:System.IServiceProvider" />
             </param>
             <returns>
-                <see cref="T:System.Text.Json.JsonSerializerOptions" />
+                <see cref="T:System.Tuple`3" />
             </returns>
         </member>
         <member name="M:HttpAgent.HttpRemoteUtility.IPAddressConnectCallback(System.Net.Sockets.AddressFamily,System.Net.Http.SocketsHttpConnectionContext,System.Threading.CancellationToken)">

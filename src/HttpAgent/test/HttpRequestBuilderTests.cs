@@ -529,12 +529,19 @@ public class HttpRequestBuilderTests
         httpRequestBuilder.AppendProperties(httpRequestMessage);
         Assert.Equal(4, httpRequestMessage.Options.Count());
         Assert.True(httpRequestMessage.Options.TryGetValue(
-            new HttpRequestOptionsKey<string>(Constants.DISABLED_PROFILER_KEY), out var value));
+            new HttpRequestOptionsKey<string>(Constants.DISABLE_PROFILER_KEY), out var value));
         Assert.Equal("TRUE", value);
 
         Assert.True(httpRequestMessage.Options.TryGetValue(
             new HttpRequestOptionsKey<string>(Constants.HTTP_CLIENT_NAME), out var value2));
         Assert.Equal(string.Empty, value2);
+
+        httpRequestBuilder.DisableJsonResponseWrapping();
+        httpRequestBuilder.AppendProperties(httpRequestMessage);
+        Assert.Equal(5, httpRequestMessage.Options.Count());
+        Assert.True(httpRequestMessage.Options.TryGetValue(
+            new HttpRequestOptionsKey<string>(Constants.DISABLE_JSON_RESPONSE_WRAPPING_KEY), out var value4));
+        Assert.Equal("TRUE", value4);
 
         var httpRequestBuilder2 =
             new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost")).SetHttpClientName("github");
@@ -685,7 +692,7 @@ public class HttpRequestBuilderTests
         Assert.Null(httpRequestMessage.Content.Headers.ContentType!.CharSet);
         Assert.Equal(2, httpRequestMessage.Options.Count());
         Assert.True(httpRequestMessage.Options.TryGetValue(
-            new HttpRequestOptionsKey<string>(Constants.DISABLED_PROFILER_KEY), out var value));
+            new HttpRequestOptionsKey<string>(Constants.DISABLE_PROFILER_KEY), out var value));
         Assert.Equal("TRUE", value);
     }
 

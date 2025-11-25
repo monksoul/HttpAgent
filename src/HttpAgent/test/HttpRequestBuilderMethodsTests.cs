@@ -1644,11 +1644,25 @@ public class HttpRequestBuilderMethodsTests
         httpRequestBuilder.Debugger();
 
         Assert.True(httpRequestBuilder.ProfilerEnabled);
-        Assert.False(httpRequestBuilder.__Disabled_Profiler__);
+        Assert.False(httpRequestBuilder.__Disable_Profiler__);
 
         httpRequestBuilder.Debugger(false);
         Assert.False(httpRequestBuilder.ProfilerEnabled);
-        Assert.True(httpRequestBuilder.__Disabled_Profiler__);
+        Assert.True(httpRequestBuilder.__Disable_Profiler__);
+    }
+
+    [Fact]
+    public void DisableDebugger_ReturnOK()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        httpRequestBuilder.Debugger();
+
+        Assert.True(httpRequestBuilder.ProfilerEnabled);
+        Assert.False(httpRequestBuilder.__Disable_Profiler__);
+
+        httpRequestBuilder.DisableDebugger();
+        Assert.False(httpRequestBuilder.ProfilerEnabled);
+        Assert.True(httpRequestBuilder.__Disable_Profiler__);
     }
 
     [Fact]
@@ -1658,11 +1672,11 @@ public class HttpRequestBuilderMethodsTests
         httpRequestBuilder.Profiler();
 
         Assert.True(httpRequestBuilder.ProfilerEnabled);
-        Assert.False(httpRequestBuilder.__Disabled_Profiler__);
+        Assert.False(httpRequestBuilder.__Disable_Profiler__);
 
         httpRequestBuilder.Profiler(false);
         Assert.False(httpRequestBuilder.ProfilerEnabled);
-        Assert.True(httpRequestBuilder.__Disabled_Profiler__);
+        Assert.True(httpRequestBuilder.__Disable_Profiler__);
     }
 
     [Fact]
@@ -1679,13 +1693,27 @@ public class HttpRequestBuilderMethodsTests
 
         httpRequestBuilder.Profiler(_ => { });
         Assert.True(httpRequestBuilder.ProfilerEnabled);
-        Assert.False(httpRequestBuilder.__Disabled_Profiler__);
+        Assert.False(httpRequestBuilder.__Disable_Profiler__);
         Assert.NotNull(httpRequestBuilder.ProfilerPredicate);
 
         httpRequestBuilder.Profiler(_ => { }, false);
         Assert.False(httpRequestBuilder.ProfilerEnabled);
-        Assert.True(httpRequestBuilder.__Disabled_Profiler__);
+        Assert.True(httpRequestBuilder.__Disable_Profiler__);
         Assert.Null(httpRequestBuilder.ProfilerPredicate);
+    }
+
+    [Fact]
+    public void DisableProfiler_ReturnOK()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        httpRequestBuilder.Profiler();
+
+        Assert.True(httpRequestBuilder.ProfilerEnabled);
+        Assert.False(httpRequestBuilder.__Disable_Profiler__);
+
+        httpRequestBuilder.DisableProfiler();
+        Assert.False(httpRequestBuilder.ProfilerEnabled);
+        Assert.True(httpRequestBuilder.__Disable_Profiler__);
     }
 
     [Fact]
@@ -2009,5 +2037,25 @@ public class HttpRequestBuilderMethodsTests
             .Asserts(builder => builder.StatusCode(200).HeaderExists("framework"));
         Assert.NotNull(httpRequestBuilder.Assertions);
         Assert.Equal(2, httpRequestBuilder.Assertions.Count);
+    }
+
+    [Fact]
+    public void JsonResponseWrapping_ReturnOK()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        Assert.False(httpRequestBuilder.__Disable_JsonResponseWrapping__);
+        httpRequestBuilder.JsonResponseWrapping(true);
+        Assert.False(httpRequestBuilder.__Disable_JsonResponseWrapping__);
+        httpRequestBuilder.JsonResponseWrapping(false);
+        Assert.True(httpRequestBuilder.__Disable_JsonResponseWrapping__);
+    }
+
+    [Fact]
+    public void DisableJsonResponseWrapping_ReturnOK()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        Assert.False(httpRequestBuilder.__Disable_JsonResponseWrapping__);
+        httpRequestBuilder.DisableJsonResponseWrapping();
+        Assert.True(httpRequestBuilder.__Disable_JsonResponseWrapping__);
     }
 }

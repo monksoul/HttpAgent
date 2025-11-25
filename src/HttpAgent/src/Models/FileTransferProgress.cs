@@ -128,6 +128,7 @@ public sealed class FileTransferProgress
     /// <summary>
     ///     在控制台中更新（打印）文件传输进度条
     /// </summary>
+    /// <remarks>需确保应用项目支持 <see cref="Console" /> 输出。</remarks>
     public Task UpdateConsoleProgressAsync()
     {
         UpdateConsoleProgress();
@@ -137,6 +138,7 @@ public sealed class FileTransferProgress
     /// <summary>
     ///     在控制台中更新（打印）文件传输进度条
     /// </summary>
+    /// <remarks>需确保应用项目支持 <see cref="Console" /> 输出。</remarks>
     public void UpdateConsoleProgress()
     {
         // 获取控制台宽度

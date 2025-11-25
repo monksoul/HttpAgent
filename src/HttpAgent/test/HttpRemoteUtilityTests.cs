@@ -97,45 +97,88 @@ public class HttpRemoteUtilityTests
     }
 
     [Fact]
-    public void ResolveJsonSerializerOptions_WithDefault_ReturnOK()
+    public void ResolveJsonSerializationContext_Invalid_Parameters() =>
+        Assert.Throws<ArgumentNullException>(() =>
+            HttpRemoteUtility.ResolveJsonSerializationContext(null!, null, null));
+
+    [Fact]
+    public void ResolveJsonSerializationContext_WithDefault_ReturnOK()
     {
+        Assert.Equal(typeof(JsonModel),
+            HttpRemoteUtility.ResolveJsonSerializationContext(typeof(JsonModel), null, null).ResultType);
+
         using var stringContent = new StringContent("""{"id":10, "name":"furion"}""");
         var httpResponseMessage = new HttpResponseMessage();
         httpResponseMessage.Content = stringContent;
 
-        var jsonSerializerOptions = HttpRemoteUtility.ResolveJsonSerializerOptions(httpResponseMessage, null);
-        Assert.NotNull(jsonSerializerOptions);
-        Assert.False(jsonSerializerOptions.IncludeFields);
+        var jsonSerializationContext =
+            HttpRemoteUtility.ResolveJsonSerializationContext(typeof(JsonModel), httpResponseMessage, null);
+        Assert.NotNull(jsonSerializationContext.JsonSerializerOptions);
+        Assert.False(jsonSerializationContext.JsonSerializerOptions.IncludeFields);
+        Assert.Equal(typeof(JsonModel), jsonSerializationContext.ResultType);
 
-        var jsonSerializerOptions2 = HttpRemoteUtility.ResolveJsonSerializerOptions(null, null);
-        Assert.NotNull(jsonSerializerOptions2);
-        Assert.False(jsonSerializerOptions2.IncludeFields);
+        var jsonSerializationContext2 =
+            HttpRemoteUtility.ResolveJsonSerializationContext(typeof(JsonModel), null, null);
+        Assert.NotNull(jsonSerializationContext2.JsonSerializerOptions);
+        Assert.False(jsonSerializationContext2.JsonSerializerOptions.IncludeFields);
+        Assert.Equal(typeof(JsonModel), jsonSerializationContext2.ResultType);
     }
 
     [Fact]
-    public void ResolveJsonSerializerOptions_WithHttpClientOptions_ReturnOK()
+    public void ResolveJsonSerializationContext_WithHttpClientOptions_ReturnOK()
     {
         var services = new ServiceCollection();
         services.AddHttpClient(string.Empty).ConfigureOptions(options =>
         {
             options.JsonSerializerOptions.IncludeFields = true;
+            options.JsonResponseWrapper = new JsonResponseWrapper(typeof(ApiResult<>), "Data");
         });
         var serviceProvider = services.BuildServiceProvider();
 
-        using var stringContent = new StringContent("""{"id":10, "name":"furion"}""");
+        using var stringContent = new StringContent("""{"success":true,data:{"id":10, "name":"furion"}}""");
         var httpResponseMessage = new HttpResponseMessage();
         httpResponseMessage.Content = stringContent;
 
-        var jsonSerializerOptions =
-            HttpRemoteUtility.ResolveJsonSerializerOptions(httpResponseMessage, serviceProvider);
-        Assert.NotNull(jsonSerializerOptions);
-        Assert.True(jsonSerializerOptions.IncludeFields);
+        var jsonSerializationContext =
+            HttpRemoteUtility.ResolveJsonSerializationContext(typeof(JsonModel), httpResponseMessage, serviceProvider);
+        Assert.NotNull(jsonSerializationContext.JsonSerializerOptions);
+        Assert.True(jsonSerializationContext.JsonSerializerOptions.IncludeFields);
+        Assert.Equal(typeof(ApiResult<JsonModel>), jsonSerializationContext.ResultType);
+        Assert.NotNull(jsonSerializationContext.GetResultValue);
 
         serviceProvider.Dispose();
     }
 
     [Fact]
-    public void ResolveJsonSerializerOptions_WithHttpRemoteOptions_ReturnOK()
+    public void ResolveJsonSerializationContext_WithHttpClientOptions_WithDisableJsonResponseWrapping_ReturnOK()
+    {
+        var services = new ServiceCollection();
+        services.AddHttpClient(string.Empty).ConfigureOptions(options =>
+        {
+            options.JsonSerializerOptions.IncludeFields = true;
+            options.JsonResponseWrapper = new JsonResponseWrapper(typeof(ApiResult<>), "Data");
+        });
+        var serviceProvider = services.BuildServiceProvider();
+
+        using var stringContent = new StringContent("""{"success":true,"data":{"id":10,"name":"furion"}}""");
+        var httpResponseMessage = new HttpResponseMessage();
+        var httpRequestMessage = new HttpRequestMessage();
+        httpRequestMessage.Options.AddOrUpdate(Constants.DISABLE_JSON_RESPONSE_WRAPPING_KEY, "TRUE");
+        httpResponseMessage.RequestMessage = httpRequestMessage;
+        httpResponseMessage.Content = stringContent;
+
+        var jsonSerializationContext =
+            HttpRemoteUtility.ResolveJsonSerializationContext(typeof(JsonModel), httpResponseMessage, serviceProvider);
+        Assert.NotNull(jsonSerializationContext.JsonSerializerOptions);
+        Assert.True(jsonSerializationContext.JsonSerializerOptions.IncludeFields);
+        Assert.Equal(typeof(JsonModel), jsonSerializationContext.ResultType);
+        Assert.NotNull(jsonSerializationContext.GetResultValue);
+
+        serviceProvider.Dispose();
+    }
+
+    [Fact]
+    public void ResolveJsonSerializationContext_WithHttpRemoteOptions_ReturnOK()
     {
         var services = new ServiceCollection();
         services.AddHttpRemote().ConfigureOptions(options =>
@@ -148,11 +191,25 @@ public class HttpRemoteUtilityTests
         var httpResponseMessage = new HttpResponseMessage();
         httpResponseMessage.Content = stringContent;
 
-        var jsonSerializerOptions =
-            HttpRemoteUtility.ResolveJsonSerializerOptions(httpResponseMessage, serviceProvider);
-        Assert.NotNull(jsonSerializerOptions);
-        Assert.True(jsonSerializerOptions.IncludeFields);
+        var jsonSerializationContext =
+            HttpRemoteUtility.ResolveJsonSerializationContext(typeof(JsonModel), httpResponseMessage, serviceProvider);
+        Assert.NotNull(jsonSerializationContext.JsonSerializerOptions);
+        Assert.True(jsonSerializationContext.JsonSerializerOptions.IncludeFields);
+        Assert.Equal(typeof(JsonModel), jsonSerializationContext.ResultType);
+        Assert.NotNull(jsonSerializationContext.GetResultValue);
 
         serviceProvider.Dispose();
+    }
+
+    public class ApiResult<T>
+    {
+        public bool Success { get; set; }
+        public T? Data { get; set; }
+    }
+
+    public class JsonModel
+    {
+        public int Id { get; set; }
+        public string? Name { get; set; }
     }
 }

@@ -20,4 +20,9 @@ public sealed class HttpClientOptions
     /// </summary>
     /// <remarks>用于避免通过 <see cref="IOptionsSnapshot{TOptions}" /> 获取选项时无法确定是否已配置该选项。默认值为：<c>true</c>。</remarks>
     internal bool IsDefault { get; set; } = true;
+
+    /// <summary>
+    ///     指定 JSON 响应反序列化包装器
+    /// </summary>
+    public JsonResponseWrapper? JsonResponseWrapper { get; set; }
 }

@@ -287,7 +287,7 @@ internal static partial class StringExtensions
                         : match.Value;
                 });
     }
-    
+
     /// <summary>
     ///     验证字符串是否是 <c>application/x-www-form-urlencoded</c> 格式
     /// </summary>
@@ -325,7 +325,7 @@ internal static partial class StringExtensions
     /// </returns>
     [GeneratedRegex(@"\[\[\s*([\w\-:]+)((?:\s*\|\s*[\w\-:]+)*)\s*(?:\|\|\s*([^\]]*))?\s*\]\]")]
     private static partial Regex ConfigurationKeyRegex();
-    
+
     [GeneratedRegex(
         "^(?:(?:[a-zA-Z0-9-._~]|%[0-9A-Fa-f]{2})+=(?:[a-zA-Z0-9-._~+]|%[0-9A-Fa-f]{2})*)(?:&(?:[a-zA-Z0-9-._~]|%[0-9A-Fa-f]{2})+=(?:[a-zA-Z0-9-._~+]|%[0-9A-Fa-f]{2})*)*$",
         RegexOptions.IgnorePatternWhitespace)]

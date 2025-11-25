@@ -565,9 +565,15 @@ public sealed partial class HttpRequestBuilder
         }
 
         // 检查是否禁用全局请求分析工具
-        if (__Disabled_Profiler__)
+        if (__Disable_Profiler__)
         {
-            httpRequestMessage.Options.AddOrUpdate(Constants.DISABLED_PROFILER_KEY, "TRUE");
+            httpRequestMessage.Options.AddOrUpdate(Constants.DISABLE_PROFILER_KEY, "TRUE");
+        }
+
+        // 检查是否禁用 JSON 响应反序列化包装器
+        if (__Disable_JsonResponseWrapping__)
+        {
+            httpRequestMessage.Options.AddOrUpdate(Constants.DISABLE_JSON_RESPONSE_WRAPPING_KEY, "TRUE");
         }
 
         // 添加 HttpClient 实例的配置名称

@@ -468,4 +468,19 @@ public class DeclarativeAttributeTests
         Assert.Equal(2, attribute4.Types.Length);
         Assert.Equal([typeof(Exception), typeof(TimeoutAttribute)], attribute4.Types);
     }
+
+    [Fact]
+    public void JsonResponseWrappingAttribute_ReturnOK()
+    {
+        var attributeUsage = typeof(JsonResponseWrappingAttribute).GetCustomAttribute<AttributeUsageAttribute>();
+        Assert.NotNull(attributeUsage);
+        Assert.Equal(AttributeTargets.Method | AttributeTargets.Interface, attributeUsage.ValidOn);
+        Assert.False(attributeUsage.AllowMultiple);
+
+        var attribute = new JsonResponseWrappingAttribute();
+        Assert.True(attribute.Enabled);
+
+        var attribute2 = new JsonResponseWrappingAttribute(false);
+        Assert.False(attribute2.Enabled);
+    }
 }

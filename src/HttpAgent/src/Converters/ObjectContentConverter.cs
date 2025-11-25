@@ -15,33 +15,34 @@ public class ObjectContentConverter : IHttpContentConverter
 
     /// <inheritdoc />
     public virtual object? Read(Type resultType, HttpResponseMessage httpResponseMessage,
-        CancellationToken cancellationToken = default) =>
-        httpResponseMessage.Content
-            .ReadFromJsonAsync(resultType, ResolveJsonSerializerOptions(httpResponseMessage), cancellationToken)
-            .GetAwaiter().GetResult();
+        CancellationToken cancellationToken = default)
+    {
+        // 根据 HTTP 响应消息和服务提供器，解析出 HttpClient 客户端对应的 JSON 响应反序列化时的上下文信息
+        var jsonSerializationContext =
+            HttpRemoteUtility.ResolveJsonSerializationContext(resultType, httpResponseMessage, ServiceProvider);
+
+        // 获取 JSON 反序列化的值
+        var deserializedValue = httpResponseMessage.Content.ReadFromJsonAsync(jsonSerializationContext.ResultType,
+            jsonSerializationContext.JsonSerializerOptions, cancellationToken).GetAwaiter().GetResult();
+
+        // 获取转换的目标类型值
+        return jsonSerializationContext.GetResultValue(deserializedValue);
+    }
 
     /// <inheritdoc />
     public virtual async Task<object?> ReadAsync(Type resultType, HttpResponseMessage httpResponseMessage,
-        CancellationToken cancellationToken = default) =>
-        await httpResponseMessage.Content.ReadFromJsonAsync(resultType,
-            ResolveJsonSerializerOptions(httpResponseMessage), cancellationToken);
-
-    /// <summary>
-    ///     根据 HTTP 响应消息和服务提供器，解析出最终生效的 <see cref="JsonSerializerOptions" /> 实例
-    /// </summary>
-    /// <param name="httpResponseMessage">
-    ///     <see cref="HttpResponseMessage" />
-    /// </param>
-    /// <returns>
-    ///     <see cref="JsonSerializerOptions" />
-    /// </returns>
-    protected virtual JsonSerializerOptions ResolveJsonSerializerOptions(HttpResponseMessage httpResponseMessage)
+        CancellationToken cancellationToken = default)
     {
-        // 空检查
-        ArgumentNullException.ThrowIfNull(httpResponseMessage);
+        // 根据 HTTP 响应消息和服务提供器，解析出 HttpClient 客户端对应的 JSON 响应反序列化时的上下文信息
+        var jsonSerializationContext =
+            HttpRemoteUtility.ResolveJsonSerializationContext(resultType, httpResponseMessage, ServiceProvider);
 
-        // 根据 HTTP 响应消息和服务提供器，解析出最终生效的 JsonSerializerOptions 实例
-        return HttpRemoteUtility.ResolveJsonSerializerOptions(httpResponseMessage, ServiceProvider);
+        // 获取 JSON 反序列化的值
+        var deserializedValue = await httpResponseMessage.Content.ReadFromJsonAsync(jsonSerializationContext.ResultType,
+            jsonSerializationContext.JsonSerializerOptions, cancellationToken);
+
+        // 获取转换的目标类型值
+        return jsonSerializationContext.GetResultValue(deserializedValue);
     }
 }
 
@@ -52,13 +53,10 @@ public class ObjectContentConverter<TResult> : ObjectContentConverter, IHttpCont
     /// <inheritdoc />
     public virtual TResult? Read(HttpResponseMessage httpResponseMessage,
         CancellationToken cancellationToken = default) =>
-        httpResponseMessage.Content
-            .ReadFromJsonAsync<TResult>(ResolveJsonSerializerOptions(httpResponseMessage), cancellationToken)
-            .GetAwaiter().GetResult();
+        (TResult?)base.Read(typeof(TResult), httpResponseMessage, cancellationToken);
 
     /// <inheritdoc />
     public virtual async Task<TResult?> ReadAsync(HttpResponseMessage httpResponseMessage,
         CancellationToken cancellationToken = default) =>
-        await httpResponseMessage.Content.ReadFromJsonAsync<TResult>(
-            ResolveJsonSerializerOptions(httpResponseMessage), cancellationToken);
+        (TResult?)await base.ReadAsync(typeof(TResult), httpResponseMessage, cancellationToken);
 }

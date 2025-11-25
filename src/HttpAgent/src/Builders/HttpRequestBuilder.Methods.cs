@@ -1385,6 +1385,14 @@ public sealed partial class HttpRequestBuilder
     public HttpRequestBuilder Debugger() => Profiler(true);
 
     /// <summary>
+    ///     禁用请求分析工具（调试）
+    /// </summary>
+    /// <returns>
+    ///     <see cref="HttpRequestBuilder" />
+    /// </returns>
+    public HttpRequestBuilder DisableDebugger() => Profiler(false);
+
+    /// <summary>
     ///     设置是否启用请求分析工具（调试）
     /// </summary>
     /// <param name="enabled">是否启用</param>
@@ -1402,6 +1410,14 @@ public sealed partial class HttpRequestBuilder
     public HttpRequestBuilder Profiler() => Profiler(true);
 
     /// <summary>
+    ///     禁用请求分析工具
+    /// </summary>
+    /// <returns>
+    ///     <see cref="HttpRequestBuilder" />
+    /// </returns>
+    public HttpRequestBuilder DisableProfiler() => Profiler(false);
+
+    /// <summary>
     ///     设置是否启用请求分析工具
     /// </summary>
     /// <param name="enabled">是否启用</param>
@@ -1411,7 +1427,7 @@ public sealed partial class HttpRequestBuilder
     public HttpRequestBuilder Profiler(bool enabled)
     {
         ProfilerEnabled = enabled;
-        __Disabled_Profiler__ = !enabled;
+        __Disable_Profiler__ = !enabled;
 
         return this;
     }
@@ -1787,6 +1803,30 @@ public sealed partial class HttpRequestBuilder
 
         return this;
     }
+
+    /// <summary>
+    ///     设置是否启用 JSON 响应反序列化包装器
+    /// </summary>
+    /// <remarks>当配置了 <see cref="HttpClientOptions.JsonResponseWrapper" /> 时有效。</remarks>
+    /// <param name="enabled">是否启用</param>
+    /// <returns>
+    ///     <see cref="HttpRequestBuilder" />
+    /// </returns>
+    public HttpRequestBuilder JsonResponseWrapping(bool enabled)
+    {
+        __Disable_JsonResponseWrapping__ = !enabled;
+
+        return this;
+    }
+
+    /// <summary>
+    ///     设置禁用 JSON 响应反序列化包装器
+    /// </summary>
+    /// <remarks>当配置了 <see cref="HttpClientOptions.JsonResponseWrapper" /> 时有效。</remarks>
+    /// <returns>
+    ///     <see cref="HttpRequestBuilder" />
+    /// </returns>
+    public HttpRequestBuilder DisableJsonResponseWrapping() => JsonResponseWrapping(false);
 
     /// <summary>
     ///     释放可释放的对象集合

@@ -10,7 +10,7 @@ namespace HttpAgent;
 /// <summary>
 ///     HTTP 远程请求模块帮助类
 /// </summary>
-internal static partial class Helpers
+internal static class Helpers
 {
     /// <summary>
     ///     从互联网 URL 地址中加载流

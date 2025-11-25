@@ -80,8 +80,9 @@ public static class HttpRemoteUtility
         IPAddressConnectCallback(AddressFamily.Unspecified, context, cancellationToken);
 
     /// <summary>
-    ///     根据 HTTP 响应消息和服务提供器，解析出最终生效的 <see cref="JsonSerializerOptions" /> 实例
+    ///     根据 HTTP 响应消息和服务提供器，解析出 <see cref="HttpClient" /> 客户端对应的 JSON 响应反序列化时的上下文信息
     /// </summary>
+    /// <param name="resultType">转换的目标类型</param>
     /// <param name="httpResponseMessage">
     ///     <see cref="HttpResponseMessage" />
     /// </param>
@@ -89,11 +90,15 @@ public static class HttpRemoteUtility
     ///     <see cref="IServiceProvider" />
     /// </param>
     /// <returns>
-    ///     <see cref="JsonSerializerOptions" />
+    ///     <see cref="Tuple{T1,T2,T3}" />
     /// </returns>
-    public static JsonSerializerOptions ResolveJsonSerializerOptions(HttpResponseMessage? httpResponseMessage,
-        IServiceProvider? serviceProvider)
+    public static (Type ResultType, JsonSerializerOptions JsonSerializerOptions, Func<object?, object?> GetResultValue)
+        ResolveJsonSerializationContext(Type resultType, HttpResponseMessage? httpResponseMessage,
+            IServiceProvider? serviceProvider)
     {
+        // 空检查
+        ArgumentNullException.ThrowIfNull(resultType);
+
         // 获取 HttpClient 实例的配置名称
         if (httpResponseMessage?.RequestMessage?.Options.TryGetValue(
                 new HttpRequestOptionsKey<string>(Constants.HTTP_CLIENT_NAME), out var httpClientName) != true)
@@ -104,10 +109,29 @@ public static class HttpRemoteUtility
         // 获取 HttpClientOptions 实例
         var httpClientOptions = serviceProvider?.GetService<IOptionsMonitor<HttpClientOptions>>()?.Get(httpClientName);
 
+        // 获取 JsonSerializerOptions 配置
         // 优先级：指定名称的 HttpClientOptions -> HttpRemoteOptions -> 默认值
-        return (httpClientOptions?.IsDefault != false ? null : httpClientOptions.JsonSerializerOptions) ??
-               serviceProvider?.GetService<IOptions<HttpRemoteOptions>>()?.Value.JsonSerializerOptions ??
-               HttpRemoteOptions.JsonSerializerOptionsDefault;
+        var jsonSerializerOptions =
+            (httpClientOptions?.IsDefault != false ? null : httpClientOptions.JsonSerializerOptions) ??
+            serviceProvider?.GetService<IOptions<HttpRemoteOptions>>()?.Value.JsonSerializerOptions ??
+            HttpRemoteOptions.JsonSerializerOptionsDefault;
+
+        // 检查是否禁用 JSON 响应反序列化包装器
+        var disableJsonResponseWrapping = httpResponseMessage?.RequestMessage?.Options.TryGetValue(
+            new HttpRequestOptionsKey<string>(Constants.DISABLE_JSON_RESPONSE_WRAPPING_KEY),
+            out var disabledValue) == true && disabledValue == "TRUE";
+
+        // 获取指定 JSON 响应反序列化包装器实例
+        var jsonResponseWrapper = disableJsonResponseWrapping ? null : httpClientOptions?.JsonResponseWrapper;
+        var jsonResponseWrapperType = jsonResponseWrapper?.GenericType;
+
+        // 解析出最终返回的 JSON 响应结果类型
+        var jsonResponseType = jsonResponseWrapperType is null
+            ? resultType
+            : jsonResponseWrapperType.MakeGenericType(resultType);
+
+        return (jsonResponseType, jsonSerializerOptions,
+            jsonResponseWrapper is null ? u => u : jsonResponseWrapper.GetResultValue);
     }
 
     /// <summary>

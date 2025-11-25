@@ -36,9 +36,53 @@ public class XmlModel
     [XmlElement("Age")] public int Age { get; set; }
 }
 
-public class CustomObjectContentConverter<TResult> : ObjectContentConverter<TResult>;
+public class CustomObjectContentConverter : ObjectContentConverter
+{
+    /// <inheritdoc />
+    public override object? Read(Type resultType, HttpResponseMessage httpResponseMessage,
+        CancellationToken cancellationToken = default)
+    {
+        // 根据 HTTP 响应消息和服务提供器，解析出 HttpClient 客户端对应的 JSON 响应反序列化时的上下文信息
+        var jsonSerializationContext =
+            HttpRemoteUtility.ResolveJsonSerializationContext(resultType, httpResponseMessage, ServiceProvider);
 
-public class CustomObjectContentConverter : ObjectContentConverter;
+        // 获取 JSON 反序列化的值（若需使用 Newtonsoft.Json 进行序列化或反序列化操作，请将以下代码替换为 Newtonsoft.Json 库的相应方法调用） ✅✅✅
+        var deserializedValue = httpResponseMessage.Content.ReadFromJsonAsync(jsonSerializationContext.ResultType,
+            jsonSerializationContext.JsonSerializerOptions, cancellationToken).GetAwaiter().GetResult();
+
+        // 获取转换的目标类型值
+        return jsonSerializationContext.GetResultValue(deserializedValue);
+    }
+
+    /// <inheritdoc />
+    public override async Task<object?> ReadAsync(Type resultType, HttpResponseMessage httpResponseMessage,
+        CancellationToken cancellationToken = default)
+    {
+        // 根据 HTTP 响应消息和服务提供器，解析出 HttpClient 客户端对应的 JSON 响应反序列化时的上下文信息
+        var jsonSerializationContext =
+            HttpRemoteUtility.ResolveJsonSerializationContext(resultType, httpResponseMessage, ServiceProvider);
+
+        // 获取 JSON 反序列化的值（若需使用 Newtonsoft.Json 进行序列化或反序列化操作，请将以下代码替换为 Newtonsoft.Json 库的相应方法调用） ✅✅✅
+        var deserializedValue = await httpResponseMessage.Content.ReadFromJsonAsync(jsonSerializationContext.ResultType,
+            jsonSerializationContext.JsonSerializerOptions, cancellationToken);
+
+        // 获取转换的目标类型值
+        return jsonSerializationContext.GetResultValue(deserializedValue);
+    }
+}
+
+public class CustomObjectContentConverter<TResult> : CustomObjectContentConverter, IHttpContentConverter<TResult>
+{
+    /// <inheritdoc />
+    public virtual TResult? Read(HttpResponseMessage httpResponseMessage,
+        CancellationToken cancellationToken = default) =>
+        (TResult?)base.Read(typeof(TResult), httpResponseMessage, cancellationToken);
+
+    /// <inheritdoc />
+    public virtual async Task<TResult?> ReadAsync(HttpResponseMessage httpResponseMessage,
+        CancellationToken cancellationToken = default) =>
+        (TResult?)await base.ReadAsync(typeof(TResult), httpResponseMessage, cancellationToken);
+}
 
 public class NotImplementObjectContentConverterFactory;
 

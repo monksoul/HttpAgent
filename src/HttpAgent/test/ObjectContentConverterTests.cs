@@ -196,87 +196,105 @@ public class ObjectContentConverterTests
     }
 
     [Fact]
-    public void ResolveJsonSerializerOptions_Invalid_Parameters()
-    {
-        using var stringContent = new StringContent("""{"id":10, "name":"furion"}""");
-        var httpResponseMessage = new HttpResponseMessage();
-        httpResponseMessage.Content = stringContent;
-
-        var converter = new ObjectContentConverter<ObjectModel>();
-        var getJsonSerializerOptionsMethod = typeof(ObjectContentConverter).GetMethod("ResolveJsonSerializerOptions",
-            BindingFlags.NonPublic | BindingFlags.Instance)!;
-
-        var exception = Assert.Throws<TargetInvocationException>(() =>
-            getJsonSerializerOptionsMethod.Invoke(converter, [null!]));
-        Assert.True(exception.InnerException is ArgumentNullException);
-    }
-
-    [Fact]
-    public void ResolveJsonSerializerOptions_WithDefault_ReturnOK()
-    {
-        using var stringContent = new StringContent("""{"id":10, "name":"furion"}""");
-        var httpResponseMessage = new HttpResponseMessage();
-        httpResponseMessage.Content = stringContent;
-
-        var converter = new ObjectContentConverter<ObjectModel>();
-        var getJsonSerializerOptionsMethod = typeof(ObjectContentConverter).GetMethod("ResolveJsonSerializerOptions",
-            BindingFlags.NonPublic | BindingFlags.Instance)!;
-
-        var jsonSerializerOptions =
-            getJsonSerializerOptionsMethod.Invoke(converter, [httpResponseMessage]) as JsonSerializerOptions;
-        Assert.NotNull(jsonSerializerOptions);
-        Assert.False(jsonSerializerOptions.IncludeFields);
-    }
-
-    [Fact]
-    public void ResolveJsonSerializerOptions_WithHttpClientOptions_ReturnOK()
+    public async Task ReadAsync_WithJsonResponseWrapperType_ReturnOK()
     {
         var services = new ServiceCollection();
         services.AddHttpClient(string.Empty).ConfigureOptions(options =>
         {
-            options.JsonSerializerOptions.IncludeFields = true;
+            options.JsonResponseWrapper = new JsonResponseWrapper(typeof(ApiResult<>), nameof(ApiResult<>.Data));
         });
         var serviceProvider = services.BuildServiceProvider();
 
-        using var stringContent = new StringContent("""{"id":10, "name":"furion"}""");
+        using var stringContent = new StringContent("""{"success":true,"data":{"id":10,"name":"furion"}}""");
         var httpResponseMessage = new HttpResponseMessage();
         httpResponseMessage.Content = stringContent;
 
-        var converter = new ObjectContentConverter<ObjectModel> { ServiceProvider = serviceProvider };
-        var getJsonSerializerOptionsMethod = typeof(ObjectContentConverter).GetMethod("ResolveJsonSerializerOptions",
-            BindingFlags.NonPublic | BindingFlags.Instance)!;
+        var converter = new ObjectContentConverter<JsonModel> { ServiceProvider = serviceProvider };
+        var objectModel = await converter.ReadAsync(httpResponseMessage);
+        Assert.NotNull(objectModel);
+        Assert.Equal(10, objectModel.Id);
+        Assert.Equal("furion", objectModel.Name);
 
-        var jsonSerializerOptions =
-            getJsonSerializerOptionsMethod.Invoke(converter, [httpResponseMessage]) as JsonSerializerOptions;
-        Assert.NotNull(jsonSerializerOptions);
-        Assert.True(jsonSerializerOptions.IncludeFields);
-
-        serviceProvider.Dispose();
+        await serviceProvider.DisposeAsync();
     }
 
     [Fact]
-    public void ResolveJsonSerializerOptions_WithHttpRemoteOptions_ReturnOK()
+    public async Task ReadAsync_WithJsonResponseWrapperType2_ReturnOK()
     {
         var services = new ServiceCollection();
-        services.AddHttpRemote().ConfigureOptions(options =>
+        services.AddHttpClient(string.Empty).ConfigureOptions(options =>
         {
-            options.JsonSerializerOptions.IncludeFields = true;
+            options.JsonResponseWrapper = new JsonResponseWrapper(typeof(ApiResult<>), nameof(ApiResult<>.Data));
         });
         var serviceProvider = services.BuildServiceProvider();
 
-        using var stringContent = new StringContent("""{"id":10, "name":"furion"}""");
+        using var stringContent = new StringContent("null");
         var httpResponseMessage = new HttpResponseMessage();
         httpResponseMessage.Content = stringContent;
 
-        var converter = new ObjectContentConverter<ObjectModel> { ServiceProvider = serviceProvider };
-        var getJsonSerializerOptionsMethod = typeof(ObjectContentConverter).GetMethod("ResolveJsonSerializerOptions",
-            BindingFlags.NonPublic | BindingFlags.Instance)!;
+        var converter = new ObjectContentConverter<JsonModel> { ServiceProvider = serviceProvider };
+        var objectModel = await converter.ReadAsync(httpResponseMessage);
+        Assert.Null(objectModel);
 
-        var jsonSerializerOptions =
-            getJsonSerializerOptionsMethod.Invoke(converter, [httpResponseMessage]) as JsonSerializerOptions;
-        Assert.NotNull(jsonSerializerOptions);
-        Assert.True(jsonSerializerOptions.IncludeFields);
+        await serviceProvider.DisposeAsync();
+    }
 
-        serviceProvider.Dispose();
+    [Fact]
+    public async Task ReadAsync_WithJsonResponseWrapperType3_ReturnOK()
+    {
+        var services = new ServiceCollection();
+        services.AddHttpClient(string.Empty).ConfigureOptions(options =>
+        {
+            options.JsonResponseWrapper = new JsonResponseWrapper(typeof(ApiResult<>), nameof(ApiResult<>.Data));
+        });
+        var serviceProvider = services.BuildServiceProvider();
+
+        using var stringContent = new StringContent("{}");
+        var httpResponseMessage = new HttpResponseMessage();
+        httpResponseMessage.Content = stringContent;
+
+        var converter = new ObjectContentConverter<JsonModel> { ServiceProvider = serviceProvider };
+        var objectModel = await converter.ReadAsync(httpResponseMessage);
+        Assert.Null(objectModel);
+
+        await serviceProvider.DisposeAsync();
+    }
+
+    [Fact]
+    public async Task ReadAsync_WithJsonResponseWrapperType4_ReturnOK()
+    {
+        var services = new ServiceCollection();
+        services.AddHttpClient(string.Empty).ConfigureOptions(options =>
+        {
+            options.JsonResponseWrapper = new JsonResponseWrapper(typeof(ApiResult<>), nameof(ApiResult<>.Data));
+        });
+        var serviceProvider = services.BuildServiceProvider();
+
+        using var stringContent = new StringContent("""{"success":true,"data":{"id":10,"name":"furion"}}""");
+        var httpResponseMessage = new HttpResponseMessage();
+        var httpRequestMessage = new HttpRequestMessage();
+        httpRequestMessage.Options.AddOrUpdate(Constants.DISABLE_JSON_RESPONSE_WRAPPING_KEY, "TRUE");
+        httpResponseMessage.RequestMessage = httpRequestMessage;
+        httpResponseMessage.Content = stringContent;
+
+        var converter = new ObjectContentConverter<ApiResult<JsonModel>> { ServiceProvider = serviceProvider };
+        var objectModel = await converter.ReadAsync(httpResponseMessage);
+        Assert.NotNull(objectModel);
+        Assert.Equal(10, objectModel.Data?.Id);
+        Assert.Equal("furion", objectModel.Data?.Name);
+
+        await serviceProvider.DisposeAsync();
+    }
+
+    public class ApiResult<T>
+    {
+        public bool Success { get; set; }
+        public T? Data { get; set; }
+    }
+
+    public class JsonModel
+    {
+        public int Id { get; set; }
+        public string? Name { get; set; }
     }
 }
