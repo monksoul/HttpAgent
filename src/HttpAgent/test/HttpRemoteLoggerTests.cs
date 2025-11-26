@@ -17,6 +17,7 @@ public class HttpRemoteLoggerTests
         var logger = new HttpRemoteLogger(serviceProvider.GetRequiredService<ILogger<Logging>>(),
             serviceProvider.GetRequiredService<IOptions<HttpRemoteOptions>>(), false);
         Assert.NotNull(logger);
+        Assert.NotNull(logger._logMessageFormatter);
     }
 
     [Fact]
@@ -57,5 +58,22 @@ public class HttpRemoteLoggerTests
         logger.LogCritical("Message");
         logger.LogError(new Exception("错误了"), "Message");
         logger.Log(LogLevel.Information, null, "错误消息");
+    }
+
+    [Fact]
+    public void LogMessageFormatter_ReturnOK()
+    {
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.Configure<HttpRemoteOptions>(_ => { });
+        using var serviceProvider = services.BuildServiceProvider();
+
+        var logger = new HttpRemoteLogger(serviceProvider.GetRequiredService<ILogger<Logging>>(),
+            serviceProvider.GetRequiredService<IOptions<HttpRemoteOptions>>(), false);
+        Assert.NotNull(logger);
+        Assert.NotNull(logger._logMessageFormatter);
+
+        Assert.Equal("错误消息", logger._logMessageFormatter.Value("错误消息", []));
+        Assert.Equal("错误消息Furion30", logger._logMessageFormatter.Value("错误消息{name}{age}", ["Furion", 30]));
     }
 }

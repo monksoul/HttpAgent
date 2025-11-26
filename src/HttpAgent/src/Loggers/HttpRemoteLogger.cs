@@ -17,6 +17,42 @@ internal sealed class HttpRemoteLogger(
     IOptions<HttpRemoteOptions> httpRemoteOptions,
     bool isLoggingRegistered) : IHttpRemoteLogger
 {
+    /// <summary>
+    ///     日志消息格式化器
+    /// </summary>
+    /// <remarks>用于在未注册 <see cref="ILogger" /> 时通过 <see cref="HttpRemoteOptions.FallbackLogger" /> 输出结构化日志。</remarks>
+    internal Lazy<Func<string?, object?[], string?>> _logMessageFormatter = new(() =>
+    {
+        try
+        {
+            // 获取内部的 Microsoft.Extensions.Logging.FormattedLogValues 类型
+            if (Type.GetType(
+                    "Microsoft.Extensions.Logging.FormattedLogValues, Microsoft.Extensions.Logging.Abstractions") is
+                { } formattedLogValuesType)
+            {
+                return (message, args) =>
+                {
+                    try
+                    {
+                        // 初始化 FormattedLogValues 实例
+                        var instance = Activator.CreateInstance(formattedLogValuesType, message, args);
+                        return instance?.ToString();
+                    }
+                    catch
+                    {
+                        return message;
+                    }
+                };
+            }
+        }
+        catch
+        {
+            // ignored
+        }
+
+        return (message, _) => message;
+    });
+
     /// <inheritdoc />
     public void LogInformation(string message, params object?[] args) => Log(LogLevel.Information, null, message, args);
 
@@ -47,7 +83,7 @@ internal sealed class HttpRemoteLogger(
         else
         {
             // 调用备用日志输出委托
-            httpRemoteOptions.Value.FallbackLogger?.Invoke(message); // TODO: 简单输出 message 内容，并未应用到结构化参数
+            httpRemoteOptions.Value.FallbackLogger?.Invoke(_logMessageFormatter.Value(message, args));
         }
     }
 }
