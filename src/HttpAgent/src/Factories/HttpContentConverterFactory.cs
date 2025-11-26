@@ -167,7 +167,7 @@ internal sealed class HttpContentConverterFactory : IHttpContentConverterFactory
         IHttpContentConverter<TResult> targetConverter;
 
         // 检查是否启用 JSON 响应反序列化包装器或目标转换类型为 void/VoidContent
-        if (httpResponseMessage.IsEnableJsonResponseWrapping() &&
+        if (httpResponseMessage.IsEnableJsonResponseWrapping(ServiceProvider) &&
             !(typeof(TResult) == typeof(void) || typeof(VoidContent).IsAssignableFrom(typeof(TResult))))
         {
             // 调用 IObjectContentConverterFactory 实例的 GetConverter<TResult> 返回
@@ -214,7 +214,7 @@ internal sealed class HttpContentConverterFactory : IHttpContentConverterFactory
         IHttpContentConverter targetConverter;
 
         // 检查是否启用 JSON 响应反序列化包装器或目标转换类型为 void/VoidContent
-        if (httpResponseMessage.IsEnableJsonResponseWrapping() &&
+        if (httpResponseMessage.IsEnableJsonResponseWrapping(ServiceProvider) &&
             !(resultType == typeof(void) || typeof(VoidContent).IsAssignableFrom(resultType)))
         {
             // 调用 IObjectContentConverterFactory 实例的 GetConverter 返回

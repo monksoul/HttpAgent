@@ -2929,7 +2929,7 @@
             <summary>
                 表示禁用请求分析工具标识
             </summary>
-            <remarks>用于禁用全局请求分析工具。配置信息将写入到 <see cref="P:System.Net.Http.HttpRequestMessage.Options" /> 中。默认值为 <c>false</c>。</remarks>
+            <remarks>用于禁用全局请求分析工具。配置信息将写入到 <see cref="P:System.Net.Http.HttpRequestMessage.Options" /> 中。默认值为：<c>false</c>。</remarks>
         </member>
         <member name="P:HttpAgent.HttpRequestBuilder.StatusCodeHandlers">
             <summary>
@@ -2964,7 +2964,7 @@
             </summary>
             <remarks>
                 当配置了 <see cref="P:HttpAgent.HttpClientOptions.JsonResponseWrapper" /> 时有效。配置信息将写入到
-                <see cref="P:System.Net.Http.HttpRequestMessage.Options" /> 中。默认值为 <c>false</c>。
+                <see cref="P:System.Net.Http.HttpRequestMessage.Options" /> 中。默认值为：null。
             </remarks>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.Get(System.String,System.Action{HttpAgent.HttpRequestBuilder})">
@@ -5678,7 +5678,9 @@
             </summary>
             <param name="requestUri">请求地址</param>
         </member>
-        <member name="T:HttpAgent.PutAtTTP 声明式 PUT 请求方式特性
+        <member name="T:HttpAgent.PutAttribute">
+            <summary>
+                HTTP 声明式 PUT 请求方式特性
             </summary>
         </member>
         <member name="M:HttpAgent.PutAttribute.#ctor(System.String)">
@@ -5774,8 +5776,6 @@
         <member name="P:HttpAgent.MultipartFormAttribute.OmitContentType">
             <summary>
                 是否移除默认的多部分内容的 <c>Content-Type</c>
-            </summary>
-            <remarkpe</c>
             </summary>
             <remarks>默认值为：<c>true</c>。</remarks>
         </member>
@@ -6375,7 +6375,7 @@
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </param>
         </member>
-        <member name="M:HttpAgent.MultipartDeclarativeExtractor.AddMultipart(Sent.HttpMultipartFormDataBuilder)">
+        <member name="M:HttpAgent.MultipartDeclarativeExtractor.AddMultipart(System.Reflection.ParameterInfo,System.Object,HttpAgent.HttpMultipartFormDataBuilder)">
             <summary>
                 添加多部分表单内容
             </summary>
@@ -6780,8 +6780,6 @@
             <summary>
                 配置 <see cref="T:System.Net.Http.HttpClient" /> 额外选项
             </summary>
-     ent" /> 额外选项
-            </summary>
             <param name="builder">
                 <see cref="T:Microsoft.Extensions.DependencyInjection.IHttpClientBuilder" />
             </param>
@@ -6958,12 +6956,15 @@
                 <see cref="T:System.String" />
             </returns>
         </member>
-        <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.IsEnableJsonResponseWrapping(System.Net.Http.HttpResponseMessage)">
+        <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.IsEnableJsonResponseWrapping(System.Net.Http.HttpResponseMessage,System.IServiceProvider)">
             <summary>
                 检查是否启用 JSON 响应反序列化包装器
             </summary>
             <param name="httpResponseMessage">
                 <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </param>
+            <param name="serviceProvider">
+                <see cref="T:System.IServiceProvider" />
             </param>
             <returns>
                 <see cref="T:System.Boolean" />
@@ -7700,7 +7701,7 @@
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
         </member>
-        <member name="M:HttpAgent.Fiam,HttpAgent.FileTransferProgress,System.Diagnostics.Stopwatch,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.FileDownloadManager.DownloadInChunks(System.Int64,System.IO.FileStream,HttpAgent.FileTransferProgress,System.Diagnostics.Stopwatch,System.Threading.CancellationToken)">
             <summary>
                 多线程分块下载（同步）
             </summary>
@@ -8130,8 +8131,6 @@
             <summary>
                 <inheritdoc cref="T:HttpAgent.ServerSentEventsManager" />
             </summary>
-            <param name="httpManager" />
-            </summary>
             <param name="httpRemoteService">
                 <see cref="T:HttpAgent.IHttpRemoteService" />
             </param>
@@ -8222,7 +8221,7 @@
             </summary>
             <param name="messageChannel">事件消息传输的通道</param>
             <param name="cancellationToken">
-  
+                <see cref="T:System.Threading.CancellationToken" />
             </param>
         </member>
         <member name="M:HttpAgent.ServerSentEventsManager.HandleOpen">
@@ -9368,7 +9367,7 @@
             </summary>
             <param name="value">消息数据</param>
         </member>
-        <member name="M:HttpAgent.ServerSentEventsData.AddCustomField(System.String,System.Strinent.ServerSentEventsData.AddCustomField(System.String,System.String)">
+        <member name="M:HttpAgent.ServerSentEventsData.AddCustomField(System.String,System.String)">
             <summary>
                 追加自定义字段数据
             </summary>
@@ -9530,6 +9529,11 @@
                 指定 JSON 响应反序列化包装器
             </summary>
             <remarks>使用时需明确调用 <see cref="M:HttpAgent.HttpRequestBuilder.JsonResponseWrapping" />。</remarks>
+        </member>
+        <member name="P:HttpAgent.HttpClientOptions.UseJsonResponseWrapping">
+            <summary>
+                是否全局启用 JSON 响应反序列化包装器
+            </summary>
         </member>
         <member name="T:HttpAgent.HttpRemoteOptions">
             <summary>
@@ -9934,7 +9938,7 @@
         <member name="M:HttpAgent.HttpRemoteService.SendAsync``1(HttpAgent.HttpRequestBuilder,System.Net.Http.HttpCompletionOption,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpRemoteService.SendCoreAsync(HttpAgent.HttpRequestBuilder,System.Net.Http.HttpCompletionOption,System.Func{System.Net.Http.HttpClient,System.Net.Http.HttpRequestMessage,System.Net.Http.HttpCompletionOption,System.Threading.CancellationToken,System.Threading.Tasks.Task{System.Net.Http.HttpResponseMessage}stMessage,System.Net.Http.HttpCompletionOption,System.Threading.CancellationToken,System.Net.Http.HttpResponseMessage},System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.HttpRemoteService.SendCoreAsync(HttpAgent.HttpRequestBuilder,System.Net.Http.HttpCompletionOption,System.Func{System.Net.Http.HttpClient,System.Net.Http.HttpRequestMessage,System.Net.Http.HttpCompletionOption,System.Threading.CancellationToken,System.Threading.Tasks.Task{System.Net.Http.HttpResponseMessage}},System.Func{System.Net.Http.HttpClient,System.Net.Http.HttpRequestMessage,System.Net.Http.HttpCompletionOption,System.Threading.CancellationToken,System.Net.Http.HttpResponseMessage},System.Threading.CancellationToken)">
             <summary>
                 发送 HTTP 远程请求并处理 <see cref="T:System.Net.Http.HttpResponseMessage" /> 实例
             </summary>
@@ -10133,7 +10137,7 @@
             <code>
             ○ Match if at the beginning of the string.<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
-            ○ Match a character in the set [\-~].<br/>
+            ○ Match a character in the set [-~].<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
@@ -10652,8 +10656,6 @@
         </member>
         <member name="M:HttpAgent.HttpRemoteService.OptionsAsByteArrayAsync(System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
             <inheritdoc />
-        </memg.CancellationToken)">
-            <inheritdoc />
         </member>
         <member name="M:HttpAgent.HttpRemoteService.OptionsAsStringAsync(System.String,System.Net.Http.HttpCompletionOption,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
             <inheritdoc />
@@ -10706,7 +10708,9 @@
         <member name="M:HttpAgent.HttpRemoteService.TraceAsStream(System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpRemoteService.TraceAsByteArray(System.String,System.Action{HttpAgent.HttpRequestBuilder},Syste     </member>
+        <member name="M:HttpAgent.HttpRemoteService.TraceAsByteArray(System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
         <member name="M:HttpAgent.HttpRemoteService.TraceAsString(System.String,System.Net.Http.HttpCompletionOption,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
@@ -12303,7 +12307,6 @@
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
             <returns>
-                <see cref="T:System.IO.Stream"        <returns>
                 <see cref="T:System.IO.Stream" />
             </returns>
         </member>
@@ -12544,7 +12547,7 @@
                 <c>byte[]</c>
             </returns>
         </member>
-        <member name="M:HttpAgent.IHttpRemoteService.PostAsString(Systegent.HttpRequestBuilder},System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.IHttpRemoteService.PostAsString(System.String,System.Net.Http.HttpCompletionOption,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
             <summary>
                 发送 HTTP POST 远程请求
             </summary>
@@ -12786,7 +12789,6 @@
             <summary>
                 发送 HTTP DELETE 远程请求
             </summary>
-            <param name="requestUri">请求地址</par/summary>
             <param name="requestUri">请求地址</param>
             <param name="completionOption">
                 <see cref="T:System.Net.Http.HttpCompletionOption" />
@@ -12949,7 +12951,7 @@
                 <c>byte[]</c>
             </returns>
         </member>
-   sync(System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.IHttpRemoteService.DeleteAsStringAsync(System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
             <summary>
                 发送 HTTP DELETE 远程请求
             </summary>
@@ -13029,7 +13031,6 @@
                 <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
             <param name="configure">自定义配置委托</param>
-            <param name="cancellation定义配置委托</param>
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
@@ -13188,7 +13189,9 @@
                 <see cref="T:HttpAgent.HttpRemoteResult`1" />
             </returns>
         </member>
-        <member name="M:HttpAgent.IHttpRemoteService.HeadAsync``1(System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Th    发送 HTTP HEAD 远程请求
+        <member name="M:HttpAgent.IHttpRemoteService.HeadAsync``1(System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <summary>
+                发送 HTTP HEAD 远程请求
             </summary>
             <param name="requestUri">请求地址</param>
             <param name="configure">自定义配置委托</param>
@@ -13351,7 +13354,6 @@
             <param name="completionOption">
                 <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
-            <param name="configure">自定义配置委托</par>
             <param name="configure">自定义配置委托</param>
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
@@ -14535,6 +14537,20 @@
             </param>
             <returns>
                 <see cref="T:System.Tuple`3" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRemoteUtility.ResolveHttpClientOptions(System.Net.Http.HttpResponseMessage,System.IServiceProvider)">
+            <summary>
+                根据 HTTP 响应消息和服务提供器，解析出 <see cref="T:System.Net.Http.HttpClient" /> 客户端配置选项
+            </summary>
+            <param name="httpResponseMessage">
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </param>
+            <param name="serviceProvider">
+                <see cref="T:System.IServiceProvider" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.HttpClientOptions" />
             </returns>
         </member>
         <member name="M:HttpAgent.HttpRemoteUtility.IPAddressConnectCallback(System.Net.Sockets.AddressFamily,System.Net.Http.SocketsHttpConnectionContext,System.Threading.CancellationToken)">

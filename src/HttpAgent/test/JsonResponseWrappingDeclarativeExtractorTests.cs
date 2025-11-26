@@ -25,7 +25,7 @@ public class JsonResponseWrappingDeclarativeExtractorTests
         var context1 = new HttpDeclarativeExtractorContext(method1, []);
         var httpRequestBuilder1 = HttpRequestBuilder.Get("http://localhost");
         new JsonResponseWrappingDeclarativeExtractor().Extract(httpRequestBuilder1, context1);
-        Assert.False(httpRequestBuilder1.__Enable__JsonResponseWrapping__);
+        Assert.Null(httpRequestBuilder1.__Enable__JsonResponseWrapping__);
 
         var method2 =
             typeof(IJsonResponseWrappingDeclarativeExtractorTest2).GetMethod(

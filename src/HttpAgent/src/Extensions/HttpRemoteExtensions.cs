@@ -482,13 +482,27 @@ public static partial class HttpRemoteExtensions
     /// <param name="httpResponseMessage">
     ///     <see cref="HttpResponseMessage" />
     /// </param>
+    /// <param name="serviceProvider">
+    ///     <see cref="IServiceProvider" />
+    /// </param>
     /// <returns>
     ///     <see cref="bool" />
     /// </returns>
-    internal static bool IsEnableJsonResponseWrapping(this HttpResponseMessage? httpResponseMessage) =>
-        httpResponseMessage?.RequestMessage?.Options.TryGetValue(
-            new HttpRequestOptionsKey<string>(Constants.ENABLE_JSON_RESPONSE_WRAPPING_KEY),
-            out var enableValue) == true && enableValue == "TRUE";
+    internal static bool IsEnableJsonResponseWrapping(this HttpResponseMessage? httpResponseMessage,
+        IServiceProvider? serviceProvider)
+    {
+        // 检查是否局部启用或禁用 JSON 响应反序列化包装器
+        if (httpResponseMessage?.RequestMessage?.Options.TryGetValue(
+                new HttpRequestOptionsKey<string>(Constants.ENABLE_JSON_RESPONSE_WRAPPING_KEY), out var enableValue) ==
+            true)
+        {
+            return enableValue == "TRUE";
+        }
+
+        // 否则使用全局配置
+        return HttpRemoteUtility.ResolveHttpClientOptions(httpResponseMessage, serviceProvider)
+            ?.UseJsonResponseWrapping == true;
+    }
 
     /// <summary>
     ///     获取主机环境名

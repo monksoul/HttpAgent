@@ -72,7 +72,7 @@ public class HttpRequestBuilderPropertiesTests
         Assert.Null(httpRequestBuilder2.TimeoutAction);
         Assert.False(httpRequestBuilder2.AssertionsEnabled);
         Assert.Null(httpRequestBuilder2.Assertions);
-        Assert.False(httpRequestBuilder2.__Enable__JsonResponseWrapping__);
+        Assert.Null(httpRequestBuilder2.__Enable__JsonResponseWrapping__);
 
         Assert.NotNull(HttpRequestBuilder._cachedProperties);
         Assert.Equal(50, HttpRequestBuilder._cachedProperties.Value.Length);

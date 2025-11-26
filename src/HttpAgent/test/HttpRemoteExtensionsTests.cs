@@ -443,12 +443,31 @@ public class HttpRemoteExtensionsTests
     public void IsEnableJsonResponseWrapping_ReturnOK()
     {
         var httpResponseMessage = new HttpResponseMessage();
-        Assert.False(httpResponseMessage.IsEnableJsonResponseWrapping());
+        Assert.False(httpResponseMessage.IsEnableJsonResponseWrapping(null));
 
         var httpRequestMessage = new HttpRequestMessage();
         httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPING_KEY, "TRUE");
         httpResponseMessage.RequestMessage = httpRequestMessage;
+        Assert.True(httpResponseMessage.IsEnableJsonResponseWrapping(null));
 
-        Assert.True(httpResponseMessage.IsEnableJsonResponseWrapping());
+        httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPING_KEY, "FALSE");
+        httpResponseMessage.RequestMessage = httpRequestMessage;
+        Assert.False(httpResponseMessage.IsEnableJsonResponseWrapping(null));
+
+        var services = new ServiceCollection();
+        services.AddHttpClient(string.Empty).ConfigureOptions(u => u.UseJsonResponseWrapping = true);
+        using var serviceProvider = services.BuildServiceProvider();
+
+        var httpResponseMessage2 = new HttpResponseMessage();
+        Assert.True(httpResponseMessage2.IsEnableJsonResponseWrapping(serviceProvider));
+
+        var httpRequestMessage2 = new HttpRequestMessage();
+        httpRequestMessage2.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPING_KEY, "TRUE");
+        httpResponseMessage2.RequestMessage = httpRequestMessage2;
+        Assert.True(httpResponseMessage2.IsEnableJsonResponseWrapping(serviceProvider));
+
+        httpRequestMessage2.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPING_KEY, "FALSE");
+        httpResponseMessage2.RequestMessage = httpRequestMessage2;
+        Assert.False(httpResponseMessage2.IsEnableJsonResponseWrapping(serviceProvider));
     }
 }
