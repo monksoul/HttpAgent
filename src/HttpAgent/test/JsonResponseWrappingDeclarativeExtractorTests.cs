@@ -25,7 +25,7 @@ public class JsonResponseWrappingDeclarativeExtractorTests
         var context1 = new HttpDeclarativeExtractorContext(method1, []);
         var httpRequestBuilder1 = HttpRequestBuilder.Get("http://localhost");
         new JsonResponseWrappingDeclarativeExtractor().Extract(httpRequestBuilder1, context1);
-        Assert.False(httpRequestBuilder1.__Disable_JsonResponseWrapping__);
+        Assert.False(httpRequestBuilder1.__Enable__JsonResponseWrapping__);
 
         var method2 =
             typeof(IJsonResponseWrappingDeclarativeExtractorTest2).GetMethod(
@@ -33,7 +33,7 @@ public class JsonResponseWrappingDeclarativeExtractorTests
         var context2 = new HttpDeclarativeExtractorContext(method2, []);
         var httpRequestBuilder2 = HttpRequestBuilder.Get("http://localhost");
         new JsonResponseWrappingDeclarativeExtractor().Extract(httpRequestBuilder2, context2);
-        Assert.False(httpRequestBuilder2.__Disable_JsonResponseWrapping__);
+        Assert.True(httpRequestBuilder2.__Enable__JsonResponseWrapping__);
 
         var method3 =
             typeof(IJsonResponseWrappingDeclarativeExtractorTest2).GetMethod(
@@ -41,7 +41,7 @@ public class JsonResponseWrappingDeclarativeExtractorTests
         var context3 = new HttpDeclarativeExtractorContext(method3, []);
         var httpRequestBuilder3 = HttpRequestBuilder.Get("http://localhost");
         new JsonResponseWrappingDeclarativeExtractor().Extract(httpRequestBuilder3, context3);
-        Assert.True(httpRequestBuilder3.__Disable_JsonResponseWrapping__);
+        Assert.False(httpRequestBuilder3.__Enable__JsonResponseWrapping__);
     }
 }
 

@@ -570,10 +570,10 @@ public sealed partial class HttpRequestBuilder
             httpRequestMessage.Options.AddOrUpdate(Constants.DISABLE_PROFILER_KEY, "TRUE");
         }
 
-        // 检查是否禁用 JSON 响应反序列化包装器
-        if (__Disable_JsonResponseWrapping__)
+        // 检查是否启用 JSON 响应反序列化包装器
+        if (__Enable__JsonResponseWrapping__)
         {
-            httpRequestMessage.Options.AddOrUpdate(Constants.DISABLE_JSON_RESPONSE_WRAPPING_KEY, "TRUE");
+            httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPING_KEY, "TRUE");
         }
 
         // 添加 HttpClient 实例的配置名称

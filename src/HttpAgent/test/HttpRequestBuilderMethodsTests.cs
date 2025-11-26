@@ -2043,19 +2043,19 @@ public class HttpRequestBuilderMethodsTests
     public void JsonResponseWrapping_ReturnOK()
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
-        Assert.False(httpRequestBuilder.__Disable_JsonResponseWrapping__);
+        Assert.False(httpRequestBuilder.__Enable__JsonResponseWrapping__);
         httpRequestBuilder.JsonResponseWrapping(true);
-        Assert.False(httpRequestBuilder.__Disable_JsonResponseWrapping__);
+        Assert.True(httpRequestBuilder.__Enable__JsonResponseWrapping__);
         httpRequestBuilder.JsonResponseWrapping(false);
-        Assert.True(httpRequestBuilder.__Disable_JsonResponseWrapping__);
+        Assert.False(httpRequestBuilder.__Enable__JsonResponseWrapping__);
     }
 
     [Fact]
     public void DisableJsonResponseWrapping_ReturnOK()
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
-        Assert.False(httpRequestBuilder.__Disable_JsonResponseWrapping__);
+        Assert.False(httpRequestBuilder.__Enable__JsonResponseWrapping__);
         httpRequestBuilder.DisableJsonResponseWrapping();
-        Assert.True(httpRequestBuilder.__Disable_JsonResponseWrapping__);
+        Assert.False(httpRequestBuilder.__Enable__JsonResponseWrapping__);
     }
 }

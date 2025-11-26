@@ -56,8 +56,8 @@ public class ConstantsTests
         Assert.Equal("__Disable_Profiler__", Constants.DISABLE_PROFILER_KEY);
 
     [Fact]
-    public void DISABLE_JSON_RESPONSE_WRAPPING_KEY() =>
-        Assert.Equal("__Disable_JsonResponseWrapping__", Constants.DISABLE_JSON_RESPONSE_WRAPPING_KEY);
+    public void ENABLE_JSON_RESPONSE_WRAPPING_KEY() =>
+        Assert.Equal("__Enable__JsonResponseWrapping__", Constants.ENABLE_JSON_RESPONSE_WRAPPING_KEY);
 
     [Fact]
     public void DECLARATIVE_METHOD_KEY() =>

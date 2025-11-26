@@ -116,13 +116,10 @@ public static class HttpRemoteUtility
             serviceProvider?.GetService<IOptions<HttpRemoteOptions>>()?.Value.JsonSerializerOptions ??
             HttpRemoteOptions.JsonSerializerOptionsDefault;
 
-        // 检查是否禁用 JSON 响应反序列化包装器
-        var disableJsonResponseWrapping = httpResponseMessage?.RequestMessage?.Options.TryGetValue(
-            new HttpRequestOptionsKey<string>(Constants.DISABLE_JSON_RESPONSE_WRAPPING_KEY),
-            out var disabledValue) == true && disabledValue == "TRUE";
-
-        // 获取指定 JSON 响应反序列化包装器实例
-        var jsonResponseWrapper = disableJsonResponseWrapping ? null : httpClientOptions?.JsonResponseWrapper;
+        // 检查是否启用 JSON 响应反序列化包装器并获取指定 JSON 响应反序列化包装器实例
+        var jsonResponseWrapper = httpResponseMessage.IsEnableJsonResponseWrapping()
+            ? httpClientOptions?.JsonResponseWrapper
+            : null;
         var jsonResponseWrapperType = jsonResponseWrapper?.GenericType;
 
         // 解析出最终返回的 JSON 响应结果类型

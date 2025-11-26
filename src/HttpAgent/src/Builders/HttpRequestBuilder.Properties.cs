@@ -275,7 +275,7 @@ public sealed partial class HttpRequestBuilder
     /// <summary>
     ///     表示禁用请求分析工具标识
     /// </summary>
-    /// <remarks>用于禁用全局请求分析工具。配置信息将写入到 <see cref="HttpRequestMessage.Options" /> 中。</remarks>
+    /// <remarks>用于禁用全局请求分析工具。配置信息将写入到 <see cref="HttpRequestMessage.Options" /> 中。默认值为 <c>false</c>。</remarks>
     internal bool __Disable_Profiler__ { get; private set; }
 
     /// <summary>
@@ -310,11 +310,11 @@ public sealed partial class HttpRequestBuilder
     internal List<HttpAssertion>? Assertions { get; private set; }
 
     /// <summary>
-    ///     表示禁用 JSON 响应反序列化包装器
+    ///     表示启用 JSON 响应反序列化包装器
     /// </summary>
     /// <remarks>
     ///     当配置了 <see cref="HttpClientOptions.JsonResponseWrapper" /> 时有效。配置信息将写入到
-    ///     <see cref="HttpRequestMessage.Options" /> 中。
+    ///     <see cref="HttpRequestMessage.Options" /> 中。默认值为 <c>false</c>。
     /// </remarks>
-    internal bool __Disable_JsonResponseWrapping__ { get; private set; }
+    internal bool __Enable__JsonResponseWrapping__ { get; private set; }
 }

@@ -83,6 +83,24 @@ public class HttpContentConverterFactoryTests
             httpContentConverterFactory.GetConverter<int>(httpResponseMessage).GetType());
         Assert.Equal(typeof(ObjectContentConverter<ObjectModel>),
             httpContentConverterFactory.GetConverter<ObjectModel>(httpResponseMessage).GetType());
+
+        var httpRequestMessage = new HttpRequestMessage();
+        httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPING_KEY, "TRUE");
+        httpResponseMessage.RequestMessage = httpRequestMessage;
+        Assert.Equal(typeof(ObjectContentConverter<HttpResponseMessage>),
+            httpContentConverterFactory.GetConverter<HttpResponseMessage>(httpResponseMessage).GetType());
+        Assert.Equal(typeof(ObjectContentConverter<string>),
+            httpContentConverterFactory.GetConverter<string>(httpResponseMessage).GetType());
+        Assert.Equal(typeof(ObjectContentConverter<byte[]>),
+            httpContentConverterFactory.GetConverter<byte[]>(httpResponseMessage).GetType());
+        Assert.Equal(typeof(ObjectContentConverter<Stream>),
+            httpContentConverterFactory.GetConverter<Stream>(httpResponseMessage).GetType());
+        Assert.Equal(typeof(VoidContentConverter),
+            httpContentConverterFactory.GetConverter<VoidContent>(httpResponseMessage).GetType());
+        Assert.Equal(typeof(ObjectContentConverter<int>),
+            httpContentConverterFactory.GetConverter<int>(httpResponseMessage).GetType());
+        Assert.Equal(typeof(ObjectContentConverter<ObjectModel>),
+            httpContentConverterFactory.GetConverter<ObjectModel>(httpResponseMessage).GetType());
     }
 
     [Fact]
@@ -219,6 +237,22 @@ public class HttpContentConverterFactoryTests
             httpContentConverterFactory.GetConverter(typeof(byte[]), httpResponseMessage).GetType());
         Assert.Equal(typeof(StreamContentConverter),
             httpContentConverterFactory.GetConverter(typeof(Stream), httpResponseMessage).GetType());
+        Assert.Equal(typeof(ObjectContentConverter),
+            httpContentConverterFactory.GetConverter(typeof(int), httpResponseMessage).GetType());
+        Assert.Equal(typeof(ObjectContentConverter),
+            httpContentConverterFactory.GetConverter(typeof(ObjectModel), httpResponseMessage).GetType());
+
+        var httpRequestMessage = new HttpRequestMessage();
+        httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPING_KEY, "TRUE");
+        httpResponseMessage.RequestMessage = httpRequestMessage;
+        Assert.Equal(typeof(ObjectContentConverter),
+            httpContentConverterFactory.GetConverter(typeof(string), httpResponseMessage).GetType());
+        Assert.Equal(typeof(ObjectContentConverter),
+            httpContentConverterFactory.GetConverter(typeof(byte[]), httpResponseMessage).GetType());
+        Assert.Equal(typeof(ObjectContentConverter),
+            httpContentConverterFactory.GetConverter(typeof(Stream), httpResponseMessage).GetType());
+        Assert.Equal(typeof(VoidContentConverter),
+            httpContentConverterFactory.GetConverter(typeof(VoidContent), httpResponseMessage).GetType());
         Assert.Equal(typeof(ObjectContentConverter),
             httpContentConverterFactory.GetConverter(typeof(int), httpResponseMessage).GetType());
         Assert.Equal(typeof(ObjectContentConverter),

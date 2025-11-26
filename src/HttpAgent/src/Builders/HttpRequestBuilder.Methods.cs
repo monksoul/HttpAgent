@@ -1805,6 +1805,15 @@ public sealed partial class HttpRequestBuilder
     }
 
     /// <summary>
+    ///     设置启用 JSON 响应反序列化包装器
+    /// </summary>
+    /// <remarks>当配置了 <see cref="HttpClientOptions.JsonResponseWrapper" /> 时有效。</remarks>
+    /// <returns>
+    ///     <see cref="HttpRequestBuilder" />
+    /// </returns>
+    public HttpRequestBuilder JsonResponseWrapping() => JsonResponseWrapping(true);
+
+    /// <summary>
     ///     设置是否启用 JSON 响应反序列化包装器
     /// </summary>
     /// <remarks>当配置了 <see cref="HttpClientOptions.JsonResponseWrapper" /> 时有效。</remarks>
@@ -1814,7 +1823,7 @@ public sealed partial class HttpRequestBuilder
     /// </returns>
     public HttpRequestBuilder JsonResponseWrapping(bool enabled)
     {
-        __Disable_JsonResponseWrapping__ = !enabled;
+        __Enable__JsonResponseWrapping__ = enabled;
 
         return this;
     }

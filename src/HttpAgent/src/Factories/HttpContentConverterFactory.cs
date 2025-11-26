@@ -163,17 +163,31 @@ internal sealed class HttpContentConverterFactory : IHttpContentConverterFactory
         // 添加自定义 IHttpContentConverter 数组
         unionConverters.TryAdd(converters, value => value.GetType());
 
-        // 查找可以处理目标类型的响应内容转换器
-        var typeConverter = unionConverters.Values.OfType<IHttpContentConverter<TResult>>().LastOrDefault();
+        // 初始化目标类型响应内容转换器
+        IHttpContentConverter<TResult> targetConverter;
 
-        // 如果未找到，则调用 IObjectContentConverterFactory 实例的 GetConverter<TResult> 返回
-        var converter = typeConverter ?? ServiceProvider.GetRequiredService<IObjectContentConverterFactory>()
-            .GetConverter<TResult>(httpResponseMessage);
+        // 检查是否启用 JSON 响应反序列化包装器或目标转换类型为 void/VoidContent
+        if (httpResponseMessage.IsEnableJsonResponseWrapping() &&
+            !(typeof(TResult) == typeof(void) || typeof(VoidContent).IsAssignableFrom(typeof(TResult))))
+        {
+            // 调用 IObjectContentConverterFactory 实例的 GetConverter<TResult> 返回
+            targetConverter = ServiceProvider.GetRequiredService<IObjectContentConverterFactory>()
+                .GetConverter<TResult>(httpResponseMessage);
+        }
+        else
+        {
+            // 查找可以处理目标类型的响应内容转换器
+            var typeConverter = unionConverters.Values.OfType<IHttpContentConverter<TResult>>().LastOrDefault();
+
+            // 如果未找到，则调用 IObjectContentConverterFactory 实例的 GetConverter<TResult> 返回
+            targetConverter = typeConverter ?? ServiceProvider.GetRequiredService<IObjectContentConverterFactory>()
+                .GetConverter<TResult>(httpResponseMessage);
+        }
 
         // 设置服务提供器
-        converter.ServiceProvider ??= ServiceProvider;
+        targetConverter.ServiceProvider ??= ServiceProvider;
 
-        return converter;
+        return targetConverter;
     }
 
     /// <summary>
@@ -196,18 +210,33 @@ internal sealed class HttpContentConverterFactory : IHttpContentConverterFactory
         // 添加自定义 IHttpContentConverter 数组
         unionConverters.TryAdd(converters, value => value.GetType());
 
-        // 查找可以处理目标类型的响应内容转换器
-        var typeConverter = unionConverters.Values.OfType(typeof(IHttpContentConverter<>).MakeGenericType(resultType))
-            .Cast<IHttpContentConverter>().LastOrDefault();
+        // 初始化目标类型响应内容转换器
+        IHttpContentConverter targetConverter;
 
-        // 如果未找到，则调用 IObjectContentConverterFactory 实例的 GetConverter 返回
-        var converter = typeConverter ?? ServiceProvider.GetRequiredService<IObjectContentConverterFactory>()
-            .GetConverter(resultType, httpResponseMessage);
+        // 检查是否启用 JSON 响应反序列化包装器或目标转换类型为 void/VoidContent
+        if (httpResponseMessage.IsEnableJsonResponseWrapping() &&
+            !(resultType == typeof(void) || typeof(VoidContent).IsAssignableFrom(resultType)))
+        {
+            // 调用 IObjectContentConverterFactory 实例的 GetConverter 返回
+            targetConverter = ServiceProvider.GetRequiredService<IObjectContentConverterFactory>()
+                .GetConverter(resultType, httpResponseMessage);
+        }
+        else
+        {
+            // 查找可以处理目标类型的响应内容转换器
+            var typeConverter = unionConverters.Values
+                .OfType(typeof(IHttpContentConverter<>).MakeGenericType(resultType)).Cast<IHttpContentConverter>()
+                .LastOrDefault();
+
+            // 如果未找到，则调用 IObjectContentConverterFactory 实例的 GetConverter 返回
+            targetConverter = typeConverter ?? ServiceProvider.GetRequiredService<IObjectContentConverterFactory>()
+                .GetConverter(resultType, httpResponseMessage);
+        }
 
         // 设置服务提供器
-        converter.ServiceProvider ??= ServiceProvider;
+        targetConverter.ServiceProvider ??= ServiceProvider;
 
-        return converter;
+        return targetConverter;
     }
 
     /// <summary>

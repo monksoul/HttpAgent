@@ -116,12 +116,14 @@ public class HttpRemoteUtilityTests
         Assert.NotNull(jsonSerializationContext.JsonSerializerOptions);
         Assert.False(jsonSerializationContext.JsonSerializerOptions.IncludeFields);
         Assert.Equal(typeof(JsonModel), jsonSerializationContext.ResultType);
+        Assert.NotNull(jsonSerializationContext.GetResultValue);
 
         var jsonSerializationContext2 =
             HttpRemoteUtility.ResolveJsonSerializationContext(typeof(JsonModel), null, null);
         Assert.NotNull(jsonSerializationContext2.JsonSerializerOptions);
         Assert.False(jsonSerializationContext2.JsonSerializerOptions.IncludeFields);
         Assert.Equal(typeof(JsonModel), jsonSerializationContext2.ResultType);
+        Assert.NotNull(jsonSerializationContext2.GetResultValue);
     }
 
     [Fact]
@@ -135,7 +137,7 @@ public class HttpRemoteUtilityTests
         });
         var serviceProvider = services.BuildServiceProvider();
 
-        using var stringContent = new StringContent("""{"success":true,data:{"id":10, "name":"furion"}}""");
+        using var stringContent = new StringContent("""{"id":10, "name":"furion"}""");
         var httpResponseMessage = new HttpResponseMessage();
         httpResponseMessage.Content = stringContent;
 
@@ -143,14 +145,14 @@ public class HttpRemoteUtilityTests
             HttpRemoteUtility.ResolveJsonSerializationContext(typeof(JsonModel), httpResponseMessage, serviceProvider);
         Assert.NotNull(jsonSerializationContext.JsonSerializerOptions);
         Assert.True(jsonSerializationContext.JsonSerializerOptions.IncludeFields);
-        Assert.Equal(typeof(ApiResult<JsonModel>), jsonSerializationContext.ResultType);
+        Assert.Equal(typeof(JsonModel), jsonSerializationContext.ResultType);
         Assert.NotNull(jsonSerializationContext.GetResultValue);
 
         serviceProvider.Dispose();
     }
 
     [Fact]
-    public void ResolveJsonSerializationContext_WithHttpClientOptions_WithDisableJsonResponseWrapping_ReturnOK()
+    public void ResolveJsonSerializationContext_WithHttpClientOptions_WithEnableJsonResponseWrapping_ReturnOK()
     {
         var services = new ServiceCollection();
         services.AddHttpClient(string.Empty).ConfigureOptions(options =>
@@ -163,7 +165,7 @@ public class HttpRemoteUtilityTests
         using var stringContent = new StringContent("""{"success":true,"data":{"id":10,"name":"furion"}}""");
         var httpResponseMessage = new HttpResponseMessage();
         var httpRequestMessage = new HttpRequestMessage();
-        httpRequestMessage.Options.AddOrUpdate(Constants.DISABLE_JSON_RESPONSE_WRAPPING_KEY, "TRUE");
+        httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPING_KEY, "TRUE");
         httpResponseMessage.RequestMessage = httpRequestMessage;
         httpResponseMessage.Content = stringContent;
 
@@ -171,7 +173,7 @@ public class HttpRemoteUtilityTests
             HttpRemoteUtility.ResolveJsonSerializationContext(typeof(JsonModel), httpResponseMessage, serviceProvider);
         Assert.NotNull(jsonSerializationContext.JsonSerializerOptions);
         Assert.True(jsonSerializationContext.JsonSerializerOptions.IncludeFields);
-        Assert.Equal(typeof(JsonModel), jsonSerializationContext.ResultType);
+        Assert.Equal(typeof(ApiResult<JsonModel>), jsonSerializationContext.ResultType);
         Assert.NotNull(jsonSerializationContext.GetResultValue);
 
         serviceProvider.Dispose();

@@ -76,10 +76,10 @@ internal static class Constants
     internal const string DISABLE_PROFILER_KEY = "__Disable_Profiler__";
 
     /// <summary>
-    ///     禁用 JSON 响应反序列化包装器键
+    ///     启用 JSON 响应反序列化包装器键
     /// </summary>
     /// <remarks>被用于从 <see cref="HttpRequestMessage" /> 的 <c>Options</c> 属性中读取。</remarks>
-    internal const string DISABLE_JSON_RESPONSE_WRAPPING_KEY = "__Disable_JsonResponseWrapping__";
+    internal const string ENABLE_JSON_RESPONSE_WRAPPING_KEY = "__Enable__JsonResponseWrapping__";
 
     /// <summary>
     ///     HTTP 声明式请求方法签名键

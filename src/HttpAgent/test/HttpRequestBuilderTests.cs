@@ -536,11 +536,11 @@ public class HttpRequestBuilderTests
             new HttpRequestOptionsKey<string>(Constants.HTTP_CLIENT_NAME), out var value2));
         Assert.Equal(string.Empty, value2);
 
-        httpRequestBuilder.DisableJsonResponseWrapping();
+        httpRequestBuilder.JsonResponseWrapping();
         httpRequestBuilder.AppendProperties(httpRequestMessage);
         Assert.Equal(5, httpRequestMessage.Options.Count());
         Assert.True(httpRequestMessage.Options.TryGetValue(
-            new HttpRequestOptionsKey<string>(Constants.DISABLE_JSON_RESPONSE_WRAPPING_KEY), out var value4));
+            new HttpRequestOptionsKey<string>(Constants.ENABLE_JSON_RESPONSE_WRAPPING_KEY), out var value4));
         Assert.Equal("TRUE", value4);
 
         var httpRequestBuilder2 =

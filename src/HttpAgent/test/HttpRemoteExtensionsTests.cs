@@ -438,4 +438,17 @@ public class HttpRemoteExtensionsTests
 
         Assert.Equal("utf-8", httpResponseMessage.Content.Headers.ContentType?.CharSet);
     }
+
+    [Fact]
+    public void IsEnableJsonResponseWrapping_ReturnOK()
+    {
+        var httpResponseMessage = new HttpResponseMessage();
+        Assert.False(httpResponseMessage.IsEnableJsonResponseWrapping());
+
+        var httpRequestMessage = new HttpRequestMessage();
+        httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPING_KEY, "TRUE");
+        httpResponseMessage.RequestMessage = httpRequestMessage;
+
+        Assert.True(httpResponseMessage.IsEnableJsonResponseWrapping());
+    }
 }

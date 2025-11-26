@@ -477,6 +477,20 @@ public static partial class HttpRemoteExtensions
         JsonSerializer.Serialize(obj, jsonSerializerOptions ?? HttpRemoteOptions.JsonSerializerOptionsDefault);
 
     /// <summary>
+    ///     检查是否启用 JSON 响应反序列化包装器
+    /// </summary>
+    /// <param name="httpResponseMessage">
+    ///     <see cref="HttpResponseMessage" />
+    /// </param>
+    /// <returns>
+    ///     <see cref="bool" />
+    /// </returns>
+    internal static bool IsEnableJsonResponseWrapping(this HttpResponseMessage? httpResponseMessage) =>
+        httpResponseMessage?.RequestMessage?.Options.TryGetValue(
+            new HttpRequestOptionsKey<string>(Constants.ENABLE_JSON_RESPONSE_WRAPPING_KEY),
+            out var enableValue) == true && enableValue == "TRUE";
+
+    /// <summary>
     ///     获取主机环境名
     /// </summary>
     /// <param name="services">
