@@ -190,8 +190,14 @@ public class HttpRemoteExtensionsTests
         var stringContent = new StringContent("Hello World", Encoding.UTF8, "application/json");
         httpRequestMessage.Content = stringContent;
 
+        httpRequestMessage.Options.TryAdd("name", "Furion");
+
         var clonedHttpRequestMessage = await httpRequestMessage.CloneAsync();
         Assert.Equal("furion", clonedHttpRequestMessage.Headers.UserAgent.ToString());
+        Assert.Single(clonedHttpRequestMessage.Options);
+        Assert.True(
+            clonedHttpRequestMessage.Options.TryGetValue(new HttpRequestOptionsKey<string>("name"), out var name));
+        Assert.Equal("Furion", name);
 
         var streamContent = clonedHttpRequestMessage.Content as StreamContent;
         Assert.NotNull(streamContent);

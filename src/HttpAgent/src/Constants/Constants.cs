@@ -73,13 +73,13 @@ internal static class Constants
     ///     禁用请求分析工具键
     /// </summary>
     /// <remarks>被用于从 <see cref="HttpRequestMessage" /> 的 <c>Options</c> 属性中读取。</remarks>
-    internal const string DISABLE_PROFILER_KEY = "__Disable_Profiler__";
+    internal const string DISABLE_PROFILER_KEY = "__DISABLE_PROFILER__";
 
     /// <summary>
     ///     启用 JSON 响应反序列化包装器键
     /// </summary>
     /// <remarks>被用于从 <see cref="HttpRequestMessage" /> 的 <c>Options</c> 属性中读取。</remarks>
-    internal const string ENABLE_JSON_RESPONSE_WRAPPING_KEY = "__Enable__JsonResponseWrapping__";
+    internal const string ENABLE_JSON_RESPONSE_WRAPPING_KEY = "__ENABLE__JSON_RESPONSE_WRAPPING__";
 
     /// <summary>
     ///     HTTP 声明式请求方法签名键

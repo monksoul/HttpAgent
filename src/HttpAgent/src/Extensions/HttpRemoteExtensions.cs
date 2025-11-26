@@ -319,6 +319,12 @@ public static partial class HttpRemoteExtensions
             clonedHttpRequestMessage.Headers.TryAddWithoutValidation(header.Key, header.Value);
         }
 
+        // 复制 httpRequestMessage.Options 选项
+        foreach (var (key, value) in httpRequestMessage.Options)
+        {
+            clonedHttpRequestMessage.Options.TryAdd(key, value); // TODO: 思考是 TryAdd 还是 AddOrUpdate
+        }
+
         // 检查是否包含请求内容
         if (httpRequestMessage.Content is null)
         {

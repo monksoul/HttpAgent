@@ -53,11 +53,11 @@ public class ConstantsTests
 
     [Fact]
     public void DISABLE_PROFILER_KEY() =>
-        Assert.Equal("__Disable_Profiler__", Constants.DISABLE_PROFILER_KEY);
+        Assert.Equal("__DISABLE_PROFILER__", Constants.DISABLE_PROFILER_KEY);
 
     [Fact]
     public void ENABLE_JSON_RESPONSE_WRAPPING_KEY() =>
-        Assert.Equal("__Enable__JsonResponseWrapping__", Constants.ENABLE_JSON_RESPONSE_WRAPPING_KEY);
+        Assert.Equal("__ENABLE__JSON_RESPONSE_WRAPPING__", Constants.ENABLE_JSON_RESPONSE_WRAPPING_KEY);
 
     [Fact]
     public void DECLARATIVE_METHOD_KEY() =>
