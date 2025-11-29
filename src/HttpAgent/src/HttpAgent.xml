@@ -5259,7 +5259,7 @@
         </member>
         <member name="M:HttpAgent.Core.Utilities.StringUtility.AddTabToEachLine(System.String,System.Boolean)">
             <summary>
-                在字符串每一行添加制表符
+                在字符串每一行添加制表符（两个空白）
             </summary>
             <param name="input">文本</param>
             <param name="skipFirstLine">是否跳过第一行</param>
@@ -8044,7 +8044,9 @@
         <member name="M:HttpAgent.LongPollingManager.Retry(System.Threading.CancellationToken)">
             <summary>
                 重新开始请求
-            </summa <see cref="T:System.Threading.CancellationToken" />
+            </summary>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
             </param>
         </member>
         <member name="M:HttpAgent.LongPollingManager.RetryAsync(System.Threading.CancellationToken)">
@@ -10141,7 +10143,7 @@
             <code>
             ○ Match if at the beginning of the string.<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
-            ○ Match a character in the set [\-~].<br/>
+            ○ Match a character in the set [-~].<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
@@ -15328,12 +15330,6 @@
         <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32,System.Int32,System.Int32)">
             <summary>Pushes 3 values onto the backtracking stack.</summary>
         </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.WordCategoriesMask">
-            <summary>Provides a mask of Unicode categories that combine to form [\w].</summary>
-        </member>
-        <member name="P:System.Text.RegularExpressions.Generated.Utilities.WordCharBitmap">
-            <summary>Gets a bitmap for whether each character 0 through 127 is in [\w]</summary>
-        </member>
         <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_1F52B1A4D2E82B6FEDE25EC8C55F85BB36775196837076691C96925040F90D32">
             <summary>Supports searching for the string "\\u".</summary>
         </member>
@@ -15363,6 +15359,17 @@
             </summary>
             <param name="services">
                 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
+            </param>
+            <param name="httpRemoteBuilder">
+                <see cref="T:HttpAgent.HttpRemoteBuilder" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
+            </returns>
+        </member>
+    </members>
+</doc>
+tensions.DependencyInjection.IServiceCollection" />
             </param>
             <param name="httpRemoteBuilder">
                 <see cref="T:HttpAgent.HttpRemoteBuilder" />

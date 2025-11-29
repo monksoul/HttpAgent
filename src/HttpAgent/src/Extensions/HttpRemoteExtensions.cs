@@ -207,7 +207,7 @@ public static partial class HttpRemoteExtensions
                     [httpRequestMessage.RequestUri?.OriginalString!]),
                 new KeyValuePair<string, IEnumerable<string>>("HTTP Method", [httpRequestMessage.Method.ToString()]),
                 new KeyValuePair<string, IEnumerable<string>>("Status Code",
-                    [$"{(int)httpResponseMessage.StatusCode} {httpResponseMessage.StatusCode}"]),
+                    [$"\e[33m\e[1m{(int)httpResponseMessage.StatusCode} {httpResponseMessage.StatusCode}\e[0m"]),
                 new KeyValuePair<string, IEnumerable<string>>("HTTP Version", [httpResponseMessage.Version.ToString()]),
                 new KeyValuePair<string, IEnumerable<string>>("HTTP Content",
                     [$"{httpContent?.GetType().Name}"])
@@ -285,7 +285,7 @@ public static partial class HttpRemoteExtensions
         // 如果实际读取的数据小于最大显示大小，则直接返回；否则，添加省略号表示内容被截断
         var bodyString = total <= maxBytesToDisplay
             ? partialContent
-            : partialContent + $" ... [truncated, total: {total} bytes]";
+            : partialContent + $"\e[32m\e[1m ... [truncated, total: {total} bytes]\e[0m";
 
         return StringUtility.FormatKeyValuesSummary(
             [new KeyValuePair<string, IEnumerable<string>>(string.Empty, [bodyString])],

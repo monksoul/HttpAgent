@@ -48,7 +48,7 @@ public class FileTransferProgressTests
         fileTransferProgress.UpdateProgress(500000, TimeSpan.FromMilliseconds(200));
 
         Assert.Equal(
-            "Transfer Progress: \r\n\tFile Name:                        furion.index.html\r\n\tFile Path:                        C:\\Workspaces\\furion.index.html\r\n\tFile Size:                        0.95MB\r\n\tTransferred:                      0.48MB\r\n\tPercentage Complete:              50.00%\r\n\tTransfer Rate:                    2.38MB/s\r\n\tTime Elapsed (s):                 0.20\r\n\tEstimated Time Remaining (s):     0.20",
+            "[34m[1mTransfer Progress:[0m \r\n  File Name:                        furion.index.html\r\n  File Path:                        C:\\Workspaces\\furion.index.html\r\n  File Size:                        0.95MB\r\n  Transferred:                      0.48MB\r\n  Percentage Complete:              50.00%\r\n  Transfer Rate:                    2.38MB/s\r\n  Time Elapsed (s):                 0.20\r\n  Estimated Time Remaining (s):     0.20",
             fileTransferProgress.ToString());
     }
 
@@ -60,7 +60,7 @@ public class FileTransferProgressTests
         fileTransferProgress.UpdateProgress(500000, TimeSpan.FromMilliseconds(200));
 
         Assert.Equal(
-            "Transfer Progress: \r\n\tFile Name:                        furion.index.html\r\n\tFile Path:                        C:\\Workspaces\\furion.index.html\r\n\tFile Size:                        0.95MB\r\n\tTransferred:                      0.48MB\r\n\tPercentage Complete:              50.00%\r\n\tTransfer Rate:                    2.38MB/s\r\n\tTime Elapsed (s):                 0.20\r\n\tEstimated Time Remaining (s):     0.20",
+            "[34m[1mTransfer Progress:[0m \r\n  File Name:                        furion.index.html\r\n  File Path:                        C:\\Workspaces\\furion.index.html\r\n  File Size:                        0.95MB\r\n  Transferred:                      0.48MB\r\n  Percentage Complete:              50.00%\r\n  Transfer Rate:                    2.38MB/s\r\n  Time Elapsed (s):                 0.20\r\n  Estimated Time Remaining (s):     0.20",
             await fileTransferProgress.ToStringAsync());
     }
 

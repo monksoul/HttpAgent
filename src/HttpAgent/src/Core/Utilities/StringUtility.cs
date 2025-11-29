@@ -49,10 +49,10 @@ public static class StringUtility
         var index = 0;
         foreach (var (key, value) in keyValuePairs)
         {
-            // 检查是否包含摘要，如果有则添加制表符
+            // 检查是否包含摘要，如果有则添加制表符（两个空白）
             if (hasSummary)
             {
-                stringBuilder.Append('\t');
+                stringBuilder.Append("  ");
             }
 
             // 获取格式化后的值
@@ -80,11 +80,11 @@ public static class StringUtility
         // 获取字符串
         var formatString = stringBuilder.ToString();
 
-        return hasSummary ? $"{summary}: \r\n{formatString}" : formatString;
+        return hasSummary ? $"\e[34m\e[1m{summary}:\e[0m \r\n{formatString}" : formatString;
     }
 
     /// <summary>
-    ///     在字符串每一行添加制表符
+    ///     在字符串每一行添加制表符（两个空白）
     /// </summary>
     /// <param name="input">文本</param>
     /// <param name="skipFirstLine">是否跳过第一行</param>
