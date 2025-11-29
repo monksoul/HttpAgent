@@ -41,7 +41,7 @@ public sealed class ProfilerDelegatingHandler(IHttpRemoteLogger logger, IOptions
         }
 
         // 记录请求信息
-        LogRequestAsync(logger, httpRemoteOptions.Value, httpRequestMessage, null, cancellationToken)
+        LogRequestAsync(logger, httpRemoteOptions.Value, httpRequestMessage, null, null, cancellationToken)
             .GetAwaiter().GetResult();
 
         // 初始化 Stopwatch 实例并开启计时操作
@@ -77,7 +77,7 @@ public sealed class ProfilerDelegatingHandler(IHttpRemoteLogger logger, IOptions
         }
 
         // 记录请求信息
-        await LogRequestAsync(logger, httpRemoteOptions.Value, httpRequestMessage, null, cancellationToken);
+        await LogRequestAsync(logger, httpRemoteOptions.Value, httpRequestMessage, null, null, cancellationToken);
 
         // 初始化 Stopwatch 实例并开启计时操作
         var stopwatch = Stopwatch.StartNew();
@@ -116,14 +116,17 @@ public sealed class ProfilerDelegatingHandler(IHttpRemoteLogger logger, IOptions
     /// <param name="httpRemoteAnalyzer">
     ///     <see cref="HttpRemoteAnalyzer" />
     /// </param>
+    /// <param name="httpClient">
+    ///     <see cref="HttpClient" />
+    /// </param>
     /// <param name="cancellationToken">
     ///     <see cref="CancellationToken" />
     /// </param>
     internal static async Task LogRequestAsync(IHttpRemoteLogger logger, HttpRemoteOptions remoteOptions,
-        HttpRequestMessage request, HttpRemoteAnalyzer? httpRemoteAnalyzer = null,
+        HttpRequestMessage request, HttpRemoteAnalyzer? httpRemoteAnalyzer = null, HttpClient? httpClient = null,
         CancellationToken cancellationToken = default)
     {
-        Log(logger, remoteOptions, request.ProfilerHeaders(), httpRemoteAnalyzer);
+        Log(logger, remoteOptions, request.ProfilerHeaders(httpClient), httpRemoteAnalyzer);
         Log(logger, remoteOptions, await request.Content.ProfilerAsync(cancellationToken: cancellationToken),
             httpRemoteAnalyzer);
     }

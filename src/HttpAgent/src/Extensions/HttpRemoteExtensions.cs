@@ -133,14 +133,18 @@ public static partial class HttpRemoteExtensions
     /// <param name="httpRequestMessage">
     ///     <see cref="HttpRequestMessage" />
     /// </param>
+    /// <param name="httpClient">
+    ///     <see cref="HttpClient" />
+    /// </param>
     /// <param name="summary">摘要</param>
     /// <returns>
     ///     <see cref="string" />
     /// </returns>
-    public static string? ProfilerHeaders(this HttpRequestMessage httpRequestMessage,
+    public static string? ProfilerHeaders(this HttpRequestMessage httpRequestMessage, HttpClient? httpClient = null,
         string? summary = "Request Headers") =>
         StringUtility.FormatKeyValuesSummary(
-            httpRequestMessage.Headers.ConcatIgnoreNull(httpRequestMessage.Content?.Headers), summary);
+            (httpClient?.DefaultRequestHeaders).ConcatIgnoreNull(httpRequestMessage.Headers)
+            .ConcatIgnoreNull(httpRequestMessage.Content?.Headers), summary);
 
     /// <summary>
     ///     分析 <see cref="HttpResponseMessage" /> 标头

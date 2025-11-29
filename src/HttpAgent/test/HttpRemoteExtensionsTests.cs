@@ -68,7 +68,7 @@ public class HttpRemoteExtensionsTests
             "[34m[1mRequest Headers:[0m \r\n  Accept:              application/json\r\n  Accept-Encoding:     gzip, deflate",
             httpRequestMessage.ProfilerHeaders());
         Assert.Equal("Accept:              application/json\r\nAccept-Encoding:     gzip, deflate",
-            httpRequestMessage.ProfilerHeaders(null));
+            httpRequestMessage.ProfilerHeaders(summary: null));
     }
 
     [Fact]
@@ -84,7 +84,25 @@ public class HttpRemoteExtensionsTests
             httpRequestMessage.ProfilerHeaders());
         Assert.Equal(
             "Accept:              application/json\r\nAccept-Encoding:     gzip, deflate\r\nContent-Type:        application/json; charset=utf-8",
-            httpRequestMessage.ProfilerHeaders(null));
+            httpRequestMessage.ProfilerHeaders(summary: null));
+    }
+
+    [Fact]
+    public void ProfilerHeaders_HttpRequestMessage_WithHttpClient_ReturnOK()
+    {
+        var httpRequestMessage = new HttpRequestMessage();
+        httpRequestMessage.Headers.TryAddWithoutValidation("Accept", "application/json");
+        httpRequestMessage.Headers.TryAddWithoutValidation("Accept-Encoding", "gzip, deflate");
+
+        using var httpClient = new HttpClient();
+        httpClient.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", Constants.USER_AGENT_OF_BROWSER);
+
+        Assert.Equal(
+            "[34m[1mRequest Headers:[0m \r\n  User-Agent:          Mozilla/5.0, (Windows NT 10.0; Win64; x64), AppleWebKit/537.36, (KHTML, like Gecko), Chrome/142.0.0.0, Safari/537.36, Edg/142.0.0.0\r\n  Accept:              application/json\r\n  Accept-Encoding:     gzip, deflate",
+            httpRequestMessage.ProfilerHeaders(httpClient));
+        Assert.Equal(
+            "User-Agent:          Mozilla/5.0, (Windows NT 10.0; Win64; x64), AppleWebKit/537.36, (KHTML, like Gecko), Chrome/142.0.0.0, Safari/537.36, Edg/142.0.0.0\r\nAccept:              application/json\r\nAccept-Encoding:     gzip, deflate",
+            httpRequestMessage.ProfilerHeaders(httpClient, null));
     }
 
     [Fact]

@@ -431,7 +431,7 @@ internal sealed partial class HttpRemoteService : IHttpRemoteService
             httpRemoteAnalyzer = httpRequestBuilder.ProfilerPredicate is not null ? new HttpRemoteAnalyzer() : null;
 
             await ProfilerDelegatingHandler.LogRequestAsync(_logger, _httpRemoteOptions, httpRequestMessage,
-                httpRemoteAnalyzer, cancellationToken);
+                httpRemoteAnalyzer, httpClient, cancellationToken);
         }
 
         // 创建关联的超时 Token 标识
