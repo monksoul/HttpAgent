@@ -143,13 +143,28 @@ public class HttpRemoteExtensionsTests
         httpResponseMessage.Content.Headers.TryAddWithoutValidation("Content-Type", "application/json");
 
         Assert.Equal(
-            "[34m[1mGeneral:[0m \r\n  Request URL:      http://localhost\r\n  HTTP Method:      GET\r\n  Status Code:      [33m[1m200 OK[0m\r\n  HTTP Version:     1.1\r\n  HTTP Content:     \r\n[34m[1mResponse Headers:[0m \r\n  Accept:              application/json\r\n  Accept-Encoding:     gzip, deflate\r\n  Content-Type:        application/json",
+            "[34m[1mGeneral:[0m \r\n  Request URL:      http://localhost\r\n  HTTP Method:      GET\r\n  Status Code:      [32m[1m200 OK[0m\r\n  HTTP Version:     1.1\r\n  HTTP Content:     \r\n[34m[1mResponse Headers:[0m \r\n  Accept:              application/json\r\n  Accept-Encoding:     gzip, deflate\r\n  Content-Type:        application/json",
             httpResponseMessage.ProfilerGeneralAndHeaders());
 
         Assert.Equal(
-            "[34m[1mGeneral:[0m \r\n  Request URL:          http://localhost\r\n  HTTP Method:          GET\r\n  Status Code:          [33m[1m200 OK[0m\r\n  HTTP Version:         1.1\r\n  HTTP Content:         \r\n  Request Duration:     200ms\r\n[34m[1mResponse Headers:[0m \r\n  Accept:              application/json\r\n  Accept-Encoding:     gzip, deflate\r\n  Content-Type:        application/json",
+            "[34m[1mGeneral:[0m \r\n  Request URL:          http://localhost\r\n  HTTP Method:          GET\r\n  Status Code:          [32m[1m200 OK[0m\r\n  HTTP Version:         1.1\r\n  HTTP Content:         \r\n  Request Duration:     200ms\r\n[34m[1mResponse Headers:[0m \r\n  Accept:              application/json\r\n  Accept-Encoding:     gzip, deflate\r\n  Content-Type:        application/json",
             httpResponseMessage.ProfilerGeneralAndHeaders(generalCustomKeyValues:
                 [new KeyValuePair<string, IEnumerable<string>>("Request Duration", ["200ms"])]));
+    }
+
+    [Fact]
+    public void GetColoredStatusText_Invalid_Parameters() =>
+        Assert.Throws<ArgumentNullException>(() => HttpRemoteExtensions.GetColoredStatusText(null!));
+
+    [Fact]
+    public void GetColoredStatusText_ReturnOK()
+    {
+        Assert.Equal("[32m[1m200 OK[0m",
+            new HttpResponseMessage(HttpStatusCode.OK).GetColoredStatusText());
+        Assert.Equal("[33m[1m302 Found[0m",
+            new HttpResponseMessage(HttpStatusCode.Redirect).GetColoredStatusText());
+        Assert.Equal("[31m[1m500 InternalServerError[0m",
+            new HttpResponseMessage(HttpStatusCode.InternalServerError).GetColoredStatusText());
     }
 
     [Fact]
@@ -195,9 +210,17 @@ public class HttpRemoteExtensionsTests
         Assert.Equal("[34m[1mResponse Body (StringContent, total: 11 bytes):[0m \r\n  Hello World",
             await stringContent2.ProfilerAsync("Response Body"));
 
+        var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.InternalServerError);
         var stringContent3 = new StringContent("Hello World");
+        httpResponseMessage.Content = stringContent3;
         Assert.Equal("[34m[1mRequest Body (StringContent, total: 11 bytes):[0m \r\n  [31m[1mHello World[0m",
-            await stringContent3.ProfilerAsync(isFailedResponse: true));
+            await stringContent3.ProfilerAsync(httpResponseMessage: httpResponseMessage));
+
+        var httpResponseMessage2 = new HttpResponseMessage(HttpStatusCode.Redirect);
+        var stringContent4 = new StringContent("Hello World");
+        httpResponseMessage2.Content = stringContent4;
+        Assert.Equal("[34m[1mRequest Body (StringContent, total: 11 bytes):[0m \r\n  [33m[1mHello World[0m",
+            await stringContent4.ProfilerAsync(httpResponseMessage: httpResponseMessage2));
     }
 
     [Fact]

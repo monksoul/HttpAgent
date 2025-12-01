@@ -6852,7 +6852,18 @@
                 <see cref="T:System.String" />
             </returns>
         </member>
-        <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.ProfilerAsync(System.Net.Http.HttpContent,System.String,System.Nullable{System.Boolean},System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.GetColoredStatusText(System.Net.Http.HttpResponseMessage)">
+            <summary>
+                获取带颜色的 HTTP 状态码文本
+            </summary>
+            <param name="httpResponseMessage">
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </param>
+            <returns>
+                <see cref="T:System.String" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.ProfilerAsync(System.Net.Http.HttpContent,System.String,System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
             <summary>
                 分析 <see cref="T:System.Net.Http.HttpContent" /> 内容
             </summary>
@@ -6860,7 +6871,9 @@
                 <see cref="T:System.Net.Http.HttpContent" />
             </param>
             <param name="summary">摘要</param>
-            <param name="isFailedResponse">当响应表示失败时，对应内容应渲染为红色</param>
+            <param name="httpResponseMessage">
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </param>
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
