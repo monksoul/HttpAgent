@@ -770,8 +770,9 @@ public sealed class HttpMultipartFormDataBuilder
                 MediaTypeHeaderValue.Parse($"{MediaTypeNames.Multipart.FormData}; boundary={boundary}");
         }
 
-        // 逐条遍历添加
-        foreach (var dataItem in _partContents)
+        // 为确保请求分析工具能完整显示所有表单数据（避免因打印裁剪导致信息丢失），先对数据排序，再逐条遍历添加
+        // 这里留有一个疑问：若第三方接口依赖请求数据的顺序，当前做法是否可能导致请求失败？
+        foreach (var dataItem in _partContents.OrderBy(u => u.RawContent is byte[] or Stream ? 1 : 0))
         {
             // 尝试获取转换后的表单名称
             var transformedName = FormNameTransformer?.Invoke(dataItem.Name) ?? dataItem.Name;

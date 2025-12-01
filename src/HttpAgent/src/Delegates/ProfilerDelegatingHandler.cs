@@ -157,8 +157,9 @@ public sealed class ProfilerDelegatingHandler(IHttpRemoteLogger logger, IOptions
         Log(logger, remoteOptions, httpResponseMessage.ProfilerGeneralAndHeaders(generalCustomKeyValues:
                 [new KeyValuePair<string, IEnumerable<string>>("Request Duration (ms)", [$"{requestDuration:N2}"])]),
             httpRemoteAnalyzer);
-        Log(logger, remoteOptions, await httpResponseMessage.Content.ProfilerAsync("Response Body", cancellationToken),
-            httpRemoteAnalyzer);
+        Log(logger, remoteOptions,
+            await httpResponseMessage.Content.ProfilerAsync("Response Body", !httpResponseMessage.IsSuccessStatusCode,
+                cancellationToken), httpRemoteAnalyzer);
     }
 
     /// <summary>

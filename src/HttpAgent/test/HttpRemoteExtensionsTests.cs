@@ -194,6 +194,10 @@ public class HttpRemoteExtensionsTests
         var stringContent2 = new StringContent("Hello World");
         Assert.Equal("[34m[1mResponse Body (StringContent, total: 11 bytes):[0m \r\n  Hello World",
             await stringContent2.ProfilerAsync("Response Body"));
+
+        var stringContent3 = new StringContent("Hello World");
+        Assert.Equal("[34m[1mRequest Body (StringContent, total: 11 bytes):[0m \r\n  [31m[1mHello World[0m",
+            await stringContent3.ProfilerAsync(isFailedResponse: true));
     }
 
     [Fact]

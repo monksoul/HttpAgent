@@ -231,6 +231,7 @@ public static partial class HttpRemoteExtensions
     ///     <see cref="HttpContent" />
     /// </param>
     /// <param name="summary">摘要</param>
+    /// <param name="isFailedResponse">当响应表示失败时，对应内容应渲染为红色</param>
     /// <param name="cancellationToken">
     ///     <see cref="CancellationToken" />
     /// </param>
@@ -238,7 +239,7 @@ public static partial class HttpRemoteExtensions
     ///     <see cref="string" />
     /// </returns>
     public static async Task<string?> ProfilerAsync(this HttpContent? httpContent, string? summary = "Request Body",
-        CancellationToken cancellationToken = default)
+        bool? isFailedResponse = null, CancellationToken cancellationToken = default)
     {
         // 空检查
         if (httpContent is null)
@@ -284,6 +285,12 @@ public static partial class HttpRemoteExtensions
         if (total == bytesToShow && UnicodeEscapeRegex().IsMatch(partialContent))
         {
             partialContent = Regex.Unescape(partialContent);
+        }
+
+        // 检查响应是否为失败状态
+        if (isFailedResponse == true)
+        {
+            partialContent = $"\e[31m\e[1m{partialContent}\e[0m";
         }
 
         // 如果实际读取的数据小于最大显示大小，则直接返回；否则，添加省略号表示内容被截断
