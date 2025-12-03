@@ -80,7 +80,7 @@ public static class StringUtility
         // 获取字符串
         var formatString = stringBuilder.ToString();
 
-        return hasSummary ? $"\e[34m\e[1m{summary}:\e[0m \r\n{formatString}" : formatString;
+        return hasSummary ? $"\e[36m\e[1m{summary}:\e[0m \r\n{formatString}" : formatString;
     }
 
     /// <summary>

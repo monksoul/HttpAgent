@@ -65,7 +65,7 @@ public class HttpRemoteExtensionsTests
         httpRequestMessage.Headers.TryAddWithoutValidation("Accept-Encoding", "gzip, deflate");
 
         Assert.Equal(
-            "[34m[1mRequest Headers:[0m \r\n  Accept:              application/json\r\n  Accept-Encoding:     gzip, deflate",
+            "[36m[1mRequest Headers:[0m \r\n  Accept:              application/json\r\n  Accept-Encoding:     gzip, deflate",
             httpRequestMessage.ProfilerHeaders());
         Assert.Equal("Accept:              application/json\r\nAccept-Encoding:     gzip, deflate",
             httpRequestMessage.ProfilerHeaders(summary: null));
@@ -80,7 +80,7 @@ public class HttpRemoteExtensionsTests
         httpRequestMessage.Headers.TryAddWithoutValidation("Accept-Encoding", "gzip, deflate");
 
         Assert.Equal(
-            "[34m[1mRequest Headers:[0m \r\n  Accept:              application/json\r\n  Accept-Encoding:     gzip, deflate\r\n  Content-Type:        application/json; charset=utf-8",
+            "[36m[1mRequest Headers:[0m \r\n  Accept:              application/json\r\n  Accept-Encoding:     gzip, deflate\r\n  Content-Type:        application/json; charset=utf-8",
             httpRequestMessage.ProfilerHeaders());
         Assert.Equal(
             "Accept:              application/json\r\nAccept-Encoding:     gzip, deflate\r\nContent-Type:        application/json; charset=utf-8",
@@ -98,7 +98,7 @@ public class HttpRemoteExtensionsTests
         httpClient.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", Constants.USER_AGENT_OF_BROWSER);
 
         Assert.Equal(
-            "[34m[1mRequest Headers:[0m \r\n  User-Agent:          Mozilla/5.0, (Windows NT 10.0; Win64; x64), AppleWebKit/537.36, (KHTML, like Gecko), Chrome/142.0.0.0, Safari/537.36, Edg/142.0.0.0\r\n  Accept:              application/json\r\n  Accept-Encoding:     gzip, deflate",
+            "[36m[1mRequest Headers:[0m \r\n  User-Agent:          Mozilla/5.0, (Windows NT 10.0; Win64; x64), AppleWebKit/537.36, (KHTML, like Gecko), Chrome/142.0.0.0, Safari/537.36, Edg/142.0.0.0\r\n  Accept:              application/json\r\n  Accept-Encoding:     gzip, deflate",
             httpRequestMessage.ProfilerHeaders(httpClient));
         Assert.Equal(
             "User-Agent:          Mozilla/5.0, (Windows NT 10.0; Win64; x64), AppleWebKit/537.36, (KHTML, like Gecko), Chrome/142.0.0.0, Safari/537.36, Edg/142.0.0.0\r\nAccept:              application/json\r\nAccept-Encoding:     gzip, deflate",
@@ -114,7 +114,7 @@ public class HttpRemoteExtensionsTests
         httpResponseMessage.Content.Headers.TryAddWithoutValidation("Content-Type", "application/json");
 
         Assert.Equal(
-            "[34m[1mResponse Headers:[0m \r\n  Accept:              application/json\r\n  Accept-Encoding:     gzip, deflate\r\n  Content-Type:        application/json",
+            "[36m[1mResponse Headers:[0m \r\n  Accept:              application/json\r\n  Accept-Encoding:     gzip, deflate\r\n  Content-Type:        application/json",
             httpResponseMessage.ProfilerHeaders());
         Assert.Equal(
             "Accept:              application/json\r\nAccept-Encoding:     gzip, deflate\r\nContent-Type:        application/json",
@@ -143,28 +143,28 @@ public class HttpRemoteExtensionsTests
         httpResponseMessage.Content.Headers.TryAddWithoutValidation("Content-Type", "application/json");
 
         Assert.Equal(
-            "[34m[1mGeneral:[0m \r\n  Request URL:      http://localhost\r\n  HTTP Method:      GET\r\n  Status Code:      [32m[1m200 OK[0m\r\n  HTTP Version:     1.1\r\n  HTTP Content:     \r\n[34m[1mResponse Headers:[0m \r\n  Accept:              application/json\r\n  Accept-Encoding:     gzip, deflate\r\n  Content-Type:        application/json",
+            "[36m[1mGeneral:[0m \r\n  Request URL:      http://localhost\r\n  HTTP Method:      GET\r\n  Status Code:      [32m[1m200 OK[0m\r\n  HTTP Version:     1.1\r\n  HTTP Content:     \r\n[36m[1mResponse Headers:[0m \r\n  Accept:              application/json\r\n  Accept-Encoding:     gzip, deflate\r\n  Content-Type:        application/json",
             httpResponseMessage.ProfilerGeneralAndHeaders());
 
         Assert.Equal(
-            "[34m[1mGeneral:[0m \r\n  Request URL:          http://localhost\r\n  HTTP Method:          GET\r\n  Status Code:          [32m[1m200 OK[0m\r\n  HTTP Version:         1.1\r\n  HTTP Content:         \r\n  Request Duration:     200ms\r\n[34m[1mResponse Headers:[0m \r\n  Accept:              application/json\r\n  Accept-Encoding:     gzip, deflate\r\n  Content-Type:        application/json",
+            "[36m[1mGeneral:[0m \r\n  Request URL:          http://localhost\r\n  HTTP Method:          GET\r\n  Status Code:          [32m[1m200 OK[0m\r\n  HTTP Version:         1.1\r\n  HTTP Content:         \r\n  Request Duration:     200ms\r\n[36m[1mResponse Headers:[0m \r\n  Accept:              application/json\r\n  Accept-Encoding:     gzip, deflate\r\n  Content-Type:        application/json",
             httpResponseMessage.ProfilerGeneralAndHeaders(generalCustomKeyValues:
                 [new KeyValuePair<string, IEnumerable<string>>("Request Duration", ["200ms"])]));
     }
 
     [Fact]
-    public void GetColoredStatusText_Invalid_Parameters() =>
-        Assert.Throws<ArgumentNullException>(() => HttpRemoteExtensions.GetColoredStatusText(null!));
+    public void GetColoredText_Invalid_Parameters() =>
+        Assert.Throws<ArgumentNullException>(() => HttpRemoteExtensions.GetColoredText(null!, null));
 
     [Fact]
-    public void GetColoredStatusText_ReturnOK()
+    public void GetColoredText_ReturnOK()
     {
         Assert.Equal("[32m[1m200 OK[0m",
-            new HttpResponseMessage(HttpStatusCode.OK).GetColoredStatusText());
+            new HttpResponseMessage(HttpStatusCode.OK).GetColoredText("200 OK"));
         Assert.Equal("[33m[1m302 Found[0m",
-            new HttpResponseMessage(HttpStatusCode.Redirect).GetColoredStatusText());
+            new HttpResponseMessage(HttpStatusCode.Redirect).GetColoredText("302 Found"));
         Assert.Equal("[31m[1m500 InternalServerError[0m",
-            new HttpResponseMessage(HttpStatusCode.InternalServerError).GetColoredStatusText());
+            new HttpResponseMessage(HttpStatusCode.InternalServerError).GetColoredText("500 InternalServerError"));
     }
 
     [Fact]
@@ -173,29 +173,29 @@ public class HttpRemoteExtensionsTests
         Assert.Null(await HttpRemoteExtensions.ProfilerAsync(null));
 
         var stringContent = new StringContent("Hello World");
-        Assert.Equal("[34m[1mRequest Body (StringContent, total: 11 bytes):[0m \r\n  Hello World",
+        Assert.Equal("[36m[1mRequest Body (StringContent, total: 11 bytes):[0m \r\n  Hello World",
             await stringContent.ProfilerAsync());
 
         var jsonContent = JsonContent.Create(new { id = 1, name = "furion" });
-        Assert.Equal("[34m[1mRequest Body (JsonContent, total: 24 bytes):[0m \r\n  {\"id\":1,\"name\":\"furion\"}",
+        Assert.Equal("[36m[1mRequest Body (JsonContent, total: 24 bytes):[0m \r\n  {\"id\":1,\"name\":\"furion\"}",
             await jsonContent.ProfilerAsync());
 
         var byteArrayContent = new ByteArrayContent("Hello World"u8.ToArray());
-        Assert.Equal("[34m[1mRequest Body (ByteArrayContent, total: 11 bytes):[0m \r\n  Hello World",
+        Assert.Equal("[36m[1mRequest Body (ByteArrayContent, total: 11 bytes):[0m \r\n  Hello World",
             await byteArrayContent.ProfilerAsync());
 
         var formUrlEncodedContent = new FormUrlEncodedContent([
             new KeyValuePair<string, string>("id", "1"), new KeyValuePair<string, string>("name", "Furion")
         ]);
-        Assert.Equal("[34m[1mRequest Body (FormUrlEncodedContent, total: 16 bytes):[0m \r\n  id=1&name=Furion",
+        Assert.Equal("[36m[1mRequest Body (FormUrlEncodedContent, total: 16 bytes):[0m \r\n  id=1&name=Furion",
             await formUrlEncodedContent.ProfilerAsync());
 
         var streamStream = new StreamContent(File.OpenRead(Path.Combine(AppContext.BaseDirectory, "test.txt")));
-        Assert.Equal("[34m[1mRequest Body (StreamContent, total: 21 bytes):[0m \r\n  ﻿测试文件内容",
+        Assert.Equal("[36m[1mRequest Body (StreamContent, total: 21 bytes):[0m \r\n  ﻿测试文件内容",
             await streamStream.ProfilerAsync());
 
         var readOnlyMemoryContent = new ReadOnlyMemoryContent(new ReadOnlyMemory<byte>("Hello World"u8.ToArray()));
-        Assert.Equal("[34m[1mRequest Body (ReadOnlyMemoryContent, total: 11 bytes):[0m \r\n  Hello World",
+        Assert.Equal("[36m[1mRequest Body (ReadOnlyMemoryContent, total: 11 bytes):[0m \r\n  Hello World",
             await readOnlyMemoryContent.ProfilerAsync());
 
         var multipartFormDataContent = new MultipartFormDataContent("--------------------------");
@@ -203,23 +203,23 @@ public class HttpRemoteExtensionsTests
         multipartFormDataContent.Add(
             new StreamContent(File.OpenRead(Path.Combine(AppContext.BaseDirectory, "test.txt"))), "file");
         Assert.Equal(
-            "[34m[1mRequest Body (MultipartFormDataContent, total: 259 bytes):[0m \r\n  ----------------------------\r\n  Content-Type: text/plain; charset=utf-8\r\n  Content-Disposition: form-data; name=text\r\n  \r\n  Hello World\r\n  ----------------------------\r\n  Content-Disposition: form-data; name=file\r\n  \r\n  ﻿测试文件内容\r\n  ------------------------------\r\n  ",
+            "[36m[1mRequest Body (MultipartFormDataContent, total: 259 bytes):[0m \r\n  ----------------------------\r\n  Content-Type: text/plain; charset=utf-8\r\n  Content-Disposition: form-data; name=text\r\n  \r\n  Hello World\r\n  ----------------------------\r\n  Content-Disposition: form-data; name=file\r\n  \r\n  ﻿测试文件内容\r\n  ------------------------------\r\n  ",
             await multipartFormDataContent.ProfilerAsync());
 
         var stringContent2 = new StringContent("Hello World");
-        Assert.Equal("[34m[1mResponse Body (StringContent, total: 11 bytes):[0m \r\n  Hello World",
+        Assert.Equal("[36m[1mResponse Body (StringContent, total: 11 bytes):[0m \r\n  Hello World",
             await stringContent2.ProfilerAsync("Response Body"));
 
         var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.InternalServerError);
         var stringContent3 = new StringContent("Hello World");
         httpResponseMessage.Content = stringContent3;
-        Assert.Equal("[34m[1mRequest Body (StringContent, total: 11 bytes):[0m \r\n  [31m[1mHello World[0m",
+        Assert.Equal("[36m[1mRequest Body (StringContent, total: 11 bytes):[0m \r\n  [31mHello World[0m",
             await stringContent3.ProfilerAsync(httpResponseMessage: httpResponseMessage));
 
         var httpResponseMessage2 = new HttpResponseMessage(HttpStatusCode.Redirect);
         var stringContent4 = new StringContent("Hello World");
         httpResponseMessage2.Content = stringContent4;
-        Assert.Equal("[34m[1mRequest Body (StringContent, total: 11 bytes):[0m \r\n  [33m[1mHello World[0m",
+        Assert.Equal("[36m[1mRequest Body (StringContent, total: 11 bytes):[0m \r\n  [33mHello World[0m",
             await stringContent4.ProfilerAsync(httpResponseMessage: httpResponseMessage2));
     }
 

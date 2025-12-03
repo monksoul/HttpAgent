@@ -137,15 +137,31 @@ public sealed partial class HttpRequestBuilder
     }
 
     /// <summary>
+    ///     设置 JSON 内容（宽松模式）
+    /// </summary>
+    /// <remarks>跳过对 JSON 字符串校验。</remarks>
+    /// <param name="rawJson">JSON 字符串</param>
+    /// <param name="contentEncoding">内容编码</param>
+    /// <param name="contentType">内容类型</param>
+    /// <returns>
+    ///     <see cref="HttpRequestBuilder" />
+    /// </returns>
+    public HttpRequestBuilder SetJsonContentWithoutValidation(string? rawJson, Encoding? contentEncoding = null,
+        string? contentType = null) =>
+        SetContent(rawJson, contentType ?? MediaTypeNames.Application.Json, contentEncoding);
+
+    /// <summary>
     ///     设置 HTML 内容
     /// </summary>
     /// <param name="htmlString">HTML 字符串</param>
     /// <param name="contentEncoding">内容编码</param>
+    /// <param name="contentType">内容类型</param>
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
-    public HttpRequestBuilder SetHtmlContent(string? htmlString, Encoding? contentEncoding = null) =>
-        SetContent(htmlString, MediaTypeNames.Text.Html, contentEncoding);
+    public HttpRequestBuilder SetHtmlContent(string? htmlString, Encoding? contentEncoding = null,
+        string? contentType = null) =>
+        SetContent(htmlString, contentType ?? MediaTypeNames.Text.Html, contentEncoding);
 
     /// <summary>
     ///     设置 XML 内容
@@ -157,19 +173,20 @@ public sealed partial class HttpRequestBuilder
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
     public HttpRequestBuilder SetXmlContent(string? xmlString, Encoding? contentEncoding = null,
-        string? contentType = null) =>
-        SetContent(xmlString, contentType ?? MediaTypeNames.Text.Xml, contentEncoding);
+        string? contentType = null) => SetContent(xmlString, contentType ?? MediaTypeNames.Text.Xml, contentEncoding);
 
     /// <summary>
     ///     设置文本内容
     /// </summary>
     /// <param name="text">文本</param>
     /// <param name="contentEncoding">内容编码</param>
+    /// <param name="contentType">内容类型</param>
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
-    public HttpRequestBuilder SetTextContent(string? text, Encoding? contentEncoding = null) =>
-        SetContent(text, MediaTypeNames.Text.Plain, contentEncoding);
+    public HttpRequestBuilder
+        SetTextContent(string? text, Encoding? contentEncoding = null, string? contentType = null) =>
+        SetContent(text, contentType ?? MediaTypeNames.Text.Plain, contentEncoding);
 
     /// <summary>
     ///     设置原始字符串内容

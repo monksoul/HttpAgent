@@ -186,7 +186,7 @@ public class HttpRemoteResultTests
         var httpRemoteResult = new HttpRemoteResult<string>(httpResponseMessage) { RequestDuration = 200 };
 
         Assert.Equal(
-            "[34m[1mRequest Headers:[0m \r\n  Accept:              application/json\r\n  Accept-Encoding:     gzip, deflate\r\n[34m[1mGeneral:[0m \r\n  Request URL:               http://localhost\r\n  HTTP Method:               GET\r\n  Status Code:               [32m[1m200 OK[0m\r\n  HTTP Version:              1.1\r\n  HTTP Content:              \r\n  Request Duration (ms):     200.00\r\n[34m[1mResponse Headers:[0m \r\n  Accept:              application/json\r\n  Accept-Encoding:     gzip, deflate\r\n  Content-Type:        application/json\r\n  Content-Length:      0",
+            "[36m[1mRequest Headers:[0m \r\n  Accept:              application/json\r\n  Accept-Encoding:     gzip, deflate\r\n[36m[1mGeneral:[0m \r\n  Request URL:               http://localhost\r\n  HTTP Method:               GET\r\n  Status Code:               [32m[1m200 OK[0m\r\n  HTTP Version:              1.1\r\n  HTTP Content:              \r\n  Request Duration (ms):     200.00\r\n[36m[1mResponse Headers:[0m \r\n  Accept:              application/json\r\n  Accept-Encoding:     gzip, deflate\r\n  Content-Type:        application/json\r\n  Content-Length:      0",
             httpRemoteResult.ToString());
     }
 

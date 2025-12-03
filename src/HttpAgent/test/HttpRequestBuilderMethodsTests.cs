@@ -176,6 +176,28 @@ public class HttpRequestBuilderMethodsTests
     }
 
     [Fact]
+    public void SetJsonContentWithoutValidation_ReturnOK()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+
+        httpRequestBuilder.SetJsonContentWithoutValidation(null);
+        Assert.Null(httpRequestBuilder.RawContent);
+        Assert.Equal("application/json", httpRequestBuilder.ContentType);
+        Assert.Null(httpRequestBuilder.ContentEncoding);
+
+        httpRequestBuilder.SetJsonContentWithoutValidation("eyJpZCI6MSwibmFtZSI6IkZ1cmlvbiJ9");
+        Assert.Equal("eyJpZCI6MSwibmFtZSI6IkZ1cmlvbiJ9", httpRequestBuilder.RawContent);
+        Assert.Equal("application/json", httpRequestBuilder.ContentType);
+        Assert.Null(httpRequestBuilder.ContentEncoding);
+
+        httpRequestBuilder.SetJsonContentWithoutValidation("eyJpZCI6MSwibmFtZSI6IkZ1cmlvbiJ9",
+            contentType: "application/json-patch+json");
+        Assert.Equal("eyJpZCI6MSwibmFtZSI6IkZ1cmlvbiJ9", httpRequestBuilder.RawContent);
+        Assert.Equal("application/json-patch+json", httpRequestBuilder.ContentType);
+        Assert.Null(httpRequestBuilder.ContentEncoding);
+    }
+
+    [Fact]
     public void SetHtmlContent_ReturnOK()
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
@@ -190,7 +212,7 @@ public class HttpRequestBuilderMethodsTests
         Assert.Equal("text/html", httpRequestBuilder.ContentType);
         Assert.Null(httpRequestBuilder.ContentEncoding);
 
-        httpRequestBuilder.SetXmlContent("<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
+        httpRequestBuilder.SetHtmlContent("<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
             contentType: "application/soap+xml");
         Assert.Equal("<?xml version=\"1.0\" encoding=\"UTF-8\"?>", httpRequestBuilder.RawContent);
         Assert.Equal("application/soap+xml", httpRequestBuilder.ContentType);
@@ -211,6 +233,12 @@ public class HttpRequestBuilderMethodsTests
         Assert.Equal("<?xml version=\"1.0\" encoding=\"UTF-8\"?>", httpRequestBuilder.RawContent);
         Assert.Equal("text/xml", httpRequestBuilder.ContentType);
         Assert.Null(httpRequestBuilder.ContentEncoding);
+
+        httpRequestBuilder.SetXmlContent("<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
+            contentType: "application/soap+xml");
+        Assert.Equal("<?xml version=\"1.0\" encoding=\"UTF-8\"?>", httpRequestBuilder.RawContent);
+        Assert.Equal("application/soap+xml", httpRequestBuilder.ContentType);
+        Assert.Null(httpRequestBuilder.ContentEncoding);
     }
 
     [Fact]
@@ -226,6 +254,12 @@ public class HttpRequestBuilderMethodsTests
         httpRequestBuilder.SetTextContent("furion");
         Assert.Equal("furion", httpRequestBuilder.RawContent);
         Assert.Equal("text/plain", httpRequestBuilder.ContentType);
+        Assert.Null(httpRequestBuilder.ContentEncoding);
+
+        httpRequestBuilder.SetTextContent("{\"id\":1,\"name\":\"Furion\"}",
+            contentType: "application/json");
+        Assert.Equal("{\"id\":1,\"name\":\"Furion\"}", httpRequestBuilder.RawContent);
+        Assert.Equal("application/json", httpRequestBuilder.ContentType);
         Assert.Null(httpRequestBuilder.ContentEncoding);
     }
 

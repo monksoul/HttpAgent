@@ -132,17 +132,25 @@ public sealed class HttpMultipartFormDataBuilder
     /// <param name="name">表单名称。该值不为空时作为表单的一项。否则将遍历对象类型的每一个公开属性作为表单的项。</param>
     /// <param name="contentEncoding">内容编码</param>
     /// <param name="contentType">内容类型</param>
+    /// <param name="jsonSerializerOptions">
+    ///     <see cref="JsonSerializerOptions" />
+    /// </param>
     /// <returns>
     ///     <see cref="HttpMultipartFormDataBuilder" />
     /// </returns>
     /// <exception cref="JsonException"></exception>
     public HttpMultipartFormDataBuilder AddJson(object? rawJson, string? name = null, Encoding? contentEncoding = null,
-        string? contentType = null)
+        string? contentType = null, JsonSerializerOptions? jsonSerializerOptions = null)
     {
         // 检查是否配置表单名或不是字符串类型
         if (!string.IsNullOrWhiteSpace(name) || rawJson is not string rawString)
         {
-            return AddObject(rawJson, name, contentType ?? MediaTypeNames.Application.Json, contentEncoding);
+            // 当传入 jsonSerializerOptions 参数时，直接进行序列化后再传入
+            var extractedJson = jsonSerializerOptions is null
+                ? rawJson
+                : JsonSerializer.Serialize(rawJson, jsonSerializerOptions);
+
+            return AddObject(extractedJson, name, contentType ?? MediaTypeNames.Application.Json, contentEncoding);
         }
 
         // 尝试验证并获取 JsonDocument 实例（需 using）
@@ -152,6 +160,27 @@ public sealed class HttpMultipartFormDataBuilder
         _httpRequestBuilder.AddDisposable(jsonDocument);
 
         return AddObject(jsonDocument, name, contentType ?? MediaTypeNames.Application.Json, contentEncoding);
+    }
+
+    /// <summary>
+    ///     添加 JSON 内容（宽松模式）
+    /// </summary>
+    /// <remarks>跳过对 JSON 字符串校验。</remarks>
+    /// <param name="rawJson">JSON 字符串</param>
+    /// <param name="name">表单名称</param>
+    /// <param name="contentEncoding">内容编码</param>
+    /// <param name="contentType">内容类型</param>
+    /// <returns>
+    ///     <see cref="HttpMultipartFormDataBuilder" />
+    /// </returns>
+    public HttpMultipartFormDataBuilder AddJsonWithoutValidation(string? rawJson, string name,
+        Encoding? contentEncoding = null,
+        string? contentType = null)
+    {
+        // 空检查
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+
+        return AddObject(rawJson, name, contentType ?? MediaTypeNames.Application.Json, contentEncoding);
     }
 
     /// <summary>
@@ -177,15 +206,17 @@ public sealed class HttpMultipartFormDataBuilder
     /// <param name="htmlString">HTML 字符串</param>
     /// <param name="name">表单名称</param>
     /// <param name="contentEncoding">内容编码</param>
+    /// <param name="contentType">内容类型</param>
     /// <returns>
     ///     <see cref="HttpMultipartFormDataBuilder" />
     /// </returns>
-    public HttpMultipartFormDataBuilder AddHtml(string? htmlString, string name, Encoding? contentEncoding = null)
+    public HttpMultipartFormDataBuilder AddHtml(string? htmlString, string name, Encoding? contentEncoding = null,
+        string? contentType = null)
     {
         // 空检查
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
 
-        return AddObject(htmlString, name, MediaTypeNames.Text.Html, contentEncoding);
+        return AddObject(htmlString, name, contentType ?? MediaTypeNames.Text.Html, contentEncoding);
     }
 
     /// <summary>
@@ -213,15 +244,17 @@ public sealed class HttpMultipartFormDataBuilder
     /// <param name="text">文本</param>
     /// <param name="name">表单名称</param>
     /// <param name="contentEncoding">内容编码</param>
+    /// <param name="contentType">内容类型</param>
     /// <returns>
     ///     <see cref="HttpMultipartFormDataBuilder" />
     /// </returns>
-    public HttpMultipartFormDataBuilder AddText(string? text, string name, Encoding? contentEncoding = null)
+    public HttpMultipartFormDataBuilder AddText(string? text, string name, Encoding? contentEncoding = null,
+        string? contentType = null)
     {
         // 空检查
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
 
-        return AddObject(text, name, MediaTypeNames.Text.Plain, contentEncoding);
+        return AddObject(text, name, contentType ?? MediaTypeNames.Text.Plain, contentEncoding);
     }
 
     /// <summary>

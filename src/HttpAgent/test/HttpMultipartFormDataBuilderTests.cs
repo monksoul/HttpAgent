@@ -186,6 +186,32 @@ public class HttpMultipartFormDataBuilderTests
     }
 
     [Fact]
+    public void AddJsonWithoutValidation_Invalid_Parameters()
+    {
+        var builder = new HttpMultipartFormDataBuilder(HttpRequestBuilder.Get("http://localhost"));
+
+        Assert.Throws<ArgumentNullException>(() => builder.AddJsonWithoutValidation(null, null!));
+        Assert.Throws<ArgumentException>(() => builder.AddJsonWithoutValidation(null, string.Empty));
+        Assert.Throws<ArgumentException>(() => builder.AddJsonWithoutValidation(null, " "));
+    }
+
+    [Fact]
+    public void AddJsonWithoutValidation_ReturnOK()
+    {
+        var builder = new HttpMultipartFormDataBuilder(HttpRequestBuilder.Get("http://localhost"));
+        builder.AddJsonWithoutValidation("{\"id\":1,\"name\":\"Furion\"}", "test", Encoding.UTF8);
+        Assert.Single(builder._partContents);
+        Assert.Equal("test", builder._partContents[0].Name);
+        Assert.Equal("application/json", builder._partContents[0].ContentType);
+        Assert.Equal(Encoding.UTF8, builder._partContents[0].ContentEncoding);
+        Assert.Equal("{\"id\":1,\"name\":\"Furion\"}", builder._partContents[0].RawContent);
+
+        builder.AddJsonWithoutValidation("eyJpZCI6MSwibmFtZSI6IkZ1cmlvbiJ9", "test", Encoding.UTF8, "application/json");
+        Assert.Equal(2, builder._partContents.Count);
+        Assert.Equal("application/json", builder._partContents[1].ContentType);
+    }
+
+    [Fact]
     public void AddFormItem_Invalid_Parameters()
     {
         var builder = new HttpMultipartFormDataBuilder(HttpRequestBuilder.Get("http://localhost"));
@@ -227,6 +253,10 @@ public class HttpMultipartFormDataBuilderTests
         Assert.Equal("text/html", builder._partContents[0].ContentType);
         Assert.Equal(Encoding.UTF8, builder._partContents[0].ContentEncoding);
         Assert.Equal("<html><head></head><body></body></html>", builder._partContents[0].RawContent);
+
+        builder.AddHtml("<html><head></head><body></body></html>", "test", Encoding.UTF8, "application/soap+xml");
+        Assert.Equal(2, builder._partContents.Count);
+        Assert.Equal("application/soap+xml", builder._partContents[1].ContentType);
     }
 
     [Fact]
@@ -249,6 +279,10 @@ public class HttpMultipartFormDataBuilderTests
         Assert.Equal("text/xml", builder._partContents[0].ContentType);
         Assert.Equal(Encoding.UTF8, builder._partContents[0].ContentEncoding);
         Assert.Equal("<?xml version=\"1.0\" encoding=\"UTF-8\"?>", builder._partContents[0].RawContent);
+
+        builder.AddXml("<?xml version=\"1.0\" encoding=\"UTF-8\"?>", "test", Encoding.UTF8, "application/soap+xml");
+        Assert.Equal(2, builder._partContents.Count);
+        Assert.Equal("application/soap+xml", builder._partContents[1].ContentType);
     }
 
     [Fact]
@@ -271,6 +305,10 @@ public class HttpMultipartFormDataBuilderTests
         Assert.Equal("text/plain", builder._partContents[0].ContentType);
         Assert.Equal(Encoding.UTF8, builder._partContents[0].ContentEncoding);
         Assert.Equal("furion", builder._partContents[0].RawContent);
+
+        builder.AddText("{\"id\":1,\"name\":\"Furion\"}", "test", Encoding.UTF8, "application/json");
+        Assert.Equal(2, builder._partContents.Count);
+        Assert.Equal("application/json", builder._partContents[1].ContentType);
     }
 
     [Fact]

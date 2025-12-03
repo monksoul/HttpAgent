@@ -1016,7 +1016,7 @@
             </returns>
             <exception cref="T:System.ArgumentOutOfRangeException"></exception>
         </member>
-        <member name="M:HttpAgent.HttpMultipartFormDataBuilder.AddJson(System.Object,System.String,System.Text.Encoding,System.String)">
+        <member name="M:HttpAgent.HttpMultipartFormDataBuilder.AddJson(System.Object,System.String,System.Text.Encoding,System.String,System.Text.Json.JsonSerializerOptions)">
             <summary>
                 添加 JSON 内容
             </summary>
@@ -1024,10 +1024,26 @@
             <param name="name">表单名称。该值不为空时作为表单的一项。否则将遍历对象类型的每一个公开属性作为表单的项。</param>
             <param name="contentEncoding">内容编码</param>
             <param name="contentType">内容类型</param>
+            <param name="jsonSerializerOptions">
+                <see cref="T:System.Text.Json.JsonSerializerOptions" />
+            </param>
             <returns>
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
             <exception cref="T:System.Text.Json.JsonException"></exception>
+        </member>
+        <member name="M:HttpAgent.HttpMultipartFormDataBuilder.AddJsonWithoutValidation(System.String,System.String,System.Text.Encoding,System.String)">
+            <summary>
+                添加 JSON 内容（宽松模式）
+            </summary>
+            <remarks>跳过对 JSON 字符串校验。</remarks>
+            <param name="rawJson">JSON 字符串</param>
+            <param name="name">表单名称</param>
+            <param name="contentEncoding">内容编码</param>
+            <param name="contentType">内容类型</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
+            </returns>
         </member>
         <member name="M:HttpAgent.HttpMultipartFormDataBuilder.AddFormItem(System.Object,System.String,System.Text.Encoding)">
             <summary>
@@ -1040,13 +1056,14 @@
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpMultipartFormDataBuilder.AddHtml(System.String,System.String,System.Text.Encoding)">
+        <member name="M:HttpAgent.HttpMultipartFormDataBuilder.AddHtml(System.String,System.String,System.Text.Encoding,System.String)">
             <summary>
                 添加 HTML 内容
             </summary>
             <param name="htmlString">HTML 字符串</param>
             <param name="name">表单名称</param>
             <param name="contentEncoding">内容编码</param>
+            <param name="contentType">内容类型</param>
             <returns>
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
@@ -1063,13 +1080,14 @@
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpMultipartFormDataBuilder.AddText(System.String,System.String,System.Text.Encoding)">
+        <member name="M:HttpAgent.HttpMultipartFormDataBuilder.AddText(System.String,System.String,System.Text.Encoding,System.String)">
             <summary>
                 添加文本内容
             </summary>
             <param name="text">文本</param>
             <param name="name">表单名称</param>
             <param name="contentEncoding">内容编码</param>
+            <param name="contentType">内容类型</param>
             <returns>
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
@@ -1673,12 +1691,25 @@
             </returns>
             <exception cref="T:System.Text.Json.JsonException"></exception>
         </member>
-        <member name="M:HttpAgent.HttpRequestBuilder.SetHtmlContent(System.String,System.Text.Encoding)">
+        <member name="M:HttpAgent.HttpRequestBuilder.SetJsonContentWithoutValidation(System.String,System.Text.Encoding,System.String)">
+            <summary>
+                设置 JSON 内容（宽松模式）
+            </summary>
+            <remarks>跳过对 JSON 字符串校验。</remarks>
+            <param name="rawJson">JSON 字符串</param>
+            <param name="contentEncoding">内容编码</param>
+            <param name="contentType">内容类型</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.SetHtmlContent(System.String,System.Text.Encoding,System.String)">
             <summary>
                 设置 HTML 内容
             </summary>
             <param name="htmlString">HTML 字符串</param>
             <param name="contentEncoding">内容编码</param>
+            <param name="contentType">内容类型</param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
@@ -1694,12 +1725,13 @@
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpRequestBuilder.SetTextContent(System.String,System.Text.Encoding)">
+        <member name="M:HttpAgent.HttpRequestBuilder.SetTextContent(System.String,System.Text.Encoding,System.String)">
             <summary>
                 设置文本内容
             </summary>
             <param name="text">文本</param>
             <param name="contentEncoding">内容编码</param>
+            <param name="contentType">内容类型</param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
@@ -6852,17 +6884,6 @@
                 <see cref="T:System.String" />
             </returns>
         </member>
-        <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.GetColoredStatusText(System.Net.Http.HttpResponseMessage)">
-            <summary>
-                获取带颜色的 HTTP 状态码文本
-            </summary>
-            <param name="httpResponseMessage">
-                <see cref="T:System.Net.Http.HttpResponseMessage" />
-            </param>
-            <returns>
-                <see cref="T:System.String" />
-            </returns>
-        </member>
         <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.ProfilerAsync(System.Net.Http.HttpContent,System.String,System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
             <summary>
                 分析 <see cref="T:System.Net.Http.HttpContent" /> 内容
@@ -6877,6 +6898,19 @@
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
+            <returns>
+                <see cref="T:System.String" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.GetColoredText(System.Net.Http.HttpResponseMessage,System.String,System.Boolean)">
+            <summary>
+                获取带颜色的文本
+            </summary>
+            <param name="httpResponseMessage">
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </param>
+            <param name="text">文本</param>
+            <param name="bold">是否加粗显示</param>
             <returns>
                 <see cref="T:System.String" />
             </returns>
