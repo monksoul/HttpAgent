@@ -427,6 +427,9 @@ internal sealed partial class HttpRemoteService : IHttpRemoteService
         // 检查是否启用请求分析工具
         if (httpRequestBuilder.ProfilerEnabled)
         {
+            // 标记已打印，解决重复打印问题
+            httpRequestMessage.Options.TryAdd(Constants.PROFILER_PRINTED_KEY, "TRUE");
+
             // 初始化 HttpRemoteAnalyzer 实例
             httpRemoteAnalyzer = httpRequestBuilder.ProfilerPredicate is not null ? new HttpRemoteAnalyzer() : null;
 

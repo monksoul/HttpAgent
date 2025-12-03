@@ -127,6 +127,10 @@ public class ProfilerDelegatingHandlerTests
 
         httpRequestMessage.Options.Set(new HttpRequestOptionsKey<string>(Constants.DISABLE_PROFILER_KEY), "TRUE");
         Assert.False(ProfilerDelegatingHandler.IsEnabled(httpRequestMessage));
+
+        httpRequestMessage.Options.Set(new HttpRequestOptionsKey<string>(Constants.DISABLE_PROFILER_KEY), "value");
+        httpRequestMessage.Options.Set(new HttpRequestOptionsKey<string>(Constants.PROFILER_PRINTED_KEY), "TRUE");
+        Assert.False(ProfilerDelegatingHandler.IsEnabled(httpRequestMessage));
     }
 
     [Fact]

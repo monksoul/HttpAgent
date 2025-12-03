@@ -76,6 +76,12 @@ internal static class Constants
     internal const string DISABLE_PROFILER_KEY = "__DISABLE_PROFILER__";
 
     /// <summary>
+    ///     请求分析工具打印标识键
+    /// </summary>
+    /// <remarks>解决重复打印问题。被用于从 <see cref="HttpRequestMessage" /> 的 <c>Options</c> 属性中读取。</remarks>
+    internal const string PROFILER_PRINTED_KEY = "__PROFILER_PRINTED__";
+
+    /// <summary>
     ///     启用 JSON 响应反序列化包装器键
     /// </summary>
     /// <remarks>被用于从 <see cref="HttpRequestMessage" /> 的 <c>Options</c> 属性中读取。</remarks>
