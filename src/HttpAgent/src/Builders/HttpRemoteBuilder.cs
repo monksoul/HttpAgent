@@ -234,8 +234,9 @@ public sealed class HttpRemoteBuilder
         ArgumentNullException.ThrowIfNull(assemblies);
 
         return AddHttpDeclarativeExtractors(() => assemblies.SelectMany(ass =>
-            (ass?.GetExportedTypes() ?? Enumerable.Empty<Type>()).Where(t =>
-                t.HasDefinePublicParameterlessConstructor() && typeof(IHttpDeclarativeExtractor).IsAssignableFrom(t))
+            (ass?.GetTypes() ?? Enumerable.Empty<Type>())
+            .Where(t => t.HasDefinePublicParameterlessConstructor() &&
+                        typeof(IHttpDeclarativeExtractor).IsAssignableFrom(t))
             .Select(t => (IHttpDeclarativeExtractor)Activator.CreateInstance(t)!)));
     }
 
