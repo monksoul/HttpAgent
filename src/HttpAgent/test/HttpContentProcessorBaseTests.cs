@@ -19,4 +19,20 @@ public class HttpContentProcessorBaseTests
         Assert.False(processor.TryProcess(new { }, "application/json", null, out var result3));
         Assert.Null(result3);
     }
+
+    [Fact]
+    public void GetService_ReturnOK()
+    {
+        var processor = new StringContentProcessor();
+        Assert.Null(processor.GetService<IMyService>());
+
+        using var serviceProvider =
+            new ServiceCollection().AddTransient<IMyService, MyService>().BuildServiceProvider();
+        processor.ServiceProvider = serviceProvider;
+        Assert.NotNull(processor.GetService<IMyService>());
+    }
+
+    public class MyService : IMyService;
+
+    public interface IMyService;
 }

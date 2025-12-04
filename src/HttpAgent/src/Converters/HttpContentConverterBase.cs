@@ -30,4 +30,13 @@ public abstract class HttpContentConverterBase<TResult> : IHttpContentConverter<
     public virtual async Task<object?> ReadAsync(Type resultType, HttpResponseMessage httpResponseMessage,
         CancellationToken cancellationToken = default) =>
         await ReadAsync(httpResponseMessage, cancellationToken);
+
+    /// <summary>
+    ///     解析服务
+    /// </summary>
+    /// <typeparam name="TService">服务类型</typeparam>
+    /// <returns>
+    ///     <typeparamref name="TService" />
+    /// </returns>
+    public TService? GetService<TService>() where TService : class => ServiceProvider?.GetService<TService>();
 }

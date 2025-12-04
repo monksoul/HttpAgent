@@ -50,4 +50,13 @@ public abstract class HttpContentProcessorBase : IHttpContentProcessor
                 return false;
         }
     }
+
+    /// <summary>
+    ///     解析服务
+    /// </summary>
+    /// <typeparam name="TService">服务类型</typeparam>
+    /// <returns>
+    ///     <typeparamref name="TService" />
+    /// </returns>
+    public TService? GetService<TService>() where TService : class => ServiceProvider?.GetService<TService>();
 }
