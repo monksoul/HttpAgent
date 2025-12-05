@@ -69,7 +69,17 @@ public static class HttpRemoteClient
             ObjectDisposedException.ThrowIf(_isDisposed, typeof(HttpRemoteClient));
 
             // 更新配置委托
-            _configure = configure;
+            _configure = services =>
+            {
+                // 调用自定义配置委托
+                configure(services);
+
+                // 检查 HTTP 远程请求服务是否已注册，若未注册则自动完成注册
+                if (services.All(u => u.ServiceType != typeof(IHttpRemoteService)))
+                {
+                    services.AddHttpRemote();
+                }
+            };
 
             // 重新初始化服务
             Reinitialize();

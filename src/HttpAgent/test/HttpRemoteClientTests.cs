@@ -42,6 +42,17 @@ public class HttpRemoteClientTests
     }
 
     [Fact]
+    public void Configure_AutoRegisterRequiredServices_ReturnOK()
+    {
+        HttpRemoteClient.Configure(service =>
+        {
+            service.AddHttpClient();
+        });
+
+        Assert.NotNull(HttpRemoteClient.Service);
+    }
+
+    [Fact]
     public void Dispose_ReturnOK()
     {
         _ = HttpRemoteClient.Service;
