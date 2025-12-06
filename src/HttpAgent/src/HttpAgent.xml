@@ -221,6 +221,459 @@
                 <see cref="T:System.Threading.Tasks.Task" />
             </returns>
         </member>
+        <member name="T:HttpAgent.HttpBuilder">
+            <summary>
+                <see cref="T:System.Net.Http.HttpRequestMessage" /> 构建器
+            </summary>
+            <remarks>用于简化 <see cref="T:HttpAgent.HttpRequestBuilder" /> 名称过长问题。</remarks>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.Get(System.String,System.Action{HttpAgent.HttpRequestBuilder})">
+            <summary>
+                创建 <c>GET</c> 请求的 <see cref="T:HttpAgent.HttpRequestBuilder" /> 构建器
+            </summary>
+            <remarks>用于简化 <see cref="T:HttpAgent.HttpRequestBuilder" /> 名字过长。</remarks>
+            <param name="requestUri">请求地址</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.Get(System.Uri,System.Action{HttpAgent.HttpRequestBuilder})">
+            <summary>
+                创建 <c>GET</c> 请求的 <see cref="T:HttpAgent.HttpRequestBuilder" /> 构建器
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.Put(System.String,System.Action{HttpAgent.HttpRequestBuilder})">
+            <summary>
+                创建 <c>PUT</c> 请求的 <see cref="T:HttpAgent.HttpRequestBuilder" /> 构建器
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.Put(System.Uri,System.Action{HttpAgent.HttpRequestBuilder})">
+            <summary>
+                创建 <c>PUT</c> 请求的 <see cref="T:HttpAgent.HttpRequestBuilder" /> 构建器
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.Post(System.String,System.Action{HttpAgent.HttpRequestBuilder})">
+            <summary>
+                创建 <c>POST</c> 请求的 <see cref="T:HttpAgent.HttpRequestBuilder" /> 构建器
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.Post(System.Uri,System.Action{HttpAgent.HttpRequestBuilder})">
+            <summary>
+                创建 <c>POST</c> 请求的 <see cref="T:HttpAgent.HttpRequestBuilder" /> 构建器
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.Delete(System.String,System.Action{HttpAgent.HttpRequestBuilder})">
+            <summary>
+                创建 <c>DELETE</c> 请求的 <see cref="T:HttpAgent.HttpRequestBuilder" /> 构建器
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.Delete(System.Uri,System.Action{HttpAgent.HttpRequestBuilder})">
+            <summary>
+                创建 <c>DELETE</c> 请求的 <see cref="T:HttpAgent.HttpRequestBuilder" /> 构建器
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.Head(System.String,System.Action{HttpAgent.HttpRequestBuilder})">
+            <summary>
+                创建 <c>HEAD</c> 请求的 <see cref="T:HttpAgent.HttpRequestBuilder" /> 构建器
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.Head(System.Uri,System.Action{HttpAgent.HttpRequestBuilder})">
+            <summary>
+                创建 <c>HEAD</c> 请求的 <see cref="T:HttpAgent.HttpRequestBuilder" /> 构建器
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.Options(System.String,System.Action{HttpAgent.HttpRequestBuilder})">
+            <summary>
+                创建 <c>OPTIONS</c> 请求的 <see cref="T:HttpAgent.HttpRequestBuilder" /> 构建器
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.Options(System.Uri,System.Action{HttpAgent.HttpRequestBuilder})">
+            <summary>
+                创建 <c>OPTIONS</c> 请求的 <see cref="T:HttpAgent.HttpRequestBuilder" /> 构建器
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.Trace(System.String,System.Action{HttpAgent.HttpRequestBuilder})">
+            <summary>
+                创建 <c>TRACE</c> 请求的 <see cref="T:HttpAgent.HttpRequestBuilder" /> 构建器
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.Trace(System.Uri,System.Action{HttpAgent.HttpRequestBuilder})">
+            <summary>
+                创建 <c>TRACE</c> 请求的 <see cref="T:HttpAgent.HttpRequestBuilder" /> 构建器
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.Patch(System.String,System.Action{HttpAgent.HttpRequestBuilder})">
+            <summary>
+                创建 <c>PATCH</c> 请求的 <see cref="T:HttpAgent.HttpRequestBuilder" /> 构建器
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.Patch(System.Uri,System.Action{HttpAgent.HttpRequestBuilder})">
+            <summary>
+                创建 <c>PATCH</c> 请求的 <see cref="T:HttpAgent.HttpRequestBuilder" /> 构建器
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.Create(System.Net.Http.HttpMethod,System.Uri)">
+            <summary>
+                创建 <see cref="T:HttpAgent.HttpRequestBuilder" /> 构建器
+            </summary>
+            <param name="httpMethod">请求方式</param>
+            <param name="requestUri">请求地址</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.Create(System.Net.Http.HttpMethod,System.String)">
+            <summary>
+                创建 <see cref="T:HttpAgent.HttpRequestBuilder" /> 构建器
+            </summary>
+            <param name="httpMethod">请求方式</param>
+            <param name="requestUri">请求地址</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.Create(System.String,System.String)">
+            <summary>
+                创建 <see cref="T:HttpAgent.HttpRequestBuilder" /> 构建器
+            </summary>
+            <param name="httpMethod">请求方式</param>
+            <param name="requestUri">请求地址</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.Create(System.String,System.Uri)">
+            <summary>
+                创建 <see cref="T:HttpAgent.HttpRequestBuilder" /> 构建器
+            </summary>
+            <param name="httpMethod">请求方式</param>
+            <param name="requestUri">请求地址</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.Create(System.Net.Http.HttpMethod,System.Uri,System.Action{HttpAgent.HttpRequestBuilder})">
+            <summary>
+                创建 <see cref="T:HttpAgent.HttpRequestBuilder" /> 构建器
+            </summary>
+            <param name="httpMethod">请求方式</param>
+            <param name="requestUri">请求地址</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.Create(System.Net.Http.HttpMethod,System.String,System.Action{HttpAgent.HttpRequestBuilder})">
+            <summary>
+                创建 <see cref="T:HttpAgent.HttpRequestBuilder" /> 构建器
+            </summary>
+            <param name="httpMethod">请求方式</param>
+            <param name="requestUri">请求地址</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.Create(System.String,System.String,System.Action{HttpAgent.HttpRequestBuilder})">
+            <summary>
+                创建 <see cref="T:HttpAgent.HttpRequestBuilder" /> 构建器
+            </summary>
+            <param name="httpMethod">请求方式</param>
+            <param name="requestUri">请求地址</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.DownloadFile(System.Net.Http.HttpMethod,System.Uri,System.String,System.Func{HttpAgent.FileTransferProgress,System.Threading.Tasks.Task},HttpAgent.FileExistsBehavior,System.Action{HttpAgent.HttpFileDownloadBuilder})">
+            <summary>
+                创建 <see cref="T:HttpAgent.HttpFileDownloadBuilder" /> 构建器
+            </summary>
+            <param name="httpMethod">请求方式</param>
+            <param name="requestUri">请求地址</param>
+            <param name="destinationPath">文件保存的目标路径</param>
+            <param name="onProgressChanged">用于传输进度发生变化时执行的委托</param>
+            <param name="fileExistsBehavior">
+                <see cref="T:HttpAgent.FileExistsBehavior" />
+            </param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpFileDownloadBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.DownloadFile(System.Uri,System.String,System.Func{HttpAgent.FileTransferProgress,System.Threading.Tasks.Task},HttpAgent.FileExistsBehavior,System.Action{HttpAgent.HttpFileDownloadBuilder})">
+            <summary>
+                创建 <see cref="T:HttpAgent.HttpFileDownloadBuilder" /> 构建器
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="destinationPath">文件保存的目标路径</param>
+            <param name="onProgressChanged">用于传输进度发生变化时执行的委托</param>
+            <param name="fileExistsBehavior">
+                <see cref="T:HttpAgent.FileExistsBehavior" />
+            </param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpFileDownloadBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.DownloadFile(System.String,System.String,System.Func{HttpAgent.FileTransferProgress,System.Threading.Tasks.Task},HttpAgent.FileExistsBehavior,System.Action{HttpAgent.HttpFileDownloadBuilder})">
+            <summary>
+                创建 <see cref="T:HttpAgent.HttpFileDownloadBuilder" /> 构建器
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="destinationPath">文件保存的目标路径</param>
+            <param name="onProgressChanged">用于传输进度发生变化时执行的委托</param>
+            <param name="fileExistsBehavior">
+                <see cref="T:HttpAgent.FileExistsBehavior" />
+            </param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpFileDownloadBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.UploadFile(System.Net.Http.HttpMethod,System.Uri,System.String,System.String,System.Func{HttpAgent.FileTransferProgress,System.Threading.Tasks.Task},System.String,System.Action{HttpAgent.HttpFileUploadBuilder})">
+            <summary>
+                创建 <see cref="T:HttpAgent.HttpFileUploadBuilder" /> 构建器
+            </summary>
+            <param name="httpMethod">请求方式</param>
+            <param name="requestUri">请求地址</param>
+            <param name="filePath">文件路径</param>
+            <param name="name">表单名称；默认值为 <c>file</c>。</param>
+            <param name="onProgressChanged">用于传输进度发生变化时执行的委托</param>
+            <param name="fileName">文件的名称</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpFileUploadBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.UploadFile(System.Uri,System.String,System.String,System.Func{HttpAgent.FileTransferProgress,System.Threading.Tasks.Task},System.String,System.Action{HttpAgent.HttpFileUploadBuilder})">
+            <summary>
+                创建 <see cref="T:HttpAgent.HttpFileUploadBuilder" /> 构建器
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="filePath">文件路径</param>
+            <param name="name">表单名称；默认值为 <c>file</c>。</param>
+            <param name="onProgressChanged">用于传输进度发生变化时执行的委托</param>
+            <param name="fileName">文件的名称</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpFileUploadBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.UploadFile(System.String,System.String,System.String,System.Func{HttpAgent.FileTransferProgress,System.Threading.Tasks.Task},System.String,System.Action{HttpAgent.HttpFileUploadBuilder})">
+            <summary>
+                创建 <see cref="T:HttpAgent.HttpFileUploadBuilder" /> 构建器
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="filePath">文件路径</param>
+            <param name="name">表单名称；默认值为 <c>file</c>。</param>
+            <param name="onProgressChanged">用于传输进度发生变化时执行的委托</param>
+            <param name="fileName">文件的名称</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpFileUploadBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.ServerSentEvents(System.Net.Http.HttpMethod,System.Uri,System.Func{HttpAgent.ServerSentEventsData,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Action{HttpAgent.HttpServerSentEventsBuilder})">
+            <summary>
+                创建 <see cref="T:HttpAgent.HttpServerSentEventsBuilder" /> 构建器
+            </summary>
+            <param name="httpMethod">请求方式</param>
+            <param name="requestUri">请求地址</param>
+            <param name="onMessage">用于在从事件源接收到数据时的操作</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpServerSentEventsBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.ServerSentEvents(System.Uri,System.Func{HttpAgent.ServerSentEventsData,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Action{HttpAgent.HttpServerSentEventsBuilder})">
+            <summary>
+                创建 <see cref="T:HttpAgent.HttpServerSentEventsBuilder" /> 构建器
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="onMessage">用于在从事件源接收到数据时的操作</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpServerSentEventsBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.ServerSentEvents(System.String,System.Func{HttpAgent.ServerSentEventsData,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Action{HttpAgent.HttpServerSentEventsBuilder})">
+            <summary>
+                创建 <see cref="T:HttpAgent.HttpServerSentEventsBuilder" /> 构建器
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="onMessage">用于在从事件源接收到数据时的操作</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpServerSentEventsBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.StressTestHarness(System.Net.Http.HttpMethod,System.Uri,System.Int32,System.Action{HttpAgent.HttpStressTestHarnessBuilder})">
+            <summary>
+                创建 <see cref="T:HttpAgent.HttpStressTestHarnessBuilder" /> 构建器
+            </summary>
+            <param name="httpMethod">请求方式</param>
+            <param name="requestUri">请求地址</param>
+            <param name="numberOfRequests">并发请求数量，默认值为：100。</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpStressTestHarnessBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.StressTestHarness(System.Uri,System.Int32,System.Action{HttpAgent.HttpStressTestHarnessBuilder})">
+            <summary>
+                创建 <see cref="T:HttpAgent.HttpStressTestHarnessBuilder" /> 构建器
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="numberOfRequests">并发请求数量，默认值为：100。</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpStressTestHarnessBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.StressTestHarness(System.String,System.Int32,System.Action{HttpAgent.HttpStressTestHarnessBuilder})">
+            <summary>
+                创建 <see cref="T:HttpAgent.HttpStressTestHarnessBuilder" /> 构建器
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="numberOfRequests">并发请求数量，默认值为：100。</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpStressTestHarnessBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.LongPolling(System.Net.Http.HttpMethod,System.Uri,System.Func{System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Action{HttpAgent.HttpLongPollingBuilder})">
+            <summary>
+                创建 <see cref="T:HttpAgent.HttpLongPollingBuilder" /> 构建器
+            </summary>
+            <param name="httpMethod">请求方式</param>
+            <param name="requestUri">请求地址</param>
+            <param name="onDataReceived">用于接收服务器返回 <c>200~299</c> 状态码的数据的操作</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpLongPollingBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.LongPolling(System.Uri,System.Func{System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Action{HttpAgent.HttpLongPollingBuilder})">
+            <summary>
+                创建 <see cref="T:HttpAgent.HttpLongPollingBuilder" /> 构建器
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="onDataReceived">用于接收服务器返回 <c>200~299</c> 状态码的数据的操作</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpLongPollingBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.LongPolling(System.String,System.Func{System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Action{HttpAgent.HttpLongPollingBuilder})">
+            <summary>
+                创建 <see cref="T:HttpAgent.HttpLongPollingBuilder" /> 构建器
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="onDataReceived">用于接收服务器返回 <c>200~299</c> 状态码的数据的操作</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpLongPollingBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.Declarative(System.Reflection.MethodInfo,System.Object[])">
+            <summary>
+                创建 <see cref="T:HttpAgent.HttpDeclarativeBuilder" /> 构建器
+            </summary>
+            <param name="method">被调用方法</param>
+            <param name="args">被调用方法的参数值数组</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpDeclarativeBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.FromJson(System.String,System.Action{HttpAgent.HttpRequestBuilder})">
+            <summary>
+                从 JSON 中创建 <see cref="T:HttpAgent.HttpRequestBuilder" /> 实例
+            </summary>
+            <param name="json">JSON 字符串</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+            <exception cref="T:System.ArgumentException"></exception>
+            <exception cref="T:System.InvalidOperationException"></exception>
+        </member>
         <member name="T:HttpAgent.HttpFileDownloadBuilder">
             <summary>
                 HTTP 文件下载构建器
