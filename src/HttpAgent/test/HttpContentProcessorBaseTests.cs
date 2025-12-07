@@ -24,12 +24,12 @@ public class HttpContentProcessorBaseTests
     public void GetService_ReturnOK()
     {
         var processor = new StringContentProcessor();
-        Assert.Null(processor.GetService<IMyService>());
+        Assert.Null(processor.GetService(typeof(IMyService)));
 
         using var serviceProvider =
             new ServiceCollection().AddTransient<IMyService, MyService>().BuildServiceProvider();
         processor.ServiceProvider = serviceProvider;
-        Assert.NotNull(processor.GetService<IMyService>());
+        Assert.NotNull(processor.GetService(typeof(IMyService)));
     }
 
     public class MyService : IMyService;

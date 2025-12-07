@@ -10,12 +10,12 @@ public class HttpContentConverterBaseTests
     public void GetService_ReturnOK()
     {
         var converter = new StringContentConverter();
-        Assert.Null(converter.GetService<IMyService>());
+        Assert.Null(converter.GetService(typeof(IMyService)));
 
         using var serviceProvider =
             new ServiceCollection().AddTransient<IMyService, MyService>().BuildServiceProvider();
         converter.ServiceProvider = serviceProvider;
-        Assert.NotNull(converter.GetService<IMyService>());
+        Assert.NotNull(converter.GetService(typeof(IMyService)));
     }
 
     public class MyService : IMyService;
