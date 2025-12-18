@@ -97,6 +97,35 @@ public class HttpRemoteUtilityTests
     }
 
     [Fact]
+    public async Task ConnectWithLocalIPv4_ReturnOK()
+    {
+        using var httpClient = new HttpClient(new SocketsHttpHandler
+        {
+            ConnectCallback = (context, token) =>
+                HttpRemoteUtility.ConnectWithLocalIPv4(IPAddress.Parse("192.168.0.103"), context, token)
+        });
+
+        var response = await httpClient.GetAsync("https://www.baidu.com");
+        response.EnsureSuccessStatusCode();
+    }
+
+    [Fact]
+    public async Task ConnectWithLocalIPv6_ReturnOK()
+    {
+        using var httpClient = new HttpClient(new SocketsHttpHandler
+        {
+            ConnectCallback = (context, token) =>
+                HttpRemoteUtility.ConnectWithLocalIPv6(IPAddress.Parse("192.168.0.103"), context, token)
+        });
+
+        await Assert.ThrowsAsync<HttpRequestException>(async () =>
+        {
+            var response = await httpClient.GetAsync("https://www.baidu.com");
+            response.EnsureSuccessStatusCode();
+        });
+    }
+
+    [Fact]
     public void ResolveJsonSerializationContext_Invalid_Parameters() =>
         Assert.Throws<ArgumentNullException>(() =>
             HttpRemoteUtility.ResolveJsonSerializationContext(null!, null, null));

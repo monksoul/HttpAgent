@@ -80,6 +80,44 @@ public static class HttpRemoteUtility
         IPAddressConnectCallback(AddressFamily.Unspecified, context, cancellationToken);
 
     /// <summary>
+    ///     获取绑定到指定本地 IP 并使用 IPv4 连接到服务器的回调
+    /// </summary>
+    /// <remarks>适用于双网卡场景。</remarks>
+    /// <param name="localIpAddress">要绑定的本地 IP 地址（即指定出口网卡）</param>
+    /// <param name="context">
+    ///     <see cref="SocketsHttpConnectionContext" />
+    /// </param>
+    /// <param name="cancellationToken">
+    ///     <see cref="CancellationToken" />
+    /// </param>
+    /// <returns>
+    ///     <see cref="Stream" />
+    /// </returns>
+    public static ValueTask<Stream> ConnectWithLocalIPv4(IPAddress? localIpAddress,
+        SocketsHttpConnectionContext context,
+        CancellationToken cancellationToken) =>
+        IPAddressConnectCallback(localIpAddress, AddressFamily.InterNetwork, context, cancellationToken);
+
+    /// <summary>
+    ///     获取绑定到指定本地 IP 并使用 IPv6 连接到服务器的回调
+    /// </summary>
+    /// <remarks>适用于双网卡场景。</remarks>
+    /// <param name="localIpAddress">要绑定的本地 IP 地址（即指定出口网卡）</param>
+    /// <param name="context">
+    ///     <see cref="SocketsHttpConnectionContext" />
+    /// </param>
+    /// <param name="cancellationToken">
+    ///     <see cref="CancellationToken" />
+    /// </param>
+    /// <returns>
+    ///     <see cref="Stream" />
+    /// </returns>
+    public static ValueTask<Stream> ConnectWithLocalIPv6(IPAddress? localIpAddress,
+        SocketsHttpConnectionContext context,
+        CancellationToken cancellationToken) => IPAddressConnectCallback(localIpAddress, AddressFamily.InterNetworkV6,
+        context, cancellationToken);
+
+    /// <summary>
     ///     根据 HTTP 响应消息和服务提供器，解析出 <see cref="HttpClient" /> 客户端对应的 JSON 响应反序列化时的上下文信息
     /// </summary>
     /// <param name="resultType">转换的目标类型</param>
@@ -125,35 +163,9 @@ public static class HttpRemoteUtility
     }
 
     /// <summary>
-    ///     根据 HTTP 响应消息和服务提供器，解析出 <see cref="HttpClient" /> 客户端配置选项
-    /// </summary>
-    /// <param name="httpResponseMessage">
-    ///     <see cref="HttpResponseMessage" />
-    /// </param>
-    /// <param name="serviceProvider">
-    ///     <see cref="IServiceProvider" />
-    /// </param>
-    /// <returns>
-    ///     <see cref="HttpClientOptions" />
-    /// </returns>
-    internal static HttpClientOptions? ResolveHttpClientOptions(HttpResponseMessage? httpResponseMessage,
-        IServiceProvider? serviceProvider)
-    {
-        // 获取 HttpClient 实例的配置名称
-        if (httpResponseMessage?.RequestMessage?.Options.TryGetValue(
-                new HttpRequestOptionsKey<string>(Constants.HTTP_CLIENT_NAME), out var httpClientName) != true)
-        {
-            httpClientName = string.Empty;
-        }
-
-        // 获取 HttpClientOptions 实例
-        var httpClientOptions = serviceProvider?.GetService<IOptionsMonitor<HttpClientOptions>>()?.Get(httpClientName);
-        return httpClientOptions;
-    }
-
-    /// <summary>
     ///     获取使用指定 IP 地址类型连接到服务器的回调
     /// </summary>
+    /// <remarks>自动选择本地出口。</remarks>
     /// <param name="addressFamily">
     ///     <see cref="AddressFamily" />
     /// </param>
@@ -166,9 +178,29 @@ public static class HttpRemoteUtility
     /// <returns>
     ///     <see cref="Stream" />
     /// </returns>
-    internal static async ValueTask<Stream> IPAddressConnectCallback(AddressFamily addressFamily,
+    public static ValueTask<Stream> IPAddressConnectCallback(AddressFamily addressFamily,
         SocketsHttpConnectionContext context,
         CancellationToken cancellationToken)
+        => IPAddressConnectCallback(null, addressFamily, context, cancellationToken);
+
+    /// <summary>
+    ///     获取使用指定 IP 地址类型及可选本地 IP 绑定的连接回调
+    /// </summary>
+    /// <param name="localIpAddress">要绑定的本地 IP 地址（用于指定出口网卡），可为 null</param>
+    /// <param name="addressFamily">
+    ///     <see cref="AddressFamily" />
+    /// </param>
+    /// <param name="context">
+    ///     <see cref="SocketsHttpConnectionContext" />
+    /// </param>
+    /// <param name="cancellationToken">
+    ///     <see cref="CancellationToken" />
+    /// </param>
+    /// <returns>
+    ///     <see cref="Stream" />
+    /// </returns>
+    public static async ValueTask<Stream> IPAddressConnectCallback(IPAddress? localIpAddress,
+        AddressFamily addressFamily, SocketsHttpConnectionContext context, CancellationToken cancellationToken)
     {
         // 参考文献：
         // - https://www.meziantou.net/forcing-httpclient-to-use-ipv4-or-ipv6-addresses.htm
@@ -193,14 +225,26 @@ public static class HttpRemoteUtility
             addresses = entry.AddressList;
         }
 
-        // 打开与目标主机/端口的连接
-        var socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
+        // 若指定了本地 IP，则以其地址族为准；否则使用传入的 addressFamily（若为 Unspecified，默认回退到 IPv4）
+        var socketAddressFamily = localIpAddress?.AddressFamily ??
+                                  (addressFamily == AddressFamily.Unspecified
+                                      ? AddressFamily.InterNetwork
+                                      : addressFamily);
 
-        // 关闭 Nagle 算法，因为这在大多数 HttpClient 场景中会降低性能。
+        // 打开与目标主机/端口的连接
+        var socket = new Socket(socketAddressFamily, SocketType.Stream, ProtocolType.Tcp);
+
+        // 关闭 Nagle 算法，因为这在大多数 HttpClient 场景中会降低性能
         socket.NoDelay = true;
 
         try
         {
+            // 如果指定了本地 IP，则绑定到该地址（强制使用指定网卡出口）
+            if (localIpAddress != null)
+            {
+                socket.Bind(new IPEndPoint(localIpAddress, 0));
+            }
+
             await socket.ConnectAsync(addresses, context.DnsEndPoint.Port, cancellationToken);
 
             // 如果你想选择特定的 IP 地址来连接服务器
@@ -216,5 +260,32 @@ public static class HttpRemoteUtility
             socket.Dispose();
             throw;
         }
+    }
+
+    /// <summary>
+    ///     根据 HTTP 响应消息和服务提供器，解析出 <see cref="HttpClient" /> 客户端配置选项
+    /// </summary>
+    /// <param name="httpResponseMessage">
+    ///     <see cref="HttpResponseMessage" />
+    /// </param>
+    /// <param name="serviceProvider">
+    ///     <see cref="IServiceProvider" />
+    /// </param>
+    /// <returns>
+    ///     <see cref="HttpClientOptions" />
+    /// </returns>
+    internal static HttpClientOptions? ResolveHttpClientOptions(HttpResponseMessage? httpResponseMessage,
+        IServiceProvider? serviceProvider)
+    {
+        // 获取 HttpClient 实例的配置名称
+        if (httpResponseMessage?.RequestMessage?.Options.TryGetValue(
+                new HttpRequestOptionsKey<string>(Constants.HTTP_CLIENT_NAME), out var httpClientName) != true)
+        {
+            httpClientName = string.Empty;
+        }
+
+        // 获取 HttpClientOptions 实例
+        var httpClientOptions = serviceProvider?.GetService<IOptionsMonitor<HttpClientOptions>>()?.Get(httpClientName);
+        return httpClientOptions;
     }
 }
