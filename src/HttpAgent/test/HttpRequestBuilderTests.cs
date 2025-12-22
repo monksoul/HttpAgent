@@ -103,15 +103,13 @@ public class HttpRequestBuilderTests
             httpRequestBuilder6.BuildFinalRequestUri(new Uri("https://furion.net"), httpRemoteOptions);
         Assert.Equal("http://localhost/api/test/docs", finalRequestUri8);
 
-        var builder = WebApplication.CreateBuilder();
-        builder.Configuration.Sources.Clear();
-        builder.Configuration.AddInMemoryCollection(new Dictionary<string, string?>
+        var configuration = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?>
         {
             ["name"] = "Furion",
             ["age"] = "10",
             ["furion:author"] = "MonkSoul",
             ["baseAddress"] = "https://furion.net"
-        });
+        }).Build();
 
         var httpRequestBuilder7 =
             new HttpRequestBuilder(HttpMethod.Get,
@@ -119,7 +117,7 @@ public class HttpRequestBuilderTests
                     UriKind.RelativeOrAbsolute)).SetBaseAddress("[[baseAddress]]");
         var finalRequestUri9 =
             httpRequestBuilder7.BuildFinalRequestUri(new Uri("https://furion.net"),
-                new HttpRemoteOptions { Configuration = builder.Configuration });
+                new HttpRemoteOptions { Configuration = configuration });
         Assert.Equal("https://furion.net/Furion/10/MonkSoul/default", finalRequestUri9);
 
         var httpRequestBuilder8 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost/test/")); // 保留末尾斜杆
@@ -686,17 +684,13 @@ public class HttpRequestBuilderTests
     [Fact]
     public void Build_ReturnOK()
     {
-        var builder = WebApplication.CreateBuilder();
-        builder.Configuration.Sources.Clear();
-        builder.Configuration.AddInMemoryCollection(new Dictionary<string, string?>
-        {
-            ["name"] = "Furion", ["age"] = "10"
-        });
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?> { ["name"] = "Furion", ["age"] = "10" }).Build();
 
         var services = new ServiceCollection();
         services.AddOptions<HttpRemoteOptions>();
         using var serviceProvider = services.BuildServiceProvider();
-        var httpRemoteOptions = new HttpRemoteOptions { Configuration = builder.Configuration };
+        var httpRemoteOptions = new HttpRemoteOptions { Configuration = configuration };
 
         var httpRequestMessage =
             new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost/{id}/{name}/[[name]]/[[age]]"))
