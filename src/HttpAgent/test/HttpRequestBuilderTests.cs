@@ -107,13 +107,16 @@ public class HttpRequestBuilderTests
         builder.Configuration.Sources.Clear();
         builder.Configuration.AddInMemoryCollection(new Dictionary<string, string?>
         {
-            ["name"] = "Furion", ["age"] = "10", ["furion:author"] = "MonkSoul"
+            ["name"] = "Furion",
+            ["age"] = "10",
+            ["furion:author"] = "MonkSoul",
+            ["baseAddress"] = "https://furion.net"
         });
 
         var httpRequestBuilder7 =
             new HttpRequestBuilder(HttpMethod.Get,
-                new Uri("https://furion.net/[[name]]/[[age]]/[[furion:author]]/[[notfound:key || default]]",
-                    UriKind.RelativeOrAbsolute));
+                new Uri("/[[name]]/[[age]]/[[furion:author]]/[[notfound:key || default]]",
+                    UriKind.RelativeOrAbsolute)).SetBaseAddress("[[baseAddress]]");
         var finalRequestUri9 =
             httpRequestBuilder7.BuildFinalRequestUri(new Uri("https://furion.net"),
                 new HttpRemoteOptions { Configuration = builder.Configuration });
@@ -122,6 +125,23 @@ public class HttpRequestBuilderTests
         var httpRequestBuilder8 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost/test/")); // 保留末尾斜杆
         var finalRequestUri10 = httpRequestBuilder8.BuildFinalRequestUri(null, httpRemoteOptions);
         Assert.Equal("http://localhost/test/", finalRequestUri10);
+
+        var httpRequestBuilder9 =
+            new HttpRequestBuilder(HttpMethod.Get, null).SetBaseAddress("{url}");
+        httpRequestBuilder9.WithPathParameters(new { url = "http://localhost/id=10" });
+        var finalRequestUri11 =
+            httpRequestBuilder9.BuildFinalRequestUri(new Uri("http://localhost"), httpRemoteOptions);
+        Assert.Equal("http://localhost/id=10", finalRequestUri11);
+
+        var httpRequestBuilder10 =
+            new HttpRequestBuilder(HttpMethod.Get, null).SetBaseAddress("{url}");
+        httpRequestBuilder10.WithPathParameters(new { url = "/api/getuser" });
+        var exception =
+            Assert.Throws<InvalidOperationException>(() =>
+                httpRequestBuilder10.BuildFinalRequestUri(null, httpRemoteOptions));
+        Assert.Equal(
+            "The base address must be absolute. Please check the `.SetBaseAddress()` method or the `[BaseAddress()]` attribute.",
+            exception.Message);
     }
 
     [Fact]
@@ -307,22 +327,22 @@ public class HttpRequestBuilderTests
         var finalRequestUri = httpRequestBuilder.BuildFinalRequestUri(null, new HttpRemoteOptions());
         var httpRequestMessage = new HttpRequestMessage(httpRequestBuilder.HttpMethod!, finalRequestUri);
 
-        httpRequestBuilder.AppendHeaders(httpRequestMessage);
+        httpRequestBuilder.AppendHeaders(httpRequestMessage, null);
         Assert.Empty(httpRequestMessage.Headers);
 
         httpRequestBuilder.WithHeaders(new { id = 10, name = "furion" }).WithHeaders(new { name = "monksoul" });
-        httpRequestBuilder.AppendHeaders(httpRequestMessage);
+        httpRequestBuilder.AppendHeaders(httpRequestMessage, null);
         Assert.Equal(2, httpRequestMessage.Headers.Count());
         Assert.Equal("10", httpRequestMessage.Headers.GetValues("id").First());
         Assert.Equal(["furion", "monksoul"], httpRequestMessage.Headers.GetValues("name"));
 
         httpRequestBuilder.SetTraceIdentifier("furion");
-        httpRequestBuilder.AppendHeaders(httpRequestMessage);
+        httpRequestBuilder.AppendHeaders(httpRequestMessage, null);
         Assert.Equal(3, httpRequestMessage.Headers.Count());
         Assert.Equal("furion", httpRequestMessage.Headers.GetValues("X-Trace-ID").First());
 
         httpRequestBuilder.AddBasicAuthentication("furion", "q1w2e3");
-        httpRequestBuilder.AppendHeaders(httpRequestMessage);
+        httpRequestBuilder.AppendHeaders(httpRequestMessage, null);
         var base64Credentials = Convert.ToBase64String("furion:q1w2e3"u8.ToArray());
 
         Assert.NotNull(httpRequestMessage.Headers.Authorization);
@@ -330,7 +350,7 @@ public class HttpRequestBuilderTests
         Assert.Equal("Basic", httpRequestMessage.Headers.Authorization.Scheme);
 
         httpRequestBuilder.DisableCache();
-        httpRequestBuilder.AppendHeaders(httpRequestMessage);
+        httpRequestBuilder.AppendHeaders(httpRequestMessage, null);
         Assert.NotNull(httpRequestMessage.Headers.CacheControl);
         Assert.True(httpRequestMessage.Headers.CacheControl.NoCache);
         Assert.True(httpRequestMessage.Headers.CacheControl.NoStore);
@@ -339,21 +359,27 @@ public class HttpRequestBuilderTests
         Assert.Equal("\"\"", httpRequestMessage.Headers.GetValues("If-None-Match").First());
 
         httpRequestBuilder.WithHeader("null", null);
-        httpRequestBuilder.AppendHeaders(httpRequestMessage);
+        httpRequestBuilder.AppendHeaders(httpRequestMessage, null);
         Assert.Equal([""], httpRequestMessage.Headers.GetValues("null"));
 
         httpRequestBuilder.AutoSetHostHeader();
-        httpRequestBuilder.AppendHeaders(httpRequestMessage);
+        httpRequestBuilder.AppendHeaders(httpRequestMessage, null);
         Assert.Equal("localhost", httpRequestMessage.Headers.Host);
 
         httpRequestBuilder.SetReferer("{BASE_ADDRESS}");
-        httpRequestBuilder.AppendHeaders(httpRequestMessage);
+        httpRequestBuilder.AppendHeaders(httpRequestMessage, null);
         Assert.Equal("http://localhost/", httpRequestMessage.Headers.Referrer?.ToString());
 
         httpRequestBuilder.WithHeaders(new { cname = "百小僧", ename = "fur ion" });
-        httpRequestBuilder.AppendHeaders(httpRequestMessage);
+        httpRequestBuilder.AppendHeaders(httpRequestMessage, null);
         Assert.Equal("百小僧", httpRequestMessage.Headers.GetValues("cname").First());
         Assert.Equal("fur ion", httpRequestMessage.Headers.GetValues("ename").First());
+
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?> { { "header:value", "furion" } }).Build();
+        httpRequestBuilder.WithHeaders(new { hv = "[[header:value]]" });
+        httpRequestBuilder.AppendHeaders(httpRequestMessage, configuration);
+        Assert.Equal("furion", httpRequestMessage.Headers.GetValues("hv").First());
     }
 
     [Fact]
@@ -411,14 +437,20 @@ public class HttpRequestBuilderTests
         var finalRequestUri = httpRequestBuilder.BuildFinalRequestUri(null, new HttpRemoteOptions());
         var httpRequestMessage = new HttpRequestMessage(httpRequestBuilder.HttpMethod!, finalRequestUri);
 
-        httpRequestBuilder.AppendCookies(httpRequestMessage);
+        httpRequestBuilder.AppendCookies(httpRequestMessage, null);
         Assert.Empty(httpRequestMessage.Headers);
 
         httpRequestBuilder.WithCookies(new { id = 10, name = "furion" });
-        httpRequestBuilder.AppendCookies(httpRequestMessage);
+        httpRequestBuilder.AppendCookies(httpRequestMessage, null);
 
         Assert.Single(httpRequestMessage.Headers);
         Assert.Equal("id=10; name=furion", httpRequestMessage.Headers.GetValues("Cookie").First());
+
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?> { { "cookie:value", "furion" } }).Build();
+        httpRequestBuilder.WithCookies(new { cv = "[[cookie:value]]" });
+        httpRequestBuilder.AppendCookies(httpRequestMessage, configuration);
+        Assert.Equal("id=10; name=furion; cv=furion", httpRequestMessage.Headers.GetValues("Cookie").Last());
     }
 
     [Fact]
@@ -429,7 +461,7 @@ public class HttpRequestBuilderTests
                 .WithCookies(new { id = 10, name = "furion", age = 30, address = "广东省" }).RemoveCookies("age", "id");
         var finalRequestUri = httpRequestBuilder.BuildFinalRequestUri(null, new HttpRemoteOptions());
         var httpRequestMessage = new HttpRequestMessage(httpRequestBuilder.HttpMethod!, finalRequestUri);
-        httpRequestBuilder.AppendCookies(httpRequestMessage);
+        httpRequestBuilder.AppendCookies(httpRequestMessage, null);
         httpRequestBuilder.RemoveCookies(httpRequestMessage);
 
         Assert.Single(httpRequestMessage.Headers);
@@ -449,7 +481,7 @@ public class HttpRequestBuilderTests
         Assert.Empty(httpRequestMessage.Headers);
 
         httpRequestBuilder.WithHeaders(new { id = 10, name = "furion" }).RemoveHeaders("name").RemoveHeaders("unknown")
-            .AppendHeaders(httpRequestMessage);
+            .AppendHeaders(httpRequestMessage, null);
 
         httpRequestBuilder.RemoveHeaders(httpRequestMessage);
         Assert.Single(httpRequestMessage.Headers);

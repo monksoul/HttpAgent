@@ -58,7 +58,7 @@ internal static class ObjectExtensions
     /// </returns>
     internal static string?
         ToInvariantCultureString(this object? obj, bool enumAsString = true, string separator = ",") =>
-        ToCultureString(obj, CultureInfo.InvariantCulture, enumAsString, separator);
+        obj.ToCultureString(CultureInfo.InvariantCulture, enumAsString, separator);
 
     /// <summary>
     ///     尝试获取对象的数量

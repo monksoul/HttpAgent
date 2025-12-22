@@ -71,10 +71,10 @@ public sealed partial class HttpRequestBuilder
         EnablePerformanceOptimization(httpRequestMessage);
 
         // 追加请求标头
-        AppendHeaders(httpRequestMessage);
+        AppendHeaders(httpRequestMessage, httpRemoteOptions.Configuration);
 
         // 追加 Cookies
-        AppendCookies(httpRequestMessage);
+        AppendCookies(httpRequestMessage, httpRemoteOptions.Configuration);
 
         // 移除 Cookies
         RemoveCookies(httpRequestMessage);
@@ -101,20 +101,27 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="string" />
     /// </returns>
+    /// <exception cref="InvalidOperationException"></exception>
     internal string BuildFinalRequestUri(Uri? clientBaseAddress, HttpRemoteOptions httpRemoteOptions)
     {
         // 替换路径或配置参数，处理非标准 HTTP URI 的应用场景（如 {url}），此时需优先解决路径或配置参数问题
         var processedRequestUri = RequestUri is null or { OriginalString: null }
             ? RequestUri
-            : new Uri(ReplacePlaceholders(RequestUri.OriginalString, httpRemoteOptions.Configuration),
+            : new Uri(ReplacePlaceholders(RequestUri.OriginalString, httpRemoteOptions.Configuration)!,
+                UriKind.RelativeOrAbsolute);
+
+        // 替换 BaseAddress 路径或配置参数，处理非标准 HTTP URI 的应用场景（如 {url}），此时需优先解决路径或配置参数问题
+        var processedBaseAddress = BaseAddress is null or { OriginalString: null }
+            ? BaseAddress
+            : new Uri(ReplacePlaceholders(BaseAddress.OriginalString, httpRemoteOptions.Configuration)!,
                 UriKind.RelativeOrAbsolute);
 
         // 初始化带局部 BaseAddress 的请求地址
-        var requestUriWithBaseAddress = BaseAddress is null
+        var requestUriWithBaseAddress = processedBaseAddress is null
             ? processedRequestUri
             : processedRequestUri is null
-                ? BaseAddress
-                : new Uri(BaseAddress, processedRequestUri);
+                ? processedBaseAddress
+                : new Uri(processedBaseAddress, processedRequestUri);
 
         // 初始化带全局（客户端） BaseAddress 的请求地址
         var requestUriWithClientBaseAddress = clientBaseAddress is null
@@ -126,8 +133,23 @@ public sealed partial class HttpRequestBuilder
         // 空检查
         ArgumentNullException.ThrowIfNull(requestUriWithClientBaseAddress);
 
-        // 初始化 UriBuilder 实例
-        var uriBuilder = new UriBuilder(requestUriWithClientBaseAddress);
+        UriBuilder uriBuilder;
+        try
+        {
+            // 初始化 UriBuilder 实例
+            uriBuilder = new UriBuilder(requestUriWithClientBaseAddress);
+        }
+        catch (Exception)
+        {
+            // 检查基地址是否是绝对路径地址
+            if (processedBaseAddress is not null && !processedBaseAddress.IsAbsoluteUri)
+            {
+                throw new InvalidOperationException(
+                    $"The base address must be absolute. Please check the `.{nameof(SetBaseAddress)}()` method or the `[BaseAddress()]` attribute.");
+            }
+
+            throw;
+        }
 
         // 追加路径片段
         AppendPathSegments(uriBuilder);
@@ -139,7 +161,7 @@ public sealed partial class HttpRequestBuilder
         AppendFragment(uriBuilder);
 
         // 替换路径或配置参数
-        var finalRequestUri = ReplacePlaceholders(uriBuilder.Uri.ToString(), httpRemoteOptions.Configuration);
+        var finalRequestUri = ReplacePlaceholders(uriBuilder.Uri.ToString(), httpRemoteOptions.Configuration)!;
 
         return finalRequestUri;
     }
@@ -257,35 +279,41 @@ public sealed partial class HttpRequestBuilder
     /// <summary>
     ///     替换路径或配置参数
     /// </summary>
-    /// <param name="originalUri">源请求地址</param>
+    /// <param name="originalString">源请求地址</param>
     /// <param name="configuration">
     ///     <see cref="IConfiguration" />
     /// </param>
     /// <returns>
     ///     <see cref="string" />
     /// </returns>
-    internal string ReplacePlaceholders(string originalUri, IConfiguration? configuration)
+    internal string? ReplacePlaceholders(string? originalString, IConfiguration? configuration)
     {
-        var newUri = originalUri;
+        // 空检查
+        if (string.IsNullOrWhiteSpace(originalString))
+        {
+            return originalString;
+        }
+
+        var newString = originalString;
 
         // 空检查
         if (!PathParameters.IsNullOrEmpty())
         {
-            newUri = newUri.ReplacePlaceholders(PathParameters);
+            newString = newString.ReplacePlaceholders(PathParameters);
         }
 
         // 空检查
         if (!ObjectPathParameters.IsNullOrEmpty())
         {
-            newUri = ObjectPathParameters.Aggregate(newUri,
+            newString = ObjectPathParameters.Aggregate(newString,
                 (current, objectPathParameter) =>
                     current.ReplacePlaceholders(objectPathParameter.Value, objectPathParameter.Key));
         }
 
         // 替换配置参数
-        newUri = newUri.ReplacePlaceholders(configuration);
+        newString = newString.ReplacePlaceholders(configuration);
 
-        return newUri!;
+        return newString;
     }
 
     /// <summary>
@@ -294,7 +322,10 @@ public sealed partial class HttpRequestBuilder
     /// <param name="httpRequestMessage">
     ///     <see cref="HttpRequestMessage" />
     /// </param>
-    internal void AppendHeaders(HttpRequestMessage httpRequestMessage)
+    /// <param name="configuration">
+    ///     <see cref="IConfiguration" />
+    /// </param>
+    internal void AppendHeaders(HttpRequestMessage httpRequestMessage, IConfiguration? configuration)
     {
         // 添加 Host 标头
         if (AutoSetHostHeaderEnabled)
@@ -344,7 +375,9 @@ public sealed partial class HttpRequestBuilder
                 continue;
             }
 
-            httpRequestMessage.Headers.TryAddWithoutValidation(key, values);
+            // 替换配置参数并追加
+            httpRequestMessage.Headers.TryAddWithoutValidation(key,
+                values.Select(v => ReplacePlaceholders(v, configuration)));
         }
     }
 
@@ -443,7 +476,10 @@ public sealed partial class HttpRequestBuilder
     /// <param name="httpRequestMessage">
     ///     <see cref="HttpRequestMessage" />
     /// </param>
-    internal void AppendCookies(HttpRequestMessage httpRequestMessage)
+    /// <param name="configuration">
+    ///     <see cref="IConfiguration" />
+    /// </param>
+    internal void AppendCookies(HttpRequestMessage httpRequestMessage, IConfiguration? configuration)
     {
         // 空检查
         if (Cookies.IsNullOrEmpty())
@@ -451,8 +487,13 @@ public sealed partial class HttpRequestBuilder
             return;
         }
 
+        // 解决重复设置 Cookie 头问题（单元测试）
+        // httpRequestMessage.Headers.Remove(HeaderNames.Cookie);
+
+        // 替换配置参数并追加
         httpRequestMessage.Headers.TryAddWithoutValidation(HeaderNames.Cookie,
-            string.Join("; ", Cookies.Select(u => $"{u.Key}={u.Value?.EscapeDataString(true)}")));
+            string.Join("; ",
+                Cookies.Select(u => $"{u.Key}={ReplacePlaceholders(u.Value, configuration)?.EscapeDataString(true)}")));
     }
 
     /// <summary>

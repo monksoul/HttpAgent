@@ -52,7 +52,7 @@ public static class NumberExtensions
     ///     <see cref="double" />
     /// </returns>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
-    public static double ToSizeUnits(this long byteSize, string unit) => ToSizeUnits((double)byteSize, unit);
+    public static double ToSizeUnits(this long byteSize, string unit) => ((double)byteSize).ToSizeUnits(unit);
 
     /// <summary>
     ///     将毫秒数格式化为更直观的时间单位字符串（如 ms, s, min, h, d, y）
@@ -141,5 +141,5 @@ public static class NumberExtensions
     /// <returns>
     ///     <see cref="string" />
     /// </returns>
-    public static string FormatDuration(this double millisecond) => FormatDuration((long)millisecond);
+    public static string FormatDuration(this double millisecond) => ((long)millisecond).FormatDuration();
 }

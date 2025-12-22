@@ -1594,11 +1594,11 @@ public sealed partial class HttpRequestBuilder
     /// </returns>
     public HttpRequestBuilder SetBaseAddress(Uri? baseAddress)
     {
-        // 检查基地址是否是绝对路径地址
-        if (baseAddress is not null && !baseAddress.IsAbsoluteUri)
-        {
-            throw new ArgumentException("The base address must be absolute.", nameof(baseAddress));
-        }
+        // 检查基地址是否是绝对路径地址（移动到构建时检查）
+        // if (baseAddress is not null && !baseAddress.IsAbsoluteUri)
+        // {
+        //     throw new ArgumentException("The base address must be absolute.", nameof(baseAddress));
+        // }
 
         BaseAddress = baseAddress;
 

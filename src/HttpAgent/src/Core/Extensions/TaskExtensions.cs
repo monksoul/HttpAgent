@@ -39,7 +39,7 @@ public static class TaskExtensions
     /// <returns>
     ///     <typeparamref name="T" />
     /// </returns>
-    public static Task<T> OrDefault<T>(this Task<T?> task) => OrDefault(task, default!);
+    public static Task<T> OrDefault<T>(this Task<T?> task) => task.OrDefault(default!);
 
     /// <summary>
     ///     异步返回值为 <code>null</code> 时返回默认值

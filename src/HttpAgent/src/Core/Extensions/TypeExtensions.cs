@@ -463,7 +463,7 @@ internal static class TypeExtensions
         if (type.IsArray)
         {
             var rank = new string(',', type.GetArrayRank() - 1);
-            return $"{ToFriendlyString(type.GetElementType()!)}[{rank}]";
+            return $"{type.GetElementType()!.ToFriendlyString()}[{rank}]";
         }
 
         return type.FullName ?? type.Name;

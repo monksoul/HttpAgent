@@ -30,10 +30,10 @@ public static partial class HttpContextExtensions
     public static TResult? ForwardAs<TResult>(this HttpContext? httpContext, string? requestUri = null,
         Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
-        HttpContextForwardOptions? forwardOptions = null) => ForwardAs<TResult>(httpContext,
-        Helpers.ParseHttpMethod(httpContext?.Request.Method),
-        string.IsNullOrWhiteSpace(requestUri) ? null : new Uri(requestUri, UriKind.RelativeOrAbsolute), configure,
-        completionOption, forwardOptions);
+        HttpContextForwardOptions? forwardOptions = null) =>
+        httpContext.ForwardAs<TResult>(Helpers.ParseHttpMethod(httpContext?.Request.Method),
+            string.IsNullOrWhiteSpace(requestUri) ? null : new Uri(requestUri, UriKind.RelativeOrAbsolute), configure,
+            completionOption, forwardOptions);
 
     /// <summary>
     ///     转发 <see cref="HttpContext" /> 到新的 HTTP 远程地址
@@ -57,9 +57,10 @@ public static partial class HttpContextExtensions
     public static TResult? ForwardAs<TResult>(this HttpContext? httpContext, HttpMethod httpMethod,
         string? requestUri = null, Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
-        HttpContextForwardOptions? forwardOptions = null) => ForwardAs<TResult>(httpContext, httpMethod,
-        string.IsNullOrWhiteSpace(requestUri) ? null : new Uri(requestUri, UriKind.RelativeOrAbsolute), configure,
-        completionOption, forwardOptions);
+        HttpContextForwardOptions? forwardOptions = null) =>
+        httpContext.ForwardAs<TResult>(httpMethod,
+            string.IsNullOrWhiteSpace(requestUri) ? null : new Uri(requestUri, UriKind.RelativeOrAbsolute), configure,
+            completionOption, forwardOptions);
 
     /// <summary>
     ///     转发 <see cref="HttpContext" /> 到新的 HTTP 远程地址
@@ -82,9 +83,9 @@ public static partial class HttpContextExtensions
     public static TResult? ForwardAs<TResult>(this HttpContext? httpContext, Uri? requestUri = null,
         Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
-        HttpContextForwardOptions? forwardOptions = null) => ForwardAs<TResult>(httpContext,
-        Helpers.ParseHttpMethod(httpContext?.Request.Method), requestUri,
-        configure, completionOption, forwardOptions);
+        HttpContextForwardOptions? forwardOptions = null) =>
+        httpContext.ForwardAs<TResult>(Helpers.ParseHttpMethod(httpContext?.Request.Method), requestUri,
+            configure, completionOption, forwardOptions);
 
     /// <summary>
     ///     转发 <see cref="HttpContext" /> 到新的 HTTP 远程地址
@@ -157,7 +158,7 @@ public static partial class HttpContextExtensions
         Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         HttpContextForwardOptions? forwardOptions = null) =>
-        ForwardAsAsync<TResult>(httpContext, Helpers.ParseHttpMethod(httpContext?.Request.Method),
+        httpContext.ForwardAsAsync<TResult>(Helpers.ParseHttpMethod(httpContext?.Request.Method),
             string.IsNullOrWhiteSpace(requestUri) ? null : new Uri(requestUri, UriKind.RelativeOrAbsolute), configure,
             completionOption, forwardOptions);
 
@@ -184,7 +185,7 @@ public static partial class HttpContextExtensions
         string? requestUri = null, Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         HttpContextForwardOptions? forwardOptions = null) =>
-        ForwardAsAsync<TResult>(httpContext, httpMethod,
+        httpContext.ForwardAsAsync<TResult>(httpMethod,
             string.IsNullOrWhiteSpace(requestUri) ? null : new Uri(requestUri, UriKind.RelativeOrAbsolute), configure,
             completionOption, forwardOptions);
 
@@ -210,7 +211,7 @@ public static partial class HttpContextExtensions
         Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         HttpContextForwardOptions? forwardOptions = null) =>
-        ForwardAsAsync<TResult>(httpContext, Helpers.ParseHttpMethod(httpContext?.Request.Method), requestUri,
+        httpContext.ForwardAsAsync<TResult>(Helpers.ParseHttpMethod(httpContext?.Request.Method), requestUri,
             configure, completionOption, forwardOptions);
 
     /// <summary>
@@ -283,7 +284,7 @@ public static partial class HttpContextExtensions
         Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         HttpContextForwardOptions? forwardOptions = null) =>
-        ForwardAs<string>(httpContext, requestUri, configure, completionOption, forwardOptions);
+        httpContext.ForwardAs<string>(requestUri, configure, completionOption, forwardOptions);
 
     /// <summary>
     ///     转发 <see cref="HttpContext" /> 到新的 HTTP 远程地址
@@ -306,8 +307,9 @@ public static partial class HttpContextExtensions
     public static string? ForwardAsString(this HttpContext? httpContext, HttpMethod httpMethod,
         string? requestUri = null, Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
-        HttpContextForwardOptions? forwardOptions = null) => ForwardAs<string>(httpContext, httpMethod, requestUri,
-        configure, completionOption, forwardOptions);
+        HttpContextForwardOptions? forwardOptions = null) =>
+        httpContext.ForwardAs<string>(httpMethod, requestUri,
+            configure, completionOption, forwardOptions);
 
     /// <summary>
     ///     转发 <see cref="HttpContext" /> 到新的 HTTP 远程地址
@@ -330,7 +332,7 @@ public static partial class HttpContextExtensions
         Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         HttpContextForwardOptions? forwardOptions = null) =>
-        ForwardAs<string>(httpContext, requestUri, configure, completionOption, forwardOptions);
+        httpContext.ForwardAs<string>(requestUri, configure, completionOption, forwardOptions);
 
     /// <summary>
     ///     转发 <see cref="HttpContext" /> 到新的 HTTP 远程地址
@@ -354,7 +356,7 @@ public static partial class HttpContextExtensions
         Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         HttpContextForwardOptions? forwardOptions = null) =>
-        ForwardAs<string>(httpContext, httpMethod, requestUri, configure, completionOption, forwardOptions);
+        httpContext.ForwardAs<string>(httpMethod, requestUri, configure, completionOption, forwardOptions);
 
     /// <summary>
     ///     转发 <see cref="HttpContext" /> 到新的 HTTP 远程地址
@@ -377,7 +379,7 @@ public static partial class HttpContextExtensions
         Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         HttpContextForwardOptions? forwardOptions = null) =>
-        ForwardAsAsync<string>(httpContext, requestUri, configure, completionOption, forwardOptions);
+        httpContext.ForwardAsAsync<string>(requestUri, configure, completionOption, forwardOptions);
 
     /// <summary>
     ///     转发 <see cref="HttpContext" /> 到新的 HTTP 远程地址
@@ -401,7 +403,7 @@ public static partial class HttpContextExtensions
         string? requestUri = null, Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         HttpContextForwardOptions? forwardOptions = null) =>
-        ForwardAsAsync<string>(httpContext, httpMethod, requestUri, configure, completionOption, forwardOptions);
+        httpContext.ForwardAsAsync<string>(httpMethod, requestUri, configure, completionOption, forwardOptions);
 
     /// <summary>
     ///     转发 <see cref="HttpContext" /> 到新的 HTTP 远程地址
@@ -424,7 +426,7 @@ public static partial class HttpContextExtensions
         Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         HttpContextForwardOptions? forwardOptions = null) =>
-        ForwardAsAsync<string>(httpContext, requestUri, configure, completionOption, forwardOptions);
+        httpContext.ForwardAsAsync<string>(requestUri, configure, completionOption, forwardOptions);
 
     /// <summary>
     ///     转发 <see cref="HttpContext" /> 到新的 HTTP 远程地址
@@ -448,7 +450,7 @@ public static partial class HttpContextExtensions
         Uri? requestUri = null, Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         HttpContextForwardOptions? forwardOptions = null) =>
-        ForwardAsAsync<string>(httpContext, httpMethod, requestUri, configure, completionOption, forwardOptions);
+        httpContext.ForwardAsAsync<string>(httpMethod, requestUri, configure, completionOption, forwardOptions);
 
     /// <summary>
     ///     转发 <see cref="HttpContext" /> 到新的 HTTP 远程地址
@@ -471,7 +473,7 @@ public static partial class HttpContextExtensions
         Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         HttpContextForwardOptions? forwardOptions = null) =>
-        ForwardAs<byte[]>(httpContext, requestUri, configure, completionOption, forwardOptions);
+        httpContext.ForwardAs<byte[]>(requestUri, configure, completionOption, forwardOptions);
 
     /// <summary>
     ///     转发 <see cref="HttpContext" /> 到新的 HTTP 远程地址
@@ -494,8 +496,9 @@ public static partial class HttpContextExtensions
     public static byte[]? ForwardAsByteArray(this HttpContext? httpContext, HttpMethod httpMethod,
         string? requestUri = null, Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
-        HttpContextForwardOptions? forwardOptions = null) => ForwardAs<byte[]>(httpContext, httpMethod, requestUri,
-        configure, completionOption, forwardOptions);
+        HttpContextForwardOptions? forwardOptions = null) =>
+        httpContext.ForwardAs<byte[]>(httpMethod, requestUri,
+            configure, completionOption, forwardOptions);
 
     /// <summary>
     ///     转发 <see cref="HttpContext" /> 到新的 HTTP 远程地址
@@ -518,7 +521,7 @@ public static partial class HttpContextExtensions
         Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         HttpContextForwardOptions? forwardOptions = null) =>
-        ForwardAs<byte[]>(httpContext, requestUri, configure, completionOption, forwardOptions);
+        httpContext.ForwardAs<byte[]>(requestUri, configure, completionOption, forwardOptions);
 
     /// <summary>
     ///     转发 <see cref="HttpContext" /> 到新的 HTTP 远程地址
@@ -543,7 +546,7 @@ public static partial class HttpContextExtensions
         Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         HttpContextForwardOptions? forwardOptions = null) =>
-        ForwardAs<byte[]>(httpContext, httpMethod, requestUri, configure, completionOption, forwardOptions);
+        httpContext.ForwardAs<byte[]>(httpMethod, requestUri, configure, completionOption, forwardOptions);
 
     /// <summary>
     ///     转发 <see cref="HttpContext" /> 到新的 HTTP 远程地址
@@ -566,7 +569,7 @@ public static partial class HttpContextExtensions
         Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         HttpContextForwardOptions? forwardOptions = null) =>
-        ForwardAsAsync<byte[]>(httpContext, requestUri, configure, completionOption, forwardOptions);
+        httpContext.ForwardAsAsync<byte[]>(requestUri, configure, completionOption, forwardOptions);
 
     /// <summary>
     ///     转发 <see cref="HttpContext" /> 到新的 HTTP 远程地址
@@ -590,7 +593,7 @@ public static partial class HttpContextExtensions
         string? requestUri = null, Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         HttpContextForwardOptions? forwardOptions = null) =>
-        ForwardAsAsync<byte[]>(httpContext, httpMethod, requestUri, configure, completionOption, forwardOptions);
+        httpContext.ForwardAsAsync<byte[]>(httpMethod, requestUri, configure, completionOption, forwardOptions);
 
     /// <summary>
     ///     转发 <see cref="HttpContext" /> 到新的 HTTP 远程地址
@@ -613,7 +616,7 @@ public static partial class HttpContextExtensions
         Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         HttpContextForwardOptions? forwardOptions = null) =>
-        ForwardAsAsync<byte[]>(httpContext, requestUri, configure, completionOption, forwardOptions);
+        httpContext.ForwardAsAsync<byte[]>(requestUri, configure, completionOption, forwardOptions);
 
     /// <summary>
     ///     转发 <see cref="HttpContext" /> 到新的 HTTP 远程地址
@@ -637,7 +640,7 @@ public static partial class HttpContextExtensions
         Uri? requestUri = null, Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         HttpContextForwardOptions? forwardOptions = null) =>
-        ForwardAsAsync<byte[]>(httpContext, httpMethod, requestUri, configure, completionOption, forwardOptions);
+        httpContext.ForwardAsAsync<byte[]>(httpMethod, requestUri, configure, completionOption, forwardOptions);
 
     /// <summary>
     ///     转发 <see cref="HttpContext" /> 到新的 HTTP 远程地址
@@ -660,7 +663,7 @@ public static partial class HttpContextExtensions
         Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         HttpContextForwardOptions? forwardOptions = null) =>
-        ForwardAs<Stream>(httpContext, requestUri, configure, completionOption, forwardOptions);
+        httpContext.ForwardAs<Stream>(requestUri, configure, completionOption, forwardOptions);
 
     /// <summary>
     ///     转发 <see cref="HttpContext" /> 到新的 HTTP 远程地址
@@ -683,8 +686,9 @@ public static partial class HttpContextExtensions
     public static Stream? ForwardAsStream(this HttpContext? httpContext, HttpMethod httpMethod,
         string? requestUri = null, Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
-        HttpContextForwardOptions? forwardOptions = null) => ForwardAs<Stream>(httpContext, httpMethod, requestUri,
-        configure, completionOption, forwardOptions);
+        HttpContextForwardOptions? forwardOptions = null) =>
+        httpContext.ForwardAs<Stream>(httpMethod, requestUri,
+            configure, completionOption, forwardOptions);
 
     /// <summary>
     ///     转发 <see cref="HttpContext" /> 到新的 HTTP 远程地址
@@ -707,7 +711,7 @@ public static partial class HttpContextExtensions
         Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         HttpContextForwardOptions? forwardOptions = null) =>
-        ForwardAs<Stream>(httpContext, requestUri, configure, completionOption, forwardOptions);
+        httpContext.ForwardAs<Stream>(requestUri, configure, completionOption, forwardOptions);
 
     /// <summary>
     ///     转发 <see cref="HttpContext" /> 到新的 HTTP 远程地址
@@ -731,7 +735,7 @@ public static partial class HttpContextExtensions
         Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         HttpContextForwardOptions? forwardOptions = null) =>
-        ForwardAs<Stream>(httpContext, httpMethod, requestUri, configure, completionOption, forwardOptions);
+        httpContext.ForwardAs<Stream>(httpMethod, requestUri, configure, completionOption, forwardOptions);
 
     /// <summary>
     ///     转发 <see cref="HttpContext" /> 到新的 HTTP 远程地址
@@ -754,7 +758,7 @@ public static partial class HttpContextExtensions
         Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         HttpContextForwardOptions? forwardOptions = null) =>
-        ForwardAsAsync<Stream>(httpContext, requestUri, configure, completionOption, forwardOptions);
+        httpContext.ForwardAsAsync<Stream>(requestUri, configure, completionOption, forwardOptions);
 
     /// <summary>
     ///     转发 <see cref="HttpContext" /> 到新的 HTTP 远程地址
@@ -778,7 +782,7 @@ public static partial class HttpContextExtensions
         string? requestUri = null, Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         HttpContextForwardOptions? forwardOptions = null) =>
-        ForwardAsAsync<Stream>(httpContext, httpMethod, requestUri, configure, completionOption, forwardOptions);
+        httpContext.ForwardAsAsync<Stream>(httpMethod, requestUri, configure, completionOption, forwardOptions);
 
     /// <summary>
     ///     转发 <see cref="HttpContext" /> 到新的 HTTP 远程地址
@@ -801,7 +805,7 @@ public static partial class HttpContextExtensions
         Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         HttpContextForwardOptions? forwardOptions = null) =>
-        ForwardAsAsync<Stream>(httpContext, requestUri, configure, completionOption, forwardOptions);
+        httpContext.ForwardAsAsync<Stream>(requestUri, configure, completionOption, forwardOptions);
 
     /// <summary>
     ///     转发 <see cref="HttpContext" /> 到新的 HTTP 远程地址
@@ -825,7 +829,7 @@ public static partial class HttpContextExtensions
         Uri? requestUri = null, Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         HttpContextForwardOptions? forwardOptions = null) =>
-        ForwardAsAsync<Stream>(httpContext, httpMethod, requestUri, configure, completionOption, forwardOptions);
+        httpContext.ForwardAsAsync<Stream>(httpMethod, requestUri, configure, completionOption, forwardOptions);
 
     /// <summary>
     ///     转发 <see cref="HttpContext" /> 到新的 HTTP 远程地址
@@ -848,7 +852,7 @@ public static partial class HttpContextExtensions
         Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         HttpContextForwardOptions? forwardOptions = null) =>
-        ForwardAs<IActionResult>(httpContext, requestUri, configure, completionOption, forwardOptions);
+        httpContext.ForwardAs<IActionResult>(requestUri, configure, completionOption, forwardOptions);
 
     /// <summary>
     ///     转发 <see cref="HttpContext" /> 到新的 HTTP 远程地址
@@ -871,9 +875,10 @@ public static partial class HttpContextExtensions
     public static IActionResult? ForwardAsResult(this HttpContext? httpContext, HttpMethod httpMethod,
         string? requestUri = null, Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
-        HttpContextForwardOptions? forwardOptions = null) => ForwardAs<IActionResult>(httpContext, httpMethod,
-        requestUri,
-        configure, completionOption, forwardOptions);
+        HttpContextForwardOptions? forwardOptions = null) =>
+        httpContext.ForwardAs<IActionResult>(httpMethod,
+            requestUri,
+            configure, completionOption, forwardOptions);
 
     /// <summary>
     ///     转发 <see cref="HttpContext" /> 到新的 HTTP 远程地址
@@ -896,7 +901,7 @@ public static partial class HttpContextExtensions
         Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         HttpContextForwardOptions? forwardOptions = null) =>
-        ForwardAs<IActionResult>(httpContext, requestUri, configure, completionOption, forwardOptions);
+        httpContext.ForwardAs<IActionResult>(requestUri, configure, completionOption, forwardOptions);
 
     /// <summary>
     ///     转发 <see cref="HttpContext" /> 到新的 HTTP 远程地址
@@ -921,7 +926,7 @@ public static partial class HttpContextExtensions
         Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         HttpContextForwardOptions? forwardOptions = null) =>
-        ForwardAs<IActionResult>(httpContext, httpMethod, requestUri, configure, completionOption, forwardOptions);
+        httpContext.ForwardAs<IActionResult>(httpMethod, requestUri, configure, completionOption, forwardOptions);
 
     /// <summary>
     ///     转发 <see cref="HttpContext" /> 到新的 HTTP 远程地址
@@ -945,7 +950,7 @@ public static partial class HttpContextExtensions
         Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         HttpContextForwardOptions? forwardOptions = null) =>
-        ForwardAsAsync<IActionResult>(httpContext, requestUri, configure, completionOption, forwardOptions);
+        httpContext.ForwardAsAsync<IActionResult>(requestUri, configure, completionOption, forwardOptions);
 
     /// <summary>
     ///     转发 <see cref="HttpContext" /> 到新的 HTTP 远程地址
@@ -969,7 +974,7 @@ public static partial class HttpContextExtensions
         string? requestUri = null, Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         HttpContextForwardOptions? forwardOptions = null) =>
-        ForwardAsAsync<IActionResult>(httpContext, httpMethod, requestUri, configure, completionOption, forwardOptions);
+        httpContext.ForwardAsAsync<IActionResult>(httpMethod, requestUri, configure, completionOption, forwardOptions);
 
     /// <summary>
     ///     转发 <see cref="HttpContext" /> 到新的 HTTP 远程地址
@@ -992,7 +997,7 @@ public static partial class HttpContextExtensions
         Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         HttpContextForwardOptions? forwardOptions = null) =>
-        ForwardAsAsync<IActionResult>(httpContext, requestUri, configure, completionOption, forwardOptions);
+        httpContext.ForwardAsAsync<IActionResult>(requestUri, configure, completionOption, forwardOptions);
 
     /// <summary>
     ///     转发 <see cref="HttpContext" /> 到新的 HTTP 远程地址
@@ -1016,7 +1021,7 @@ public static partial class HttpContextExtensions
         Uri? requestUri = null, Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         HttpContextForwardOptions? forwardOptions = null) =>
-        ForwardAsAsync<IActionResult>(httpContext, httpMethod, requestUri, configure, completionOption, forwardOptions);
+        httpContext.ForwardAsAsync<IActionResult>(httpMethod, requestUri, configure, completionOption, forwardOptions);
 
     /// <summary>
     ///     转发 <see cref="HttpContext" /> 到新的 HTTP 远程地址
@@ -1039,10 +1044,11 @@ public static partial class HttpContextExtensions
     public static object? ForwardAs(this HttpContext? httpContext, Type resultType, string? requestUri = null,
         Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
-        HttpContextForwardOptions? forwardOptions = null) => ForwardAs(httpContext, resultType,
-        Helpers.ParseHttpMethod(httpContext?.Request.Method),
-        string.IsNullOrWhiteSpace(requestUri) ? null : new Uri(requestUri, UriKind.RelativeOrAbsolute), configure,
-        completionOption, forwardOptions);
+        HttpContextForwardOptions? forwardOptions = null) =>
+        httpContext.ForwardAs(resultType,
+            Helpers.ParseHttpMethod(httpContext?.Request.Method),
+            string.IsNullOrWhiteSpace(requestUri) ? null : new Uri(requestUri, UriKind.RelativeOrAbsolute), configure,
+            completionOption, forwardOptions);
 
     /// <summary>
     ///     转发 <see cref="HttpContext" /> 到新的 HTTP 远程地址
@@ -1066,9 +1072,10 @@ public static partial class HttpContextExtensions
     public static object? ForwardAs(this HttpContext? httpContext, Type resultType, HttpMethod httpMethod,
         string? requestUri = null, Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
-        HttpContextForwardOptions? forwardOptions = null) => ForwardAs(httpContext, resultType, httpMethod,
-        string.IsNullOrWhiteSpace(requestUri) ? null : new Uri(requestUri, UriKind.RelativeOrAbsolute), configure,
-        completionOption, forwardOptions);
+        HttpContextForwardOptions? forwardOptions = null) =>
+        httpContext.ForwardAs(resultType, httpMethod,
+            string.IsNullOrWhiteSpace(requestUri) ? null : new Uri(requestUri, UriKind.RelativeOrAbsolute), configure,
+            completionOption, forwardOptions);
 
     /// <summary>
     ///     转发 <see cref="HttpContext" /> 到新的 HTTP 远程地址
@@ -1091,8 +1098,10 @@ public static partial class HttpContextExtensions
     public static object? ForwardAs(this HttpContext? httpContext, Type resultType, Uri? requestUri = null,
         Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
-        HttpContextForwardOptions? forwardOptions = null) => ForwardAs(httpContext, resultType,
-        Helpers.ParseHttpMethod(httpContext?.Request.Method), requestUri, configure, completionOption, forwardOptions);
+        HttpContextForwardOptions? forwardOptions = null) =>
+        httpContext.ForwardAs(resultType,
+            Helpers.ParseHttpMethod(httpContext?.Request.Method), requestUri, configure, completionOption,
+            forwardOptions);
 
     /// <summary>
     ///     转发 <see cref="HttpContext" /> 到新的 HTTP 远程地址
@@ -1165,7 +1174,7 @@ public static partial class HttpContextExtensions
         string? requestUri = null, Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         HttpContextForwardOptions? forwardOptions = null) =>
-        ForwardAsAsync(httpContext, resultType, Helpers.ParseHttpMethod(httpContext?.Request.Method),
+        httpContext.ForwardAsAsync(resultType, Helpers.ParseHttpMethod(httpContext?.Request.Method),
             string.IsNullOrWhiteSpace(requestUri) ? null : new Uri(requestUri, UriKind.RelativeOrAbsolute), configure,
             completionOption, forwardOptions);
 
@@ -1192,7 +1201,7 @@ public static partial class HttpContextExtensions
         string? requestUri = null, Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         HttpContextForwardOptions? forwardOptions = null) =>
-        ForwardAsAsync(httpContext, resultType, httpMethod,
+        httpContext.ForwardAsAsync(resultType, httpMethod,
             string.IsNullOrWhiteSpace(requestUri) ? null : new Uri(requestUri, UriKind.RelativeOrAbsolute), configure,
             completionOption, forwardOptions);
 
@@ -1218,7 +1227,7 @@ public static partial class HttpContextExtensions
         Uri? requestUri = null, Action<HttpRequestBuilder>? configure = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         HttpContextForwardOptions? forwardOptions = null) =>
-        ForwardAsAsync(httpContext, resultType, Helpers.ParseHttpMethod(httpContext?.Request.Method), requestUri,
+        httpContext.ForwardAsAsync(resultType, Helpers.ParseHttpMethod(httpContext?.Request.Method), requestUri,
             configure, completionOption, forwardOptions);
 
     /// <summary>
