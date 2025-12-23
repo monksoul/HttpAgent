@@ -483,4 +483,31 @@ public class DeclarativeAttributeTests
         var attribute2 = new JsonResponseWrappingAttribute(false);
         Assert.False(attribute2.Enabled);
     }
+
+    [Fact]
+    public void RequestEventHandlerAttribute_ReturnOK()
+    {
+        var attributeUsage = typeof(RequestEventHandlerAttribute).GetCustomAttribute<AttributeUsageAttribute>();
+        Assert.NotNull(attributeUsage);
+        Assert.Equal(AttributeTargets.Method | AttributeTargets.Interface, attributeUsage.ValidOn);
+        Assert.False(attributeUsage.AllowMultiple);
+
+        var attribute = new RequestEventHandlerAttribute(typeof(MyRequestEventHandler));
+        Assert.Equal(typeof(MyRequestEventHandler), attribute.HandlerType);
+
+        var attribute2 = new RequestEventHandlerAttribute<MyRequestEventHandler>();
+        Assert.Equal(typeof(MyRequestEventHandler), attribute2.HandlerType);
+    }
+
+    public class MyRequestEventHandler : IHttpRequestEventHandler
+    {
+        /// <inheritdoc />
+        public void OnPreSendRequest(HttpRequestMessage httpRequestMessage) { }
+
+        /// <inheritdoc />
+        public void OnPostReceiveResponse(HttpResponseMessage httpResponseMessage) { }
+
+        /// <inheritdoc />
+        public void OnRequestFailed(Exception exception, HttpResponseMessage? httpResponseMessage) { }
+    }
 }
