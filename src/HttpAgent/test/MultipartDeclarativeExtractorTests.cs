@@ -76,13 +76,13 @@ public class MultipartDeclarativeExtractorTests
         Assert.Equal("none", httpRequestBuilder3.MultipartFormDataBuilder._partContents[1].Name);
         Assert.Equal("text/plain", httpRequestBuilder3.MultipartFormDataBuilder._partContents[1].ContentType);
         Assert.Equal("filePath", httpRequestBuilder3.MultipartFormDataBuilder._partContents[2].Name);
-        Assert.Equal("application/octet-stream",
+        Assert.Equal("text/plain",
             httpRequestBuilder3.MultipartFormDataBuilder._partContents[2].ContentType);
         Assert.Equal("base64String", httpRequestBuilder3.MultipartFormDataBuilder._partContents[3].Name);
         Assert.Equal("application/octet-stream",
             httpRequestBuilder3.MultipartFormDataBuilder._partContents[3].ContentType);
         Assert.Equal("remote", httpRequestBuilder3.MultipartFormDataBuilder._partContents[4].Name);
-        Assert.Equal("application/octet-stream",
+        Assert.Equal("application/vnd.microsoft.portable-executable",
             httpRequestBuilder3.MultipartFormDataBuilder._partContents[4].ContentType);
 
         var method4 =
@@ -212,13 +212,13 @@ public class MultipartDeclarativeExtractorTests
         Assert.Equal("none", httpMultipartFormDataBuilder2._partContents[1].Name);
         Assert.Equal("text/plain", httpMultipartFormDataBuilder2._partContents[1].ContentType);
         Assert.Equal("filePath", httpMultipartFormDataBuilder2._partContents[2].Name);
-        Assert.Equal("application/octet-stream",
+        Assert.Equal("text/plain",
             httpMultipartFormDataBuilder2._partContents[2].ContentType);
         Assert.Equal("base64String", httpMultipartFormDataBuilder2._partContents[3].Name);
         Assert.Equal("application/octet-stream",
             httpMultipartFormDataBuilder2._partContents[3].ContentType);
         Assert.Equal("remote", httpMultipartFormDataBuilder2._partContents[4].Name);
-        Assert.Equal("application/octet-stream",
+        Assert.Equal("application/vnd.microsoft.portable-executable",
             httpMultipartFormDataBuilder2._partContents[4].ContentType);
 
         var method4 =

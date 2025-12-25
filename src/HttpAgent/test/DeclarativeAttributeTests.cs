@@ -30,6 +30,128 @@ public class DeclarativeAttributeTests
     }
 
     [Fact]
+    public void FormUrlEncodedBodyAttribute_ReturnOK()
+    {
+        var attributeUsage = typeof(FormUrlEncodedBodyAttribute).GetCustomAttribute<AttributeUsageAttribute>();
+        Assert.NotNull(attributeUsage);
+        Assert.Equal(AttributeTargets.Parameter, attributeUsage.ValidOn);
+        Assert.False(attributeUsage.AllowMultiple);
+        Assert.True(typeof(BodyAttribute).IsAssignableFrom(typeof(FormUrlEncodedBodyAttribute)));
+
+        var attribute = new FormUrlEncodedBodyAttribute();
+        Assert.NotNull(attribute.ContentType);
+        Assert.Equal("application/x-www-form-urlencoded", attribute.ContentType);
+        Assert.Null(attribute.ContentEncoding);
+
+        var attribute2 = new FormUrlEncodedBodyAttribute("utf-8");
+        Assert.NotNull(attribute2.ContentType);
+        Assert.Equal("application/x-www-form-urlencoded", attribute2.ContentType);
+        Assert.Equal("utf-8", attribute2.ContentEncoding);
+    }
+
+    [Fact]
+    public void HtmlBodyAttribute_ReturnOK()
+    {
+        var attributeUsage = typeof(HtmlBodyAttribute).GetCustomAttribute<AttributeUsageAttribute>();
+        Assert.NotNull(attributeUsage);
+        Assert.Equal(AttributeTargets.Parameter, attributeUsage.ValidOn);
+        Assert.False(attributeUsage.AllowMultiple);
+        Assert.True(typeof(BodyAttribute).IsAssignableFrom(typeof(HtmlBodyAttribute)));
+
+        var attribute = new HtmlBodyAttribute();
+        Assert.NotNull(attribute.ContentType);
+        Assert.Equal("text/html", attribute.ContentType);
+        Assert.Null(attribute.ContentEncoding);
+
+        var attribute2 = new HtmlBodyAttribute("utf-8");
+        Assert.NotNull(attribute2.ContentType);
+        Assert.Equal("text/html", attribute2.ContentType);
+        Assert.Equal("utf-8", attribute2.ContentEncoding);
+    }
+
+    [Fact]
+    public void JsonBodyAttribute_ReturnOK()
+    {
+        var attributeUsage = typeof(JsonBodyAttribute).GetCustomAttribute<AttributeUsageAttribute>();
+        Assert.NotNull(attributeUsage);
+        Assert.Equal(AttributeTargets.Parameter, attributeUsage.ValidOn);
+        Assert.False(attributeUsage.AllowMultiple);
+        Assert.True(typeof(BodyAttribute).IsAssignableFrom(typeof(JsonBodyAttribute)));
+
+        var attribute = new JsonBodyAttribute();
+        Assert.NotNull(attribute.ContentType);
+        Assert.Equal("application/json", attribute.ContentType);
+        Assert.Null(attribute.ContentEncoding);
+
+        var attribute2 = new JsonBodyAttribute("utf-8");
+        Assert.NotNull(attribute2.ContentType);
+        Assert.Equal("application/json", attribute2.ContentType);
+        Assert.Equal("utf-8", attribute2.ContentEncoding);
+    }
+
+    [Fact]
+    public void RawStringBodyAttribute_ReturnOK()
+    {
+        var attributeUsage = typeof(RawStringBodyAttribute).GetCustomAttribute<AttributeUsageAttribute>();
+        Assert.NotNull(attributeUsage);
+        Assert.Equal(AttributeTargets.Parameter, attributeUsage.ValidOn);
+        Assert.False(attributeUsage.AllowMultiple);
+        Assert.True(typeof(BodyAttribute).IsAssignableFrom(typeof(RawStringBodyAttribute)));
+
+        var attribute = new RawStringBodyAttribute("application/json");
+        Assert.NotNull(attribute.ContentType);
+        Assert.Equal("application/json", attribute.ContentType);
+        Assert.Null(attribute.ContentEncoding);
+        Assert.True(attribute.RawString);
+
+        var attribute2 = new RawStringBodyAttribute("application/json", "utf-8");
+        Assert.NotNull(attribute2.ContentType);
+        Assert.Equal("application/json", attribute2.ContentType);
+        Assert.Equal("utf-8", attribute2.ContentEncoding);
+        Assert.True(attribute2.RawString);
+    }
+
+    [Fact]
+    public void TextBodyAttribute_ReturnOK()
+    {
+        var attributeUsage = typeof(TextBodyAttribute).GetCustomAttribute<AttributeUsageAttribute>();
+        Assert.NotNull(attributeUsage);
+        Assert.Equal(AttributeTargets.Parameter, attributeUsage.ValidOn);
+        Assert.False(attributeUsage.AllowMultiple);
+        Assert.True(typeof(BodyAttribute).IsAssignableFrom(typeof(TextBodyAttribute)));
+
+        var attribute = new TextBodyAttribute();
+        Assert.NotNull(attribute.ContentType);
+        Assert.Equal("text/plain", attribute.ContentType);
+        Assert.Null(attribute.ContentEncoding);
+
+        var attribute2 = new TextBodyAttribute("utf-8");
+        Assert.NotNull(attribute2.ContentType);
+        Assert.Equal("text/plain", attribute2.ContentType);
+        Assert.Equal("utf-8", attribute2.ContentEncoding);
+    }
+
+    [Fact]
+    public void XmlBodyAttribute_ReturnOK()
+    {
+        var attributeUsage = typeof(XmlBodyAttribute).GetCustomAttribute<AttributeUsageAttribute>();
+        Assert.NotNull(attributeUsage);
+        Assert.Equal(AttributeTargets.Parameter, attributeUsage.ValidOn);
+        Assert.False(attributeUsage.AllowMultiple);
+        Assert.True(typeof(BodyAttribute).IsAssignableFrom(typeof(XmlBodyAttribute)));
+
+        var attribute = new XmlBodyAttribute();
+        Assert.NotNull(attribute.ContentType);
+        Assert.Equal("text/xml", attribute.ContentType);
+        Assert.Null(attribute.ContentEncoding);
+
+        var attribute2 = new XmlBodyAttribute("utf-8");
+        Assert.NotNull(attribute2.ContentType);
+        Assert.Equal("text/xml", attribute2.ContentType);
+        Assert.Equal("utf-8", attribute2.ContentEncoding);
+    }
+
+    [Fact]
     public void MultipartFormAttribute_ReturnOK()
     {
         var attributeUsage = typeof(MultipartFormAttribute).GetCustomAttribute<AttributeUsageAttribute>();

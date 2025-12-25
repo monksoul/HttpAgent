@@ -8,7 +8,7 @@ namespace HttpAgent;
 ///     HTTP 声明式请求内容特性
 /// </summary>
 [AttributeUsage(AttributeTargets.Parameter)]
-public sealed class BodyAttribute : Attribute
+public class BodyAttribute : Attribute
 {
     /// <summary>
     ///     <inheritdoc cref="BodyAttribute" />
