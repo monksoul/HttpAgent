@@ -327,26 +327,27 @@ public sealed class HttpMultipartFormDataBuilder
     /// <param name="fileName">文件的名称</param>
     /// <param name="contentType">内容类型</param>
     /// <param name="contentEncoding">内容编码</param>
+    /// <param name="configure">自定义配置委托</param>
     /// <returns>
     ///     <see cref="HttpMultipartFormDataBuilder" />
     /// </returns>
     /// <exception cref="ArgumentException"></exception>
     /// <exception cref="InvalidOperationException"></exception>
     public HttpMultipartFormDataBuilder AddFileFromRemote(string url, string name = "file", string? fileName = null,
-        string? contentType = null, Encoding? contentEncoding = null)
+        string? contentType = null, Encoding? contentEncoding = null,
+        Action<HttpClient, HttpRequestMessage>? configure = null)
     {
         // 空检查
         ArgumentException.ThrowIfNullOrWhiteSpace(url);
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
 
-        // 尝试获取文件的名称
+        // 尝试从 Uri 地址中解析文件的名称
         var newFileName = fileName ?? Helpers.GetFileNameFromUri(new Uri(url, UriKind.Absolute));
 
-        // 从互联网 URL 地址中加载流
-        var fileStream = Helpers.GetStreamFromRemote(url);
+        // 尝试从互联网 URL 地址中加载流
+        var fileStream = Helpers.GetStreamFromRemote(url, configure);
 
-        return AddStream(fileStream, name, newFileName, contentType, contentEncoding,
-            true);
+        return AddStream(fileStream, name, newFileName, contentType, contentEncoding, true);
     }
 
     /// <summary>

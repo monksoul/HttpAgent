@@ -16,13 +16,15 @@ internal static class Helpers
     ///     从互联网 URL 地址中加载流
     /// </summary>
     /// <param name="requestUri">互联网 URL 地址</param>
+    /// <param name="configure">自定义配置委托</param>
     /// <param name="maxResponseContentBufferSize">响应内容的最大缓存大小。默认值为：<c>100MB</c>。</param>
     /// <returns>
     ///     <see cref="Stream" />
     /// </returns>
     /// <exception cref="ArgumentException"></exception>
     /// <exception cref="InvalidOperationException"></exception>
-    internal static Stream GetStreamFromRemote(string requestUri, long maxResponseContentBufferSize = 104857600L)
+    internal static Stream GetStreamFromRemote(string requestUri,
+        Action<HttpClient, HttpRequestMessage>? configure = null, long maxResponseContentBufferSize = 104857600L)
     {
         // 空检查
         ArgumentException.ThrowIfNullOrWhiteSpace(requestUri);
@@ -39,7 +41,7 @@ internal static class Helpers
         // 限制流大小
         httpClient.MaxResponseContentBufferSize = maxResponseContentBufferSize;
 
-        // 启用性能优化（返回 Stream 内容时，请勿启用此配置，否则流将因压缩而变得不可读。）
+        // 启用性能优化（返回 Stream 内容时，请勿启用此配置，否则流将因压缩而变得不可读）
         // httpClient.PerformanceOptimization();
 
         // 设置默认 User-Agent
@@ -48,9 +50,14 @@ internal static class Helpers
 
         try
         {
+            // 初始化 HttpRequestMessage 实例
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, requestUri);
+
+            // 调用自定义配置委托
+            configure?.Invoke(httpClient, httpRequestMessage);
+
             // 发送 HTTP 远程请求
-            var httpResponseMessage = httpClient.Send(new HttpRequestMessage(HttpMethod.Get, requestUri),
-                HttpCompletionOption.ResponseHeadersRead);
+            var httpResponseMessage = httpClient.Send(httpRequestMessage, HttpCompletionOption.ResponseHeadersRead);
 
             // 确保请求成功
             httpResponseMessage.EnsureSuccessStatusCode();
