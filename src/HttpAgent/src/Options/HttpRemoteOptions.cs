@@ -82,6 +82,12 @@ public sealed class HttpRemoteOptions
     public IUrlParameterFormatter? UrlParameterFormatter { get; set; } = new UrlParameterFormatter();
 
     /// <summary>
+    ///     <see cref="HttpRequestBuilder" /> 统一配置器
+    /// </summary>
+    /// <remarks>用于在构建 <see cref="HttpRequestMessage" /> 时调用。</remarks>
+    public IHttpRequestBuilderConfigurer? HttpRequestBuilderConfigurer { get; set; }
+
+    /// <summary>
     ///     未注册日志服务时的备用日志输出委托
     /// </summary>
     public Action<string?>? FallbackLogger { get; set; } = Console.WriteLine;

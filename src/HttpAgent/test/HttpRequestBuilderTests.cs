@@ -690,7 +690,10 @@ public class HttpRequestBuilderTests
         var services = new ServiceCollection();
         services.AddOptions<HttpRemoteOptions>();
         using var serviceProvider = services.BuildServiceProvider();
-        var httpRemoteOptions = new HttpRemoteOptions { Configuration = configuration };
+        var httpRemoteOptions = new HttpRemoteOptions
+        {
+            Configuration = configuration, HttpRequestBuilderConfigurer = new HttpRequestBuilderConfigurer()
+        };
 
         var httpRequestMessage =
             new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost/{id}/{name}/[[name]]/[[age]]"))
@@ -710,7 +713,7 @@ public class HttpRequestBuilderTests
         Assert.Equal("1.2", httpRequestMessage.Version.ToString());
         Assert.Equal("http://localhost/10/furion/Furion/10?id=10&name=furion",
             httpRequestMessage.RequestUri.ToString());
-        Assert.Equal(2, httpRequestMessage.Headers.Count());
+        Assert.Equal(3, httpRequestMessage.Headers.Count());
         Assert.Equal("id=10; name=furion", httpRequestMessage.Headers.GetValues("Cookie").First());
         Assert.NotNull(httpRequestMessage.Content);
         Assert.Equal(typeof(StringContent), httpRequestMessage.Content.GetType());
@@ -768,5 +771,14 @@ public class HttpRequestBuilderTests
         Assert.Equal("*/*", httpRequestMessage.Headers.Accept.ToString());
         Assert.Equal("gzip, deflate, br", httpRequestMessage.Headers.AcceptEncoding.ToString());
         Assert.False(httpRequestMessage.Headers.ConnectionClose);
+    }
+
+    public class HttpRequestBuilderConfigurer : IHttpRequestBuilderConfigurer
+    {
+        /// <inheritdoc />
+        public void Configure(HttpRequestBuilder httpRequestBuilder)
+        {
+            httpRequestBuilder.WithHeader("global", "form_furion");
+        }
     }
 }

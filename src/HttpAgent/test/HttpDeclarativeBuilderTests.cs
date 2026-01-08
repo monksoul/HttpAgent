@@ -63,6 +63,7 @@ public class HttpDeclarativeBuilderTests
 
         Dictionary<Type, IHttpDeclarativeExtractor> freezeExtractors = new()
         {
+            { typeof(HttpRequestMessageDeclarativeExtractor), new HttpRequestMessageDeclarativeExtractor() },
             { typeof(MultipartDeclarativeExtractor), new MultipartDeclarativeExtractor() },
             {
                 typeof(HttpMultipartFormDataBuilderDeclarativeExtractor),
@@ -157,6 +158,7 @@ public class HttpDeclarativeBuilderTests
 
         Dictionary<Type, IHttpDeclarativeExtractor> freezeExtractors = new()
         {
+            { typeof(HttpRequestMessageDeclarativeExtractor), new HttpRequestMessageDeclarativeExtractor() },
             { typeof(MultipartDeclarativeExtractor), new MultipartDeclarativeExtractor() },
             {
                 typeof(HttpMultipartFormDataBuilderDeclarativeExtractor),

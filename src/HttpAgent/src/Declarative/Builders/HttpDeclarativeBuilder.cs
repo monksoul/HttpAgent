@@ -47,6 +47,7 @@ public sealed class HttpDeclarativeBuilder
     /// </summary>
     /// <remarks>该集合用于确保某些 HTTP 声明式提取器始终位于最后。</remarks>
     internal static readonly ConcurrentDictionary<Type, IFrozenHttpDeclarativeExtractor> _frozenExtractors = new([
+        new(typeof(HttpRequestMessageDeclarativeExtractor), new HttpRequestMessageDeclarativeExtractor()),
         new(typeof(MultipartDeclarativeExtractor), new MultipartDeclarativeExtractor()),
         new(typeof(HttpMultipartFormDataBuilderDeclarativeExtractor),
             new HttpMultipartFormDataBuilderDeclarativeExtractor()),

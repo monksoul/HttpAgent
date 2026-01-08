@@ -55,6 +55,9 @@ public sealed partial class HttpRequestBuilder
         ArgumentNullException.ThrowIfNull(httpContentProcessorFactory);
         ArgumentNullException.ThrowIfNull(HttpMethod);
 
+        // 调用 HttpRequestBuilder 统一配置器
+        httpRemoteOptions.HttpRequestBuilderConfigurer?.Configure(this);
+
         // 构建最终的请求地址
         var finalRequestUri = BuildFinalRequestUri(clientBaseAddress, httpRemoteOptions);
 
