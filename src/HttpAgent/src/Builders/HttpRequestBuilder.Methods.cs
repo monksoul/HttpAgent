@@ -1025,16 +1025,14 @@ public sealed partial class HttpRequestBuilder
     /// <summary>
     ///     设置在发送 HTTP 请求之前执行的操作
     /// </summary>
+    /// <remarks>支持多次调用。</remarks>
     /// <param name="configure">自定义配置委托</param>
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
     public HttpRequestBuilder SetOnPreSendRequest(Action<HttpRequestMessage> configure)
     {
-        // 空检查
-        ArgumentNullException.ThrowIfNull(configure);
-
-        OnPreSendRequest = configure;
+        configure.Combine(ref _onPreSendRequest);
 
         return this;
     }

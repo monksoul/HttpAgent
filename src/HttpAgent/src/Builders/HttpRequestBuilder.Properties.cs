@@ -17,6 +17,9 @@ public sealed partial class HttpRequestBuilder
         typeof(HttpRequestBuilder).GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance |
                                                  BindingFlags.DeclaredOnly));
 
+    /// <inheritdoc cref="OnPreSendRequest" />
+    internal Action<HttpRequestMessage>? _onPreSendRequest;
+
     /// <inheritdoc cref="OnPreSetContent" />
     internal Action<HttpContent>? _onPreSetContent;
 
@@ -193,7 +196,11 @@ public sealed partial class HttpRequestBuilder
     /// <summary>
     ///     用于处理在发送 HTTP 请求之前的操作
     /// </summary>
-    public Action<HttpRequestMessage>? OnPreSendRequest { get; private set; }
+    public Action<HttpRequestMessage>? OnPreSendRequest
+    {
+        get => _onPreSendRequest;
+        private set => _onPreSendRequest = value;
+    }
 
     /// <summary>
     ///     用于处理在收到 HTTP 响应之后的操作
