@@ -167,18 +167,18 @@ public class HttpRemoteBuilderTests
     }
 
     [Fact]
-    public void AddHttpDeclarativeFromAssemblies_Invalid_Parameters()
+    public void AddHttpDeclarativesFromAssemblies_Invalid_Parameters()
     {
         var builder = new HttpRemoteBuilder();
-        Assert.Throws<ArgumentNullException>(() => builder.AddHttpDeclarativeFromAssemblies(null!));
+        Assert.Throws<ArgumentNullException>(() => builder.AddHttpDeclarativesFromAssemblies(null!));
     }
 
     [Fact]
-    public void AddHttpDeclarativeFromAssemblies_ReturnOK()
+    public void AddHttpDeclarativesFromAssemblies_ReturnOK()
     {
         var builder = new HttpRemoteBuilder();
         // ReSharper disable once RedundantExplicitParamsArrayCreation
-        builder.AddHttpDeclarativeFromAssemblies([typeof(HttpRemoteBuilderTests).Assembly, null]);
+        builder.AddHttpDeclarativesFromAssemblies([typeof(HttpRemoteBuilderTests).Assembly, null]);
 
         Assert.NotNull(builder._httpDeclarativeTypes);
         Assert.Equal(50, builder._httpDeclarativeTypes.Count);
@@ -218,22 +218,22 @@ public class HttpRemoteBuilderTests
     }
 
     [Fact]
-    public void AddHttpDeclarativeExtractorFromAssemblies_Invalid_Parameters()
+    public void AddHttpDeclarativeExtractorsFromAssemblies_Invalid_Parameters()
     {
         var builder = new HttpRemoteBuilder();
 
         Assert.Throws<ArgumentNullException>(() =>
         {
-            builder.AddHttpDeclarativeExtractorFromAssemblies(null!);
+            builder.AddHttpDeclarativeExtractorsFromAssemblies(null!);
         });
     }
 
     [Fact]
-    public void AddHttpDeclarativeExtractorFromAssemblies_ReturnOK()
+    public void AddHttpDeclarativeExtractorsFromAssemblies_ReturnOK()
     {
         var builder = new HttpRemoteBuilder();
 
-        builder.AddHttpDeclarativeExtractorFromAssemblies(typeof(HttpRemoteBuilderTests).Assembly, null);
+        builder.AddHttpDeclarativeExtractorsFromAssemblies(typeof(HttpRemoteBuilderTests).Assembly, null);
         Assert.NotNull(builder._httpDeclarativeExtractors);
         Assert.Single(builder._httpDeclarativeExtractors);
     }

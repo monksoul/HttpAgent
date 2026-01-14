@@ -188,7 +188,7 @@ public sealed class HttpRemoteBuilder
     /// <returns>
     ///     <see cref="HttpRemoteBuilder" />
     /// </returns>
-    public HttpRemoteBuilder AddHttpDeclarativeFromAssemblies(params IEnumerable<Assembly?> assemblies)
+    public HttpRemoteBuilder AddHttpDeclarativesFromAssemblies(params IEnumerable<Assembly?> assemblies)
     {
         // 空检查
         ArgumentNullException.ThrowIfNull(assemblies);
@@ -228,7 +228,7 @@ public sealed class HttpRemoteBuilder
     /// <returns>
     ///     <see cref="HttpRemoteBuilder" />
     /// </returns>
-    public HttpRemoteBuilder AddHttpDeclarativeExtractorFromAssemblies(params IEnumerable<Assembly?> assemblies)
+    public HttpRemoteBuilder AddHttpDeclarativeExtractorsFromAssemblies(params IEnumerable<Assembly?> assemblies)
     {
         // 空检查
         ArgumentNullException.ThrowIfNull(assemblies);
