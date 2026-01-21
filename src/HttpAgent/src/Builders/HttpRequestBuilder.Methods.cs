@@ -1907,9 +1907,11 @@ public sealed partial class HttpRequestBuilder
         RequestUri = redirectUri;
         HttpMethod = redirectMethod;
 
-        // 重定向时不应拼接原始请求参数
+        // 重定向时不应拼接原始请求参数和路径片段
         QueryParameters?.Clear();
         QueryParametersToRemove?.Clear();
+        PathSegments?.Clear();
+        PathSegmentsToRemove?.Clear();
 
         // 重定向时若请求方法为 GET 或 HEAD，则不应设置请求体内容
         // ReSharper disable once InvertIf

@@ -1978,7 +1978,7 @@ public class HttpRequestBuilderMethodsTests
     {
         var httpRequestBuilder =
             new HttpRequestBuilder(HttpMethod.Post, new Uri("http://localhost")).WithQueryParameter("id", 1)
-                .RemoveQueryParameters("name").SetJsonContent("{}");
+                .RemoveQueryParameters("name").SetJsonContent("{}").WithPathSegment("user").RemovePathSegments("user");
         httpRequestBuilder.ConfigureForRedirect(null, HttpMethod.Get);
 
         Assert.Null(httpRequestBuilder.RequestUri);
@@ -1989,6 +1989,11 @@ public class HttpRequestBuilderMethodsTests
         Assert.Empty(httpRequestBuilder.QueryParametersToRemove);
         Assert.Null(httpRequestBuilder.RawContent);
         Assert.Null(httpRequestBuilder.MultipartFormDataBuilder);
+
+        Assert.NotNull(httpRequestBuilder.PathSegments);
+        Assert.Empty(httpRequestBuilder.PathSegments);
+        Assert.NotNull(httpRequestBuilder.PathSegmentsToRemove);
+        Assert.Empty(httpRequestBuilder.PathSegmentsToRemove);
 
         var httpRequestBuilder2 =
             new HttpRequestBuilder(HttpMethod.Post, new Uri("http://localhost")).WithQueryParameter("id", 1)
