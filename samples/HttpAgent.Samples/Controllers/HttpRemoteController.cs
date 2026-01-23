@@ -29,12 +29,16 @@ public class HttpRemoteController : ControllerBase
     }
 
     [HttpPost]
+    [RequestSizeLimit(long.MaxValue)]
+    [RequestFormLimits(MultipartBodyLengthLimit = long.MaxValue)]
     public Task<string> AddFile(IFormFile file)
     {
         return Task.FromResult(file.FileName);
     }
 
     [HttpPost]
+    [RequestSizeLimit(long.MaxValue)]
+    [RequestFormLimits(MultipartBodyLengthLimit = long.MaxValue)]
     public Task<string> AddFiles(IFormFileCollection files)
     {
         return Task.FromResult(string.Join("; ", files.Select(u => u.FileName)));

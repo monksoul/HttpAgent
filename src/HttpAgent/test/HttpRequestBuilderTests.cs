@@ -776,9 +776,7 @@ public class HttpRequestBuilderTests
     public class HttpRequestBuilderConfigurer : IHttpRequestBuilderConfigurer
     {
         /// <inheritdoc />
-        public void Configure(HttpRequestBuilder httpRequestBuilder)
-        {
+        public void Configure(HttpRequestBuilder httpRequestBuilder) =>
             httpRequestBuilder.WithHeader("global", "form_furion");
-        }
     }
 }

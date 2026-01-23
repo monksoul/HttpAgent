@@ -13,8 +13,19 @@ namespace HttpAgent.Extensions;
 public static partial class HttpRemoteExtensions
 {
     /// <summary>
+    ///     判断是否是开发环境
+    /// </summary>
+    internal static readonly bool IsDevelopment =
+        string.Equals(Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT"), "Development",
+            StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"), "Development",
+            StringComparison.OrdinalIgnoreCase) ||
+        Debugger.IsAttached;
+
+    /// <summary>
     ///     添加 HTTP 远程请求分析工具处理委托
     /// </summary>
+    /// <remarks>建议在生产环境中禁用或关闭。</remarks>
     /// <param name="builder">
     ///     <see cref="IHttpClientBuilder" />
     /// </param>
@@ -51,7 +62,9 @@ public static partial class HttpRemoteExtensions
     public static IHttpClientBuilder AddProfilerDelegatingHandler(this IHttpClientBuilder builder,
         bool disableInProduction) =>
         builder.AddProfilerDelegatingHandler(() =>
-            disableInProduction && GetHostEnvironmentName(builder.Services)?.ToLower() == "production");
+            disableInProduction &&
+            (string.Equals(GetHostEnvironmentName(builder.Services), "Production",
+                StringComparison.OrdinalIgnoreCase) || !IsDevelopment));
 
     /// <summary>
     ///     配置 <see cref="HttpClient" /> 额外选项
@@ -230,6 +243,7 @@ public static partial class HttpRemoteExtensions
     /// <summary>
     ///     分析 <see cref="HttpContent" /> 内容
     /// </summary>
+    /// <remarks>建议在生产环境中禁用或关闭。</remarks>
     /// <param name="httpContent">
     ///     <see cref="HttpContent" />
     /// </param>
@@ -255,8 +269,47 @@ public static partial class HttpRemoteExtensions
         // 修复无效的响应内容字符编码
         httpContent.FixInvalidCharset();
 
-        // 默认只读取 5KB 的内容
-        const int maxBytesToDisplay = 5120;
+        // 新增最大处理大小限制，避免内存溢出（OOM）或缓冲区溢出
+        const long maxAllowedSize = 1024 * 1024 * 1024; // 1GB
+
+        // 检查内容是否包含 Content-Length 标头
+        if (httpContent.Headers.ContentLength.HasValue)
+        {
+            // 获取内容长度
+            var contentLength = httpContent.Headers.ContentLength.Value;
+
+            // 检查内容长度是否大于 maxAllowedSize
+            if (contentLength > maxAllowedSize)
+            {
+                return StringUtility.FormatKeyValuesSummary(
+                    [
+                        new KeyValuePair<string, IEnumerable<string>>(string.Empty,
+                            [$"\e[33m[Skipped: content too large ({contentLength} bytes) > {maxAllowedSize}]\e[0m"])
+                    ],
+                    $"{summary} ({httpContent.GetType().Name}, total: {contentLength} bytes)");
+            }
+        }
+
+        try
+        {
+            // 尝试将 HttpContent 缓冲到内存，但限制最大大小以防止内存溢出（OOM）
+#if NET8_0
+            await httpContent.LoadIntoBufferAsync(maxAllowedSize);
+#else
+            await httpContent.LoadIntoBufferAsync(maxAllowedSize, cancellationToken);
+#endif
+        }
+        catch
+        {
+            return StringUtility.FormatKeyValuesSummary(
+                [
+                    new KeyValuePair<string, IEnumerable<string>>(string.Empty,
+                        [$"\e[33m[Skipped: content unreadable or exceeds {maxAllowedSize} bytes]\e[0m"])
+                ], $"{summary} ({httpContent.GetType().Name}, Skipped due to size)");
+        }
+
+        // 默认只读取 8KB 的内容
+        const int maxBytesToDisplay = 8 * 1024; // 8KB
 
         /*
          * 读取内容为字节数组

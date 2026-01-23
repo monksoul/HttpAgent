@@ -1394,6 +1394,7 @@ public sealed partial class HttpRequestBuilder
     /// <summary>
     ///     启用请求分析工具（调试）
     /// </summary>
+    /// <remarks>建议在生产环境中禁用或关闭。</remarks>
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
@@ -1410,6 +1411,7 @@ public sealed partial class HttpRequestBuilder
     /// <summary>
     ///     设置是否启用请求分析工具（调试）
     /// </summary>
+    /// <remarks>建议在生产环境中禁用或关闭。</remarks>
     /// <param name="enabled">是否启用</param>
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
@@ -1419,6 +1421,7 @@ public sealed partial class HttpRequestBuilder
     /// <summary>
     ///     启用请求分析工具
     /// </summary>
+    /// <remarks>建议在生产环境中禁用或关闭。</remarks>
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
@@ -1435,6 +1438,7 @@ public sealed partial class HttpRequestBuilder
     /// <summary>
     ///     设置是否启用请求分析工具
     /// </summary>
+    /// <remarks>建议在生产环境中禁用或关闭。</remarks>
     /// <param name="enabled">是否启用</param>
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
@@ -1450,6 +1454,7 @@ public sealed partial class HttpRequestBuilder
     /// <summary>
     ///     设置是否启用请求分析工具
     /// </summary>
+    /// <remarks>建议在生产环境中禁用或关闭。</remarks>
     /// <param name="predicate">自定义处理委托</param>
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
@@ -1459,6 +1464,7 @@ public sealed partial class HttpRequestBuilder
     /// <summary>
     ///     设置是否启用请求分析工具
     /// </summary>
+    /// <remarks>建议在生产环境中禁用或关闭。</remarks>
     /// <param name="predicate">自定义处理委托</param>
     /// <param name="enabled">是否启用</param>
     /// <returns>

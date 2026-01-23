@@ -2843,6 +2843,7 @@
             <summary>
                 启用请求分析工具（调试）
             </summary>
+            <remarks>建议在生产环境中禁用或关闭。</remarks>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
@@ -2859,6 +2860,7 @@
             <summary>
                 设置是否启用请求分析工具（调试）
             </summary>
+            <remarks>建议在生产环境中禁用或关闭。</remarks>
             <param name="enabled">是否启用</param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
@@ -2868,6 +2870,7 @@
             <summary>
                 启用请求分析工具
             </summary>
+            <remarks>建议在生产环境中禁用或关闭。</remarks>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
@@ -2884,6 +2887,7 @@
             <summary>
                 设置是否启用请求分析工具
             </summary>
+            <remarks>建议在生产环境中禁用或关闭。</remarks>
             <param name="enabled">是否启用</param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
@@ -2893,6 +2897,7 @@
             <summary>
                 设置是否启用请求分析工具
             </summary>
+            <remarks>建议在生产环境中禁用或关闭。</remarks>
             <param name="predicate">自定义处理委托</param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
@@ -2902,6 +2907,7 @@
             <summary>
                 设置是否启用请求分析工具
             </summary>
+            <remarks>建议在生产环境中禁用或关闭。</remarks>
             <param name="predicate">自定义处理委托</param>
             <param name="enabled">是否启用</param>
             <returns>
@@ -7416,10 +7422,16 @@
                 HTTP 远程服务模块拓展类
             </summary>
         </member>
+        <member name="F:HttpAgent.Extensions.HttpRemoteExtensions.IsDevelopment">
+            <summary>
+                判断是否是开发环境
+            </summary>
+        </member>
         <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.AddProfilerDelegatingHandler(Microsoft.Extensions.DependencyInjection.IHttpClientBuilder,System.Func{System.Boolean})">
             <summary>
                 添加 HTTP 远程请求分析工具处理委托
             </summary>
+            <remarks>建议在生产环境中禁用或关闭。</remarks>
             <param name="builder">
                 <see cref="T:Microsoft.Extensions.DependencyInjection.IHttpClientBuilder" />
             </param>
@@ -7517,6 +7529,7 @@
             <summary>
                 分析 <see cref="T:System.Net.Http.HttpContent" /> 内容
             </summary>
+            <remarks>建议在生产环境中禁用或关闭。</remarks>
             <param name="httpContent">
                 <see cref="T:System.Net.Http.HttpContent" />
             </param>
@@ -16074,6 +16087,12 @@
         <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32,System.Int32,System.Int32)">
             <summary>Pushes 3 values onto the backtracking stack.</summary>
         </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_1F52B1A4D2E82B6FEDE25EC8C55F85BB36775196837076691C96925040F90D32">
+            <summary>Supports searching for the string "\\u".</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_EBC667BDABA1472FA863B5B39B31251EF2B4C95DD643BDECF694CB1CE7BDC178">
+            <summary>Supports searching for the string "[[".</summary>
+        </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions">
             <summary>
                 HTTP 远程请求模块 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" /> 拓展类
@@ -16097,31 +16116,6 @@
             </summary>
             <param name="services">
                 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
-            </param>
-            <param name="httpRemoteBuilder">
-                <see cref="T:HttpAgent.HttpRemoteBuilder" />
-            </param>
-            <returns>
-                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
-            </returns>
-        </member>
-    </members>
-</doc>
-         添加 HTTP 远程请求服务
-            </summary>
-            <param name="services">
-                <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
-            </param>
-            <param name="httpRemoteBuilder">
-                <see cref="T:HttpAgent.HttpRemoteBuilder" />
-            </param>
-            <returns>
-                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
-            </returns>
-        </member>
-    </members>
-</doc>
-tensions.DependencyInjection.IServiceCollection" />
             </param>
             <param name="httpRemoteBuilder">
                 <see cref="T:HttpAgent.HttpRemoteBuilder" />
