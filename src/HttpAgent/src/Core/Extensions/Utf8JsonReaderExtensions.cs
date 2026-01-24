@@ -5,7 +5,7 @@
 namespace HttpAgent.Core.Extensions;
 
 /// <summary>
-///     <see cref="Utf8JsonReader" /> 拓展类
+///     <see cref="Utf8JsonReader" /> 扩展类
 /// </summary>
 internal static class Utf8JsonReaderExtensions
 {

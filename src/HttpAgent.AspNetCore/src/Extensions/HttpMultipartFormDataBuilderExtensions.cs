@@ -5,7 +5,7 @@
 namespace HttpAgent;
 
 /// <summary>
-///     <see cref="HttpMultipartFormDataBuilder" /> 拓展类
+///     <see cref="HttpMultipartFormDataBuilder" /> 扩展类
 /// </summary>
 public static class HttpMultipartFormDataBuilderExtensions
 {

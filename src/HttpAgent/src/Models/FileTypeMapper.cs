@@ -414,7 +414,7 @@ public sealed class FileTypeMapper
     /// <summary>
     ///     <inheritdoc cref="FileTypeMapper" />
     /// </summary>
-    /// <param name="mapping">文件拓展名及其对应内容类型映射字典</param>
+    /// <param name="mapping">文件扩展名及其对应内容类型映射字典</param>
     public FileTypeMapper(IDictionary<string, string> mapping)
     {
         // 空检查
@@ -424,12 +424,12 @@ public sealed class FileTypeMapper
     }
 
     /// <summary>
-    ///     文件拓展名及其对应内容类型映射字典
+    ///     文件扩展名及其对应内容类型映射字典
     /// </summary>
     public IDictionary<string, string> Mappings { get; }
 
     /// <summary>
-    ///     尝试根据文件路径获取拓展名
+    ///     尝试根据文件路径获取扩展名
     /// </summary>
     /// <param name="subpath">文件路径</param>
     /// <param name="contentType">内容类型</param>
@@ -438,7 +438,7 @@ public sealed class FileTypeMapper
     /// </returns>
     public bool TryGetContentType(string subpath, [MaybeNullWhen(false)] out string contentType)
     {
-        // 根据文件路径解析拓展名
+        // 根据文件路径解析扩展名
         var extension = ExtractExtension(subpath);
 
         // 空检查
@@ -452,7 +452,7 @@ public sealed class FileTypeMapper
     }
 
     /// <summary>
-    ///     根据文件路径获取拓展名
+    ///     根据文件路径获取扩展名
     /// </summary>
     /// <param name="subpath">文件路径</param>
     /// <param name="defaultContentType">默认内容类型</param>
@@ -463,7 +463,7 @@ public sealed class FileTypeMapper
         new FileTypeMapper().TryGetContentType(subpath, out var contentType) ? contentType : defaultContentType;
 
     /// <summary>
-    ///     根据文件路径解析拓展名
+    ///     根据文件路径解析扩展名
     /// </summary>
     /// <param name="path">文件路径</param>
     /// <returns>

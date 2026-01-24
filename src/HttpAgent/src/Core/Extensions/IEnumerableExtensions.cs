@@ -5,7 +5,7 @@
 namespace HttpAgent.Core.Extensions;
 
 /// <summary>
-///     <see cref="IEnumerable" /> 拓展类
+///     <see cref="IEnumerable" /> 扩展类
 /// </summary>
 internal static class IEnumerableExtensions
 {

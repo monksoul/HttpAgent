@@ -5,7 +5,7 @@
 namespace HttpAgent.AspNetCore.Extensions;
 
 /// <summary>
-///     <see cref="IApplicationBuilder" /> 拓展类
+///     <see cref="IApplicationBuilder" /> 扩展类
 /// </summary>
 public static class IApplicationBuilderExtensions
 {

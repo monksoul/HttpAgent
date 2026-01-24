@@ -70,7 +70,7 @@ public sealed class HttpFileUploadBuilder
     public string? ContentType { get; private set; }
 
     /// <summary>
-    ///     允许的文件拓展名
+    ///     允许的文件扩展名
     /// </summary>
     public string[]? AllowedFileExtensions { get; private set; }
 
@@ -131,9 +131,9 @@ public sealed class HttpFileUploadBuilder
     }
 
     /// <summary>
-    ///     设置允许的文件拓展名
+    ///     设置允许的文件扩展名
     /// </summary>
-    /// <param name="allowedFileExtensions">允许的文件拓展名</param>
+    /// <param name="allowedFileExtensions">允许的文件扩展名</param>
     /// <returns>
     ///     <see cref="HttpFileUploadBuilder" />
     /// </returns>
@@ -148,7 +148,7 @@ public sealed class HttpFileUploadBuilder
     }
 
     /// <summary>
-    ///     设置允许的文件拓展名
+    ///     设置允许的文件扩展名
     /// </summary>
     /// <param name="allowedFileExtensions">允许的文件扩展名字符串，用分号分隔</param>
     /// <returns>
@@ -372,7 +372,7 @@ public sealed class HttpFileUploadBuilder
         ArgumentNullException.ThrowIfNull(httpRemoteOptions);
         ArgumentNullException.ThrowIfNull(progressChannel);
 
-        // 检查文件拓展名和大小合法性
+        // 检查文件扩展名和大小合法性
         EnsureLegalData(FilePath, AllowedFileExtensions, MaxFileSizeInBytes);
 
         // 初始化 HttpRequestBuilder 实例
@@ -393,10 +393,10 @@ public sealed class HttpFileUploadBuilder
     }
 
     /// <summary>
-    ///     检查文件拓展名和大小合法性
+    ///     检查文件扩展名和大小合法性
     /// </summary>
     /// <param name="filePath">文件路径</param>
-    /// <param name="allowedFileExtensions">允许的文件拓展名</param>
+    /// <param name="allowedFileExtensions">允许的文件扩展名</param>
     /// <param name="maxFileSizeInBytes">允许的文件大小。以字节为单位</param>
     internal static void EnsureLegalData(string filePath, string[]? allowedFileExtensions, long? maxFileSizeInBytes)
     {

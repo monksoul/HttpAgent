@@ -987,7 +987,7 @@
         </member>
         <member name="P:HttpAgent.HttpFileUploadBuilder.AllowedFileExtensions">
             <summary>
-                允许的文件拓展名
+                允许的文件扩展名
             </summary>
         </member>
         <member name="P:HttpAgent.HttpFileUploadBuilder.MaxFileSizeInBytes">
@@ -1037,16 +1037,16 @@
         </member>
         <member name="M:HttpAgent.HttpFileUploadBuilder.SetAllowedFileExtensions(System.String[])">
             <summary>
-                设置允许的文件拓展名
+                设置允许的文件扩展名
             </summary>
-            <param name="allowedFileExtensions">允许的文件拓展名</param>
+            <param name="allowedFileExtensions">允许的文件扩展名</param>
             <returns>
                 <see cref="T:HttpAgent.HttpFileUploadBuilder" />
             </returns>
         </member>
         <member name="M:HttpAgent.HttpFileUploadBuilder.SetAllowedFileExtensions(System.String)">
             <summary>
-                设置允许的文件拓展名
+                设置允许的文件扩展名
             </summary>
             <param name="allowedFileExtensions">允许的文件扩展名字符串，用分号分隔</param>
             <returns>
@@ -1179,10 +1179,10 @@
         </member>
         <member name="M:HttpAgent.HttpFileUploadBuilder.EnsureLegalData(System.String,System.String[],System.Nullable{System.Int64})">
             <summary>
-                检查文件拓展名和大小合法性
+                检查文件扩展名和大小合法性
             </summary>
             <param name="filePath">文件路径</param>
-            <param name="allowedFileExtensions">允许的文件拓展名</param>
+            <param name="allowedFileExtensions">允许的文件扩展名</param>
             <param name="maxFileSizeInBytes">允许的文件大小。以字节为单位</param>
         </member>
         <member name="T:HttpAgent.HttpLongPollingBuilder">
@@ -4794,7 +4794,7 @@
         </member>
         <member name="T:HttpAgent.Core.Extensions.DelegateExtensions">
             <summary>
-                委托拓展类
+                委托扩展类
             </summary>
         </member>
         <member name="M:HttpAgent.Core.Extensions.DelegateExtensions.TryInvokeAsync``2(System.Func{``0,``1,System.Threading.Tasks.Task},``0,``1)">
@@ -4860,7 +4860,7 @@
         </member>
         <member name="T:HttpAgent.Core.Extensions.EventHandlerExtensions">
             <summary>
-                <see cref="T:System.EventHandler`1" /> 拓展类
+                <see cref="T:System.EventHandler`1" /> 扩展类
             </summary>
         </member>
         <member name="M:HttpAgent.Core.Extensions.EventHandlerExtensions.TryInvoke``1(System.EventHandler{``0},System.Object,``0)">
@@ -4880,7 +4880,7 @@
         </member>
         <member name="T:HttpAgent.Core.Extensions.ICollectionExtensions">
             <summary>
-                <see cref="T:System.Collections.Generic.ICollection`1" /> 拓展类
+                <see cref="T:System.Collections.Generic.ICollection`1" /> 扩展类
             </summary>
         </member>
         <member name="M:HttpAgent.Core.Extensions.ICollectionExtensions.IsNullOrEmpty``1(System.Collections.Generic.ICollection{``0})">
@@ -4897,7 +4897,7 @@
         </member>
         <member name="T:HttpAgent.Core.Extensions.IDictionaryExtensions">
             <summary>
-                <see cref="T:System.Collections.Generic.IDictionary`2" /> 拓展类
+                <see cref="T:System.Collections.Generic.IDictionary`2" /> 扩展类
             </summary>
         </member>
         <member name="M:HttpAgent.Core.Extensions.IDictionaryExtensions.AddOrUpdate``2(System.Collections.Generic.IDictionary{``0,``1},``0,``1)">
@@ -4976,7 +4976,7 @@
         </member>
         <member name="T:HttpAgent.Core.Extensions.IEnumerableExtensions">
             <summary>
-                <see cref="T:System.Collections.IEnumerable" /> 拓展类
+                <see cref="T:System.Collections.IEnumerable" /> 扩展类
             </summary>
         </member>
         <member name="M:HttpAgent.Core.Extensions.IEnumerableExtensions.OfType(System.Collections.IEnumerable,System.Type)">
@@ -5008,7 +5008,7 @@
         </member>
         <member name="T:HttpAgent.Core.Extensions.LinqExpressionExtensions">
             <summary>
-                <see cref="T:System.Linq.Expressions.Expression" /> 拓展类
+                <see cref="T:System.Linq.Expressions.Expression" /> 扩展类
             </summary>
         </member>
         <member name="M:HttpAgent.Core.Extensions.LinqExpressionExtensions.WhereIf``1(System.Collections.Generic.IEnumerable{``0},System.Boolean,System.Func{``0,System.Boolean})">
@@ -5027,7 +5027,7 @@
         </member>
         <member name="T:HttpAgent.Core.Extensions.MethodInfoExtensions">
             <summary>
-                <see cref="T:System.Reflection.MethodInfo" /> 拓展类
+                <see cref="T:System.Reflection.MethodInfo" /> 扩展类
             </summary>
         </member>
         <member name="M:HttpAgent.Core.Extensions.MethodInfoExtensions.IsDefined``1(System.Reflection.MethodInfo,``0@,System.Boolean)">
@@ -5077,7 +5077,7 @@
         </member>
         <member name="T:HttpAgent.Core.Extensions.NumberExtensions">
             <summary>
-                数值类型拓展类
+                数值类型扩展类
             </summary>
         </member>
         <member name="M:HttpAgent.Core.Extensions.NumberExtensions.ToSizeUnits(System.Double,System.String)">
@@ -5122,7 +5122,7 @@
         </member>
         <member name="T:HttpAgent.Core.Extensions.ObjectExtensions">
             <summary>
-                <see cref="T:System.Object" /> 拓展类
+                <see cref="T:System.Object" /> 扩展类
             </summary>
         </member>
         <member name="M:HttpAgent.Core.Extensions.ObjectExtensions.ToCultureString(System.Object,System.Globalization.CultureInfo,System.Boolean,System.String)">
@@ -5197,7 +5197,7 @@
         </member>
         <member name="T:HttpAgent.Core.Extensions.StringExtensions">
             <summary>
-                <see cref="T:System.String" /> 拓展类
+                <see cref="T:System.String" /> 扩展类
             </summary>
         </member>
         <member name="M:HttpAgent.Core.Extensions.StringExtensions.AddQuotes(System.String)">
@@ -5404,7 +5404,7 @@
         </member>
         <member name="T:HttpAgent.Core.Extensions.TaskExtensions">
             <summary>
-                <see cref="T:System.Threading.Tasks.Task" /> 拓展类
+                <see cref="T:System.Threading.Tasks.Task" /> 扩展类
             </summary>
         </member>
         <member name="M:HttpAgent.Core.Extensions.TaskExtensions.ThrowIfNull``1(System.Threading.Tasks.Task{``0})">
@@ -5446,7 +5446,7 @@
         </member>
         <member name="T:HttpAgent.Core.Extensions.TypeExtensions">
             <summary>
-                <see cref="T:System.Type" /> 拓展类
+                <see cref="T:System.Type" /> 扩展类
             </summary>
         </member>
         <member name="M:HttpAgent.Core.Extensions.TypeExtensions.IsArrayOrCollection(System.Type,System.Type@)">
@@ -5623,7 +5623,7 @@
         </member>
         <member name="T:HttpAgent.Core.Extensions.Utf8JsonReaderExtensions">
             <summary>
-                <see cref="T:System.Text.Json.Utf8JsonReader" /> 拓展类
+                <see cref="T:System.Text.Json.Utf8JsonReader" /> 扩展类
             </summary>
         </member>
         <member name="M:HttpAgent.Core.Extensions.Utf8JsonReaderExtensions.ConvertRawValueToString(System.Text.Json.Utf8JsonReader)">
@@ -5674,23 +5674,23 @@
         </member>
         <member name="M:HttpAgent.Core.Utilities.FileUtility.TryValidateExtension(System.String,System.String[],System.Collections.Generic.HashSet{System.String}@)">
             <summary>
-                尝试验证文件拓展名
+                尝试验证文件扩展名
             </summary>
-            <remarks>特别说明：不支持拓展名中包含通配符，如 <c>*</c>。</remarks>
+            <remarks>特别说明：不支持扩展名中包含通配符，如 <c>*</c>。</remarks>
             <param name="fileName">文件的名称</param>
-            <param name="allowedFileExtensions">允许的文件拓展名数组</param>
-            <param name="validFileExtensions">有效的文件拓展名集合</param>
+            <param name="allowedFileExtensions">允许的文件扩展名数组</param>
+            <param name="validFileExtensions">有效的文件扩展名集合</param>
             <returns>
                 <see cref="T:System.Boolean" />
             </returns>
         </member>
         <member name="M:HttpAgent.Core.Utilities.FileUtility.ValidateExtension(System.String,System.String[])">
             <summary>
-                验证文件拓展名
+                验证文件扩展名
             </summary>
-            <remarks>特别说明：不支持拓展名中包含通配符，如 <c>*</c>。</remarks>
+            <remarks>特别说明：不支持扩展名中包含通配符，如 <c>*</c>。</remarks>
             <param name="fileName">文件的名称</param>
-            <param name="allowedFileExtensions">允许的文件拓展名数组</param>
+            <param name="allowedFileExtensions">允许的文件扩展名数组</param>
             <exception cref="T:System.InvalidOperationException"></exception>
         </member>
         <member name="M:HttpAgent.Core.Utilities.FileUtility.TryValidateSize(System.String,System.Int64)">
@@ -5714,9 +5714,9 @@
         </member>
         <member name="M:HttpAgent.Core.Utilities.FileUtility.GetValidFileExtensions(System.String[])">
             <summary>
-                获取有效的文件拓展名集合
+                获取有效的文件扩展名集合
             </summary>
-            <param name="allowedFileExtensions">允许的文件拓展名数组</param>
+            <param name="allowedFileExtensions">允许的文件扩展名数组</param>
             <returns>
                 <see cref="T:System.Collections.Generic.HashSet`1" />
             </returns>
@@ -7419,7 +7419,7 @@
         </member>
         <member name="T:HttpAgent.Extensions.HttpRemoteExtensions">
             <summary>
-                HTTP 远程服务模块拓展类
+                HTTP 远程服务模块扩展类
             </summary>
         </member>
         <member name="F:HttpAgent.Extensions.HttpRemoteExtensions.IsDevelopment">
@@ -9290,16 +9290,16 @@
             <summary>
                 <inheritdoc cref="T:HttpAgent.FileTypeMapper" />
             </summary>
-            <param name="mapping">文件拓展名及其对应内容类型映射字典</param>
+            <param name="mapping">文件扩展名及其对应内容类型映射字典</param>
         </member>
         <member name="P:HttpAgent.FileTypeMapper.Mappings">
             <summary>
-                文件拓展名及其对应内容类型映射字典
+                文件扩展名及其对应内容类型映射字典
             </summary>
         </member>
         <member name="M:HttpAgent.FileTypeMapper.TryGetContentType(System.String,System.String@)">
             <summary>
-                尝试根据文件路径获取拓展名
+                尝试根据文件路径获取扩展名
             </summary>
             <param name="subpath">文件路径</param>
             <param name="contentType">内容类型</param>
@@ -9309,7 +9309,7 @@
         </member>
         <member name="M:HttpAgent.FileTypeMapper.GetContentType(System.String,System.String)">
             <summary>
-                根据文件路径获取拓展名
+                根据文件路径获取扩展名
             </summary>
             <param name="subpath">文件路径</param>
             <param name="defaultContentType">默认内容类型</param>
@@ -9319,7 +9319,7 @@
         </member>
         <member name="M:HttpAgent.FileTypeMapper.ExtractExtension(System.String)">
             <summary>
-                根据文件路径解析拓展名
+                根据文件路径解析扩展名
             </summary>
             <param name="path">文件路径</param>
             <returns>
@@ -16087,15 +16087,9 @@
         <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32,System.Int32,System.Int32)">
             <summary>Pushes 3 values onto the backtracking stack.</summary>
         </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_1F52B1A4D2E82B6FEDE25EC8C55F85BB36775196837076691C96925040F90D32">
-            <summary>Supports searching for the string "\\u".</summary>
-        </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_EBC667BDABA1472FA863B5B39B31251EF2B4C95DD643BDECF694CB1CE7BDC178">
-            <summary>Supports searching for the string "[[".</summary>
-        </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions">
             <summary>
-                HTTP 远程请求模块 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" /> 拓展类
+                HTTP 远程请求模块 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" /> 扩展类
             </summary>
         </member>
         <member name="M:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions.AddHttpRemote(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{HttpAgent.HttpRemoteBuilder})">
@@ -16107,6 +16101,26 @@
             </param>
             <param name="configure">自定义配置委托</param>
             <returns>
+                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
+            </returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions.AddHttpRemote(Microsoft.Extensions.DependencyInjection.IServiceCollection,HttpAgent.HttpRemoteBuilder)">
+            <summary>
+                添加 HTTP 远程请求服务
+            </summary>
+            <param name="services">
+                <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
+            </param>
+            <param name="httpRemoteBuilder">
+                <see cref="T:HttpAgent.HttpRemoteBuilder" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
+            </returns>
+        </member>
+    </members>
+</doc>
+  <returns>
                 <see cref="T:HttpAgent.IHttpRemoteBuilder" />
             </returns>
         </member>

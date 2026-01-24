@@ -5,7 +5,7 @@
 namespace HttpAgent.Core.Extensions;
 
 /// <summary>
-///     <see cref="ICollection{T}" /> 拓展类
+///     <see cref="ICollection{T}" /> 扩展类
 /// </summary>
 internal static class ICollectionExtensions
 {

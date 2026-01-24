@@ -211,10 +211,10 @@
         </member>
         <member name="T:HttpAgent.Extensions.HttpContextExtensions">
             <summary>
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 拓展类
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 扩展类
             </summary>
             <summary>
-                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 拓展类
+                <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 扩展类
             </summary>
         </member>
         <member name="F:HttpAgent.Extensions.HttpContextExtensions._ignoreResponseHeaders">
@@ -1647,7 +1647,7 @@
         </member>
         <member name="T:HttpAgent.HttpMultipartFormDataBuilderExtensions">
             <summary>
-                <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" /> 拓展类
+                <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" /> 扩展类
             </summary>
         </member>
         <member name="M:HttpAgent.HttpMultipartFormDataBuilderExtensions.AddFile(HttpAgent.HttpMultipartFormDataBuilder,Microsoft.AspNetCore.Http.IFormFile,System.String,System.String,System.String,System.Text.Encoding)">
@@ -1685,7 +1685,7 @@
         </member>
         <member name="T:HttpAgent.AspNetCore.Extensions.IApplicationBuilderExtensions">
             <summary>
-                <see cref="T:Microsoft.AspNetCore.Builder.IApplicationBuilder" /> 拓展类
+                <see cref="T:Microsoft.AspNetCore.Builder.IApplicationBuilder" /> 扩展类
             </summary>
         </member>
         <member name="M:HttpAgent.AspNetCore.Extensions.IApplicationBuilderExtensions.UseEnableBuffering(Microsoft.AspNetCore.Builder.IApplicationBuilder)">

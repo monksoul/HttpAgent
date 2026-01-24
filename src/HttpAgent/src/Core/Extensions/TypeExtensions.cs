@@ -5,7 +5,7 @@
 namespace HttpAgent.Core.Extensions;
 
 /// <summary>
-///     <see cref="Type" /> 拓展类
+///     <see cref="Type" /> 扩展类
 /// </summary>
 internal static class TypeExtensions
 {

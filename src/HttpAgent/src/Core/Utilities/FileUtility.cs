@@ -10,12 +10,12 @@ namespace HttpAgent.Core.Utilities;
 public static class FileUtility
 {
     /// <summary>
-    ///     尝试验证文件拓展名
+    ///     尝试验证文件扩展名
     /// </summary>
-    /// <remarks>特别说明：不支持拓展名中包含通配符，如 <c>*</c>。</remarks>
+    /// <remarks>特别说明：不支持扩展名中包含通配符，如 <c>*</c>。</remarks>
     /// <param name="fileName">文件的名称</param>
-    /// <param name="allowedFileExtensions">允许的文件拓展名数组</param>
-    /// <param name="validFileExtensions">有效的文件拓展名集合</param>
+    /// <param name="allowedFileExtensions">允许的文件扩展名数组</param>
+    /// <param name="validFileExtensions">有效的文件扩展名集合</param>
     /// <returns>
     ///     <see cref="bool" />
     /// </returns>
@@ -34,21 +34,21 @@ public static class FileUtility
             return true;
         }
 
-        // 获取有效的文件拓展名集合
+        // 获取有效的文件扩展名集合
         validFileExtensions = GetValidFileExtensions(allowedFileExtensions);
 
-        // 获取文件拓展名
+        // 获取文件扩展名
         var extension = Path.GetExtension(fileName);
 
         return validFileExtensions.Contains(extension);
     }
 
     /// <summary>
-    ///     验证文件拓展名
+    ///     验证文件扩展名
     /// </summary>
-    /// <remarks>特别说明：不支持拓展名中包含通配符，如 <c>*</c>。</remarks>
+    /// <remarks>特别说明：不支持扩展名中包含通配符，如 <c>*</c>。</remarks>
     /// <param name="fileName">文件的名称</param>
-    /// <param name="allowedFileExtensions">允许的文件拓展名数组</param>
+    /// <param name="allowedFileExtensions">允许的文件扩展名数组</param>
     /// <exception cref="InvalidOperationException"></exception>
     public static void ValidateExtension(string fileName, string[]? allowedFileExtensions)
     {
@@ -104,9 +104,9 @@ public static class FileUtility
     }
 
     /// <summary>
-    ///     获取有效的文件拓展名集合
+    ///     获取有效的文件扩展名集合
     /// </summary>
-    /// <param name="allowedFileExtensions">允许的文件拓展名数组</param>
+    /// <param name="allowedFileExtensions">允许的文件扩展名数组</param>
     /// <returns>
     ///     <see cref="HashSet{T}" />
     /// </returns>
@@ -124,7 +124,7 @@ public static class FileUtility
             // 空检查
             if (!string.IsNullOrWhiteSpace(extension))
             {
-                // 确保拓展名以 . 开头
+                // 确保扩展名以 . 开头
                 hashSet.Add('.' + extension.TrimStart('.'));
             }
         }

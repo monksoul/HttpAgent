@@ -5,7 +5,7 @@
 namespace HttpAgent.Core.Extensions;
 
 /// <summary>
-///     <see cref="IDictionary{TKey, TValue}" /> 拓展类
+///     <see cref="IDictionary{TKey, TValue}" /> 扩展类
 /// </summary>
 internal static class IDictionaryExtensions
 {

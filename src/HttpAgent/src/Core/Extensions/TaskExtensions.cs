@@ -5,7 +5,7 @@
 namespace HttpAgent.Core.Extensions;
 
 /// <summary>
-///     <see cref="Task" /> 拓展类
+///     <see cref="Task" /> 扩展类
 /// </summary>
 public static class TaskExtensions
 {

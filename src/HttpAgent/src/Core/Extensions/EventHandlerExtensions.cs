@@ -5,7 +5,7 @@
 namespace HttpAgent.Core.Extensions;
 
 /// <summary>
-///     <see cref="EventHandler{TEventArgs}" /> 拓展类
+///     <see cref="EventHandler{TEventArgs}" /> 扩展类
 /// </summary>
 internal static class EventHandlerExtensions
 {
