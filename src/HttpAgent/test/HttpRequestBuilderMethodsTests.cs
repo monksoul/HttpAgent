@@ -1016,12 +1016,17 @@ public class HttpRequestBuilderMethodsTests
 
         Assert.Throws<ArgumentNullException>(() =>
         {
-            httpRequestBuilder.WithCookies(null!);
+            httpRequestBuilder.WithCookies((IDictionary<string, object?>?)null!);
         });
 
         Assert.Throws<ArgumentNullException>(() =>
         {
             httpRequestBuilder.WithCookies((object)null!);
+        });
+
+        Assert.Throws<ArgumentNullException>(() =>
+        {
+            httpRequestBuilder.WithCookies((string?)null!);
         });
     }
 
@@ -1092,6 +1097,12 @@ public class HttpRequestBuilderMethodsTests
         });
         Assert.Equal("1", httpRequestBuilder5.Cookies!["id"]);
         Assert.Equal("furion,monksoul", httpRequestBuilder5.Cookies!["name"]);
+
+        var httpRequestBuilder6 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        httpRequestBuilder6.WithCookies("DeviceId=; ASP.NET_SessionId=dr1kcfupurtqpk42dzhwvsvq; CookieLastUName=sh");
+        Assert.NotNull(httpRequestBuilder6.Cookies);
+        Assert.Equal(3, httpRequestBuilder6.Cookies.Count);
+        Assert.Equal(["DeviceId", "ASP.NET_SessionId", "CookieLastUName"], httpRequestBuilder6.Cookies.Keys);
     }
 
     [Fact]

@@ -102,7 +102,7 @@ public class HttpRemoteUtilityTests
         using var httpClient = new HttpClient(new SocketsHttpHandler
         {
             ConnectCallback = (context, token) =>
-                HttpRemoteUtility.ConnectWithLocalIPv4(IPAddress.Parse("192.168.0.103"), context, token)
+                HttpRemoteUtility.ConnectWithLocalIPv4(IPAddress.Parse("192.168.0.104"), context, token)
         });
 
         var response = await httpClient.GetAsync("https://www.baidu.com");
@@ -115,7 +115,7 @@ public class HttpRemoteUtilityTests
         using var httpClient = new HttpClient(new SocketsHttpHandler
         {
             ConnectCallback = (context, token) =>
-                HttpRemoteUtility.ConnectWithLocalIPv6(IPAddress.Parse("192.168.0.103"), context, token)
+                HttpRemoteUtility.ConnectWithLocalIPv6(IPAddress.Parse("192.168.0.104"), context, token)
         });
 
         await Assert.ThrowsAsync<HttpRequestException>(async () =>
