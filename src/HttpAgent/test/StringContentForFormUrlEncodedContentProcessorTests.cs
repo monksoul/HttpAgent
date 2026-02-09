@@ -10,6 +10,7 @@ public class StringContentForFormUrlEncodedContentProcessorTests
     public void New_ReturnOK()
     {
         var processor = new StringContentForFormUrlEncodedContentProcessor();
+        Assert.True(processor.UrlEncode);
         Assert.NotNull(processor);
         Assert.True(
             typeof(IHttpContentProcessor).IsAssignableFrom(typeof(StringContentForFormUrlEncodedContentProcessor)));
@@ -82,6 +83,16 @@ public class StringContentForFormUrlEncodedContentProcessorTests
         Assert.Equal(typeof(StringContent), httpContent4.GetType());
         Assert.Equal("application/x-www-form-urlencoded", httpContent4.Headers.ContentType?.MediaType);
         Assert.Equal("utf-8", httpContent4.Headers.ContentType?.CharSet);
+
+        var processor2 = new StringContentForFormUrlEncodedContentProcessor { UrlEncode = false };
+        var httpContent5 =
+            processor2.Process(
+                new KeyValuePair<string, string?>[]
+                {
+                    new("id", "1"), new("name", "fur ion"), new("data", """{"plateNo":"京A12345","color":"1"}""")
+                }, "application/x-www-form-urlencoded", null)!;
+        Assert.Equal("""id=1&name=fur ion&data={"plateNo":"京A12345","color":"1"}""",
+            await httpContent5.ReadAsStringAsync());
     }
 
     [Fact]
@@ -93,13 +104,21 @@ public class StringContentForFormUrlEncodedContentProcessorTests
     {
         var result =
             StringContentForFormUrlEncodedContentProcessor.GetContentString(
-                new KeyValuePair<string, string?>("id", "1"), new KeyValuePair<string, string?>("name", "furion"));
+                [new KeyValuePair<string, string?>("id", "1"), new KeyValuePair<string, string?>("name", "furion")]);
         Assert.Equal("id=1&name=furion", result);
 
         var result2 =
             StringContentForFormUrlEncodedContentProcessor.GetContentString(
-                new KeyValuePair<string, string?>("id", "1"), new KeyValuePair<string, string?>("name", "fur ion"));
+                [new KeyValuePair<string, string?>("id", "1"), new KeyValuePair<string, string?>("name", "fur ion")]);
         Assert.Equal("id=1&name=fur+ion", result2);
+
+        var result3 =
+            StringContentForFormUrlEncodedContentProcessor.GetContentString(
+            [
+                new KeyValuePair<string, string?>("id", "1"), new KeyValuePair<string, string?>("name", "fur ion"),
+                new KeyValuePair<string, string?>("data", """{"plateNo":"京A12345","color":"1"}""")
+            ], false);
+        Assert.Equal("""id=1&name=fur ion&data={"plateNo":"京A12345","color":"1"}""", result3);
     }
 
     [Fact]

@@ -91,6 +91,11 @@ public class BodyDeclarativeExtractorTests
         Assert.Equal("application/x-www-form-urlencoded", httpRequestBuilder8.ContentType);
         Assert.NotNull(httpRequestBuilder8.HttpContentProcessorProviders);
         Assert.Single(httpRequestBuilder8.HttpContentProcessorProviders);
+        var stringContentForFormUrlEncodedContentProcessor =
+            httpRequestBuilder8.HttpContentProcessorProviders[0].Invoke().First() as
+                StringContentForFormUrlEncodedContentProcessor;
+        Assert.NotNull(stringContentForFormUrlEncodedContentProcessor);
+        Assert.True(stringContentForFormUrlEncodedContentProcessor.UrlEncode);
 
         var method9 = typeof(IBodyDeclarativeTest).GetMethod(nameof(IBodyDeclarativeTest.Test9))!;
         var context9 = new HttpDeclarativeExtractorContext(method9, ["Furion"]);
@@ -98,6 +103,19 @@ public class BodyDeclarativeExtractorTests
         new BodyDeclarativeExtractor().Extract(httpRequestBuilder9, context9);
         Assert.Equal("application/json", httpRequestBuilder9.ContentType);
         Assert.Equal("\"Furion\"", httpRequestBuilder9.RawContent);
+
+        var method10 = typeof(IBodyDeclarativeTest).GetMethod(nameof(IBodyDeclarativeTest.Test11))!;
+        var context10 = new HttpDeclarativeExtractorContext(method10, [new { }]);
+        var httpRequestBuilder10 = HttpRequestBuilder.Get("http://localhost");
+        new BodyDeclarativeExtractor().Extract(httpRequestBuilder10, context10);
+        Assert.Equal("application/x-www-form-urlencoded", httpRequestBuilder10.ContentType);
+        Assert.NotNull(httpRequestBuilder10.HttpContentProcessorProviders);
+        Assert.Single(httpRequestBuilder10.HttpContentProcessorProviders);
+        var stringContentForFormUrlEncodedContentProcessor2 =
+            httpRequestBuilder10.HttpContentProcessorProviders[0].Invoke().First() as
+                StringContentForFormUrlEncodedContentProcessor;
+        Assert.NotNull(stringContentForFormUrlEncodedContentProcessor2);
+        Assert.False(stringContentForFormUrlEncodedContentProcessor2.UrlEncode);
     }
 }
 
@@ -132,4 +150,7 @@ public interface IBodyDeclarativeTest : IHttpDeclarative
 
     [Post("http://localhost:5000")]
     Task Test10([Body(RawString = true)] string body);
+
+    [Post("http://localhost:5000")]
+    Task Test11([Body("application/x-www-form-urlencoded; charset=utf-8", UseUrlEncode = false)] object body);
 }

@@ -43,17 +43,26 @@ public class BodyAttribute : Attribute
     public string? ContentEncoding { get; set; }
 
     /// <summary>
-    ///     是否使用 <see cref="StringContent" /> 构建 <see cref="FormUrlEncodedContent" />。默认 <c>false</c>
+    ///     是否使用 <see cref="StringContent" /> 构建 <see cref="FormUrlEncodedContent" />
     /// </summary>
-    /// <remarks>当 <see cref="ContentType" /> 值为 <c>application/x-www-form-urlencoded</c> 时有效。</remarks>
+    /// <remarks>当 <see cref="ContentType" /> 值为 <c>application/x-www-form-urlencoded</c> 时有效。默认值为：<c>fale</c>。</remarks>
     public bool UseStringContent { get; set; }
 
     /// <summary>
-    ///     是否为原始字符串内容。默认 <c>false</c>
+    ///     是否对表单数据进行 URL 编码
+    /// </summary>
+    /// <remarks>当 <see cref="ContentType" /> 值为 <c>application/x-www-form-urlencoded</c> 时有效。默认值为：<c>true</c>。</remarks>
+    public bool UseUrlEncode { get; set; } = true;
+
+    /// <summary>
+    ///     是否为原始字符串内容
     /// </summary>
     /// <remarks>
     ///     <para>作用于 <see cref="string" /> 类型参数时有效。</para>
-    ///     <para>当属性值设置为 <c>true</c> 时，将校验 <see cref="ContentType" /> 属性值是否为空，并且字符串内容将被双引号包围并发送，格式如下：<c>"内容"</c>。</para>
+    ///     <para>
+    ///         当属性值设置为 <c>true</c> 时，将校验 <see cref="ContentType" /> 属性值是否为空，并且字符串内容将被双引号包围并发送，格式如下：<c>"内容"</c>。默认值为：
+    ///         <c>false</c>。
+    ///     </para>
     /// </remarks>
     public bool RawString { get; set; }
 }

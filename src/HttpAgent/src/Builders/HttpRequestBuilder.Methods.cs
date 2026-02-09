@@ -214,20 +214,29 @@ public sealed partial class HttpRequestBuilder
     /// <param name="contentEncoding">内容编码</param>
     /// <param name="useStringContent">
     ///     是否使用 <see cref="StringContent" /> 构建
-    ///     <see cref="FormUrlEncodedContent" />。默认 <c>false</c>。
+    ///     <see cref="FormUrlEncodedContent" />。默认值为： <c>false</c>
     /// </param>
+    /// <param name="useUrlEncode">是否对表单数据进行 URL 编码，默认值为： <c>true</c></param>
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
     public HttpRequestBuilder SetFormUrlEncodedContent(object? rawObject, Encoding? contentEncoding = null,
-        bool useStringContent = false)
+        bool useStringContent = false, bool useUrlEncode = true)
     {
         SetContent(rawObject, MediaTypeNames.Application.FormUrlEncoded, contentEncoding);
 
-        // 检查是否启用 StringContent 方式构建 application/x-www-form-urlencoded 请求内容
-        if (useStringContent)
+        // 检查是否对表单数据进行 URL 编码
+        if (!useUrlEncode)
         {
-            AddStringContentForFormUrlEncodedContentProcessor();
+            AddHttpContentProcessors(() => [new StringContentForFormUrlEncodedContentProcessor { UrlEncode = false }]);
+        }
+        else
+        {
+            // 检查是否启用 StringContent 方式构建 application/x-www-form-urlencoded 请求内容
+            if (useStringContent)
+            {
+                AddStringContentForFormUrlEncodedContentProcessor();
+            }
         }
 
         return this;

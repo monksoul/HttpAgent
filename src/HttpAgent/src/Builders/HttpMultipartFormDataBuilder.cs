@@ -633,13 +633,14 @@ public sealed class HttpMultipartFormDataBuilder
     /// <param name="contentEncoding">内容编码</param>
     /// <param name="useStringContent">
     ///     是否使用 <see cref="StringContent" /> 构建
-    ///     <see cref="FormUrlEncodedContent" />。默认 <c>false</c>。
+    ///     <see cref="FormUrlEncodedContent" />。默认值为： <c>false</c>
     /// </param>
+    /// <param name="useUrlEncode">是否对表单数据进行 URL 编码，默认值为： <c>true</c></param>
     /// <returns>
     ///     <see cref="HttpMultipartFormDataBuilder" />
     /// </returns>
     public HttpMultipartFormDataBuilder AddFormUrlEncoded(object? rawObject, string name,
-        Encoding? contentEncoding = null, bool useStringContent = false)
+        Encoding? contentEncoding = null, bool useStringContent = false, bool useUrlEncode = true)
     {
         // 空检查
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
@@ -651,10 +652,19 @@ public sealed class HttpMultipartFormDataBuilder
             ContentEncoding = contentEncoding
         });
 
-        // 检查是否启用 StringContent 方式构建 application/x-www-form-urlencoded 请求内容
-        if (useStringContent)
+        // 检查是否对表单数据进行 URL 编码
+        if (!useUrlEncode)
         {
-            _httpRequestBuilder.AddStringContentForFormUrlEncodedContentProcessor();
+            _httpRequestBuilder.AddHttpContentProcessors(() =>
+                [new StringContentForFormUrlEncodedContentProcessor { UrlEncode = false }]);
+        }
+        else
+        {
+            // 检查是否启用 StringContent 方式构建 application/x-www-form-urlencoded 请求内容
+            if (useStringContent)
+            {
+                _httpRequestBuilder.AddStringContentForFormUrlEncodedContentProcessor();
+            }
         }
 
         return this;

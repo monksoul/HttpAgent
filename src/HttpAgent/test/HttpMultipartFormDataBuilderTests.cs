@@ -906,6 +906,36 @@ public class HttpMultipartFormDataBuilderTests
         Assert.Equal("test", builder._partContents[1].Name);
         Assert.Equal(Encoding.UTF8, builder._partContents[1].ContentEncoding);
         Assert.NotNull(builder._partContents[1].RawContent);
+
+        builder.AddFormUrlEncoded(new Dictionary<string, string>(), "test", Encoding.UTF8, true);
+        Assert.NotNull(builder._httpRequestBuilder.HttpContentProcessorProviders);
+        Assert.Single(builder._httpRequestBuilder.HttpContentProcessorProviders);
+        var stringContentForFormUrlEncodedContentProcessor =
+            builder._httpRequestBuilder.HttpContentProcessorProviders[0].Invoke().First() as
+                StringContentForFormUrlEncodedContentProcessor;
+        Assert.NotNull(stringContentForFormUrlEncodedContentProcessor);
+        Assert.True(stringContentForFormUrlEncodedContentProcessor.UrlEncode);
+
+        var builder2 = new HttpMultipartFormDataBuilder(HttpRequestBuilder.Get("http://localhost"));
+        builder2.AddFormUrlEncoded(new Dictionary<string, string>(), "test", Encoding.UTF8, useUrlEncode: false);
+        Assert.NotNull(builder2._httpRequestBuilder.HttpContentProcessorProviders);
+        Assert.Single(builder2._httpRequestBuilder.HttpContentProcessorProviders);
+        var stringContentForFormUrlEncodedContentProcessor2 =
+            builder2._httpRequestBuilder.HttpContentProcessorProviders[0].Invoke().First() as
+                StringContentForFormUrlEncodedContentProcessor;
+        Assert.NotNull(stringContentForFormUrlEncodedContentProcessor2);
+        Assert.False(stringContentForFormUrlEncodedContentProcessor2.UrlEncode);
+
+        var builder3 = new HttpMultipartFormDataBuilder(HttpRequestBuilder.Get("http://localhost"));
+        builder3.AddFormUrlEncoded(new Dictionary<string, string>(), "test", Encoding.UTF8, true,
+            false);
+        Assert.NotNull(builder3._httpRequestBuilder.HttpContentProcessorProviders);
+        Assert.Single(builder3._httpRequestBuilder.HttpContentProcessorProviders);
+        var stringContentForFormUrlEncodedContentProcessor3 =
+            builder3._httpRequestBuilder.HttpContentProcessorProviders[0].Invoke().First() as
+                StringContentForFormUrlEncodedContentProcessor;
+        Assert.NotNull(stringContentForFormUrlEncodedContentProcessor3);
+        Assert.False(stringContentForFormUrlEncodedContentProcessor3.UrlEncode);
     }
 
     [Fact]

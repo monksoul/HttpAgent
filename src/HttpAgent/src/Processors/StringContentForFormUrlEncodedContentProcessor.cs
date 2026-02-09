@@ -13,6 +13,16 @@ namespace HttpAgent;
 /// </remarks>
 public class StringContentForFormUrlEncodedContentProcessor : FormUrlEncodedContentProcessor
 {
+    /// <summary>
+    ///     是否对表单数据进行 URL 编码
+    /// </summary>
+    /// <remarks>
+    ///     <para>默认值为：<c>true</c>。</para>
+    ///     <para>设置为 <see langword="false" /> 时，表单数据将保持原始格式发送，不进行 URL 编码转义。</para>
+    ///     <para>注意：禁用编码可能导致特殊字符（如 <c>&amp;</c>, <c>=</c>, 空格等）被服务器错误解析。</para>
+    /// </remarks>
+    public bool UrlEncode { get; set; } = true;
+
     /// <inheritdoc />
     public override HttpContent? Process(object? rawContent, string contentType, Encoding? encoding)
     {
@@ -32,7 +42,7 @@ public class StringContentForFormUrlEncodedContentProcessor : FormUrlEncodedCont
         var content = rawContent as string ?? GetContentString(
             // 将原始请求类型转换为字符串字典类型
             rawContent.ObjectToDictionary()!.ToDictionary(u => u.Key.ToInvariantCultureString()!,
-                u => u.Value?.ToInvariantCultureString())
+                u => u.Value?.ToInvariantCultureString()), UrlEncode
         );
 
         // 初始化 StringContent 实例
@@ -46,10 +56,12 @@ public class StringContentForFormUrlEncodedContentProcessor : FormUrlEncodedCont
     ///     获取 URL 编码的表单内容格式
     /// </summary>
     /// <param name="nameValueCollection">键值对集合</param>
+    /// <param name="urlEncode">是否对表单数据进行 URL 编码</param>
     /// <returns>
     ///     <see cref="string" />
     /// </returns>
-    internal static string GetContentString(params IEnumerable<KeyValuePair<string, string?>> nameValueCollection)
+    internal static string GetContentString(IEnumerable<KeyValuePair<string, string?>> nameValueCollection,
+        bool urlEncode = true)
     {
         // 空检查
         ArgumentNullException.ThrowIfNull(nameValueCollection);
@@ -65,9 +77,20 @@ public class StringContentForFormUrlEncodedContentProcessor : FormUrlEncodedCont
                 stringBuilder.Append('&');
             }
 
-            stringBuilder.Append(Encode(nameValue.Key));
-            stringBuilder.Append('=');
-            stringBuilder.Append(Encode(nameValue.Value));
+            if (urlEncode)
+            {
+                // 进行 URL 编码
+                stringBuilder.Append(Encode(nameValue.Key));
+                stringBuilder.Append('=');
+                stringBuilder.Append(Encode(nameValue.Value));
+            }
+            else
+            {
+                // 不进行编码，直接拼接原始值
+                stringBuilder.Append(nameValue.Key);
+                stringBuilder.Append('=');
+                stringBuilder.Append(nameValue.Value ?? string.Empty);
+            }
         }
 
         return stringBuilder.ToString();
