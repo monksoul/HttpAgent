@@ -115,4 +115,9 @@ internal static class Constants
     ///     <c>Referer</c> 标头请求基地址模板
     /// </summary>
     internal const string REFERER_HEADER_BASE_ADDRESS_TEMPLATE = "{BASE_ADDRESS}";
+
+    /// <summary>
+    ///     <see cref="HttpResponseMessage" /> 为 null 时输出消息
+    /// </summary>
+    internal const string HTTP_RESPONSE_MESSAGE_ISNULL_MESSAGE = "The response content was not read, as it was empty.";
 }

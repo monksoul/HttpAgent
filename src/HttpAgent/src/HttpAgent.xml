@@ -4423,6 +4423,11 @@
                 <c>Referer</c> 标头请求基地址模板
             </summary>
         </member>
+        <member name="F:HttpAgent.Constants.HTTP_RESPONSE_MESSAGE_ISNULL_MESSAGE">
+            <summary>
+                <see cref="T:System.Net.Http.HttpResponseMessage" /> 为 null 时输出消息
+            </summary>
+        </member>
         <member name="T:HttpAgent.FileExistsBehavior">
             <summary>
                 指定当目标文件已存在时的行为

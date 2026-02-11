@@ -621,7 +621,7 @@ public static partial class HttpContextExtensions
         if (httpResponseMessage is null)
         {
             // 输出调试信息
-            Debugging.Error("The response content was not read, as it was empty.");
+            Debugging.Error(Constants.HTTP_RESPONSE_MESSAGE_ISNULL_MESSAGE);
 
             return;
         }
