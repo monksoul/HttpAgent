@@ -488,21 +488,48 @@ public sealed partial class HttpRequestBuilder
     }
 
     /// <summary>
+    ///     设置永不超时
+    /// </summary>
+    /// <returns>
+    ///     <see cref="HttpRequestBuilder" />
+    /// </returns>
+    public HttpRequestBuilder WithoutTimeout() => SetTimeout(System.Threading.Timeout.InfiniteTimeSpan);
+
+    /// <summary>
     ///     设置超时时间
     /// </summary>
+    /// <remarks>
+    ///     <list type="bullet">
+    ///         <item>
+    ///             <description>设置为 <c>-1</c> 表示无超时</description>
+    ///         </item>
+    ///         <item>
+    ///             <description>设置为 <c>0</c> 将立即取消请求</description>
+    ///         </item>
+    ///         <item>
+    ///             <description>负值（除 <c>-1</c> 毫秒外）将引发 <see cref="ArgumentOutOfRangeException" /></description>
+    ///         </item>
+    ///     </list>
+    /// </remarks>
     /// <param name="timeoutMilliseconds">超时时间（毫秒）</param>
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
     public HttpRequestBuilder SetTimeout(double timeoutMilliseconds)
     {
-        // 检查参数是否小于 0
-        if (timeoutMilliseconds < 0)
+        const double epsilon = 1e-9;
+        var isInfinite = Math.Abs(timeoutMilliseconds + 1) < epsilon;
+
+        // 检查参数是否小于 0 且不等于 -1
+        if (timeoutMilliseconds < 0 && !isInfinite)
         {
-            throw new ArgumentOutOfRangeException(nameof(timeoutMilliseconds), "Timeout value must be non-negative.");
+            throw new ArgumentOutOfRangeException(nameof(timeoutMilliseconds),
+                "Timeout value must be greater than or equal to -1. Use -1 for infinite timeout, 0 for immediate cancellation.");
         }
 
-        Timeout = TimeSpan.FromMilliseconds(timeoutMilliseconds);
+        Timeout = isInfinite
+            ? System.Threading.Timeout.InfiniteTimeSpan
+            : TimeSpan.FromMilliseconds(timeoutMilliseconds);
         TimeoutAction = null;
 
         return this;

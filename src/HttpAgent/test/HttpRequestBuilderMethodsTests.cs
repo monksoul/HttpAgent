@@ -607,10 +607,12 @@ public class HttpRequestBuilderMethodsTests
 
         var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
         {
-            httpRequestBuilder.SetTimeout(-1);
+            httpRequestBuilder.SetTimeout(-2);
         });
 
-        Assert.Equal("Timeout value must be non-negative. (Parameter 'timeoutMilliseconds')", exception.Message);
+        Assert.Equal(
+            "Timeout value must be greater than or equal to -1. Use -1 for infinite timeout, 0 for immediate cancellation. (Parameter 'timeoutMilliseconds')",
+            exception.Message);
 
         Assert.Throws<ArgumentNullException>(() => httpRequestBuilder.SetTimeout(100, null!));
         Assert.Throws<ArgumentNullException>(() => httpRequestBuilder.SetTimeout(TimeSpan.FromSeconds(10), null!));
@@ -644,6 +646,19 @@ public class HttpRequestBuilderMethodsTests
         Assert.NotNull(httpRequestBuilder.TimeoutAction);
 
         httpRequestBuilder.SetTimeout(TimeSpan.FromMilliseconds(1000));
+        Assert.Null(httpRequestBuilder.TimeoutAction);
+
+        httpRequestBuilder.SetTimeout(-1);
+        Assert.Equal(Timeout.InfiniteTimeSpan, httpRequestBuilder.Timeout);
+        Assert.Null(httpRequestBuilder.TimeoutAction);
+    }
+
+    [Fact]
+    public void WithoutTimeout_ReturnOK()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        httpRequestBuilder.WithoutTimeout();
+        Assert.Equal(Timeout.InfiniteTimeSpan, httpRequestBuilder.Timeout);
         Assert.Null(httpRequestBuilder.TimeoutAction);
     }
 

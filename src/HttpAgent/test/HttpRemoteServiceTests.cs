@@ -790,10 +790,28 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
         var httpRequestBuilder2 =
             new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test")).SetTimeout(0,
                 () => callTimeoutActionTimes2++);
-        _ = await httpRemoteService.SendCoreAsync(httpRequestBuilder2,
+
+        var exception2 = await Assert.ThrowsAsync<TaskCanceledException>(async () =>
+        {
+            _ = await httpRemoteService.SendCoreAsync(httpRequestBuilder2,
+                HttpCompletionOption.ResponseContentRead, (httpClient, httpRequestMessage, option, token) =>
+                    httpClient.SendAsync(httpRequestMessage, option, token), null);
+        });
+        Assert.Equal(1, callTimeoutActionTimes2);
+        Assert.Equal(
+            "The request was canceled due to the configured HttpRequestBuilder.Timeout of 0 seconds elapsing.",
+            exception2.Message);
+        Assert.True(exception2.InnerException is TimeoutException);
+        Assert.Equal("The operation was canceled.", exception2.InnerException.Message);
+
+        var callTimeoutActionTimes3 = 0;
+        var httpRequestBuilder3 =
+            new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test")).SetTimeout(600,
+                () => callTimeoutActionTimes3++);
+        _ = await httpRemoteService.SendCoreAsync(httpRequestBuilder3,
             HttpCompletionOption.ResponseContentRead, (httpClient, httpRequestMessage, option, token) =>
                 httpClient.SendAsync(httpRequestMessage, option, token), null);
-        Assert.Equal(0, callTimeoutActionTimes2);
+        Assert.Equal(0, callTimeoutActionTimes3);
 
         await app.StopAsync();
         await serviceProvider.DisposeAsync();

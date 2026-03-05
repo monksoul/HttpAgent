@@ -444,8 +444,8 @@ internal sealed partial class HttpRemoteService : IHttpRemoteService
         // 定义标志位，用于判断是否引发了超时操作
         var isTimeoutTriggered = false;
 
-        // 设置单次请求超时时间控制
-        if (httpRequestBuilder.Timeout is not null && httpRequestBuilder.Timeout.Value != TimeSpan.Zero)
+        // 设置单次请求超时时间控制（若超时时间为 TimeSpan.Zero 将立即取消请求）
+        if (httpRequestBuilder.Timeout is not null)
         {
             // 确保 HttpRequestBuilder 的 Timeout 属性值小于 HttpClient 的 Timeout 属性值（默认 100秒）
             if (httpRequestBuilder.Timeout.Value > httpClient.Timeout)
