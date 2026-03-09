@@ -479,7 +479,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
-    public HttpRequestBuilder SetTimeout(TimeSpan timeout)
+    public HttpRequestBuilder SetTimeout(TimeSpan? timeout)
     {
         Timeout = timeout;
         TimeoutAction = null;
@@ -543,12 +543,13 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
-    public HttpRequestBuilder SetTimeout(TimeSpan timeout, Action onTimeout)
+    public HttpRequestBuilder SetTimeout(TimeSpan? timeout, Action onTimeout)
     {
         // 空检查
         ArgumentNullException.ThrowIfNull(onTimeout);
 
-        SetTimeout(timeout).TimeoutAction = onTimeout;
+        Timeout = timeout;
+        TimeoutAction = timeout is null ? null : onTimeout;
 
         return this;
     }

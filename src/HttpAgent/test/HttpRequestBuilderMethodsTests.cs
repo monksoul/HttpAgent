@@ -651,6 +651,14 @@ public class HttpRequestBuilderMethodsTests
         httpRequestBuilder.SetTimeout(-1);
         Assert.Equal(Timeout.InfiniteTimeSpan, httpRequestBuilder.Timeout);
         Assert.Null(httpRequestBuilder.TimeoutAction);
+
+        httpRequestBuilder.SetTimeout(null);
+        Assert.Null(httpRequestBuilder.Timeout);
+        Assert.Null(httpRequestBuilder.TimeoutAction);
+
+        httpRequestBuilder.SetTimeout(null, () => { });
+        Assert.Null(httpRequestBuilder.Timeout);
+        Assert.Null(httpRequestBuilder.TimeoutAction);
     }
 
     [Fact]
