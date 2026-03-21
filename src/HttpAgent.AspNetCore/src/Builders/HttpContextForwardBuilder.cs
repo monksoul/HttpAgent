@@ -437,33 +437,31 @@ public sealed class HttpContextForwardBuilder
     /// <exception cref="InvalidOperationException"></exception>
     internal async Task<Stream> ReadBodyAsync(HttpRequestBuilder httpRequestBuilder)
     {
-        try
-        {
-            // 获取 HttpRequest 实例
-            var httpRequest = HttpContext.Request;
+        // 获取请求体流
+        var body = HttpContext.Request.Body;
 
-            // 将请求体流的位置重置回起始位置
-            httpRequest.Body.Position = 0;
-
-            // 初始化 MemoryStream 实例
-            var memoryStream = new MemoryStream();
-
-            // 将请求体流复制到内存流
-            await httpRequest.Body.CopyToAsync(memoryStream, HttpContext.RequestAborted);
-
-            // 将内存流的位置重置到起始位置
-            memoryStream.Position = 0;
-
-            // 添加内存流到请求结束时需要释放的集合中
-            httpRequestBuilder.AddDisposable(memoryStream);
-
-            return memoryStream;
-        }
-        // 捕获不支持 Body 流重复读异常
-        catch (NotSupportedException e)
+        // 检查请求体流是否支持查找操作
+        if (!body.CanSeek)
         {
             throw new InvalidOperationException(
-                "Please ensure that the `app.UseEnableBuffering()` middleware is registered.", e);
+                "Please ensure that the `app.UseEnableBuffering()` middleware is registered.");
         }
+
+        // 将请求体流的位置重置回起始位置
+        body.Position = 0;
+
+        // 初始化 MemoryStream 实例
+        var memoryStream = new MemoryStream();
+
+        // 将请求体流复制到内存流
+        await body.CopyToAsync(memoryStream, HttpContext.RequestAborted);
+
+        // 将内存流的位置重置到起始位置
+        memoryStream.Position = 0;
+
+        // 添加内存流到请求结束时需要释放的集合中
+        httpRequestBuilder.AddDisposable(memoryStream);
+
+        return memoryStream;
     }
 }

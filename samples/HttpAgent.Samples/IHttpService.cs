@@ -30,3 +30,15 @@ public interface IHttpService : IHttpDeclarative
     [Post("https://localhost:7044/HttpRemote/AddURLForm")]
     Task<YourRemoteModel> PostURLForm([Body(MediaTypeNames.Application.FormUrlEncoded)] object data);
 }
+
+public interface INormalService
+{
+    [Get("https://baidu.com/")]
+    Task<string> GetBaidu();
+}
+
+public interface IHttpChildService : INormalService, IHttpService
+{
+    [Get("https://baiqian.com/")]
+    Task<string> GetBaiqian();
+}

@@ -34,4 +34,3 @@ global using System.Text.Json.Nodes;
 global using System.Text.Json.Serialization;
 global using System.Threading.Channels;
 global using System.Xml.Serialization;
-global using Xunit.Abstractions;

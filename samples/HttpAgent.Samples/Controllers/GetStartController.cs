@@ -191,6 +191,14 @@ public class GetStartController(
         var content5 = await httpService.PostURLForm(new { id = 1, name = "furion" });
     }
 
+    [HttpGet]
+    public async Task Declarative2(IHttpChildService childService)
+    {
+        var content1 = await childService.GetWebSiteContent();
+        var content2 = await childService.GetBaiqian();
+        var content3 = await childService.GetBaidu();
+    }
+
     /// <summary>
     ///     下载网络资源
     /// </summary>
