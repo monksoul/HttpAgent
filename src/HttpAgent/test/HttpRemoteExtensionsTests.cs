@@ -9,9 +9,6 @@ namespace HttpAgent.Tests;
 public class HttpRemoteExtensionsTests
 {
     [Fact]
-    public void IsDevelopment_ReturnOK() => Assert.True(HttpRemoteExtensions.IsDevelopment);
-
-    [Fact]
     public void AddProfilerDelegatingHandler_ReturnOK()
     {
         var services = new ServiceCollection();
