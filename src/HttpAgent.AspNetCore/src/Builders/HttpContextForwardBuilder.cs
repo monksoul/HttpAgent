@@ -23,8 +23,7 @@ public sealed class HttpContextForwardBuilder
     /// </summary>
     internal static readonly HashSet<string> _ignoreRequestHeaders =
     [
-        Constants.X_FORWARD_TO_HEADER, "Host", "Accept", "Accept-CH", "Accept-Charset", "Accept-Encoding",
-        "Accept-Language", "Accept-Patch", "Accept-Post", "Accept-Ranges"
+        Constants.X_FORWARD_TO_HEADER, "Host"
     ];
 
     /// <summary>
@@ -223,8 +222,8 @@ public sealed class HttpContextForwardBuilder
         }
 
         // 初始化忽略在转发时需要跳过的请求标头列表
-        var ignoreRequestHeaders =
-            _ignoreRequestHeaders.ConcatIgnoreNull(ForwardOptions.IgnoreRequestHeaders).Distinct().ToArray();
+        var ignoreRequestHeaders = _ignoreRequestHeaders.ConcatIgnoreNull(ForwardOptions.IgnoreRequestHeaders)
+            .Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
 
         // 忽略特定请求标头列表
         httpRequestBuilder.WithHeaders(
@@ -232,11 +231,11 @@ public sealed class HttpContextForwardBuilder
             replace: true);
 
         // 检查是否需要重新设置 Host 请求标头
-        if (ForwardOptions.ResetHostRequestHeader)
+        // ReSharper disable once InvertIf
+        if (ForwardOptions.ResetHostRequestHeader && RequestUri is not null)
         {
-            httpRequestBuilder.WithHeader(HeaderNames.Host,
-                $"{RequestUri?.Host}{(RequestUri?.IsDefaultPort != true ? $":{RequestUri?.Port}" : string.Empty)}",
-                replace: true);
+            var host = RequestUri.IsDefaultPort ? RequestUri.Host : $"{RequestUri.Host}:{RequestUri.Port}";
+            httpRequestBuilder.WithHeader(HeaderNames.Host, host, replace: true);
         }
     }
 

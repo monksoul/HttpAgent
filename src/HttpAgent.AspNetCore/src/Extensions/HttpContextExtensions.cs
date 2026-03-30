@@ -667,8 +667,8 @@ public static partial class HttpContextExtensions
         HttpContextForwardOptions forwardOptions)
     {
         // 初始化忽略在转发时需要跳过的响应标头列表
-        var ignoreResponseHeaders =
-            _ignoreResponseHeaders.ConcatIgnoreNull(forwardOptions.IgnoreResponseHeaders).Distinct().ToArray();
+        var ignoreResponseHeaders = _ignoreResponseHeaders.ConcatIgnoreNull(forwardOptions.IgnoreResponseHeaders)
+            .Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
 
         // 逐条更新响应标头
         foreach (var (key, values) in httpHeaders)

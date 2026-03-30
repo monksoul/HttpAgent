@@ -47,11 +47,7 @@ public class HttpContextForwardBuilderTests
 
     [Fact]
     public void IgnoreRequestHeaders_ReturnOK() =>
-        Assert.Equal([
-                "X-Forward-To", "Host", "Accept", "Accept-CH", "Accept-Charset", "Accept-Encoding", "Accept-Language",
-                "Accept-Patch", "Accept-Post", "Accept-Ranges"
-            ],
-            HttpContextForwardBuilder._ignoreRequestHeaders);
+        Assert.Equal(["X-Forward-To", "Host"], HttpContextForwardBuilder._ignoreRequestHeaders);
 
     [Fact]
     public void GetTargetUri_ReturnOK()

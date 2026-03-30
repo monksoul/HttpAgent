@@ -471,7 +471,7 @@ public class GetStartController(
     [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)] // 禁用浏览器缓存
     public Task<IActionResult?> ForwardToWebSite()
     {
-        return httpContextAccessor.HttpContext.ForwardAsResultAsync("https://github.com");
+        return httpContextAccessor.HttpContext.ForwardAsResultAsync("https://baiqian.com");
     }
 
     /// <summary>
@@ -483,7 +483,7 @@ public class GetStartController(
     public Task<IActionResult?> ForwardToImage()
     {
         return httpContextAccessor.HttpContext.ForwardAsResultAsync(
-            "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1u7RJI.img?w=584&h=326&m=6");
+            "https://gips1.baidu.com/it/u=1971954603,2916157720&fm=3028&app=3028&f=JPEG&fmt=auto?w=1920&h=2560");
     }
 
     /// <summary>
@@ -524,7 +524,7 @@ public class GetStartController(
     /// <returns></returns>
     [HttpGet]
     [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)] // 禁用浏览器缓存
-    [Forward("https://github.com")]
+    [Forward("https://baiqian.com")]
     public Task<IActionResult?> ForwardToWebSite2()
     {
         throw new NotImplementedException();
@@ -536,7 +536,7 @@ public class GetStartController(
     /// <returns></returns>
     [HttpGet]
     [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)] // 禁用浏览器缓存
-    [Forward("https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1u7RJI.img?w=584&h=326&m=6")]
+    [Forward("https://gips1.baidu.com/it/u=1971954603,2916157720&fm=3028&app=3028&f=JPEG&fmt=auto?w=1920&h=2560")]
     public Task<IActionResult?> ForwardToImage2()
     {
         throw new NotImplementedException();
