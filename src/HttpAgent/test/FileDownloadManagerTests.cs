@@ -32,6 +32,7 @@ public class FileDownloadManagerTests(ITestOutputHelper output)
         Assert.NotNull(fileDownloadManager.RequestBuilder);
         Assert.Null(fileDownloadManager.FileTransferEventHandler);
         Assert.Equal(0, fileDownloadManager._totalBytesReceived);
+        Assert.Equal(0, fileDownloadManager._lastProgressTick);
 
         var fileDownloadManager2 = new FileDownloadManager(httpRemoteService,
             new HttpFileDownloadBuilder(HttpMethod.Get, new Uri("http://localhost:5000")).SetDestinationPath(
@@ -1336,5 +1337,19 @@ public class FileDownloadManagerTests(ITestOutputHelper output)
         Assert.NotNull(stream);
 
         serviceProvider.Dispose();
+    }
+
+    [Fact]
+    public async Task TryReportProgress_ReturnOK()
+    {
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+        var fileDownloadManager = new FileDownloadManager(httpRemoteService,
+            new HttpFileDownloadBuilder(HttpMethod.Get, new Uri("http://localhost:5000")).SetDestinationPath(
+                @"C:\Workspaces"));
+
+        Assert.True(fileDownloadManager.TryReportProgress());
+        Assert.False(fileDownloadManager.TryReportProgress());
+        await Task.Delay(1000, TestContext.Current.CancellationToken);
+        Assert.True(fileDownloadManager.TryReportProgress());
     }
 }
