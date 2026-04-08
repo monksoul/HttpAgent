@@ -23,6 +23,11 @@ internal sealed class FileDownloadManager
     internal readonly Channel<FileTransferProgress> _progressChannel;
 
     /// <summary>
+    ///     上次成功触发进度通知的系统启动毫秒数
+    /// </summary>
+    internal long _lastProgressTick;
+
+    /// <summary>
     ///     全局已接收字节数
     /// </summary>
     /// <remarks>用于多线程分块下载进度计算。</remarks>
@@ -414,6 +419,13 @@ internal sealed class FileDownloadManager
 
         // 等待所有分块下载任务完成
         await Task.WhenAll(tasks);
+
+        // 更新下载完成时的传输进度
+        fileTransferProgress.FileSize = _totalBytesReceived;
+        fileTransferProgress.UpdateProgress(_totalBytesReceived, stopwatch.Elapsed);
+
+        // 发送文件传输进度到通道
+        await _progressChannel.Writer.WriteAsync(fileTransferProgress, cancellationToken);
     }
 
     /// <summary>
@@ -461,6 +473,13 @@ internal sealed class FileDownloadManager
 
         // 等待所有分块下载任务完成
         Task.WaitAll(tasks.ToArray(), cancellationToken);
+
+        // 更新下载完成时的传输进度
+        fileTransferProgress.FileSize = _totalBytesReceived;
+        fileTransferProgress.UpdateProgress(_totalBytesReceived, stopwatch.Elapsed);
+
+        // 发送文件传输进度到通道
+        _progressChannel.Writer.TryWrite(fileTransferProgress);
     }
 
     /// <summary>
@@ -545,7 +564,10 @@ internal sealed class FileDownloadManager
             fileTransferProgress.UpdateProgress(_totalBytesReceived, stopwatch.Elapsed);
 
             // 发送文件传输进度到通道
-            await _progressChannel.Writer.WriteAsync(fileTransferProgress, cancellationToken);
+            if (TryReportProgress())
+            {
+                await _progressChannel.Writer.WriteAsync(fileTransferProgress, cancellationToken);
+            }
         }
     }
 
@@ -622,7 +644,10 @@ internal sealed class FileDownloadManager
             fileTransferProgress.UpdateProgress(_totalBytesReceived, stopwatch.Elapsed);
 
             // 发送文件传输进度到通道
-            _progressChannel.Writer.TryWrite(fileTransferProgress);
+            if (TryReportProgress())
+            {
+                _progressChannel.Writer.TryWrite(fileTransferProgress);
+            }
         }
     }
 
@@ -675,16 +700,18 @@ internal sealed class FileDownloadManager
             fileTransferProgress.UpdateProgress(bytesReceived, stopwatch.Elapsed);
 
             // 发送文件传输进度到通道
-            await _progressChannel.Writer.WriteAsync(fileTransferProgress, cancellationToken);
+            if (TryReportProgress())
+            {
+                await _progressChannel.Writer.WriteAsync(fileTransferProgress, cancellationToken);
+            }
         }
 
-        // 解决响应体没有返回 Content-Length 标头问题
-        // ReSharper disable once InvertIf
-        if (fileTransferProgress.FileSize < 0)
-        {
-            fileTransferProgress.FileSize = bytesReceived;
-            fileTransferProgress.UpdateProgress(bytesReceived, stopwatch.Elapsed);
-        }
+        // 更新下载完成时的传输进度
+        fileTransferProgress.FileSize = bytesReceived;
+        fileTransferProgress.UpdateProgress(bytesReceived, stopwatch.Elapsed);
+
+        // 发送文件传输进度到通道
+        await _progressChannel.Writer.WriteAsync(fileTransferProgress, cancellationToken);
 
         return bytesReceived;
     }
@@ -737,16 +764,18 @@ internal sealed class FileDownloadManager
             fileTransferProgress.UpdateProgress(bytesReceived, stopwatch.Elapsed);
 
             // 发送文件传输进度到通道
-            _progressChannel.Writer.TryWrite(fileTransferProgress);
+            if (TryReportProgress())
+            {
+                _progressChannel.Writer.TryWrite(fileTransferProgress);
+            }
         }
 
-        // 解决响应体没有返回 Content-Length 标头问题
-        // ReSharper disable once InvertIf
-        if (fileTransferProgress.FileSize < 0)
-        {
-            fileTransferProgress.FileSize = bytesReceived;
-            fileTransferProgress.UpdateProgress(bytesReceived, stopwatch.Elapsed);
-        }
+        // 更新下载完成时的传输进度
+        fileTransferProgress.FileSize = bytesReceived;
+        fileTransferProgress.UpdateProgress(bytesReceived, stopwatch.Elapsed);
+
+        // 发送文件传输进度到通道
+        _progressChannel.Writer.TryWrite(fileTransferProgress);
 
         return bytesReceived;
     }
@@ -1032,5 +1061,35 @@ internal sealed class FileDownloadManager
             "br" => new BrotliStream(rawContentStream, CompressionMode.Decompress, true),
             _ => rawContentStream
         };
+    }
+
+    /// <summary>
+    ///     文件传输进度通知节流控制
+    /// </summary>
+    /// <returns>
+    ///     <see cref="bool" />
+    /// </returns>
+    internal bool TryReportProgress()
+    {
+        var intervalMs = (long)_httpFileDownloadBuilder.ProgressInterval.TotalMilliseconds;
+        if (intervalMs <= 0)
+        {
+            return true;
+        }
+
+        var now = Environment.TickCount64;
+        var last = Volatile.Read(ref _lastProgressTick);
+
+        // 首次调用或间隔已到
+        // ReSharper disable once InvertIf
+        if (last == 0 || now - last >= intervalMs)
+        {
+            if (Interlocked.CompareExchange(ref _lastProgressTick, now, last) == last)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

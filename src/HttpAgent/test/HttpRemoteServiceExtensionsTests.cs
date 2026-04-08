@@ -406,7 +406,7 @@ public class HttpRemoteServiceExtensionsTests
         // ReSharper disable once MethodHasAsyncOverload
         var fileTransferResult = httpRemoteService.Send(httpFileDownloadBuilder);
 
-        Assert.Equal(1, i);
+        Assert.Equal(2, i);
         Assert.True(File.Exists(destinationPath));
         Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
 
@@ -655,7 +655,7 @@ public class HttpRemoteServiceExtensionsTests
 
         var fileTransferResult = await httpRemoteService.SendAsync(httpFileDownloadBuilder);
 
-        Assert.Equal(1, i);
+        Assert.Equal(2, i);
         Assert.True(File.Exists(destinationPath));
         Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
 

@@ -637,7 +637,7 @@ public class FileDownloadManagerTests(ITestOutputHelper output)
         // ReSharper disable once MethodHasAsyncOverload
         var fileTransferResult = fileDownloadManager.Start();
 
-        Assert.Equal(1, i);
+        Assert.Equal(2, i);
         Assert.True(File.Exists(destinationPath));
         Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
 
@@ -967,7 +967,7 @@ public class FileDownloadManagerTests(ITestOutputHelper output)
 
         var fileTransferResult = await fileDownloadManager.StartAsync();
 
-        Assert.Equal(1, i);
+        Assert.Equal(2, i);
         Assert.True(File.Exists(destinationPath));
         Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
 
