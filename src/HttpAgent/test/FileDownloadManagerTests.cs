@@ -1315,4 +1315,26 @@ public class FileDownloadManagerTests(ITestOutputHelper output)
 
         serviceProvider.Dispose();
     }
+
+    [Fact]
+    public void WrapDecompressionStream_ReturnOK()
+    {
+        var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
+        var httpFileDownloadBuilder =
+            new HttpFileDownloadBuilder(HttpMethod.Get, new Uri("https://furion.net")).SetDestinationPath(filePath);
+        var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
+
+        var httpResponseMessage =
+            httpRemoteService.Send(fileDownloadManager.RequestBuilder, HttpCompletionOption.ResponseHeadersRead)!;
+
+        using var rawStream = httpResponseMessage.Content.ReadAsStream();
+
+        using var stream = FileDownloadManager.WrapDecompressionStream(rawStream, httpResponseMessage);
+
+        Assert.NotNull(stream);
+
+        serviceProvider.Dispose();
+    }
 }

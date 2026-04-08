@@ -148,6 +148,9 @@ internal sealed class FileDownloadManager
             fileStream = new FileStream(tempDestinationPath, FileMode.Create, FileAccess.Write, FileShare.Read,
                 _httpFileDownloadBuilder.BufferSize);
 
+            // 实际接收到的字节大小
+            long actualBytesReceived;
+
             // 检查是否启用了多线程下载，且服务器支持 Range 请求、文件大小有效
             if (_httpFileDownloadBuilder.MaxThreads > 1 && supportsRange && contentLength > 0)
             {
@@ -157,12 +160,15 @@ internal sealed class FileDownloadManager
                 // 多线程分块下载
                 DownloadInChunks(contentLength, fileStream, fileTransferProgress, stopwatch,
                     cancellationToken);
+
+                // 同步实际接收到的字节大小
+                actualBytesReceived = _totalBytesReceived;
             }
             else
             {
                 // 单线程下载
-                DownloadSingleThreaded(httpResponseMessage, fileStream, fileTransferProgress, stopwatch,
-                    cancellationToken);
+                actualBytesReceived = DownloadSingleThreaded(httpResponseMessage, fileStream, fileTransferProgress,
+                    stopwatch, cancellationToken);
             }
 
             // 移动临时文件至文件保存的目标路径
@@ -176,7 +182,7 @@ internal sealed class FileDownloadManager
 
             // 设置文件传输结果信息
             fileTransferResult.FilePath = destinationPath;
-            fileTransferResult.FileSize = contentLength > 0 ? contentLength : new FileInfo(destinationPath).Length;
+            fileTransferResult.FileSize = actualBytesReceived;
             fileTransferResult.ElapsedMilliseconds = elapsedMilliseconds;
             fileTransferResult.IsSuccess = true;
             return fileTransferResult;
@@ -291,6 +297,9 @@ internal sealed class FileDownloadManager
             fileStream = new FileStream(tempDestinationPath, FileMode.Create, FileAccess.Write, FileShare.Read,
                 _httpFileDownloadBuilder.BufferSize, true);
 
+            // 实际接收到的字节大小
+            long actualBytesReceived;
+
             // 检查是否启用了多线程下载，且服务器支持 Range 请求、文件大小有效
             if (_httpFileDownloadBuilder.MaxThreads > 1 && supportsRange && contentLength > 0)
             {
@@ -300,12 +309,15 @@ internal sealed class FileDownloadManager
                 // 多线程分块下载
                 await DownloadInChunksAsync(contentLength, fileStream, fileTransferProgress, stopwatch,
                     cancellationToken);
+
+                // 同步实际接收到的字节大小
+                actualBytesReceived = _totalBytesReceived;
             }
             else
             {
                 // 单线程下载
-                await DownloadSingleThreadedAsync(httpResponseMessage, fileStream, fileTransferProgress, stopwatch,
-                    cancellationToken);
+                actualBytesReceived = await DownloadSingleThreadedAsync(httpResponseMessage, fileStream,
+                    fileTransferProgress, stopwatch, cancellationToken);
             }
 
             // 移动临时文件至文件保存的目标路径
@@ -319,7 +331,7 @@ internal sealed class FileDownloadManager
 
             // 设置文件传输结果信息
             fileTransferResult.FilePath = destinationPath;
-            fileTransferResult.FileSize = contentLength > 0 ? contentLength : new FileInfo(destinationPath).Length;
+            fileTransferResult.FileSize = actualBytesReceived;
             fileTransferResult.ElapsedMilliseconds = elapsedMilliseconds;
             fileTransferResult.IsSuccess = true;
             return fileTransferResult;
@@ -633,7 +645,11 @@ internal sealed class FileDownloadManager
     /// <param name="cancellationToken">
     ///     <see cref="CancellationToken" />
     /// </param>
-    internal async Task DownloadSingleThreadedAsync(HttpResponseMessage httpResponseMessage, FileStream fileStream,
+    /// <returns>
+    ///     <see cref="long" />
+    /// </returns>
+    internal async Task<long> DownloadSingleThreadedAsync(HttpResponseMessage httpResponseMessage,
+        FileStream fileStream,
         FileTransferProgress fileTransferProgress, Stopwatch stopwatch, CancellationToken cancellationToken)
     {
         // 初始化读取数据的缓冲区和记录进度所需的变量
@@ -641,7 +657,10 @@ internal sealed class FileDownloadManager
         var bytesReceived = 0L;
 
         // 获取 HTTP 响应体中的内容流
-        await using var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync(cancellationToken);
+        await using var rawContentStream = await httpResponseMessage.Content.ReadAsStreamAsync(cancellationToken);
+
+        // 尝试解压内容流，解决部分内容流被压缩的情况
+        await using var contentStream = WrapDecompressionStream(rawContentStream, httpResponseMessage);
 
         // 循环读取数据直到取消请求或读取完毕
         int numBytesRead;
@@ -658,6 +677,16 @@ internal sealed class FileDownloadManager
             // 发送文件传输进度到通道
             await _progressChannel.Writer.WriteAsync(fileTransferProgress, cancellationToken);
         }
+
+        // 解决响应体没有返回 Content-Length 标头问题
+        // ReSharper disable once InvertIf
+        if (fileTransferProgress.FileSize < 0)
+        {
+            fileTransferProgress.FileSize = bytesReceived;
+            fileTransferProgress.UpdateProgress(bytesReceived, stopwatch.Elapsed);
+        }
+
+        return bytesReceived;
     }
 
     /// <summary>
@@ -679,7 +708,10 @@ internal sealed class FileDownloadManager
     /// <param name="cancellationToken">
     ///     <see cref="CancellationToken" />
     /// </param>
-    internal void DownloadSingleThreaded(HttpResponseMessage httpResponseMessage, FileStream fileStream,
+    /// <returns>
+    ///     <see cref="long" />
+    /// </returns>
+    internal long DownloadSingleThreaded(HttpResponseMessage httpResponseMessage, FileStream fileStream,
         FileTransferProgress fileTransferProgress, Stopwatch stopwatch, CancellationToken cancellationToken)
     {
         // 初始化读取数据的缓冲区和记录进度所需的变量
@@ -687,7 +719,10 @@ internal sealed class FileDownloadManager
         var bytesReceived = 0L;
 
         // 获取 HTTP 响应体中的内容流
-        using var contentStream = httpResponseMessage.Content.ReadAsStream(cancellationToken);
+        using var rawContentStream = httpResponseMessage.Content.ReadAsStream(cancellationToken);
+
+        // 尝试解压内容流，解决部分内容流被压缩的情况
+        using var contentStream = WrapDecompressionStream(rawContentStream, httpResponseMessage);
 
         // 循环读取数据直到取消请求或读取完毕
         int numBytesRead;
@@ -704,6 +739,16 @@ internal sealed class FileDownloadManager
             // 发送文件传输进度到通道
             _progressChannel.Writer.TryWrite(fileTransferProgress);
         }
+
+        // 解决响应体没有返回 Content-Length 标头问题
+        // ReSharper disable once InvertIf
+        if (fileTransferProgress.FileSize < 0)
+        {
+            fileTransferProgress.FileSize = bytesReceived;
+            fileTransferProgress.UpdateProgress(bytesReceived, stopwatch.Elapsed);
+        }
+
+        return bytesReceived;
     }
 
     /// <summary>
@@ -959,5 +1004,33 @@ internal sealed class FileDownloadManager
         // 如果下载成功，则移动临时文件到文件保存的目标路径（文件存在则替换）
         fileStream.Close();
         File.Move(tempDestinationPath, destinationPath, true);
+    }
+
+    /// <summary>
+    ///     根据 Content-Encoding 自动包装解压流
+    /// </summary>
+    /// <remarks>支持 gzip/deflate/br 解压。</remarks>
+    /// <param name="rawContentStream">
+    ///     <see cref="Stream" />
+    /// </param>
+    /// <param name="httpResponseMessage">
+    ///     <see cref="HttpResponseMessage" />
+    /// </param>
+    /// <returns>
+    ///     <see cref="Stream" />
+    /// </returns>
+    internal static Stream WrapDecompressionStream(Stream rawContentStream, HttpResponseMessage httpResponseMessage)
+    {
+        // 获取响应内容 Content-Encoding 标头
+        var contentEncoding = httpResponseMessage.Content.Headers.ContentEncoding.FirstOrDefault()?.ToLower();
+
+        // 尝试解压操作
+        return contentEncoding switch
+        {
+            "gzip" => new GZipStream(rawContentStream, CompressionMode.Decompress, true),
+            "deflate" => new DeflateStream(rawContentStream, CompressionMode.Decompress, true),
+            "br" => new BrotliStream(rawContentStream, CompressionMode.Decompress, true),
+            _ => rawContentStream
+        };
     }
 }
