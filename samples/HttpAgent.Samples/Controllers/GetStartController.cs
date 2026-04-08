@@ -11,7 +11,7 @@ public class GetStartController(
     IAuthService authService) : ControllerBase
 {
     [HttpGet]
-    public async Task<int> AllowAutoRedirect()
+    public async Task<int> DownloadNonContentLengthFile()
     {
         var fileTransferResult = await httpRemoteService.DownloadFileAsync(
             "https://apply1.81890.org.cn/upload/2025/09/20/720153914265669.png", "C:\\Workspaces\\",
@@ -19,6 +19,15 @@ public class GetStartController(
             builder => builder.SetMaxThreads(4).Profiler(false));
 
         return 0;
+    }
+
+    [HttpGet]
+    public async Task<int> AllowAutoRedirect()
+    {
+        var httpResponseMessage = await httpRemoteService.HeadAsync(
+            "https://gitee.com/Hgui/FastTunnel/releases/download/v2.1.2/FastTunnel.Server.tar.gz");
+
+        return (int?)httpResponseMessage?.StatusCode ?? 0;
     }
 
     /// <summary>
@@ -208,48 +217,47 @@ public class GetStartController(
     [HttpGet]
     public async Task DownloadFile()
     {
-        // // 从指定 URL 下载 ASP.NET Core 运行时，并保存到 C:\Workspaces\ 目录中
-        // // 如果未指定文件名，系统将自动从下载地址中解析出文件名，例如：aspnetcore-runtime-8.0.10-win-x64.exe
-        // var fileTransferResult = await httpRemoteService.DownloadFileAsync(
-        //     "https://download.visualstudio.microsoft.com/download/pr/a17b907f-8457-45a8-90db-53f2665ee49e/49bccd33593ebceb2847674fe5fd768e/aspnetcore-runtime-8.0.10-win-x64.exe"
-        //     , @"C:\Workspaces\"
-        //     , fileExistsBehavior: FileExistsBehavior.Overwrite);
-        //
-        // // 打印下载进度
-        // var fileTransferResult2 = await httpRemoteService.DownloadFileAsync(
-        //     "https://download.visualstudio.microsoft.com/download/pr/a17b907f-8457-45a8-90db-53f2665ee49e/49bccd33593ebceb2847674fe5fd768e/aspnetcore-runtime-8.0.10-win-x64.exe"
-        //     , @"C:\Workspaces\"
-        //     , async progress =>
-        //     {
-        //         Console.WriteLine(await progress.ToSummaryStringAsync()); // 输出简要进度字符串
-        //     }
-        //     , FileExistsBehavior.Overwrite);
-        //
-        // // 打印下载进度
-        // var fileTransferResult3 = await httpRemoteService.DownloadFileAsync(
-        //     "https://download.visualstudio.microsoft.com/download/pr/a17b907f-8457-45a8-90db-53f2665ee49e/49bccd33593ebceb2847674fe5fd768e/aspnetcore-runtime-8.0.10-win-x64.exe"
-        //     , @"C:\Workspaces\"
-        //     , async progress =>
-        //     {
-        //         Console.WriteLine(await progress.ToStringAsync()); // 输出带缩进进度字符串
-        //     }
-        //     , FileExistsBehavior.Overwrite);
+        // 从指定 URL 下载 ASP.NET Core 运行时，并保存到 C:\Workspaces\ 目录中
+        // 如果未指定文件名，系统将自动从下载地址中解析出文件名，例如：aspnetcore-runtime-8.0.10-win-x64.exe
+        var fileTransferResult = await httpRemoteService.DownloadFileAsync(
+            "https://download.visualstudio.microsoft.com/download/pr/a17b907f-8457-45a8-90db-53f2665ee49e/49bccd33593ebceb2847674fe5fd768e/aspnetcore-runtime-8.0.10-win-x64.exe"
+            , @"C:\Workspaces\"
+            , fileExistsBehavior: FileExistsBehavior.Overwrite);
+
+        // 打印下载进度
+        var fileTransferResult2 = await httpRemoteService.DownloadFileAsync(
+            "https://download.visualstudio.microsoft.com/download/pr/a17b907f-8457-45a8-90db-53f2665ee49e/49bccd33593ebceb2847674fe5fd768e/aspnetcore-runtime-8.0.10-win-x64.exe"
+            , @"C:\Workspaces\"
+            , async progress =>
+            {
+                Console.WriteLine(await progress.ToSummaryStringAsync()); // 输出简要进度字符串
+            }
+            , FileExistsBehavior.Overwrite);
+
+        // 打印下载进度
+        var fileTransferResult3 = await httpRemoteService.DownloadFileAsync(
+            "https://download.visualstudio.microsoft.com/download/pr/a17b907f-8457-45a8-90db-53f2665ee49e/49bccd33593ebceb2847674fe5fd768e/aspnetcore-runtime-8.0.10-win-x64.exe"
+            , @"C:\Workspaces\"
+            , async progress =>
+            {
+                Console.WriteLine(await progress.ToStringAsync()); // 输出带缩进进度字符串
+            }
+            , FileExistsBehavior.Overwrite);
 
         // 打印下载进度
         var fileTransferResult4 = await httpRemoteService.DownloadFileAsync(
             "https://download.visualstudio.microsoft.com/download/pr/a17b907f-8457-45a8-90db-53f2665ee49e/49bccd33593ebceb2847674fe5fd768e/aspnetcore-runtime-8.0.10-win-x64.exe"
             , @"C:\Workspaces\"
-            , progress => progress.UpdateConsoleProgressAsync()
-            // 输出带进度条控制台内容
-            , FileExistsBehavior.Overwrite, builder => builder.Profiler(false));
-        //
-        // // 使用构建器模式
-        // var fileTransferResult5 = await httpRemoteService.SendAsync(HttpRequestBuilder.DownloadFile(
-        //     "https://download.visualstudio.microsoft.com/download/pr/a17b907f-8457-45a8-90db-53f2665ee49e/49bccd33593ebceb2847674fe5fd768e/aspnetcore-runtime-8.0.10-win-x64.exe"
-        //     , @"C:\Workspaces\"
-        //     , fileExistsBehavior: FileExistsBehavior.Overwrite));
-        //
-        // // 更多详细用法可参考第 19.2.1 节
+            , progress => progress.UpdateConsoleProgressAsync() // 输出带进度条控制台内容
+            , FileExistsBehavior.Overwrite);
+
+        // 使用构建器模式
+        var fileTransferResult5 = await httpRemoteService.SendAsync(HttpRequestBuilder.DownloadFile(
+            "https://download.visualstudio.microsoft.com/download/pr/a17b907f-8457-45a8-90db-53f2665ee49e/49bccd33593ebceb2847674fe5fd768e/aspnetcore-runtime-8.0.10-win-x64.exe"
+            , @"C:\Workspaces\"
+            , fileExistsBehavior: FileExistsBehavior.Overwrite));
+
+        // 更多详细用法可参考第 19.2.1 节
     }
 
     /// <summary>
