@@ -726,7 +726,7 @@
             <summary>
                 进度更新（通知）的间隔时间
             </summary>
-            <remarks>默认值为 1 秒。</remarks>
+            <remarks>默认值为 250 毫秒。</remarks>
         </member>
         <member name="P:HttpAgent.HttpFileDownloadBuilder.MaxThreads">
             <summary>
@@ -999,7 +999,7 @@
             <summary>
                 进度更新（通知）的间隔时间
             </summary>
-            <remarks>默认值为 1 秒。</remarks>
+            <remarks>默认值为 250 毫秒。</remarks>
         </member>
         <member name="P:HttpAgent.HttpFileUploadBuilder.OnTransferStarted">
             <summary>
@@ -4776,10 +4776,10 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Match the string "/Date(".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [+\-] atomically any number of times.<br/>
+                ○ Match a character in the set [+-] atomically any number of times.<br/>
                 ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match the string ")/".<br/>
-            ○ Match if at the end of the string or if before an ending newline.<br/>
+            ○ Match if at the end of the string or if beforee an ending newline.<br/>
             </code>
             </remarks>
         </member>
@@ -4942,7 +4942,7 @@
             <summary>
                 添加或更新
             </summary>
-            <typeparam name="TKey">字典键类型</typeparam>
+            <typeparam name="TKey">字典键籋</typeparam>
             <typeparam name="TValue">字典值类型</typeparam>
             <param name="dictionary">
                 <see cref="T:System.Collections.Generic.IDictionary`2" />
@@ -5381,13 +5381,13 @@
             ○ Match the string "[[".<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [\-:\w] greedily at least once.<br/>
+                ○ Match a character in the set [-:\w] greedily at least once.<br/>
             ○ 2nd capture group.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match a whitespace character atomically any number of times.<br/>
                     ○ Match '|'.<br/>
                     ○ Match a whitespace character greedily any number of times.<br/>
-                    ○ Match a character in the set [\-:\w] greedily at least once.<br/>
+                    ○ Match a character in the set [-:\w] greedily at least once.<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ Optional (greedy).<br/>
                 ○ Match the string "||".<br/>
@@ -5410,32 +5410,32 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Loop greedily at least once.<br/>
                 ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [\-.0-9A-Z_a-z~].<br/>
+                    ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
                     ○ Match a sequence of expressions.<br/>
                         ○ Match '%'.<br/>
-                        ○ Match a hexadecimal digit exactly 2 times.<br/>
+                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
             ○ Match '='.<br/>
             ○ Loop greedily any number of times.<br/>
                 ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [+\-.0-9A-Z_a-z~].<br/>
+                    ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
                     ○ Match a sequence of expressions.<br/>
                         ○ Match '%'.<br/>
-                        ○ Match a hexadecimal digit exactly 2 times.<br/>
+                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
             ○ Loop greedily any number of times.<br/>
                 ○ Match '&amp;'.<br/>
                 ○ Loop greedily at least once.<br/>
                     ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [\-.0-9A-Z_a-z~].<br/>
+                        ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
                         ○ Match a sequence of expressions.<br/>
                             ○ Match '%'.<br/>
-                            ○ Match a hexadecimal digit exactly 2 times.<br/>
+                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
                 ○ Match '='.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [+\-.0-9A-Z_a-z~].<br/>
+                        ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
                         ○ Match a sequence of expressions.<br/>
                             ○ Match '%'.<br/>
-                            ○ Match a hexadecimal digit exactly 2 times.<br/>
+                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
             </remarks>
@@ -5510,15 +5510,13 @@
                 <see cref="T:System.Boolean" />
             </returns>
         </member>
-        <member name="M:HttpAgent.Core.Extensions.TypeExtensions.IsBaseTypeOrEnumOrCollection(System.Type)">
+        <member name="M:HttpAgenCollection(System.Type)">
             <summary>
-                检查类型是否是基本类型或枚举类型或由它们组成的数组或集合类型
+                检查类型是否是基本类型或枚举类型或由它们绋是否是基本类型或枚举类型或由它们组成的数组或集合类型
             </summary>
             <param name="type">
                 <see cref="T:System.Type" />
-            </param>
-            <returns>
-                <see cref="T:System.Boolean" />
+          <see cref="T:System.Boolean" />
             </returns>
         </member>
         <member name="M:HttpAgent.Core.Extensions.TypeExtensions.IsStatic(System.Type)">
@@ -5544,6 +5542,7 @@
             </returns>
         </member>
         <member name="M:HttpAgent.Core.Extensions.TypeExtensions.HasDefinePublicParameterlessConstructor(System.Type)">
+            <smeterlessConstructor(System.Type)">
             <summary>
                 检查类型是否定义了公开无参构造函数
             </summary>
@@ -5568,10 +5567,9 @@
             <returns>
                 <see cref="T:System.Boolean" />
             </returns>
-        </member>
-        <member name="M:HttpAgent.Core.Extensions.TypeExtensions.IsDefinitionEquals(System.Type,System.Type)">
-            <summary>
-                检查类型和指定类型定义是否相等
+        </member>TypeExtensions.IsDefinitionEquals(System.Type,System.Type)">
+  s.IsDefinitionEquals(System.Type,System.Type)">
+            <su定义是否相等
             </summary>
             <remarks>将查找所有派生的基类和实现的接口。</remarks>
             <param name="type">
@@ -5593,6 +5591,7 @@
             </param>
             <returns>
                 <see cref="T:System.Boolean" />
+            </returns>cref="T:System.Boolean" />
             </returns>
         </member>
         <member name="M:HttpAgent.Core.Extensions.TypeExtensions.IsKeyValueCollection(System.Type,System.Boolean@)">
@@ -5839,6 +5838,57 @@
             <param name="skipFirstLine">是否跳过第一行</param>
             <returns>
                 <see cref="T:System.String" />
+            </returns>
+        </member>
+        <member name="T:HttpAgent.Core.Utilities.Throttler">
+            <summary>
+                多线程安全的节流器
+            </summary>
+            <remarks>控制操作执行的最小时间间隔。</remarks>
+        </member>
+        <member name="F:HttpAgent.Core.Utilities.Throttler._intervalMs">
+            <summary>
+                记录上一次允许执行的时间戳
+            </summary>
+            <remarks>单位为毫秒。</remarks>
+        </member>
+        <member name="F:HttpAgent.Core.Utilities.Throttler._lastTick">
+            <summary>
+                节流间隔时间
+            </summary>
+            <remarks>单位为毫秒。</remarks>
+        </member>
+        <member name="M:HttpAgent.Core.Utilities.Throttler.#ctor(System.TimeSpan)">
+            <summary>
+                <inheritdoc cref="T:HttpAgent.Core.Utilities.Throttler" />
+            </summary>
+            <param name="interval">两次允许执行的最小时间间隔</param>
+        </member>
+        <member name="P:HttpAgent.Core.Utilities.Throttler.Interval">
+            <summary>
+                当前节流间隔
+            </summary>
+        </member>
+        <member name="M:HttpAgent.Core.Utilities.Throttler.TryEnter">
+            <summary>
+                判断当前是否允许执行操作
+            </summary>
+            <returns>
+                <see cref="T:System.Boolean" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Core.Utilities.Throttler.Reset">
+            <summary>
+                重置节流状态
+            </summary>
+            <remarks>下次调用立即允许执行。</remarks>
+        </member>
+        <member name="M:HttpAgent.Core.Utilities.Throttler.GetRemainingMilliseconds">
+            <summary>
+                获取距离下次允许执行还需等待的毫秒数
+            </summary>
+            <returns>
+                <see cref="T:System.Int64" />
             </returns>
         </member>
         <member name="T:HttpAgent.AcceptLanguageAttribute">
@@ -6410,9 +6460,7 @@
         <member name="P:HttpAgent.MultipartAttribute.ContentType">
             <summary>
                 内容类型
-            </summary>
-        </member>
-        <member name="P:HttpAgent.MultipartAttribute.ContentEncoding">
+            </summary>ent.MultipartAttribute.ContentEncoding">
             <summary>
                 内容编码
             </summary>
@@ -8389,10 +8437,8 @@
                 文件传输进度信息的通道
             </summary>
         </member>
-        <member name="F:HttpAgent.FileDownloadManager._lastProgressTick">
-            <summary>
-                上次成功触发进度通知的系统启动毫秒数
-            </summary>
+        <member name="F:HttpAgent.FileDownloadManager._throttler">
+            <inheritdoc cref="T:HttpAgent.Core.Utilities.Throttler" />
         </member>
         <member name="F:HttpAgent.FileDownloadManager._totalBytesReceived">
             <summary>
@@ -8661,14 +8707,6 @@
             </param>
             <returns>
                 <see cref="T:System.IO.Stream" />
-            </returns>
-        </member>
-        <member name="M:HttpAgent.FileDownloadManager.TryReportProgress">
-            <summary>
-                文件传输进度通知节流控制
-            </summary>
-            <returns>
-                <see cref="T:System.Boolean" />
             </returns>
         </member>
         <member name="T:HttpAgent.FileUploadManager">
@@ -10096,6 +10134,8 @@
             <summary>
                 Server-Sent Events 事件流格式
             </summary>
+            <remarks>参耺�件流格式
+            </summary>
             <remarks>参考文献：https://developer.mozilla.org/zh-CN/docs/Web/API/Server-sent_events/Using_server-sent_events#%E5%AD%97%E6%AE%B5。</remarks>
         </member>
         <member name="F:HttpAgent.ServerSentEventsData._customFields">
@@ -10946,7 +10986,7 @@
             <code>
             ○ Match if at the beginning of the string.<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
-            ○ Match a character in the set [\-~].<br/>
+            ○ Match a character in the set [-~].<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
@@ -13430,9 +13470,7 @@
                 <see cref="T:System.IO.Stream" />
             </returns>
         </member>
-        <member name="M:HttpAgent.IHttpRemoteService.PostAsByteArrayAsync(System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
-            <summary>
-                发送 HTTP POST 远程请求
+        <member name="M:HttpAgent.IHttpRemoteService.PostAsByteArrayAsync(System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellaPOST 远程请求
             </summary>
             <param name="requestUri">请求地址</param>
             <param name="configure">自定义配置委托</param>
@@ -14316,6 +14354,7 @@
             </param>
             <param name="configure">自定义配置委托</param>
             <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
             <typeparam name="TResult">转换的目标类型</typeparam>
@@ -16184,12 +16223,6 @@
         <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32,System.Int32,System.Int32)">
             <summary>Pushes 3 values onto the backtracking stack.</summary>
         </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.WordCategoriesMask">
-            <summary>Provides a mask of Unicode categories that combine to form [\w].</summary>
-        </member>
-        <member name="P:System.Text.RegularExpressions.Generated.Utilities.WordCharBitmap">
-            <summary>Gets a bitmap for whether each character 0 through 127 is in [\w]</summary>
-        </member>
         <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_1F52B1A4D2E82B6FEDE25EC8C55F85BB36775196837076691C96925040F90D32">
             <summary>Supports searching for the string "\\u".</summary>
         </member>
@@ -16219,6 +16252,17 @@
             </summary>
             <param name="services">
                 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
+            </param>
+            <param name="httpRemoteBuilder">
+                <see cref="T:HttpAgent.HttpRemoteBuilder" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
+            </returns>
+        </member>
+    </members>
+</doc>
+tensions.DependencyInjection.IServiceCollection" />
             </param>
             <param name="httpRemoteBuilder">
                 <see cref="T:HttpAgent.HttpRemoteBuilder" />

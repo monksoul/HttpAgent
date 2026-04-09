@@ -35,7 +35,7 @@ public class HttpFileUploadBuilderTests
         Assert.Equal("http://localhost/", builder2.RequestUri.ToString());
         Assert.Equal(@"C:\Workspaces\index.html", builder2.FilePath);
         Assert.Null(builder2.ContentType);
-        Assert.Equal(TimeSpan.FromSeconds(1), builder2.ProgressInterval);
+        Assert.Equal(TimeSpan.FromMilliseconds(250), builder2.ProgressInterval);
         Assert.Null(builder2.OnTransferStarted);
         Assert.Null(builder2.OnTransferCompleted);
         Assert.Null(builder2.OnTransferFailed);

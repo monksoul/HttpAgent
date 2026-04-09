@@ -62,8 +62,8 @@ public sealed class HttpFileDownloadBuilder
     /// <summary>
     ///     进度更新（通知）的间隔时间
     /// </summary>
-    /// <remarks>默认值为 1 秒。</remarks>
-    public TimeSpan ProgressInterval { get; private set; } = TimeSpan.FromSeconds(1);
+    /// <remarks>默认值为 250 毫秒。</remarks>
+    public TimeSpan ProgressInterval { get; private set; } = TimeSpan.FromMilliseconds(250);
 
     /// <summary>
     ///     下载最大线程数

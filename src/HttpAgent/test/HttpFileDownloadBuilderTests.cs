@@ -26,7 +26,7 @@ public class HttpFileDownloadBuilderTests
         Assert.Null(builder2.OnProgressChanged);
         Assert.Null(builder2.DestinationPath);
         Assert.Equal(FileExistsBehavior.CreateNew, builder2.FileExistsBehavior);
-        Assert.Equal(TimeSpan.FromSeconds(1), builder2.ProgressInterval);
+        Assert.Equal(TimeSpan.FromMilliseconds(250), builder2.ProgressInterval);
         Assert.Null(builder2.OnTransferStarted);
         Assert.Null(builder2.OnTransferCompleted);
         Assert.Null(builder2.OnTransferFailed);
