@@ -11,13 +11,13 @@ namespace HttpAgent.Core.Utilities;
 public sealed class Throttler
 {
     /// <summary>
-    ///     记录上一次允许执行的时间戳
+    ///     节流间隔
     /// </summary>
     /// <remarks>单位为毫秒。</remarks>
     internal long _intervalMs;
 
     /// <summary>
-    ///     节流间隔时间
+    ///     记录上一次允许执行的时间戳
     /// </summary>
     /// <remarks>单位为毫秒。</remarks>
     internal long _lastTick;
@@ -25,7 +25,7 @@ public sealed class Throttler
     /// <summary>
     ///     <inheritdoc cref="Throttler" />
     /// </summary>
-    /// <param name="interval">两次允许执行的最小时间间隔</param>
+    /// <param name="interval">节流间隔</param>
     public Throttler(TimeSpan interval) => _intervalMs = (long)interval.TotalMilliseconds;
 
     /// <summary>
@@ -58,7 +58,7 @@ public sealed class Throttler
         var now = Environment.TickCount64;
 
         // 获取最近一次允许执行的时间戳
-        // Volatile.Read 确保读取到的是其他线程写入的最新值（内存可见性）
+        // Volatile.Read 确保读取到的是其他线程写入的最新值
         var last = Volatile.Read(ref _lastTick);
 
         // 检查是否是首次调用或间隔时间已到
@@ -103,7 +103,7 @@ public sealed class Throttler
         var now = Environment.TickCount64;
 
         // 获取最近一次允许执行的时间戳
-        // Volatile.Read 确保读取到的是其他线程写入的最新值（内存可见性）
+        // Volatile.Read 确保读取到的是其他线程写入的最新值
         var last = Volatile.Read(ref _lastTick);
 
         // 如果是首次调用，立即可执行
