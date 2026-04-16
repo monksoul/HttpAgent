@@ -144,10 +144,11 @@ public sealed class HttpRemoteBuilder
         ArgumentNullException.ThrowIfNull(declarativeType);
 
         // 检查类型是否是接口且实现了 IHttpDeclarative 接口
-        if (!declarativeType.IsInterface || !typeof(IHttpDeclarative).IsAssignableFrom(declarativeType))
+        if (!declarativeType.IsInterface || declarativeType.IsGenericType ||
+            !typeof(IHttpDeclarative).IsAssignableFrom(declarativeType))
         {
             throw new ArgumentException(
-                $"`{declarativeType}` type is not assignable from `{typeof(IHttpDeclarative)}` or interface.",
+                $"The type `{declarativeType}` must be a non-generic interface that implements `{typeof(IHttpDeclarative)}`.",
                 nameof(declarativeType));
         }
 
@@ -195,7 +196,7 @@ public sealed class HttpRemoteBuilder
 
         AddHttpDeclaratives(assemblies.SelectMany(ass =>
             (ass?.GetExportedTypes() ?? Enumerable.Empty<Type>()).Where(t =>
-                t.IsInterface && typeof(IHttpDeclarative).IsAssignableFrom(t))));
+                t is { IsInterface: true, IsGenericType: false } && typeof(IHttpDeclarative).IsAssignableFrom(t))));
 
         return this;
     }

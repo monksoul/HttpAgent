@@ -125,10 +125,13 @@ public class HttpRemoteBuilderTests
         var exception = Assert.Throws<ArgumentException>(() =>
             builder.AddHttpDeclarative(typeof(INonHttpTest)));
         Assert.Equal(
-            $"`{typeof(INonHttpTest)}` type is not assignable from `{typeof(IHttpDeclarative)}` or interface. (Parameter 'declarativeType')",
+            $"The type `{typeof(INonHttpTest)}` must be a non-generic interface that implements `{typeof(IHttpDeclarative)}`. (Parameter 'declarativeType')",
             exception.Message);
+
         Assert.Throws<ArgumentException>(() =>
             builder.AddHttpDeclarative(typeof(HttpTest)));
+        Assert.Throws<ArgumentException>(() =>
+            builder.AddHttpDeclarative(typeof(IHttpTestBase<string>)));
     }
 
     [Fact]
