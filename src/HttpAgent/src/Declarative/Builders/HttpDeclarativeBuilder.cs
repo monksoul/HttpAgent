@@ -90,11 +90,14 @@ public sealed class HttpDeclarativeBuilder
     /// <param name="httpRemoteOptions">
     ///     <see cref="HttpRemoteOptions" />
     /// </param>
+    /// <param name="serviceProvider">
+    ///     <see cref="IServiceProvider" />
+    /// </param>
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
     /// <exception cref="InvalidOperationException"></exception>
-    internal HttpRequestBuilder Build(HttpRemoteOptions httpRemoteOptions)
+    internal HttpRequestBuilder Build(HttpRemoteOptions httpRemoteOptions, IServiceProvider? serviceProvider)
     {
         // 空检查
         ArgumentNullException.ThrowIfNull(httpRemoteOptions);
@@ -116,7 +119,7 @@ public sealed class HttpDeclarativeBuilder
                 $"{Method.ToFriendlyString()} | {Method.DeclaringType.ToFriendlyString()}");
 
         // 初始化 HttpDeclarativeExtractorContext 实例
-        var httpDeclarativeExtractorContext = new HttpDeclarativeExtractorContext(Method, Args);
+        var httpDeclarativeExtractorContext = new HttpDeclarativeExtractorContext(Method, Args, serviceProvider);
 
         // 检查是否已加载自定义 HTTP 声明式提取器
         if (!_hasLoadedExtractors)

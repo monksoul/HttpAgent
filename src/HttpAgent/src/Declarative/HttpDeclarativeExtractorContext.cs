@@ -7,7 +7,7 @@ namespace HttpAgent;
 /// <summary>
 ///     HTTP 声明式提取器上下文
 /// </summary>
-public sealed class HttpDeclarativeExtractorContext
+public sealed class HttpDeclarativeExtractorContext : IServiceProvider
 {
     /// <summary>
     ///     冻结参数类型集合
@@ -20,15 +20,31 @@ public sealed class HttpDeclarativeExtractorContext
     ];
 
     /// <summary>
+    ///     <see cref="IServiceProvider" /> 委托
+    /// </summary>
+    internal Func<Type, object?>? _serviceProvider;
+
+    /// <summary>
     ///     <inheritdoc cref="HttpDeclarativeExtractorContext" />
     /// </summary>
     /// <param name="method">被调用方法</param>
     /// <param name="args">被调用方法的参数值数组</param>
-    internal HttpDeclarativeExtractorContext(MethodInfo method, object?[] args)
+    /// <param name="serviceProvider">
+    ///     <see cref="IServiceProvider" />
+    /// </param>
+    internal HttpDeclarativeExtractorContext(MethodInfo method, object?[] args,
+        IServiceProvider? serviceProvider = null)
     {
         // 空检查
         ArgumentNullException.ThrowIfNull(method);
         ArgumentNullException.ThrowIfNull(args);
+
+        // 空检查
+        if (serviceProvider is not null)
+        {
+            var localServiceProvider = serviceProvider;
+            InitializeServiceProvider(localServiceProvider.GetService);
+        }
 
         Method = method;
         Args = args;
@@ -61,6 +77,9 @@ public sealed class HttpDeclarativeExtractorContext
     ///     被调用方法的非冻结类型参数键值字典
     /// </summary>
     public IReadOnlyDictionary<ParameterInfo, object?> UnFrozenParameters { get; }
+
+    /// <inheritdoc />
+    public object? GetService(Type serviceType) => _serviceProvider?.Invoke(serviceType);
 
     /// <summary>
     ///     判断参数是否为冻结参数
@@ -111,4 +130,10 @@ public sealed class HttpDeclarativeExtractorContext
     public TAttribute[]? GetMethodDefinedCustomAttributes<TAttribute>(bool inherit = false, bool methodScanFirst = true)
         where TAttribute : Attribute =>
         Method.GetDefinedCustomAttributes<TAttribute>(inherit, methodScanFirst);
+
+    /// <summary>
+    ///     初始化 <see cref="IServiceProvider" />
+    /// </summary>
+    /// <param name="serviceProvider"><see cref="IServiceProvider" /> 委托</param>
+    internal void InitializeServiceProvider(Func<Type, object?> serviceProvider) => _serviceProvider = serviceProvider;
 }

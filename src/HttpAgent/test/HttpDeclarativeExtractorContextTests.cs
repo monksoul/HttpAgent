@@ -28,6 +28,7 @@ public class HttpDeclarativeExtractorContextTests
         var context1 = new HttpDeclarativeExtractorContext(method1!, []);
         Assert.Equal(method1, context1.Method);
         Assert.Equal([], context1.Args);
+        Assert.Null(context1._serviceProvider);
         Assert.Empty(context1.Parameters);
         Assert.Empty(context1.UnFrozenParameters);
         Assert.Equal(typeof(ReadOnlyDictionary<,>), context1.Parameters.GetType().GetGenericTypeDefinition());
@@ -52,6 +53,12 @@ public class HttpDeclarativeExtractorContextTests
         Assert.Equal(args3, context3.Args);
         Assert.Equal(2, context3.Parameters.Count);
         Assert.Single(context3.UnFrozenParameters);
+
+        using var serviceProvider = new ServiceCollection().BuildServiceProvider();
+        var method4 = typeof(IHttpDeclarativeTest).GetMethod(nameof(IHttpDeclarativeTest.GetUrl));
+        var args4 = new object?[] { "https://furion.net", CancellationToken.None };
+        var context4 = new HttpDeclarativeExtractorContext(method4!, args4, serviceProvider);
+        Assert.NotNull(context4._serviceProvider);
     }
 
     [Fact]
@@ -95,5 +102,17 @@ public class HttpDeclarativeExtractorContextTests
 
         var attributes2 = context1.GetMethodDefinedCustomAttributes<QueryAttribute>(true, false);
         Assert.Null(attributes2);
+    }
+
+    [Fact]
+    public void InitializeServiceProvider_ReturnOK()
+    {
+        var method = typeof(IHttpDeclarativeTest).GetMethod(nameof(IHttpDeclarativeTest.GetMethodAttributes))!;
+        var context1 = new HttpDeclarativeExtractorContext(method, []);
+        Assert.Null(context1._serviceProvider);
+
+        using var serviceProvider = new ServiceCollection().BuildServiceProvider();
+        context1.InitializeServiceProvider(serviceProvider.GetService);
+        Assert.NotNull(context1._serviceProvider);
     }
 }

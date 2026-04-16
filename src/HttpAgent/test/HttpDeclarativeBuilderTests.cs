@@ -80,10 +80,12 @@ public class HttpDeclarativeBuilderTests
     {
         var method = typeof(IHttpDeclarativeTest).GetMethod(nameof(IHttpDeclarativeTest.InvalidMethod));
         var builder = new HttpDeclarativeBuilder(method!, []);
+        using var serviceProvider = new ServiceCollection().BuildServiceProvider();
 
-        Assert.Throws<ArgumentNullException>(() => builder.Build(null!));
+        Assert.Throws<ArgumentNullException>(() => builder.Build(null!, serviceProvider));
 
-        var exception = Assert.Throws<InvalidOperationException>(() => builder.Build(new HttpRemoteOptions()));
+        var exception =
+            Assert.Throws<InvalidOperationException>(() => builder.Build(new HttpRemoteOptions(), serviceProvider));
         Assert.Equal(
             $"No `[HttpMethod]` annotation was found in method `System.Threading.Tasks.Task InvalidMethod()` of type `{typeof(IHttpDeclarativeTest).ToFriendlyString()}`.",
             exception.Message);
@@ -94,8 +96,9 @@ public class HttpDeclarativeBuilderTests
     {
         var method = typeof(IHttpDeclarativeTest).GetMethod(nameof(IHttpDeclarativeTest.Method1))!;
         var builder = new HttpDeclarativeBuilder(method, []);
+        using var serviceProvider = new ServiceCollection().BuildServiceProvider();
 
-        var httpRequestBuilder = builder.Build(new HttpRemoteOptions());
+        var httpRequestBuilder = builder.Build(new HttpRemoteOptions(), serviceProvider);
         Assert.Equal(HttpMethod.Get, httpRequestBuilder.HttpMethod);
         Assert.Equal("https://furion.net/", httpRequestBuilder.RequestUri?.ToString());
         Assert.True(builder._hasLoadedExtractors);
@@ -110,11 +113,12 @@ public class HttpDeclarativeBuilderTests
     {
         var method = typeof(IHttpDeclarativeTest).GetMethod(nameof(IHttpDeclarativeTest.Method1));
         var builder = new HttpDeclarativeBuilder(method!, []);
+        using var serviceProvider = new ServiceCollection().BuildServiceProvider();
 
-        var httpRequestBuilder = builder.Build(new HttpRemoteOptions
-        {
-            HttpDeclarativeExtractors = [() => [new CustomHttpDeclarativeExtractor()]]
-        });
+        var httpRequestBuilder =
+            builder.Build(
+                new HttpRemoteOptions { HttpDeclarativeExtractors = [() => [new CustomHttpDeclarativeExtractor()]] },
+                serviceProvider);
         Assert.Equal(HttpMethod.Get, httpRequestBuilder.HttpMethod);
         Assert.Equal("https://furion.net/", httpRequestBuilder.RequestUri?.ToString());
         Assert.True(builder._hasLoadedExtractors);

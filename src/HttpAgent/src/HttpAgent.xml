@@ -6908,12 +6908,15 @@
                 被调用方法的参数值数组
             </summary>
         </member>
-        <member name="M:HttpAgent.HttpDeclarativeBuilder.Build(HttpAgent.HttpRemoteOptions)">
+        <member name="M:HttpAgent.HttpDeclarativeBuilder.Build(HttpAgent.HttpRemoteOptions,System.IServiceProvider)">
             <summary>
                 构建 <see cref="T:HttpAgent.HttpRequestBuilder" /> 实例
             </summary>
             <param name="httpRemoteOptions">
                 <see cref="T:HttpAgent.HttpRemoteOptions" />
+            </param>
+            <param name="serviceProvider">
+                <see cref="T:System.IServiceProvider" />
             </param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
@@ -7325,12 +7328,20 @@
             </summary>
             <remarks>此类参数类型不应作为外部提取对象。</remarks>
         </member>
-        <member name="M:HttpAgent.HttpDeclarativeExtractorContext.#ctor(System.Reflection.MethodInfo,System.Object[])">
+        <member name="F:HttpAgent.HttpDeclarativeExtractorContext._serviceProvider">
+            <summary>
+                <see cref="T:System.IServiceProvider" /> 委托
+            </summary>
+        </member>
+        <member name="M:HttpAgent.HttpDeclarativeExtractorContext.#ctor(System.Reflection.MethodInfo,System.Object[],System.IServiceProvider)">
             <summary>
                 <inheritdoc cref="T:HttpAgent.HttpDeclarativeExtractorContext" />
             </summary>
             <param name="method">被调用方法</param>
             <param name="args">被调用方法的参数值数组</param>
+            <param name="serviceProvider">
+                <see cref="T:System.IServiceProvider" />
+            </param>
         </member>
         <member name="P:HttpAgent.HttpDeclarativeExtractorContext.Method">
             <summary>
@@ -7351,6 +7362,9 @@
             <summary>
                 被调用方法的非冻结类型参数键值字典
             </summary>
+        </member>
+        <member name="M:HttpAgent.HttpDeclarativeExtractorContext.GetService(System.Type)">
+            <inheritdoc />
         </member>
         <member name="M:HttpAgent.HttpDeclarativeExtractorContext.IsFrozenParameter(System.Reflection.ParameterInfo)">
             <summary>
@@ -7391,6 +7405,12 @@
             <returns>
                 <typeparamref name="TAttribute" /><c>[]</c>
             </returns>
+        </member>
+        <member name="M:HttpAgent.HttpDeclarativeExtractorContext.InitializeServiceProvider(System.Func{System.Type,System.Object})">
+            <summary>
+                初始化 <see cref="T:System.IServiceProvider" />
+            </summary>
+            <param name="serviceProvider"><see cref="T:System.IServiceProvider" /> 委托</param>
         </member>
         <member name="T:HttpAgent.IHttpDeclarative">
             <summary>
