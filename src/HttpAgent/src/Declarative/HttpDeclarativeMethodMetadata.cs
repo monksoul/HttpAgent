@@ -25,7 +25,8 @@ public sealed class HttpDeclarativeMethodMetadata
         InterfaceType = interfaceType;
 
         MethodAttributes = method.GetCustomAttributes(true).OfType<Attribute>().ToArray();
-        InterfaceAttributes = interfaceType.GetCustomAttributes(true).OfType<Attribute>().ToArray();
+        InterfaceAttributes = new[] { interfaceType }.Concat(interfaceType.GetInterfaces())
+            .SelectMany(t => t.GetCustomAttributes(true).OfType<Attribute>()).ToArray();
     }
 
     /// <summary>

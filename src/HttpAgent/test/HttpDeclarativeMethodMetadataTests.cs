@@ -26,5 +26,25 @@ public class HttpDeclarativeMethodMetadataTests
         Assert.Single(methodMetadata.InterfaceAttributes);
         Assert.NotNull(methodMetadata.MethodAttributes);
         Assert.Single(methodMetadata.MethodAttributes);
+
+        var method2 = typeof(IBaseService).GetMethod(nameof(IBaseService.Method1));
+        var methodMetadata2 = new HttpDeclarativeMethodMetadata(method2!, typeof(IChildService));
+        Assert.Single(methodMetadata2.InterfaceAttributes?.OfType<HttpClientNameAttribute>() ?? []);
+
+        var methodMetadata3 = new HttpDeclarativeMethodMetadata(method2!, typeof(IChildService2));
+        Assert.Equal(2, (methodMetadata3.InterfaceAttributes?.OfType<HttpClientNameAttribute>() ?? []).Count());
+        Assert.Equal("Child",
+            methodMetadata3.InterfaceAttributes?.OfType<HttpClientNameAttribute>().FirstOrDefault()?.Name);
     }
+
+    [HttpClientName("Base")]
+    public interface IBaseService
+    {
+        void Method1();
+    }
+
+    public interface IChildService : IBaseService;
+
+    [HttpClientName("Child")]
+    public interface IChildService2 : IBaseService;
 }
