@@ -23,7 +23,8 @@ public class MultipartDeclarativeExtractorTests
     {
         var method1 =
             typeof(IMultipartDeclarativeExtractorTest).GetMethod(nameof(IMultipartDeclarativeExtractorTest.Test1))!;
-        var context1 = new HttpDeclarativeExtractorContext(method1, []);
+        var context1 = new HttpDeclarativeExtractorContext(method1, [],
+            new HttpDeclarativeMethodMetadata(method1, typeof(IMultipartDeclarativeExtractorTest)));
         var httpRequestBuilder1 = HttpRequestBuilder.Get("http://localhost");
         new MultipartDeclarativeExtractor().Extract(httpRequestBuilder1, context1);
         Assert.Null(httpRequestBuilder1.MultipartFormDataBuilder);
@@ -34,7 +35,7 @@ public class MultipartDeclarativeExtractorTests
         [
             1, "furion", new { }, new MemoryStream(), Array.Empty<byte>(), new StringContent(""),
             MultipartFile.CreateFromByteArray([])
-        ]);
+        ], new HttpDeclarativeMethodMetadata(method2, typeof(IMultipartDeclarativeExtractorTest)));
         var httpRequestBuilder2 = HttpRequestBuilder.Get("http://localhost");
         new MultipartDeclarativeExtractor().Extract(httpRequestBuilder2, context2);
         Assert.NotNull(httpRequestBuilder2.MultipartFormDataBuilder);
@@ -66,7 +67,8 @@ public class MultipartDeclarativeExtractorTests
         var method3 =
             typeof(IMultipartDeclarativeExtractorTest).GetMethod(nameof(IMultipartDeclarativeExtractorTest.Test3))!;
         var context3 = new HttpDeclarativeExtractorContext(method3,
-            ["furion", "none", filePath, base64String, url]);
+            ["furion", "none", filePath, base64String, url],
+            new HttpDeclarativeMethodMetadata(method3, typeof(IMultipartDeclarativeExtractorTest)));
         var httpRequestBuilder3 = HttpRequestBuilder.Get("http://localhost");
         new MultipartDeclarativeExtractor().Extract(httpRequestBuilder3, context3);
         Assert.NotNull(httpRequestBuilder3.MultipartFormDataBuilder);
@@ -88,7 +90,8 @@ public class MultipartDeclarativeExtractorTests
         var method4 =
             typeof(IMultipartDeclarativeExtractorTest).GetMethod(nameof(IMultipartDeclarativeExtractorTest.Test4))!;
         var context4 = new HttpDeclarativeExtractorContext(method4,
-            [1, CancellationToken.None]);
+            [1, CancellationToken.None],
+            new HttpDeclarativeMethodMetadata(method4, typeof(IMultipartDeclarativeExtractorTest)));
         var httpRequestBuilder4 = HttpRequestBuilder.Get("http://localhost");
         new MultipartDeclarativeExtractor().Extract(httpRequestBuilder4, context4);
         Assert.NotNull(httpRequestBuilder4.MultipartFormDataBuilder);
@@ -106,7 +109,7 @@ public class MultipartDeclarativeExtractorTests
                 Name = "Furion",
                 File = MultipartFile.CreateFromPath(Path.Combine(AppContext.BaseDirectory, "test.txt"), "File")
             }
-        ]);
+        ], new HttpDeclarativeMethodMetadata(method5, typeof(IMultipartDeclarativeExtractorTest)));
         var httpRequestBuilder5 = HttpRequestBuilder.Get("http://localhost");
         new MultipartDeclarativeExtractor().Extract(httpRequestBuilder5, context5);
         Assert.NotNull(httpRequestBuilder5.MultipartFormDataBuilder);
@@ -159,7 +162,7 @@ public class MultipartDeclarativeExtractorTests
         [
             1, "furion", new { }, new MemoryStream(), Array.Empty<byte>(), new StringContent(""),
             MultipartFile.CreateFromByteArray([])
-        ]);
+        ], new HttpDeclarativeMethodMetadata(method2, typeof(IMultipartDeclarativeExtractorTest)));
         var httpRequestBuilder2 = HttpRequestBuilder.Get("http://localhost");
         var httpMultipartFormDataBuilder = new HttpMultipartFormDataBuilder(httpRequestBuilder2);
 
@@ -196,7 +199,8 @@ public class MultipartDeclarativeExtractorTests
         var method3 =
             typeof(IMultipartDeclarativeExtractorTest).GetMethod(nameof(IMultipartDeclarativeExtractorTest.Test3))!;
         var context3 = new HttpDeclarativeExtractorContext(method3,
-            ["furion", "none", filePath, base64String, url]);
+            ["furion", "none", filePath, base64String, url],
+            new HttpDeclarativeMethodMetadata(method3, typeof(IMultipartDeclarativeExtractorTest)));
         var httpRequestBuilder3 = HttpRequestBuilder.Get("http://localhost");
         var httpMultipartFormDataBuilder2 = new HttpMultipartFormDataBuilder(httpRequestBuilder3);
 
@@ -224,7 +228,8 @@ public class MultipartDeclarativeExtractorTests
         var method4 =
             typeof(IMultipartDeclarativeExtractorTest).GetMethod(nameof(IMultipartDeclarativeExtractorTest.Test4))!;
         var context4 = new HttpDeclarativeExtractorContext(method4,
-            [1, CancellationToken.None]);
+            [1, CancellationToken.None],
+            new HttpDeclarativeMethodMetadata(method4, typeof(IMultipartDeclarativeExtractorTest)));
         var httpRequestBuilder4 = HttpRequestBuilder.Get("http://localhost");
         var httpMultipartFormDataBuilder3 = new HttpMultipartFormDataBuilder(httpRequestBuilder4);
 

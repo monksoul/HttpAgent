@@ -19,7 +19,8 @@ public class PropertyDeclarativeExtractorTests
     public void Extract_ReturnOK()
     {
         var method1 = typeof(IPropertyDeclarativeTest).GetMethod(nameof(IPropertyDeclarativeTest.Test1))!;
-        var context1 = new HttpDeclarativeExtractorContext(method1, []);
+        var context1 = new HttpDeclarativeExtractorContext(method1, [],
+            new HttpDeclarativeMethodMetadata(method1, typeof(IPropertyDeclarativeTest)));
         var httpRequestBuilder1 = HttpRequestBuilder.Get("http://localhost");
         new PropertyDeclarativeExtractor().Extract(httpRequestBuilder1, context1);
 
@@ -31,7 +32,8 @@ public class PropertyDeclarativeExtractorTests
         Assert.Null(httpRequestBuilder1.Properties["property4"]);
 
         var method2 = typeof(IPropertyDeclarativeTest).GetMethod(nameof(IPropertyDeclarativeTest.Test2))!;
-        var context2 = new HttpDeclarativeExtractorContext(method2, []);
+        var context2 = new HttpDeclarativeExtractorContext(method2, [],
+            new HttpDeclarativeMethodMetadata(method2, typeof(IPropertyDeclarativeTest)));
         var httpRequestBuilder2 = HttpRequestBuilder.Get("http://localhost");
         new PropertyDeclarativeExtractor().Extract(httpRequestBuilder2, context2);
 
@@ -42,7 +44,8 @@ public class PropertyDeclarativeExtractorTests
         Assert.Equal("value3", httpRequestBuilder2.Properties["property3"]);
 
         var method3 = typeof(IPropertyDeclarativeTest).GetMethod(nameof(IPropertyDeclarativeTest.Test3))!;
-        var context3 = new HttpDeclarativeExtractorContext(method3, []);
+        var context3 = new HttpDeclarativeExtractorContext(method3, [],
+            new HttpDeclarativeMethodMetadata(method3, typeof(IPropertyDeclarativeTest)));
         var httpRequestBuilder3 = HttpRequestBuilder.Get("http://localhost");
         new PropertyDeclarativeExtractor().Extract(httpRequestBuilder3, context3);
 
@@ -55,7 +58,8 @@ public class PropertyDeclarativeExtractorTests
 
         var method4 = typeof(IPropertyDeclarativeTest).GetMethod(nameof(IPropertyDeclarativeTest.Test4))!;
         var context4 =
-            new HttpDeclarativeExtractorContext(method4, [1, "furion", 31, "GuangDong", CancellationToken.None]);
+            new HttpDeclarativeExtractorContext(method4, [1, "furion", 31, "GuangDong", CancellationToken.None],
+                new HttpDeclarativeMethodMetadata(method4, typeof(IPropertyDeclarativeTest)));
         var httpRequestBuilder4 = HttpRequestBuilder.Get("http://localhost");
         new PropertyDeclarativeExtractor().Extract(httpRequestBuilder4, context4);
 
@@ -71,7 +75,8 @@ public class PropertyDeclarativeExtractorTests
         Assert.Equal("GuangDong", httpRequestBuilder4.Properties["address"]);
 
         var context5 =
-            new HttpDeclarativeExtractorContext(method4, [1, "furion", null, "GuangDong", CancellationToken.None]);
+            new HttpDeclarativeExtractorContext(method4, [1, "furion", null, "GuangDong", CancellationToken.None],
+                new HttpDeclarativeMethodMetadata(method4, typeof(IPropertyDeclarativeTest)));
         var httpRequestBuilder5 = HttpRequestBuilder.Get("http://localhost");
         new PropertyDeclarativeExtractor().Extract(httpRequestBuilder5, context5);
 
@@ -87,7 +92,8 @@ public class PropertyDeclarativeExtractorTests
         Assert.Equal("GuangDong", httpRequestBuilder5.Properties["address"]);
 
         var method5 = typeof(IPropertyDeclarativeTest).GetMethod(nameof(IPropertyDeclarativeTest.Test5))!;
-        var context6 = new HttpDeclarativeExtractorContext(method5, [new { id = 10, name = "furion" }]);
+        var context6 = new HttpDeclarativeExtractorContext(method5, [new { id = 10, name = "furion" }],
+            new HttpDeclarativeMethodMetadata(method5, typeof(IPropertyDeclarativeTest)));
         var httpRequestBuilder6 = HttpRequestBuilder.Get("http://localhost");
         new PropertyDeclarativeExtractor().Extract(httpRequestBuilder6, context6);
 
@@ -96,7 +102,8 @@ public class PropertyDeclarativeExtractorTests
         Assert.NotNull(httpRequestBuilder6.Properties["obj"]);
 
         var method6 = typeof(IPropertyDeclarativeTest).GetMethod(nameof(IPropertyDeclarativeTest.Test6))!;
-        var context7 = new HttpDeclarativeExtractorContext(method6, [new { id = 10, name = "furion" }]);
+        var context7 = new HttpDeclarativeExtractorContext(method6, [new { id = 10, name = "furion" }],
+            new HttpDeclarativeMethodMetadata(method6, typeof(IPropertyDeclarativeTest)));
         var httpRequestBuilder7 = HttpRequestBuilder.Get("http://localhost");
         new PropertyDeclarativeExtractor().Extract(httpRequestBuilder7, context7);
 

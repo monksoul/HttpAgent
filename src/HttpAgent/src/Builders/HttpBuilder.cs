@@ -508,11 +508,12 @@ public sealed class HttpBuilder
     /// </summary>
     /// <param name="method">被调用方法</param>
     /// <param name="args">被调用方法的参数值数组</param>
+    /// <param name="interfaceType">实际被代理的接口类型</param>
     /// <returns>
     ///     <see cref="HttpDeclarativeBuilder" />
     /// </returns>
-    public static HttpDeclarativeBuilder Declarative(MethodInfo method, object?[] args) =>
-        HttpRequestBuilder.Declarative(method, args);
+    public static HttpDeclarativeBuilder Declarative(MethodInfo method, object?[] args, Type? interfaceType = null) =>
+        HttpRequestBuilder.Declarative(method, args, interfaceType);
 
     /// <summary>
     ///     从 JSON 中创建 <see cref="HttpRequestBuilder" /> 实例

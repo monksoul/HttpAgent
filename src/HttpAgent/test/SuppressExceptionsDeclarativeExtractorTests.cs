@@ -22,7 +22,8 @@ public class SuppressExceptionsDeclarativeExtractorTests
         var method1 =
             typeof(ISuppressExceptionsDeclarativeExtractorTest1).GetMethod(
                 nameof(ISuppressExceptionsDeclarativeExtractorTest1.Test1))!;
-        var context1 = new HttpDeclarativeExtractorContext(method1, []);
+        var context1 = new HttpDeclarativeExtractorContext(method1, [],
+            new HttpDeclarativeMethodMetadata(method1, typeof(ISuppressExceptionsDeclarativeExtractorTest1)));
         var httpRequestBuilder1 = HttpRequestBuilder.Get("http://localhost");
         new SuppressExceptionsDeclarativeExtractor().Extract(httpRequestBuilder1, context1);
         Assert.Null(httpRequestBuilder1.SuppressExceptionTypes);
@@ -30,7 +31,8 @@ public class SuppressExceptionsDeclarativeExtractorTests
         var method2 =
             typeof(ISuppressExceptionsDeclarativeExtractorTest2).GetMethod(
                 nameof(ISuppressExceptionsDeclarativeExtractorTest2.Test1))!;
-        var context2 = new HttpDeclarativeExtractorContext(method2, []);
+        var context2 = new HttpDeclarativeExtractorContext(method2, [],
+            new HttpDeclarativeMethodMetadata(method2, typeof(ISuppressExceptionsDeclarativeExtractorTest2)));
         var httpRequestBuilder2 = HttpRequestBuilder.Get("http://localhost");
         new SuppressExceptionsDeclarativeExtractor().Extract(httpRequestBuilder2, context2);
         Assert.NotNull(httpRequestBuilder2.SuppressExceptionTypes);
@@ -39,7 +41,8 @@ public class SuppressExceptionsDeclarativeExtractorTests
         var method3 =
             typeof(ISuppressExceptionsDeclarativeExtractorTest2).GetMethod(
                 nameof(ISuppressExceptionsDeclarativeExtractorTest2.Test2))!;
-        var context3 = new HttpDeclarativeExtractorContext(method3, []);
+        var context3 = new HttpDeclarativeExtractorContext(method3, [],
+            new HttpDeclarativeMethodMetadata(method3, typeof(ISuppressExceptionsDeclarativeExtractorTest2)));
         var httpRequestBuilder3 = HttpRequestBuilder.Get("http://localhost");
         new SuppressExceptionsDeclarativeExtractor().Extract(httpRequestBuilder3, context3);
         Assert.NotNull(httpRequestBuilder3.SuppressExceptionTypes);
@@ -49,7 +52,8 @@ public class SuppressExceptionsDeclarativeExtractorTests
         var method4 =
             typeof(ISuppressExceptionsDeclarativeExtractorTest2).GetMethod(
                 nameof(ISuppressExceptionsDeclarativeExtractorTest2.Test3))!;
-        var context4 = new HttpDeclarativeExtractorContext(method4, []);
+        var context4 = new HttpDeclarativeExtractorContext(method4, [],
+            new HttpDeclarativeMethodMetadata(method4, typeof(ISuppressExceptionsDeclarativeExtractorTest2)));
         var httpRequestBuilder4 = HttpRequestBuilder.Get("http://localhost");
         new SuppressExceptionsDeclarativeExtractor().Extract(httpRequestBuilder4, context4);
         Assert.Null(httpRequestBuilder4.SuppressExceptionTypes);

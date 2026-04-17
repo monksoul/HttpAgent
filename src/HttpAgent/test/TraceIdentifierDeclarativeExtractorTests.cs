@@ -22,7 +22,8 @@ public class TraceIdentifierDeclarativeExtractorTests
         var method1 =
             typeof(ITraceIdentifierDeclarativeExtractorTest1).GetMethod(
                 nameof(ITraceIdentifierDeclarativeExtractorTest1.Test1))!;
-        var context1 = new HttpDeclarativeExtractorContext(method1, []);
+        var context1 = new HttpDeclarativeExtractorContext(method1, [],
+            new HttpDeclarativeMethodMetadata(method1, typeof(ITraceIdentifierDeclarativeExtractorTest1)));
         var httpRequestBuilder1 = HttpRequestBuilder.Get("http://localhost");
         new TraceIdentifierDeclarativeExtractor().Extract(httpRequestBuilder1, context1);
         Assert.Null(httpRequestBuilder1.TraceIdentifier);
@@ -30,7 +31,8 @@ public class TraceIdentifierDeclarativeExtractorTests
         var method2 =
             typeof(ITraceIdentifierDeclarativeExtractorTest2).GetMethod(
                 nameof(ITraceIdentifierDeclarativeExtractorTest2.Test1))!;
-        var context2 = new HttpDeclarativeExtractorContext(method2, []);
+        var context2 = new HttpDeclarativeExtractorContext(method2, [],
+            new HttpDeclarativeMethodMetadata(method2, typeof(ITraceIdentifierDeclarativeExtractorTest2)));
         var httpRequestBuilder2 = HttpRequestBuilder.Get("http://localhost");
         new TraceIdentifierDeclarativeExtractor().Extract(httpRequestBuilder2, context2);
         Assert.NotNull(httpRequestBuilder2.TraceIdentifier);
@@ -39,7 +41,8 @@ public class TraceIdentifierDeclarativeExtractorTests
         var method3 =
             typeof(ITraceIdentifierDeclarativeExtractorTest2).GetMethod(
                 nameof(ITraceIdentifierDeclarativeExtractorTest2.Test2))!;
-        var context3 = new HttpDeclarativeExtractorContext(method3, []);
+        var context3 = new HttpDeclarativeExtractorContext(method3, [],
+            new HttpDeclarativeMethodMetadata(method3, typeof(ITraceIdentifierDeclarativeExtractorTest2)));
         var httpRequestBuilder3 = HttpRequestBuilder.Get("http://localhost");
         new TraceIdentifierDeclarativeExtractor().Extract(httpRequestBuilder3, context3);
         Assert.NotNull(httpRequestBuilder3.TraceIdentifier);

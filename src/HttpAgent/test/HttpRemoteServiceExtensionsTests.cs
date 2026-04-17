@@ -3318,7 +3318,8 @@ public class HttpRemoteServiceExtensionsTests
         var method = typeof(IHttpDeclarativeTest).GetMethod(nameof(IHttpDeclarativeTest.GetUrl))!;
 
         // ReSharper disable once MethodHasAsyncOverload
-        var result = httpRemoteService.Declarative(method, [$"http://localhost:{port}/test", CancellationToken.None]);
+        var result = httpRemoteService.Declarative(method, [$"http://localhost:{port}/test", CancellationToken.None],
+            typeof(IHttpDeclarativeTest));
         Assert.Equal("Hello World!", result);
 
         await app.StopAsync();
@@ -3352,7 +3353,8 @@ public class HttpRemoteServiceExtensionsTests
         Assert.Throws<TaskCanceledException>(() =>
         {
             // ReSharper disable once MethodHasAsyncOverload
-            _ = httpRemoteService.Declarative(method, [$"http://localhost:{port}/test", cancellationTokenSource.Token]);
+            _ = httpRemoteService.Declarative(method, [$"http://localhost:{port}/test", cancellationTokenSource.Token],
+                typeof(IHttpDeclarativeTest));
         });
 
         await app.StopAsync();
@@ -3380,9 +3382,8 @@ public class HttpRemoteServiceExtensionsTests
 
         var method = typeof(IHttpDeclarativeTest).GetMethod(nameof(IHttpDeclarativeTest.GetUrlAsync))!;
 
-        var result =
-            await httpRemoteService.DeclarativeAsync<string>(method,
-                [$"http://localhost:{port}/test", CancellationToken.None]);
+        var result = await httpRemoteService.DeclarativeAsync<string>(method,
+            [$"http://localhost:{port}/test", CancellationToken.None], typeof(IHttpDeclarativeTest));
         Assert.Equal("Hello World!", result);
 
         await app.StopAsync();
@@ -3416,7 +3417,7 @@ public class HttpRemoteServiceExtensionsTests
         await Assert.ThrowsAsync<TaskCanceledException>(async () =>
         {
             _ = await httpRemoteService.DeclarativeAsync<string>(method,
-                [$"http://localhost:{port}/test", cancellationTokenSource.Token]);
+                [$"http://localhost:{port}/test", cancellationTokenSource.Token], typeof(IHttpDeclarativeTest));
         });
 
         await app.StopAsync();
@@ -3446,7 +3447,7 @@ public class HttpRemoteServiceExtensionsTests
         // ReSharper disable once MethodHasAsyncOverload
         var result =
             httpRemoteService.SendAs(HttpRequestBuilder.Declarative(method,
-                [$"http://localhost:{port}/test", CancellationToken.None]));
+                [$"http://localhost:{port}/test", CancellationToken.None], typeof(IHttpDeclarativeTest)));
         Assert.Equal("Hello World!", result);
 
         await app.StopAsync();
@@ -3481,7 +3482,7 @@ public class HttpRemoteServiceExtensionsTests
         {
             // ReSharper disable once MethodHasAsyncOverload
             _ = httpRemoteService.SendAs(HttpRequestBuilder.Declarative(method,
-                [$"http://localhost:{port}/test", cancellationTokenSource.Token]));
+                [$"http://localhost:{port}/test", cancellationTokenSource.Token], typeof(IHttpDeclarativeTest)));
         });
 
         await app.StopAsync();
@@ -3511,7 +3512,7 @@ public class HttpRemoteServiceExtensionsTests
 
         var result =
             await httpRemoteService.SendAsAsync<string>(HttpRequestBuilder.Declarative(method,
-                [$"http://localhost:{port}/test", CancellationToken.None]));
+                [$"http://localhost:{port}/test", CancellationToken.None], typeof(IHttpDeclarativeTest)));
         Assert.Equal("Hello World!", result);
 
         await app.StopAsync();
@@ -3545,7 +3546,7 @@ public class HttpRemoteServiceExtensionsTests
         await Assert.ThrowsAsync<TaskCanceledException>(async () =>
         {
             _ = await httpRemoteService.SendAsAsync<string>(HttpRequestBuilder.Declarative(method,
-                [$"http://localhost:{port}/test", cancellationTokenSource.Token]));
+                [$"http://localhost:{port}/test", cancellationTokenSource.Token], typeof(IHttpDeclarativeTest)));
         });
 
         await app.StopAsync();

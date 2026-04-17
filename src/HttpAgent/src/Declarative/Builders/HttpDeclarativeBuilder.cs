@@ -64,7 +64,8 @@ public sealed class HttpDeclarativeBuilder
     /// </summary>
     /// <param name="method">被调用方法</param>
     /// <param name="args">被调用方法的参数值数组</param>
-    internal HttpDeclarativeBuilder(MethodInfo method, object?[] args)
+    /// <param name="interfaceType">实际被代理的接口类型</param>
+    internal HttpDeclarativeBuilder(MethodInfo method, object?[] args, Type? interfaceType = null)
     {
         // 空检查
         ArgumentNullException.ThrowIfNull(method);
@@ -72,6 +73,7 @@ public sealed class HttpDeclarativeBuilder
 
         Method = method;
         Args = args;
+        InterfaceType = interfaceType ?? Method.DeclaringType ?? throw new ArgumentNullException(nameof(interfaceType));
     }
 
     /// <summary>
@@ -83,6 +85,11 @@ public sealed class HttpDeclarativeBuilder
     ///     被调用方法的参数值数组
     /// </summary>
     public object?[] Args { get; }
+
+    /// <summary>
+    ///     实际被代理的接口类型
+    /// </summary>
+    public Type InterfaceType { get; }
 
     /// <summary>
     ///     构建 <see cref="HttpRequestBuilder" /> 实例
@@ -119,7 +126,8 @@ public sealed class HttpDeclarativeBuilder
                 $"{Method.ToFriendlyString()} | {Method.DeclaringType.ToFriendlyString()}");
 
         // 初始化 HttpDeclarativeExtractorContext 实例
-        var httpDeclarativeExtractorContext = new HttpDeclarativeExtractorContext(Method, Args, serviceProvider);
+        var httpDeclarativeExtractorContext = new HttpDeclarativeExtractorContext(Method, Args,
+            new HttpDeclarativeMethodMetadata(Method, InterfaceType), serviceProvider);
 
         // 检查是否已加载自定义 HTTP 声明式提取器
         if (!_hasLoadedExtractors)

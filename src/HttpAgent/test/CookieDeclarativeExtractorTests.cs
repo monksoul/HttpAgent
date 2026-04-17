@@ -19,7 +19,8 @@ public class CookieDeclarativeExtractorTests
     public void Extract_ReturnOK()
     {
         var method1 = typeof(ICookieDeclarativeTest).GetMethod(nameof(ICookieDeclarativeTest.Test1))!;
-        var context1 = new HttpDeclarativeExtractorContext(method1, []);
+        var context1 = new HttpDeclarativeExtractorContext(method1, [],
+            new HttpDeclarativeMethodMetadata(method1, typeof(ICookieDeclarativeTest)));
         var httpRequestBuilder1 = HttpRequestBuilder.Get("http://localhost");
         new CookieDeclarativeExtractor().Extract(httpRequestBuilder1, context1);
 
@@ -33,7 +34,8 @@ public class CookieDeclarativeExtractorTests
         Assert.Equal("header4", httpRequestBuilder1.CookiesToRemove.Last());
 
         var method2 = typeof(ICookieDeclarativeTest).GetMethod(nameof(ICookieDeclarativeTest.Test2))!;
-        var context2 = new HttpDeclarativeExtractorContext(method2, []);
+        var context2 = new HttpDeclarativeExtractorContext(method2, [],
+            new HttpDeclarativeMethodMetadata(method2, typeof(ICookieDeclarativeTest)));
         var httpRequestBuilder2 = HttpRequestBuilder.Get("http://localhost");
         new CookieDeclarativeExtractor().Extract(httpRequestBuilder2, context2);
 
@@ -44,7 +46,8 @@ public class CookieDeclarativeExtractorTests
         Assert.Equal("value3", httpRequestBuilder2.Cookies["header3"]);
 
         var method3 = typeof(ICookieDeclarativeTest).GetMethod(nameof(ICookieDeclarativeTest.Test3))!;
-        var context3 = new HttpDeclarativeExtractorContext(method3, []);
+        var context3 = new HttpDeclarativeExtractorContext(method3, [],
+            new HttpDeclarativeMethodMetadata(method3, typeof(ICookieDeclarativeTest)));
         var httpRequestBuilder3 = HttpRequestBuilder.Get("http://localhost");
         new CookieDeclarativeExtractor().Extract(httpRequestBuilder3, context3);
 
@@ -56,7 +59,8 @@ public class CookieDeclarativeExtractorTests
 
         var method4 = typeof(ICookieDeclarativeTest).GetMethod(nameof(ICookieDeclarativeTest.Test4))!;
         var context4 =
-            new HttpDeclarativeExtractorContext(method4, [1, "furion", 31, "GuangDong", CancellationToken.None]);
+            new HttpDeclarativeExtractorContext(method4, [1, "furion", 31, "GuangDong", CancellationToken.None],
+                new HttpDeclarativeMethodMetadata(method4, typeof(ICookieDeclarativeTest)));
         var httpRequestBuilder4 = HttpRequestBuilder.Get("http://localhost");
         new CookieDeclarativeExtractor().Extract(httpRequestBuilder4, context4);
 
@@ -72,7 +76,8 @@ public class CookieDeclarativeExtractorTests
         Assert.Equal("GuangDong", httpRequestBuilder4.Cookies["address"]);
 
         var context5 =
-            new HttpDeclarativeExtractorContext(method4, [1, "furion", null, "GuangDong", CancellationToken.None]);
+            new HttpDeclarativeExtractorContext(method4, [1, "furion", null, "GuangDong", CancellationToken.None],
+                new HttpDeclarativeMethodMetadata(method4, typeof(ICookieDeclarativeTest)));
         var httpRequestBuilder5 = HttpRequestBuilder.Get("http://localhost");
         new CookieDeclarativeExtractor().Extract(httpRequestBuilder5, context5);
 
@@ -88,7 +93,8 @@ public class CookieDeclarativeExtractorTests
         Assert.Equal("GuangDong", httpRequestBuilder5.Cookies["address"]);
 
         var method5 = typeof(ICookieDeclarativeTest).GetMethod(nameof(ICookieDeclarativeTest.Test5))!;
-        var context6 = new HttpDeclarativeExtractorContext(method5, [new { id = 10, name = "furion" }]);
+        var context6 = new HttpDeclarativeExtractorContext(method5, [new { id = 10, name = "furion" }],
+            new HttpDeclarativeMethodMetadata(method5, typeof(ICookieDeclarativeTest)));
         var httpRequestBuilder6 = HttpRequestBuilder.Get("http://localhost");
         new CookieDeclarativeExtractor().Extract(httpRequestBuilder6, context6);
 

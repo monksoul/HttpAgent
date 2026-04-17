@@ -12,8 +12,14 @@ public class HttpDeclarativeDispatchProxy : DispatchProxyAsync
     /// <inheritdoc cref="IHttpRemoteService" />
     public IHttpRemoteService RemoteService { get; internal set; } = null!;
 
+    /// <summary>
+    ///     实际被代理的接口类型
+    /// </summary>
+    public Type InterfaceType { get; internal set; } = null!;
+
     /// <inheritdoc />
-    public override object Invoke(MethodInfo method, object[] args) => RemoteService.Declarative(method, args)!;
+    public override object Invoke(MethodInfo method, object[] args) =>
+        RemoteService.Declarative(method, args, InterfaceType)!;
 
     /// <inheritdoc />
     public override async Task InvokeAsync(MethodInfo method, object[] args) =>
@@ -21,5 +27,5 @@ public class HttpDeclarativeDispatchProxy : DispatchProxyAsync
 
     /// <inheritdoc />
     public override async Task<T> InvokeAsyncT<T>(MethodInfo method, object[] args) =>
-        (await RemoteService.DeclarativeAsync<T>(method, args))!;
+        (await RemoteService.DeclarativeAsync<T>(method, args, InterfaceType))!;
 }

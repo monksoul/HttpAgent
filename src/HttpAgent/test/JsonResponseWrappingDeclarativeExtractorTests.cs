@@ -22,7 +22,8 @@ public class JsonResponseWrappingDeclarativeExtractorTests
         var method1 =
             typeof(IJsonResponseWrappingDeclarativeExtractorTest1).GetMethod(
                 nameof(IJsonResponseWrappingDeclarativeExtractorTest1.Test1))!;
-        var context1 = new HttpDeclarativeExtractorContext(method1, []);
+        var context1 = new HttpDeclarativeExtractorContext(method1, [],
+            new HttpDeclarativeMethodMetadata(method1, typeof(IJsonResponseWrappingDeclarativeExtractorTest1)));
         var httpRequestBuilder1 = HttpRequestBuilder.Get("http://localhost");
         new JsonResponseWrappingDeclarativeExtractor().Extract(httpRequestBuilder1, context1);
         Assert.Null(httpRequestBuilder1.__Enable__JsonResponseWrapping__);
@@ -30,7 +31,8 @@ public class JsonResponseWrappingDeclarativeExtractorTests
         var method2 =
             typeof(IJsonResponseWrappingDeclarativeExtractorTest2).GetMethod(
                 nameof(IJsonResponseWrappingDeclarativeExtractorTest2.Test1))!;
-        var context2 = new HttpDeclarativeExtractorContext(method2, []);
+        var context2 = new HttpDeclarativeExtractorContext(method2, [],
+            new HttpDeclarativeMethodMetadata(method2, typeof(IJsonResponseWrappingDeclarativeExtractorTest2)));
         var httpRequestBuilder2 = HttpRequestBuilder.Get("http://localhost");
         new JsonResponseWrappingDeclarativeExtractor().Extract(httpRequestBuilder2, context2);
         Assert.True(httpRequestBuilder2.__Enable__JsonResponseWrapping__);
@@ -38,7 +40,8 @@ public class JsonResponseWrappingDeclarativeExtractorTests
         var method3 =
             typeof(IJsonResponseWrappingDeclarativeExtractorTest2).GetMethod(
                 nameof(IJsonResponseWrappingDeclarativeExtractorTest2.Test2))!;
-        var context3 = new HttpDeclarativeExtractorContext(method3, []);
+        var context3 = new HttpDeclarativeExtractorContext(method3, [],
+            new HttpDeclarativeMethodMetadata(method3, typeof(IJsonResponseWrappingDeclarativeExtractorTest2)));
         var httpRequestBuilder3 = HttpRequestBuilder.Get("http://localhost");
         new JsonResponseWrappingDeclarativeExtractor().Extract(httpRequestBuilder3, context3);
         Assert.False(httpRequestBuilder3.__Enable__JsonResponseWrapping__);

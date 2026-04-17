@@ -28,7 +28,8 @@ public class HttpMultipartFormDataBuilderDeclarativeExtractorTests
         var method1 =
             typeof(IHttpMultipartFormDataBuilderDeclarativeExtractorTest1).GetMethod(
                 nameof(IHttpMultipartFormDataBuilderDeclarativeExtractorTest1.Test1))!;
-        var context1 = new HttpDeclarativeExtractorContext(method1, [builder, builder]);
+        var context1 = new HttpDeclarativeExtractorContext(method1, [builder, builder],
+            new HttpDeclarativeMethodMetadata(method1, typeof(IHttpMultipartFormDataBuilderDeclarativeExtractorTest1)));
         var httpRequestBuilder1 = HttpRequestBuilder.Get("http://localhost");
 
         Assert.Throws<InvalidOperationException>(() =>
@@ -46,7 +47,8 @@ public class HttpMultipartFormDataBuilderDeclarativeExtractorTests
         var method1 =
             typeof(IHttpMultipartFormDataBuilderDeclarativeExtractorTest2).GetMethod(
                 nameof(IHttpMultipartFormDataBuilderDeclarativeExtractorTest2.Test1))!;
-        var context1 = new HttpDeclarativeExtractorContext(method1, []);
+        var context1 = new HttpDeclarativeExtractorContext(method1, [],
+            new HttpDeclarativeMethodMetadata(method1, typeof(IHttpMultipartFormDataBuilderDeclarativeExtractorTest2)));
         var httpRequestBuilder1 = HttpRequestBuilder.Get("http://localhost");
         new HttpMultipartFormDataBuilderDeclarativeExtractor().Extract(httpRequestBuilder1, context1);
         Assert.Null(httpRequestBuilder1.Timeout);
@@ -54,7 +56,8 @@ public class HttpMultipartFormDataBuilderDeclarativeExtractorTests
         var method2 =
             typeof(IHttpMultipartFormDataBuilderDeclarativeExtractorTest2).GetMethod(
                 nameof(IHttpMultipartFormDataBuilderDeclarativeExtractorTest2.Test2))!;
-        var context2 = new HttpDeclarativeExtractorContext(method2, [builder]);
+        var context2 = new HttpDeclarativeExtractorContext(method2, [builder],
+            new HttpDeclarativeMethodMetadata(method2, typeof(IHttpMultipartFormDataBuilderDeclarativeExtractorTest2)));
         var httpRequestBuilder2 = HttpRequestBuilder.Get("http://localhost");
         new HttpMultipartFormDataBuilderDeclarativeExtractor().Extract(httpRequestBuilder2, context2);
         Assert.NotNull(httpRequestBuilder2.MultipartFormDataBuilder);
@@ -63,7 +66,8 @@ public class HttpMultipartFormDataBuilderDeclarativeExtractorTests
         var method3 =
             typeof(IHttpMultipartFormDataBuilderDeclarativeExtractorTest2).GetMethod(
                 nameof(IHttpMultipartFormDataBuilderDeclarativeExtractorTest2.Test3))!;
-        var context3 = new HttpDeclarativeExtractorContext(method3, [new { }, builder]);
+        var context3 = new HttpDeclarativeExtractorContext(method3, [new { }, builder],
+            new HttpDeclarativeMethodMetadata(method3, typeof(IHttpMultipartFormDataBuilderDeclarativeExtractorTest2)));
         var httpRequestBuilder3 = HttpRequestBuilder.Get("http://localhost");
         // ===
         new MultipartDeclarativeExtractor().Extract(httpRequestBuilder3, context3);

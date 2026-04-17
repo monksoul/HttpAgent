@@ -322,6 +322,8 @@ public interface IHttpDeclarativeTest : IHttpDeclarative
     Task<string> GetMethodAttributes();
 }
 
+public interface IHttpDeclarativeTest1;
+
 public class CustomHttpDeclarativeExtractor : IHttpDeclarativeExtractor
 {
     /// <inheritdoc />

@@ -383,6 +383,8 @@ public class HttpRemoteBuilderTests
 
         dynamic httpTestProxy = httpTest;
         Assert.NotNull(httpTestProxy.RemoteService);
+        Assert.NotNull(httpTestProxy.InterfaceType);
+        Assert.Equal(typeof(IHttpTest), httpTestProxy.InterfaceType);
 
         Assert.NotNull(remoteOptions.HttpDeclarativeExtractors);
         Assert.Single(remoteOptions.HttpDeclarativeExtractors);

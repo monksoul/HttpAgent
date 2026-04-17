@@ -131,12 +131,12 @@ internal sealed partial class HttpRemoteService
         new LongPollingManager(this, httpLongPollingBuilder).StartAsync(cancellationToken);
 
     /// <inheritdoc />
-    public object? Declarative(MethodInfo method, object[] args) =>
-        SendAs(HttpRequestBuilder.Declarative(method, args));
+    public object? Declarative(MethodInfo method, object[] args, Type? interfaceType = null) =>
+        SendAs(HttpRequestBuilder.Declarative(method, args, interfaceType));
 
     /// <inheritdoc />
-    public Task<T?> DeclarativeAsync<T>(MethodInfo method, object[] args) =>
-        SendAsAsync<T>(HttpRequestBuilder.Declarative(method, args));
+    public Task<T?> DeclarativeAsync<T>(MethodInfo method, object[] args, Type? interfaceType = null) =>
+        SendAsAsync<T>(HttpRequestBuilder.Declarative(method, args, interfaceType));
 
     /// <inheritdoc />
     public object? SendAs(HttpDeclarativeBuilder httpDeclarativeBuilder) =>

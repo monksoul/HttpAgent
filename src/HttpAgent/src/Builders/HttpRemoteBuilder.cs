@@ -340,6 +340,9 @@ public sealed class HttpRemoteBuilder
                 // 解析 IHttpRemoteService 服务并设置给 RemoteService 属性
                 httpDeclarative.RemoteService = provider.GetRequiredService<IHttpRemoteService>();
 
+                // 实际被代理的接口类型
+                httpDeclarative.InterfaceType = httpDeclarativeType;
+
                 return httpDeclarative;
             });
         }

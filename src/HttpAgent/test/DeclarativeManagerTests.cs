@@ -23,7 +23,8 @@ public class DeclarativeManagerTests
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var method = typeof(IHttpDeclarativeTest).GetMethod(nameof(IHttpDeclarativeTest.Method1))!;
-        var declarativeManager = new DeclarativeManager(httpRemoteService, new HttpDeclarativeBuilder(method, []));
+        var declarativeManager = new DeclarativeManager(httpRemoteService,
+            new HttpDeclarativeBuilder(method, [], typeof(IHttpDeclarativeTest)));
 
         Assert.NotNull(declarativeManager._httpDeclarativeBuilder);
         Assert.NotNull(declarativeManager._httpRemoteService);

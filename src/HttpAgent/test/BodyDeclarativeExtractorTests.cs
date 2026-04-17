@@ -19,14 +19,18 @@ public class BodyDeclarativeExtractorTests
     public void Extract_Invalid_Parameters()
     {
         var method3 = typeof(IBodyDeclarativeTest).GetMethod(nameof(IBodyDeclarativeTest.Test3))!;
-        var context = new HttpDeclarativeExtractorContext(method3, ["str1", "str2"]);
+        var context =
+            new HttpDeclarativeExtractorContext(method3, ["str1", "str2"],
+                new HttpDeclarativeMethodMetadata(method3, typeof(IBodyDeclarativeTest)));
         var httpRequestBuilder = HttpRequestBuilder.Get("http://localhost");
 
         Assert.Throws<InvalidOperationException>(() =>
             new BodyDeclarativeExtractor().Extract(httpRequestBuilder, context));
 
         var method10 = typeof(IBodyDeclarativeTest).GetMethod(nameof(IBodyDeclarativeTest.Test10))!;
-        var context2 = new HttpDeclarativeExtractorContext(method10, ["str1"]);
+        var context2 =
+            new HttpDeclarativeExtractorContext(method10, ["str1"],
+                new HttpDeclarativeMethodMetadata(method10, typeof(IBodyDeclarativeTest)));
         var httpRequestBuilder2 = HttpRequestBuilder.Post("http://localhost");
 
         Assert.Throws<ArgumentNullException>(() =>
@@ -37,7 +41,8 @@ public class BodyDeclarativeExtractorTests
     public void Extract_ReturnOK()
     {
         var method1 = typeof(IBodyDeclarativeTest).GetMethod(nameof(IBodyDeclarativeTest.Test1))!;
-        var context1 = new HttpDeclarativeExtractorContext(method1, []);
+        var context1 = new HttpDeclarativeExtractorContext(method1, [],
+            new HttpDeclarativeMethodMetadata(method1, typeof(IBodyDeclarativeTest)));
         var httpRequestBuilder1 = HttpRequestBuilder.Get("http://localhost");
         new BodyDeclarativeExtractor().Extract(httpRequestBuilder1, context1);
         Assert.Null(httpRequestBuilder1.RawContent);
@@ -45,7 +50,9 @@ public class BodyDeclarativeExtractorTests
         Assert.Null(httpRequestBuilder1.ContentEncoding?.BodyName);
 
         var method2 = typeof(IBodyDeclarativeTest).GetMethod(nameof(IBodyDeclarativeTest.Test2))!;
-        var context2 = new HttpDeclarativeExtractorContext(method2, ["str"]);
+        var context2 =
+            new HttpDeclarativeExtractorContext(method2, ["str"],
+                new HttpDeclarativeMethodMetadata(method2, typeof(IBodyDeclarativeTest)));
         var httpRequestBuilder2 = HttpRequestBuilder.Get("http://localhost");
         new BodyDeclarativeExtractor().Extract(httpRequestBuilder2, context2);
         Assert.Equal("str", httpRequestBuilder2.RawContent);
@@ -53,7 +60,8 @@ public class BodyDeclarativeExtractorTests
         Assert.Null(httpRequestBuilder2.ContentEncoding?.BodyName);
 
         var method4 = typeof(IBodyDeclarativeTest).GetMethod(nameof(IBodyDeclarativeTest.Test4))!;
-        var context4 = new HttpDeclarativeExtractorContext(method4, ["str", CancellationToken.None]);
+        var context4 = new HttpDeclarativeExtractorContext(method4, ["str", CancellationToken.None],
+            new HttpDeclarativeMethodMetadata(method4, typeof(IBodyDeclarativeTest)));
         var httpRequestBuilder4 = HttpRequestBuilder.Get("http://localhost");
         new BodyDeclarativeExtractor().Extract(httpRequestBuilder4, context4);
         Assert.Equal("str", httpRequestBuilder4.RawContent);
@@ -61,7 +69,9 @@ public class BodyDeclarativeExtractorTests
         Assert.Null(httpRequestBuilder4.ContentEncoding?.BodyName);
 
         var method5 = typeof(IBodyDeclarativeTest).GetMethod(nameof(IBodyDeclarativeTest.Test5))!;
-        var context5 = new HttpDeclarativeExtractorContext(method5, ["str"]);
+        var context5 =
+            new HttpDeclarativeExtractorContext(method5, ["str"],
+                new HttpDeclarativeMethodMetadata(method5, typeof(IBodyDeclarativeTest)));
         var httpRequestBuilder5 = HttpRequestBuilder.Get("http://localhost");
         new BodyDeclarativeExtractor().Extract(httpRequestBuilder5, context5);
         Assert.Equal("str", httpRequestBuilder5.RawContent);
@@ -69,7 +79,9 @@ public class BodyDeclarativeExtractorTests
         Assert.Equal("utf-8", httpRequestBuilder5.ContentEncoding?.BodyName);
 
         var method6 = typeof(IBodyDeclarativeTest).GetMethod(nameof(IBodyDeclarativeTest.Test6))!;
-        var context6 = new HttpDeclarativeExtractorContext(method6, ["str"]);
+        var context6 =
+            new HttpDeclarativeExtractorContext(method6, ["str"],
+                new HttpDeclarativeMethodMetadata(method6, typeof(IBodyDeclarativeTest)));
         var httpRequestBuilder6 = HttpRequestBuilder.Get("http://localhost");
         new BodyDeclarativeExtractor().Extract(httpRequestBuilder6, context6);
         Assert.Equal("str", httpRequestBuilder6.RawContent);
@@ -77,7 +89,9 @@ public class BodyDeclarativeExtractorTests
         Assert.Equal("utf-32", httpRequestBuilder6.ContentEncoding?.BodyName);
 
         var method7 = typeof(IBodyDeclarativeTest).GetMethod(nameof(IBodyDeclarativeTest.Test7))!;
-        var context7 = new HttpDeclarativeExtractorContext(method7, ["str"]);
+        var context7 =
+            new HttpDeclarativeExtractorContext(method7, ["str"],
+                new HttpDeclarativeMethodMetadata(method7, typeof(IBodyDeclarativeTest)));
         var httpRequestBuilder7 = HttpRequestBuilder.Get("http://localhost");
         new BodyDeclarativeExtractor().Extract(httpRequestBuilder7, context7);
         Assert.Equal("str", httpRequestBuilder7.RawContent);
@@ -85,7 +99,9 @@ public class BodyDeclarativeExtractorTests
         Assert.Equal("utf-32", httpRequestBuilder7.ContentEncoding?.BodyName);
 
         var method8 = typeof(IBodyDeclarativeTest).GetMethod(nameof(IBodyDeclarativeTest.Test8))!;
-        var context8 = new HttpDeclarativeExtractorContext(method8, [new { }]);
+        var context8 =
+            new HttpDeclarativeExtractorContext(method8, [new { }],
+                new HttpDeclarativeMethodMetadata(method8, typeof(IBodyDeclarativeTest)));
         var httpRequestBuilder8 = HttpRequestBuilder.Get("http://localhost");
         new BodyDeclarativeExtractor().Extract(httpRequestBuilder8, context8);
         Assert.Equal("application/x-www-form-urlencoded", httpRequestBuilder8.ContentType);
@@ -98,14 +114,18 @@ public class BodyDeclarativeExtractorTests
         Assert.True(stringContentForFormUrlEncodedContentProcessor.UrlEncode);
 
         var method9 = typeof(IBodyDeclarativeTest).GetMethod(nameof(IBodyDeclarativeTest.Test9))!;
-        var context9 = new HttpDeclarativeExtractorContext(method9, ["Furion"]);
+        var context9 =
+            new HttpDeclarativeExtractorContext(method9, ["Furion"],
+                new HttpDeclarativeMethodMetadata(method9, typeof(IBodyDeclarativeTest)));
         var httpRequestBuilder9 = HttpRequestBuilder.Post("http://localhost");
         new BodyDeclarativeExtractor().Extract(httpRequestBuilder9, context9);
         Assert.Equal("application/json", httpRequestBuilder9.ContentType);
         Assert.Equal("\"Furion\"", httpRequestBuilder9.RawContent);
 
         var method10 = typeof(IBodyDeclarativeTest).GetMethod(nameof(IBodyDeclarativeTest.Test11))!;
-        var context10 = new HttpDeclarativeExtractorContext(method10, [new { }]);
+        var context10 =
+            new HttpDeclarativeExtractorContext(method10, [new { }],
+                new HttpDeclarativeMethodMetadata(method10, typeof(IBodyDeclarativeTest)));
         var httpRequestBuilder10 = HttpRequestBuilder.Get("http://localhost");
         new BodyDeclarativeExtractor().Extract(httpRequestBuilder10, context10);
         Assert.Equal("application/x-www-form-urlencoded", httpRequestBuilder10.ContentType);

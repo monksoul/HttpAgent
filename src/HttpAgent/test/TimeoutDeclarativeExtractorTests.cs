@@ -22,7 +22,8 @@ public class TimeoutDeclarativeExtractorTests
         var method1 =
             typeof(ITimeoutDeclarativeExtractorTest1).GetMethod(
                 nameof(ITimeoutDeclarativeExtractorTest1.Test1))!;
-        var context1 = new HttpDeclarativeExtractorContext(method1, []);
+        var context1 = new HttpDeclarativeExtractorContext(method1, [],
+            new HttpDeclarativeMethodMetadata(method1, typeof(ITimeoutDeclarativeExtractorTest1)));
         var httpRequestBuilder1 = HttpRequestBuilder.Get("http://localhost");
         new TimeoutDeclarativeExtractor().Extract(httpRequestBuilder1, context1);
         Assert.Null(httpRequestBuilder1.Timeout);
@@ -30,7 +31,8 @@ public class TimeoutDeclarativeExtractorTests
         var method2 =
             typeof(ITimeoutDeclarativeExtractorTest2).GetMethod(
                 nameof(ITimeoutDeclarativeExtractorTest2.Test1))!;
-        var context2 = new HttpDeclarativeExtractorContext(method2, []);
+        var context2 = new HttpDeclarativeExtractorContext(method2, [],
+            new HttpDeclarativeMethodMetadata(method2, typeof(ITimeoutDeclarativeExtractorTest2)));
         var httpRequestBuilder2 = HttpRequestBuilder.Get("http://localhost");
         new TimeoutDeclarativeExtractor().Extract(httpRequestBuilder2, context2);
         Assert.NotNull(httpRequestBuilder2.Timeout);
@@ -39,7 +41,8 @@ public class TimeoutDeclarativeExtractorTests
         var method3 =
             typeof(ITimeoutDeclarativeExtractorTest2).GetMethod(
                 nameof(ITimeoutDeclarativeExtractorTest2.Test2))!;
-        var context3 = new HttpDeclarativeExtractorContext(method3, []);
+        var context3 = new HttpDeclarativeExtractorContext(method3, [],
+            new HttpDeclarativeMethodMetadata(method3, typeof(ITimeoutDeclarativeExtractorTest2)));
         var httpRequestBuilder3 = HttpRequestBuilder.Get("http://localhost");
         new TimeoutDeclarativeExtractor().Extract(httpRequestBuilder3, context3);
         Assert.NotNull(httpRequestBuilder3.Timeout);

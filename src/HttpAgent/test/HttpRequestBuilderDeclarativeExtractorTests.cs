@@ -28,7 +28,8 @@ public class HttpRequestBuilderDeclarativeExtractorTests
         var method1 =
             typeof(IHttpRequestBuilderConfigureDeclarativeExtractorTest1).GetMethod(
                 nameof(IHttpRequestBuilderConfigureDeclarativeExtractorTest1.Test1))!;
-        var context1 = new HttpDeclarativeExtractorContext(method1, [builder, builder]);
+        var context1 = new HttpDeclarativeExtractorContext(method1, [builder, builder],
+            new HttpDeclarativeMethodMetadata(method1, typeof(IHttpRequestBuilderConfigureDeclarativeExtractorTest1)));
         var httpRequestBuilder1 = HttpRequestBuilder.Get("http://localhost");
 
         Assert.Throws<InvalidOperationException>(() =>
@@ -46,7 +47,8 @@ public class HttpRequestBuilderDeclarativeExtractorTests
         var method1 =
             typeof(IHttpRequestBuilderConfigureDeclarativeExtractorTest2).GetMethod(
                 nameof(IHttpRequestBuilderConfigureDeclarativeExtractorTest2.Test1))!;
-        var context1 = new HttpDeclarativeExtractorContext(method1, []);
+        var context1 = new HttpDeclarativeExtractorContext(method1, [],
+            new HttpDeclarativeMethodMetadata(method1, typeof(IHttpRequestBuilderConfigureDeclarativeExtractorTest2)));
         var httpRequestBuilder1 = HttpRequestBuilder.Get("http://localhost");
         new HttpRequestBuilderDeclarativeExtractor().Extract(httpRequestBuilder1, context1);
         Assert.Null(httpRequestBuilder1.Timeout);
@@ -54,7 +56,8 @@ public class HttpRequestBuilderDeclarativeExtractorTests
         var method2 =
             typeof(IHttpRequestBuilderConfigureDeclarativeExtractorTest2).GetMethod(
                 nameof(IHttpRequestBuilderConfigureDeclarativeExtractorTest2.Test2))!;
-        var context2 = new HttpDeclarativeExtractorContext(method2, [builder]);
+        var context2 = new HttpDeclarativeExtractorContext(method2, [builder],
+            new HttpDeclarativeMethodMetadata(method2, typeof(IHttpRequestBuilderConfigureDeclarativeExtractorTest2)));
         var httpRequestBuilder2 = HttpRequestBuilder.Get("http://localhost");
         new HttpRequestBuilderDeclarativeExtractor().Extract(httpRequestBuilder2, context2);
         Assert.Equal(TimeSpan.FromMilliseconds(1000), httpRequestBuilder2.Timeout);

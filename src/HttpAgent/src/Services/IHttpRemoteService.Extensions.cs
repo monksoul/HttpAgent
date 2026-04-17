@@ -338,10 +338,11 @@ public partial interface IHttpRemoteService
     /// <remarks>仅支持同步方法。</remarks>
     /// <param name="method">被调用方法</param>
     /// <param name="args">被调用方法的参数值数组</param>
+    /// <param name="interfaceType">实际被代理的接口类型</param>
     /// <returns>
     ///     <see cref="object" />
     /// </returns>
-    object? Declarative(MethodInfo method, object[] args);
+    object? Declarative(MethodInfo method, object[] args, Type? interfaceType = null);
 
     /// <summary>
     ///     发送 HTTP 声明式请求
@@ -349,11 +350,12 @@ public partial interface IHttpRemoteService
     /// <remarks>仅支持异步方法。若无返回值则泛型传入 <see cref="VoidContent" /> 类型。</remarks>
     /// <param name="method">被调用方法</param>
     /// <param name="args">被调用方法的参数值数组</param>
+    /// <param name="interfaceType">实际被代理的接口类型</param>
     /// <typeparam name="T">转换的目标类型</typeparam>
     /// <returns>
     ///     <typeparamref name="T" />
     /// </returns>
-    Task<T?> DeclarativeAsync<T>(MethodInfo method, object[] args);
+    Task<T?> DeclarativeAsync<T>(MethodInfo method, object[] args, Type? interfaceType = null);
 
     /// <summary>
     ///     发送 HTTP 声明式请求

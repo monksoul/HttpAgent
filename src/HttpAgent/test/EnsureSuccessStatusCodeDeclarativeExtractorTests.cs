@@ -22,7 +22,8 @@ public class EnsureSuccessStatusCodeDeclarativeExtractorTests
         var method1 =
             typeof(IEnsureSuccessStatusCodeDeclarativeExtractorTest1).GetMethod(
                 nameof(IEnsureSuccessStatusCodeDeclarativeExtractorTest1.Test1))!;
-        var context1 = new HttpDeclarativeExtractorContext(method1, []);
+        var context1 = new HttpDeclarativeExtractorContext(method1, [],
+            new HttpDeclarativeMethodMetadata(method1, typeof(IEnsureSuccessStatusCodeDeclarativeExtractorTest1)));
         var httpRequestBuilder1 = HttpRequestBuilder.Get("http://localhost");
         new EnsureSuccessStatusCodeDeclarativeExtractor().Extract(httpRequestBuilder1, context1);
         Assert.False(httpRequestBuilder1.EnsureSuccessStatusCodeEnabled);
@@ -30,7 +31,8 @@ public class EnsureSuccessStatusCodeDeclarativeExtractorTests
         var method2 =
             typeof(IEnsureSuccessStatusCodeDeclarativeExtractorTest2).GetMethod(
                 nameof(IEnsureSuccessStatusCodeDeclarativeExtractorTest2.Test1))!;
-        var context2 = new HttpDeclarativeExtractorContext(method2, []);
+        var context2 = new HttpDeclarativeExtractorContext(method2, [],
+            new HttpDeclarativeMethodMetadata(method2, typeof(IEnsureSuccessStatusCodeDeclarativeExtractorTest2)));
         var httpRequestBuilder2 = HttpRequestBuilder.Get("http://localhost");
         new EnsureSuccessStatusCodeDeclarativeExtractor().Extract(httpRequestBuilder2, context2);
         Assert.True(httpRequestBuilder2.EnsureSuccessStatusCodeEnabled);
@@ -38,7 +40,8 @@ public class EnsureSuccessStatusCodeDeclarativeExtractorTests
         var method3 =
             typeof(IEnsureSuccessStatusCodeDeclarativeExtractorTest2).GetMethod(
                 nameof(IEnsureSuccessStatusCodeDeclarativeExtractorTest2.Test2))!;
-        var context3 = new HttpDeclarativeExtractorContext(method3, []);
+        var context3 = new HttpDeclarativeExtractorContext(method3, [],
+            new HttpDeclarativeMethodMetadata(method3, typeof(IEnsureSuccessStatusCodeDeclarativeExtractorTest2)));
         var httpRequestBuilder3 = HttpRequestBuilder.Get("http://localhost");
         new EnsureSuccessStatusCodeDeclarativeExtractor().Extract(httpRequestBuilder3, context3);
         Assert.False(httpRequestBuilder3.EnsureSuccessStatusCodeEnabled);

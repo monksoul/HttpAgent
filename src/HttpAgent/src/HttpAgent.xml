@@ -652,12 +652,13 @@
                 <see cref="T:HttpAgent.HttpLongPollingBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpBuilder.Declarative(System.Reflection.MethodInfo,System.Object[])">
+        <member name="M:HttpAgent.HttpBuilder.Declarative(System.Reflection.MethodInfo,System.Object[],System.Type)">
             <summary>
                 创建 <see cref="T:HttpAgent.HttpDeclarativeBuilder" /> 构建器
             </summary>
             <param name="method">被调用方法</param>
             <param name="args">被调用方法的参数值数组</param>
+            <param name="interfaceType">实际被代理的接口类型</param>
             <returns>
                 <see cref="T:HttpAgent.HttpDeclarativeBuilder" />
             </returns>
@@ -3927,12 +3928,13 @@
                 <see cref="T:HttpAgent.HttpLongPollingBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpRequestBuilder.Declarative(System.Reflection.MethodInfo,System.Object[])">
+        <member name="M:HttpAgent.HttpRequestBuilder.Declarative(System.Reflection.MethodInfo,System.Object[],System.Type)">
             <summary>
                 创建 <see cref="T:HttpAgent.HttpDeclarativeBuilder" /> 构建器
             </summary>
             <param name="method">被调用方法</param>
             <param name="args">被调用方法的参数值数组</param>
+            <param name="interfaceType">实际被代理的接口类型</param>
             <returns>
                 <see cref="T:HttpAgent.HttpDeclarativeBuilder" />
             </returns>
@@ -5067,40 +5069,6 @@
             <summary>
                 <see cref="T:System.Reflection.MethodInfo" /> 扩展类
             </summary>
-        </member>
-        <member name="M:HttpAgent.Core.Extensions.MethodInfoExtensions.IsDefined``1(System.Reflection.MethodInfo,``0@,System.Boolean)">
-            <summary>
-                检查是否定义了指定特性
-            </summary>
-            <param name="method">
-                <see cref="T:System.Reflection.MethodInfo" />
-            </param>
-            <param name="attribute">
-                <typeparamref name="TAttribute" />
-            </param>
-            <param name="inherit">是否在基类中搜索</param>
-            <typeparam name="TAttribute">
-                <see cref="T:System.Attribute" />
-            </typeparam>
-            <returns>
-                <see cref="T:System.Boolean" />
-            </returns>
-        </member>
-        <member name="M:HttpAgent.Core.Extensions.MethodInfoExtensions.GetDefinedCustomAttributes``1(System.Reflection.MethodInfo,System.Boolean,System.Boolean)">
-            <summary>
-                获取指定特性的所有实例
-            </summary>
-            <param name="method">
-                <see cref="T:System.Reflection.MethodInfo" />
-            </param>
-            <param name="inherit">是否在基类中搜索</param>
-            <param name="methodScanFirst">是否优先查找 <see cref="T:System.Reflection.MethodInfo" /> 的特性。默认值为：<c>true</c>。</param>
-            <typeparam name="TAttribute">
-                <see cref="T:System.Attribute" />
-            </typeparam>
-            <returns>
-                <typeparamref name="TAttribute" /><c>[]</c>
-            </returns>
         </member>
         <member name="M:HttpAgent.Core.Extensions.MethodInfoExtensions.ToFriendlyString(System.Reflection.MethodInfo)">
             <summary>
@@ -6891,12 +6859,13 @@
                 标识是否已加载自定义 HTTP 声明式提取器
             </summary>
         </member>
-        <member name="M:HttpAgent.HttpDeclarativeBuilder.#ctor(System.Reflection.MethodInfo,System.Object[])">
+        <member name="M:HttpAgent.HttpDeclarativeBuilder.#ctor(System.Reflection.MethodInfo,System.Object[],System.Type)">
             <summary>
                 <inheritdoc cref="T:HttpAgent.HttpDeclarativeBuilder" />
             </summary>
             <param name="method">被调用方法</param>
             <param name="args">被调用方法的参数值数组</param>
+            <param name="interfaceType">实际被代理的接口类型</param>
         </member>
         <member name="P:HttpAgent.HttpDeclarativeBuilder.Method">
             <summary>
@@ -6906,6 +6875,11 @@
         <member name="P:HttpAgent.HttpDeclarativeBuilder.Args">
             <summary>
                 被调用方法的参数值数组
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpDeclarativeBuilder.InterfaceType">
+            <summary>
+                实际被代理的接口类型
             </summary>
         </member>
         <member name="M:HttpAgent.HttpDeclarativeBuilder.Build(HttpAgent.HttpRemoteOptions,System.IServiceProvider)">
@@ -7308,6 +7282,11 @@
         <member name="P:HttpAgent.HttpDeclarativeDispatchProxy.RemoteService">
             <inheritdoc cref="T:HttpAgent.IHttpRemoteService" />
         </member>
+        <member name="P:HttpAgent.HttpDeclarativeDispatchProxy.InterfaceType">
+            <summary>
+                实际被代理的接口类型
+            </summary>
+        </member>
         <member name="M:HttpAgent.HttpDeclarativeDispatchProxy.Invoke(System.Reflection.MethodInfo,System.Object[])">
             <inheritdoc />
         </member>
@@ -7333,12 +7312,15 @@
                 <see cref="T:System.IServiceProvider" /> 委托
             </summary>
         </member>
-        <member name="M:HttpAgent.HttpDeclarativeExtractorContext.#ctor(System.Reflection.MethodInfo,System.Object[],System.IServiceProvider)">
+        <member name="M:HttpAgent.HttpDeclarativeExtractorContext.#ctor(System.Reflection.MethodInfo,System.Object[],HttpAgent.HttpDeclarativeMethodMetadata,System.IServiceProvider)">
             <summary>
                 <inheritdoc cref="T:HttpAgent.HttpDeclarativeExtractorContext" />
             </summary>
             <param name="method">被调用方法</param>
             <param name="args">被调用方法的参数值数组</param>
+            <param name="methodMetadata">
+                <see cref="T:HttpAgent.HttpDeclarativeMethodMetadata" />
+            </param>
             <param name="serviceProvider">
                 <see cref="T:System.IServiceProvider" />
             </param>
@@ -7352,6 +7334,9 @@
             <summary>
                 被调用方法的参数值数组
             </summary>
+        </member>
+        <member name="P:HttpAgent.HttpDeclarativeExtractorContext.MethodMetadata">
+            <inheritdoc cref="T:HttpAgent.HttpDeclarativeMethodMetadata" />
         </member>
         <member name="P:HttpAgent.HttpDeclarativeExtractorContext.Parameters">
             <summary>
@@ -7385,7 +7370,7 @@
             <param name="attribute">
                 <typeparamref name="TAttribute" />
             </param>
-            <param name="inherit">是否在基类中搜索</param>
+            <param name="inherit">是否在基类或被代理的接口中搜索</param>
             <typeparam name="TAttribute">
                 <see cref="T:System.Attribute" />
             </typeparam>
@@ -7397,7 +7382,7 @@
             <summary>
                 获取被调用方法指定特性的所有实例
             </summary>
-            <param name="inherit">是否在基类中搜索</param>
+            <param name="inherit">是否在基类或被代理的接口中搜索</param>
             <param name="methodScanFirst">是否优先查找 <see cref="T:System.Reflection.MethodInfo" /> 的特性。默认值为：<c>true</c>。</param>
             <typeparam name="TAttribute">
                 <see cref="T:System.Attribute" />
@@ -7411,6 +7396,39 @@
                 初始化 <see cref="T:System.IServiceProvider" />
             </summary>
             <param name="serviceProvider"><see cref="T:System.IServiceProvider" /> 委托</param>
+        </member>
+        <member name="T:HttpAgent.HttpDeclarativeMethodMetadata">
+            <summary>
+                HTTP 声明式方法元数据
+            </summary>
+        </member>
+        <member name="M:HttpAgent.HttpDeclarativeMethodMetadata.#ctor(System.Reflection.MethodInfo,System.Type)">
+            <summary>
+                <inheritdoc cref="T:HttpAgent.HttpDeclarativeMethodMetadata" />
+            </summary>
+            <param name="method">被调用方法</param>
+            <param name="interfaceType">实际被代理的接口类型</param>
+            <exception cref="T:System.ArgumentNullException">被调用方法</exception>
+        </member>
+        <member name="P:HttpAgent.HttpDeclarativeMethodMetadata.Method">
+            <summary>
+                被调用方法
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpDeclarativeMethodMetadata.InterfaceType">
+            <summary>
+                实际被代理的接口类型
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpDeclarativeMethodMetadata.MethodAttributes">
+            <summary>
+                被调用方法的特性列表
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpDeclarativeMethodMetadata.InterfaceAttributes">
+            <summary>
+                实际被代理的接口类型的特性列表
+            </summary>
         </member>
         <member name="T:HttpAgent.IHttpDeclarative">
             <summary>
@@ -11092,10 +11110,10 @@
         <member name="M:HttpAgent.HttpRemoteService.SendAsync(HttpAgent.HttpLongPollingBuilder,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpRemoteService.Declarative(System.Reflection.MethodInfo,System.Object[])">
+        <member name="M:HttpAgent.HttpRemoteService.Declarative(System.Reflection.MethodInfo,System.Object[],System.Type)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpRemoteService.DeclarativeAsync``1(System.Reflection.MethodInfo,System.Object[])">
+        <member name="M:HttpAgent.HttpRemoteService.DeclarativeAsync``1(System.Reflection.MethodInfo,System.Object[],System.Type)">
             <inheritdoc />
         </member>
         <member name="M:HttpAgent.HttpRemoteService.SendAs(HttpAgent.HttpDeclarativeBuilder)">
@@ -12436,24 +12454,26 @@
                 <see cref="T:System.Threading.Tasks.Task" />
             </returns>
         </member>
-        <member name="M:HttpAgent.IHttpRemoteService.Declarative(System.Reflection.MethodInfo,System.Object[])">
+        <member name="M:HttpAgent.IHttpRemoteService.Declarative(System.Reflection.MethodInfo,System.Object[],System.Type)">
             <summary>
                 发送 HTTP 声明式请求
             </summary>
             <remarks>仅支持同步方法。</remarks>
             <param name="method">被调用方法</param>
             <param name="args">被调用方法的参数值数组</param>
+            <param name="interfaceType">实际被代理的接口类型</param>
             <returns>
                 <see cref="T:System.Object" />
             </returns>
         </member>
-        <member name="M:HttpAgent.IHttpRemoteService.DeclarativeAsync``1(System.Reflection.MethodInfo,System.Object[])">
+        <member name="M:HttpAgent.IHttpRemoteService.DeclarativeAsync``1(System.Reflection.MethodInfo,System.Object[],System.Type)">
             <summary>
                 发送 HTTP 声明式请求
             </summary>
             <remarks>仅支持异步方法。若无返回值则泛型传入 <see cref="T:HttpAgent.VoidContent" /> 类型。</remarks>
             <param name="method">被调用方法</param>
             <param name="args">被调用方法的参数值数组</param>
+            <param name="interfaceType">实际被代理的接口类型</param>
             <typeparam name="T">转换的目标类型</typeparam>
             <returns>
                 <typeparamref name="T" />

@@ -468,6 +468,15 @@ public class HttpRequestBuilderStaticMethodsTests
         Assert.NotNull(httpDeclarativeBuilder);
         Assert.Equal(method, httpDeclarativeBuilder.Method);
         Assert.Equal([], httpDeclarativeBuilder.Args);
+        Assert.Equal(typeof(IHttpTest), httpDeclarativeBuilder.InterfaceType);
+
+        var method2 = typeof(IHttpTest).GetMethod(nameof(IHttpTest.GetContent))!;
+        var httpDeclarativeBuilder2 = HttpRequestBuilder.Declarative(method2, [], typeof(IHttpTest));
+
+        Assert.NotNull(httpDeclarativeBuilder2);
+        Assert.Equal(method2, httpDeclarativeBuilder2.Method);
+        Assert.Equal([], httpDeclarativeBuilder2.Args);
+        Assert.Equal(typeof(IHttpTest), httpDeclarativeBuilder2.InterfaceType);
     }
 
     [Fact]

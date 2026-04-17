@@ -23,6 +23,8 @@ public class HttpDeclarativeBuilderTests
 
         Assert.NotNull(builder.Method);
         Assert.NotNull(builder.Args);
+        Assert.NotNull(builder.InterfaceType);
+        Assert.Equal(typeof(IHttpDeclarativeTest), builder.InterfaceType);
         Assert.False(builder._hasLoadedExtractors);
 
         Dictionary<Type, IHttpDeclarativeExtractor> extractors = new()
@@ -73,6 +75,14 @@ public class HttpDeclarativeBuilderTests
         };
 
         Assert.True(freezeExtractors.Keys.ToHashSet().SetEquals(HttpDeclarativeBuilder._frozenExtractors.Keys));
+
+        var method2 = typeof(IHttpDeclarativeTest).GetMethod(nameof(IHttpDeclarativeTest.Method1));
+        var builder2 = new HttpDeclarativeBuilder(method2!, [], typeof(IHttpDeclarativeTest1));
+
+        Assert.NotNull(builder2.Method);
+        Assert.NotNull(builder2.Args);
+        Assert.NotNull(builder2.InterfaceType);
+        Assert.Equal(typeof(IHttpDeclarativeTest1), builder2.InterfaceType);
     }
 
     [Fact]

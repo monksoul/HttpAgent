@@ -27,7 +27,8 @@ public class HttpRequestMessageDeclarativeExtractorTests
         var method1 =
             typeof(IHttpRequestMessageConfigureDeclarativeExtractorTest1).GetMethod(
                 nameof(IHttpRequestMessageConfigureDeclarativeExtractorTest1.Test1))!;
-        var context1 = new HttpDeclarativeExtractorContext(method1, [builder, builder]);
+        var context1 = new HttpDeclarativeExtractorContext(method1, [builder, builder],
+            new HttpDeclarativeMethodMetadata(method1, typeof(IHttpRequestMessageConfigureDeclarativeExtractorTest1)));
         var httpRequestBuilder1 = HttpRequestBuilder.Get("http://localhost");
 
         Assert.Throws<InvalidOperationException>(() =>
@@ -42,7 +43,8 @@ public class HttpRequestMessageDeclarativeExtractorTests
         var method1 =
             typeof(IHttpRequestMessageConfigureDeclarativeExtractorTest2).GetMethod(
                 nameof(IHttpRequestMessageConfigureDeclarativeExtractorTest2.Test1))!;
-        var context1 = new HttpDeclarativeExtractorContext(method1, []);
+        var context1 = new HttpDeclarativeExtractorContext(method1, [],
+            new HttpDeclarativeMethodMetadata(method1, typeof(IHttpRequestMessageConfigureDeclarativeExtractorTest2)));
         var httpRequestBuilder1 = HttpRequestBuilder.Get("http://localhost");
         new HttpRequestMessageDeclarativeExtractor().Extract(httpRequestBuilder1, context1);
         Assert.Null(httpRequestBuilder1.OnPreSendRequest);
@@ -50,7 +52,8 @@ public class HttpRequestMessageDeclarativeExtractorTests
         var method2 =
             typeof(IHttpRequestMessageConfigureDeclarativeExtractorTest2).GetMethod(
                 nameof(IHttpRequestMessageConfigureDeclarativeExtractorTest2.Test2))!;
-        var context2 = new HttpDeclarativeExtractorContext(method2, [builder]);
+        var context2 = new HttpDeclarativeExtractorContext(method2, [builder],
+            new HttpDeclarativeMethodMetadata(method2, typeof(IHttpRequestMessageConfigureDeclarativeExtractorTest2)));
         var httpRequestBuilder2 = HttpRequestBuilder.Get("http://localhost");
         new HttpRequestMessageDeclarativeExtractor().Extract(httpRequestBuilder2, context2);
         Assert.NotNull(httpRequestBuilder2.OnPreSendRequest);

@@ -23,16 +23,21 @@ public class ValidationDeclarativeExtractorTests
             typeof(IValidationAttributeDeclarativeTest).GetMethod(nameof(IValidationAttributeDeclarativeTest.Test1))!;
         var httpRequestBuilder1 = HttpRequestBuilder.Get("http://localhost");
 
-        var context1 = new HttpDeclarativeExtractorContext(method1, [null, null]);
+        var context1 =
+            new HttpDeclarativeExtractorContext(method1, [null, null],
+                new HttpDeclarativeMethodMetadata(method1, typeof(IValidationAttributeDeclarativeTest)));
         Assert.Throws<ValidationException>(() =>
             new ValidationDeclarativeExtractor().Extract(httpRequestBuilder1, context1));
 
-        var context2 = new HttpDeclarativeExtractorContext(method1, ["furion", null]);
+        var context2 =
+            new HttpDeclarativeExtractorContext(method1, ["furion", null],
+                new HttpDeclarativeMethodMetadata(method1, typeof(IValidationAttributeDeclarativeTest)));
         Assert.Throws<ValidationException>(() =>
             new ValidationDeclarativeExtractor().Extract(httpRequestBuilder1, context2));
 
         var context3 =
-            new HttpDeclarativeExtractorContext(method1, ["furion", new ValidationModel { Name = "furion" }]);
+            new HttpDeclarativeExtractorContext(method1, ["furion", new ValidationModel { Name = "furion" }],
+                new HttpDeclarativeMethodMetadata(method1, typeof(IValidationAttributeDeclarativeTest)));
         new ValidationDeclarativeExtractor().Extract(httpRequestBuilder1, context3);
     }
 

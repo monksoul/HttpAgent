@@ -19,7 +19,8 @@ public class HeaderDeclarativeExtractorTests
     public void Extract_ReturnOK()
     {
         var method1 = typeof(IHeaderDeclarativeTest).GetMethod(nameof(IHeaderDeclarativeTest.Test1))!;
-        var context1 = new HttpDeclarativeExtractorContext(method1, []);
+        var context1 = new HttpDeclarativeExtractorContext(method1, [],
+            new HttpDeclarativeMethodMetadata(method1, typeof(IHeaderDeclarativeTest)));
         var httpRequestBuilder1 = HttpRequestBuilder.Get("http://localhost");
         new HeaderDeclarativeExtractor().Extract(httpRequestBuilder1, context1);
 
@@ -33,7 +34,8 @@ public class HeaderDeclarativeExtractorTests
         Assert.Equal("header4", httpRequestBuilder1.HeadersToRemove.Last());
 
         var method2 = typeof(IHeaderDeclarativeTest).GetMethod(nameof(IHeaderDeclarativeTest.Test2))!;
-        var context2 = new HttpDeclarativeExtractorContext(method2, []);
+        var context2 = new HttpDeclarativeExtractorContext(method2, [],
+            new HttpDeclarativeMethodMetadata(method2, typeof(IHeaderDeclarativeTest)));
         var httpRequestBuilder2 = HttpRequestBuilder.Get("http://localhost");
         new HeaderDeclarativeExtractor().Extract(httpRequestBuilder2, context2);
 
@@ -44,7 +46,8 @@ public class HeaderDeclarativeExtractorTests
         Assert.Equal("value3", httpRequestBuilder2.Headers["header3"].First());
 
         var method3 = typeof(IHeaderDeclarativeTest).GetMethod(nameof(IHeaderDeclarativeTest.Test3))!;
-        var context3 = new HttpDeclarativeExtractorContext(method3, []);
+        var context3 = new HttpDeclarativeExtractorContext(method3, [],
+            new HttpDeclarativeMethodMetadata(method3, typeof(IHeaderDeclarativeTest)));
         var httpRequestBuilder3 = HttpRequestBuilder.Get("http://localhost");
         new HeaderDeclarativeExtractor().Extract(httpRequestBuilder3, context3);
 
@@ -56,7 +59,8 @@ public class HeaderDeclarativeExtractorTests
 
         var method4 = typeof(IHeaderDeclarativeTest).GetMethod(nameof(IHeaderDeclarativeTest.Test4))!;
         var context4 =
-            new HttpDeclarativeExtractorContext(method4, [1, "furion", 31, "GuangDong", CancellationToken.None]);
+            new HttpDeclarativeExtractorContext(method4, [1, "furion", 31, "GuangDong", CancellationToken.None],
+                new HttpDeclarativeMethodMetadata(method4, typeof(IHeaderDeclarativeTest)));
         var httpRequestBuilder4 = HttpRequestBuilder.Get("http://localhost");
         new HeaderDeclarativeExtractor().Extract(httpRequestBuilder4, context4);
 
@@ -72,7 +76,8 @@ public class HeaderDeclarativeExtractorTests
         Assert.Equal("GuangDong", httpRequestBuilder4.Headers["address"].First());
 
         var context5 =
-            new HttpDeclarativeExtractorContext(method4, [1, "furion", null, "GuangDong", CancellationToken.None]);
+            new HttpDeclarativeExtractorContext(method4, [1, "furion", null, "GuangDong", CancellationToken.None],
+                new HttpDeclarativeMethodMetadata(method4, typeof(IHeaderDeclarativeTest)));
         var httpRequestBuilder5 = HttpRequestBuilder.Get("http://localhost");
         new HeaderDeclarativeExtractor().Extract(httpRequestBuilder5, context5);
 
@@ -88,7 +93,8 @@ public class HeaderDeclarativeExtractorTests
         Assert.Equal("GuangDong", httpRequestBuilder5.Headers["address"].First());
 
         var method5 = typeof(IHeaderDeclarativeTest).GetMethod(nameof(IHeaderDeclarativeTest.Test5))!;
-        var context6 = new HttpDeclarativeExtractorContext(method5, [new { id = 10, name = "furion" }]);
+        var context6 = new HttpDeclarativeExtractorContext(method5, [new { id = 10, name = "furion" }],
+            new HttpDeclarativeMethodMetadata(method5, typeof(IHeaderDeclarativeTest)));
         var httpRequestBuilder6 = HttpRequestBuilder.Get("http://localhost");
         new HeaderDeclarativeExtractor().Extract(httpRequestBuilder6, context6);
 
