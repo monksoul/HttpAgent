@@ -47,8 +47,8 @@ public class CustomObjectContentConverter : ObjectContentConverter
             HttpRemoteUtility.ResolveJsonSerializationContext(resultType, httpResponseMessage, ServiceProvider);
 
         // 获取 JSON 反序列化的值（若需使用 Newtonsoft.Json 进行序列化或反序列化操作，请将以下代码替换为 Newtonsoft.Json 库的相应方法调用） ✅✅✅
-        var deserializedValue = httpResponseMessage.Content.ReadFromJsonAsync(jsonSerializationContext.ResultType,
-            jsonSerializationContext.JsonSerializerOptions, cancellationToken).GetAwaiter().GetResult();
+        var deserializedValue = AsyncUtility.RunSync(() => httpResponseMessage.Content.ReadFromJsonAsync(
+            jsonSerializationContext.ResultType, jsonSerializationContext.JsonSerializerOptions, cancellationToken));
 
         // 获取转换的目标类型值
         return jsonSerializationContext.GetResultValue(deserializedValue);

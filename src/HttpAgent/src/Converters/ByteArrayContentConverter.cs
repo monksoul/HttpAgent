@@ -12,7 +12,7 @@ public class ByteArrayContentConverter : HttpContentConverterBase<byte[]>
     /// <inheritdoc />
     public override byte[]? Read(HttpResponseMessage httpResponseMessage,
         CancellationToken cancellationToken = default) =>
-        httpResponseMessage.Content.ReadAsByteArrayAsync(cancellationToken).GetAwaiter().GetResult();
+        AsyncUtility.RunSync(() => httpResponseMessage.Content.ReadAsByteArrayAsync(cancellationToken));
 
     /// <inheritdoc />
     public override async Task<byte[]?> ReadAsync(HttpResponseMessage httpResponseMessage,

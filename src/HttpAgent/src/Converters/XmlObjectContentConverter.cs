@@ -16,7 +16,7 @@ public class XmlObjectContentConverter : IHttpContentConverter
     public virtual object? Read(Type resultType, HttpResponseMessage httpResponseMessage,
         CancellationToken cancellationToken = default) =>
         DeserializeXml(resultType,
-            httpResponseMessage.Content.ReadAsStringAsync(cancellationToken).GetAwaiter().GetResult());
+            AsyncUtility.RunSync(() => httpResponseMessage.Content.ReadAsStringAsync(cancellationToken)));
 
     /// <inheritdoc />
     public virtual async Task<object?> ReadAsync(Type resultType, HttpResponseMessage httpResponseMessage,
@@ -52,7 +52,7 @@ public class XmlObjectContentConverter<TResult> : XmlObjectContentConverter, IHt
     public virtual TResult? Read(HttpResponseMessage httpResponseMessage,
         CancellationToken cancellationToken = default) =>
         (TResult?)DeserializeXml(typeof(TResult),
-            httpResponseMessage.Content.ReadAsStringAsync(cancellationToken).GetAwaiter().GetResult());
+            AsyncUtility.RunSync(() => httpResponseMessage.Content.ReadAsStringAsync(cancellationToken)));
 
     /// <inheritdoc />
     public virtual async Task<TResult?> ReadAsync(HttpResponseMessage httpResponseMessage,

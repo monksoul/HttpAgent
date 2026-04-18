@@ -3,6 +3,7 @@
 // 此源代码遵循位于源代码树根目录中的 LICENSE 文件的许可证。
 
 global using HttpAgent.Core.Extensions;
+global using HttpAgent.Core.Utilities;
 global using HttpAgent.Extensions;
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.AspNetCore.Http;

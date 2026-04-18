@@ -6,7 +6,7 @@ public class ClayContentConverter : HttpContentConverterBase<Clay>
     public override Clay? Read(HttpResponseMessage httpResponseMessage,
         CancellationToken cancellationToken = default)
     {
-        var str = httpResponseMessage.Content.ReadAsStringAsync(cancellationToken).GetAwaiter().GetResult();
+        var str = AsyncUtility.RunSync(() => httpResponseMessage.Content.ReadAsStringAsync(cancellationToken));
 
         return Clay.Parse(str, ClayOptions.Flexible);
     }
@@ -27,7 +27,7 @@ public class DynamicContentConverter : HttpContentConverterBase<dynamic>
     public override dynamic? Read(HttpResponseMessage httpResponseMessage,
         CancellationToken cancellationToken = default)
     {
-        var str = httpResponseMessage.Content.ReadAsStringAsync(cancellationToken).GetAwaiter().GetResult();
+        var str = AsyncUtility.RunSync(() => httpResponseMessage.Content.ReadAsStringAsync(cancellationToken));
 
         return Clay.Parse(str, ClayOptions.Flexible);
     }

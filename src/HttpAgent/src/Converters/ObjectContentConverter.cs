@@ -22,8 +22,8 @@ public class ObjectContentConverter : IHttpContentConverter
             HttpRemoteUtility.ResolveJsonSerializationContext(resultType, httpResponseMessage, ServiceProvider);
 
         // 获取 JSON 反序列化的值
-        var deserializedValue = httpResponseMessage.Content.ReadFromJsonAsync(jsonSerializationContext.ResultType,
-            jsonSerializationContext.JsonSerializerOptions, cancellationToken).GetAwaiter().GetResult();
+        var deserializedValue = AsyncUtility.RunSync(() => httpResponseMessage.Content.ReadFromJsonAsync(
+            jsonSerializationContext.ResultType, jsonSerializationContext.JsonSerializerOptions, cancellationToken));
 
         // 获取转换的目标类型值
         return jsonSerializationContext.GetResultValue(deserializedValue);

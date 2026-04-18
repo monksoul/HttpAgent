@@ -37,8 +37,8 @@ public class IActionResultContentConverter : HttpContentConverterBase<IActionRes
             case MediaTypeNames.Text.Plain:
             case MediaTypeNames.Application.Soap:
                 // 读取字符串内容
-                var stringContent = httpResponseMessage.Content.ReadAsStringAsync(cancellationToken).GetAwaiter()
-                    .GetResult();
+                var stringContent =
+                    AsyncUtility.RunSync(() => httpResponseMessage.Content.ReadAsStringAsync(cancellationToken));
 
                 return new ContentResult
                 {

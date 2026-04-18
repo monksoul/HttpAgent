@@ -50,8 +50,8 @@ public sealed class ProfilerDelegatingHandler(IHttpRemoteLogger logger, IOptions
         }
 
         // 记录请求信息
-        LogRequestAsync(logger, httpRemoteOptions.Value, httpRequestMessage, null, null, cancellationToken)
-            .GetAwaiter().GetResult();
+        AsyncUtility.RunSync(() =>
+            LogRequestAsync(logger, httpRemoteOptions.Value, httpRequestMessage, null, null, cancellationToken));
 
         // 初始化 Stopwatch 实例并开启计时操作
         var stopwatch = Stopwatch.StartNew();
@@ -66,8 +66,8 @@ public sealed class ProfilerDelegatingHandler(IHttpRemoteLogger logger, IOptions
         stopwatch.Stop();
 
         // 记录响应信息
-        LogResponseAsync(logger, httpRemoteOptions.Value, httpResponseMessage, requestDuration, null, cancellationToken)
-            .GetAwaiter().GetResult();
+        AsyncUtility.RunSync(() => LogResponseAsync(logger, httpRemoteOptions.Value, httpResponseMessage,
+            requestDuration, null, cancellationToken));
 
         // 打印 CookieContainer 内容
         LogCookieContainer(logger, httpRemoteOptions.Value, httpRequestMessage, ExtractCookieContainer());

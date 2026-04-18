@@ -83,9 +83,9 @@ internal sealed partial class HttpRemoteService : IHttpRemoteService
         CancellationToken cancellationToken = default)
     {
         // 发送 HTTP 远程请求
-        var (httpResponseMessage, _) = SendCoreAsync(httpRequestBuilder, completionOption, null,
-            (httpClient, httpRequestMessage, option, token) =>
-                httpClient.Send(httpRequestMessage, option, token), cancellationToken).GetAwaiter().GetResult();
+        var (httpResponseMessage, _) = AsyncUtility.RunSync(() => SendCoreAsync(httpRequestBuilder, completionOption,
+            null, (httpClient, httpRequestMessage, option, token) => httpClient.Send(httpRequestMessage, option, token),
+            cancellationToken));
 
         return httpResponseMessage;
     }
@@ -117,9 +117,10 @@ internal sealed partial class HttpRemoteService : IHttpRemoteService
         CancellationToken cancellationToken = default)
     {
         // 发送 HTTP 远程请求
-        var (httpResponseMessage, requestDuration) = SendCoreAsync(httpRequestBuilder, completionOption, null,
-            (httpClient, httpRequestMessage, option, token) =>
-                httpClient.Send(httpRequestMessage, option, token), cancellationToken).GetAwaiter().GetResult();
+        var (httpResponseMessage, requestDuration) = AsyncUtility.RunSync(() => SendCoreAsync(httpRequestBuilder,
+            completionOption, null,
+            (httpClient, httpRequestMessage, option, token) => httpClient.Send(httpRequestMessage, option, token),
+            cancellationToken));
 
         // 获取结果类型
         var resultType = typeof(TResult);
@@ -247,9 +248,10 @@ internal sealed partial class HttpRemoteService : IHttpRemoteService
         CancellationToken cancellationToken = default)
     {
         // 发送 HTTP 远程请求
-        var (httpResponseMessage, requestDuration) = SendCoreAsync(httpRequestBuilder, completionOption, null,
-            (httpClient, httpRequestMessage, option, token) =>
-                httpClient.Send(httpRequestMessage, option, token), cancellationToken).GetAwaiter().GetResult();
+        var (httpResponseMessage, requestDuration) = AsyncUtility.RunSync(() => SendCoreAsync(httpRequestBuilder,
+            completionOption, null,
+            (httpClient, httpRequestMessage, option, token) => httpClient.Send(httpRequestMessage, option, token),
+            cancellationToken));
 
         // 检查类型是否是 HttpRemoteResult<TResult> 类型
         if (!typeof(HttpRemoteResult<>).IsDefinitionEqual(resultType))
@@ -313,9 +315,10 @@ internal sealed partial class HttpRemoteService : IHttpRemoteService
         HttpCompletionOption completionOption, CancellationToken cancellationToken = default)
     {
         // 发送 HTTP 远程请求
-        var (httpResponseMessage, requestDuration) = SendCoreAsync(httpRequestBuilder, completionOption, null,
-            (httpClient, httpRequestMessage, option, token) =>
-                httpClient.Send(httpRequestMessage, option, token), cancellationToken).GetAwaiter().GetResult();
+        var (httpResponseMessage, requestDuration) = AsyncUtility.RunSync(() => SendCoreAsync(httpRequestBuilder,
+            completionOption, null,
+            (httpClient, httpRequestMessage, option, token) => httpClient.Send(httpRequestMessage, option, token),
+            cancellationToken));
 
         // 空检查
         if (httpResponseMessage is null)

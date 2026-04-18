@@ -270,7 +270,7 @@ public class HttpRemoteExtensionsTests
         var streamContent = clonedHttpRequestMessage.Content as StreamContent;
         Assert.NotNull(streamContent);
 #pragma warning disable xUnit1031
-        var str = streamContent.ReadAsStringAsync().GetAwaiter().GetResult();
+        var str = AsyncUtility.RunSync(() => streamContent.ReadAsStringAsync());
 #pragma warning restore xUnit1031
         Assert.Equal("Hello World", str);
 

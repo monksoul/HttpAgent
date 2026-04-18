@@ -471,7 +471,7 @@ public static partial class HttpRemoteExtensions
     /// </returns>
     public static HttpRequestMessage Clone(this HttpRequestMessage httpRequestMessage,
         CancellationToken cancellationToken = default) =>
-        httpRequestMessage.CloneAsync(cancellationToken).GetAwaiter().GetResult();
+        AsyncUtility.RunSync(() => httpRequestMessage.CloneAsync(cancellationToken));
 
     /// <summary>
     ///     尝试获取响应标头 <c>Set-Cookie</c> 集合
