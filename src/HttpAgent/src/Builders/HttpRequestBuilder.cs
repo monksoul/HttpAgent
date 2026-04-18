@@ -107,17 +107,18 @@ public sealed partial class HttpRequestBuilder
     /// <exception cref="InvalidOperationException"></exception>
     internal string BuildFinalRequestUri(Uri? clientBaseAddress, HttpRemoteOptions httpRemoteOptions)
     {
+        // 获取配置
+        var configuration = httpRemoteOptions.Configuration;
+
         // 替换路径或配置参数，处理非标准 HTTP URI 的应用场景（如 {url}），此时需优先解决路径或配置参数问题
         var processedRequestUri = RequestUri is null or { OriginalString: null }
             ? RequestUri
-            : new Uri(ReplacePlaceholders(RequestUri.OriginalString, httpRemoteOptions.Configuration)!,
-                UriKind.RelativeOrAbsolute);
+            : new Uri(ReplacePlaceholders(RequestUri.OriginalString, configuration)!, UriKind.RelativeOrAbsolute);
 
         // 替换 BaseAddress 路径或配置参数，处理非标准 HTTP URI 的应用场景（如 {url}），此时需优先解决路径或配置参数问题
         var processedBaseAddress = BaseAddress is null or { OriginalString: null }
             ? BaseAddress
-            : new Uri(ReplacePlaceholders(BaseAddress.OriginalString, httpRemoteOptions.Configuration)!,
-                UriKind.RelativeOrAbsolute);
+            : new Uri(ReplacePlaceholders(BaseAddress.OriginalString, configuration)!, UriKind.RelativeOrAbsolute);
 
         // 初始化带局部 BaseAddress 的请求地址
         var requestUriWithBaseAddress = processedBaseAddress is null
@@ -163,8 +164,11 @@ public sealed partial class HttpRequestBuilder
         // 追加片段标识符
         AppendFragment(uriBuilder);
 
+        // 调用构建最终请求 URL 的操作
+        UriBuilderConfigure?.Invoke(uriBuilder);
+
         // 替换路径或配置参数
-        var finalRequestUri = ReplacePlaceholders(uriBuilder.Uri.ToString(), httpRemoteOptions.Configuration)!;
+        var finalRequestUri = ReplacePlaceholders(uriBuilder.Uri.ToString(), configuration)!;
 
         return finalRequestUri;
     }

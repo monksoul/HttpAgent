@@ -2155,4 +2155,30 @@ public class HttpRequestBuilderMethodsTests
         httpRequestBuilder.DisableJsonResponseWrapping();
         Assert.False(httpRequestBuilder.__Enable__JsonResponseWrapping__);
     }
+
+    [Fact]
+    public void SetUriBuilder_Invalid_Parameters()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        Assert.Throws<ArgumentNullException>(() => httpRequestBuilder.SetUriBuilder(null!));
+    }
+
+    [Fact]
+    public void SetUriBuilder_ReturnOK()
+    {
+        var i = 0;
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+
+        httpRequestBuilder.SetUriBuilder(uriBuilder =>
+        {
+            i++;
+        }).SetUriBuilder(uriBuilder =>
+        {
+            i++;
+        });
+        Assert.NotNull(httpRequestBuilder.UriBuilderConfigure);
+
+        httpRequestBuilder.UriBuilderConfigure.Invoke(null!);
+        Assert.Equal(2, i);
+    }
 }

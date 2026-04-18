@@ -140,6 +140,17 @@ public class HttpRequestBuilderTests
         Assert.Equal(
             "The base address must be absolute. Please check the `.SetBaseAddress()` method or the `[BaseAddress()]` attribute.",
             exception.Message);
+
+        var httpRequestBuilder11 = new HttpRequestBuilder(HttpMethod.Get, new Uri("https://furion.net/job/"));
+        httpRequestBuilder11.SetUriBuilder(uriBuilder =>
+        {
+            uriBuilder.Path = "/service/user" + uriBuilder.Path;
+        }).SetUriBuilder(uriBuilder =>
+        {
+            uriBuilder.Query = "?id=10";
+        });
+        var finalRequestUri12 = httpRequestBuilder11.BuildFinalRequestUri(null, httpRemoteOptions);
+        Assert.Equal("https://furion.net/service/user/job/?id=10", finalRequestUri12);
     }
 
     [Fact]

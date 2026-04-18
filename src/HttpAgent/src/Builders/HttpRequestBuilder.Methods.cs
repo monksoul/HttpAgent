@@ -1912,6 +1912,21 @@ public sealed partial class HttpRequestBuilder
     public HttpRequestBuilder DisableJsonResponseWrapping() => JsonResponseWrapping(false);
 
     /// <summary>
+    ///     设置在构建最终请求 URL 的操作
+    /// </summary>
+    /// <remarks>支持多次调用。</remarks>
+    /// <param name="configure">自定义配置委托</param>
+    /// <returns>
+    ///     <see cref="HttpRequestBuilder" />
+    /// </returns>
+    public HttpRequestBuilder SetUriBuilder(Action<UriBuilder> configure)
+    {
+        configure.Combine(ref _uriBuilderConfigure);
+
+        return this;
+    }
+
+    /// <summary>
     ///     释放可释放的对象集合
     /// </summary>
     internal void ReleaseDisposables()

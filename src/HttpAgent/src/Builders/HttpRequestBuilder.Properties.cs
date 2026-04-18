@@ -23,6 +23,9 @@ public sealed partial class HttpRequestBuilder
     /// <inheritdoc cref="OnPreSetContent" />
     internal Action<HttpContent>? _onPreSetContent;
 
+    /// <inheritdoc cref="UriBuilderConfigure" />
+    internal Action<UriBuilder>? _uriBuilderConfigure;
+
     /// <summary>
     ///     请求地址
     /// </summary>
@@ -315,6 +318,15 @@ public sealed partial class HttpRequestBuilder
     ///     断言委托集合
     /// </summary>
     internal List<HttpAssertion>? Assertions { get; private set; }
+
+    /// <summary>
+    ///     用于处理在构建最终请求 URL 的操作
+    /// </summary>
+    public Action<UriBuilder>? UriBuilderConfigure
+    {
+        get => _uriBuilderConfigure;
+        private set => _uriBuilderConfigure = value;
+    }
 
     /// <summary>
     ///     表示启用 JSON 响应反序列化包装器
