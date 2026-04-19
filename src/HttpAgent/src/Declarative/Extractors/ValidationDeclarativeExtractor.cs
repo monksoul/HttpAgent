@@ -12,6 +12,12 @@ internal sealed class ValidationDeclarativeExtractor : IHttpDeclarativeExtractor
     /// <inheritdoc />
     public void Extract(HttpRequestBuilder httpRequestBuilder, HttpDeclarativeExtractorContext context)
     {
+        // 检查方法或接口是否贴有 [SuppressValidation] 特性
+        if (context.IsMethodDefined<SuppressValidationAttribute>(out _, true))
+        {
+            return;
+        }
+
         // 遍历所有非冻结类型参数并进行验证操作
         foreach (var (parameter, value) in context.UnFrozenParameters)
         {
@@ -49,20 +55,16 @@ internal sealed class ValidationDeclarativeExtractor : IHttpDeclarativeExtractor
             return;
         }
 
-        // 检查类型是否是基本类型或枚举类型或由它们组成的数组或集合类型
-        if (parameterType.IsBaseTypeOrEnumOrCollection())
+        // 检查参数是否贴有验证特性
+        if (parameter.IsDefined(typeof(ValidationAttribute), true))
         {
-            // 检查参数是否贴有验证特性
-            if (!parameter.IsDefined(typeof(ValidationAttribute), true))
-            {
-                return;
-            }
-
             // 验证单个值类型
             Validator.ValidateValue(value, new ValidationContext(value) { MemberName = parameterName },
                 parameter.GetCustomAttributes<ValidationAttribute>(true));
         }
-        else
+
+        // 检查类型是否是基本类型或枚举类型或由它们组成的数组或集合类型
+        if (!parameterType.IsBaseTypeOrEnumOrCollection())
         {
             // 验证复杂对象类型
             Validator.ValidateObject(value, new ValidationContext(value), true);

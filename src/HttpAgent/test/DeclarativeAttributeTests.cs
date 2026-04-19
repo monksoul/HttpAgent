@@ -622,6 +622,18 @@ public class DeclarativeAttributeTests
         Assert.Equal(typeof(MyRequestEventHandler), attribute2.HandlerType);
     }
 
+    [Fact]
+    public void SuppressValidationAttribute_ReturnOK()
+    {
+        var attributeUsage = typeof(SuppressValidationAttribute).GetCustomAttribute<AttributeUsageAttribute>();
+        Assert.NotNull(attributeUsage);
+        Assert.Equal(AttributeTargets.Method | AttributeTargets.Interface, attributeUsage.ValidOn);
+        Assert.False(attributeUsage.AllowMultiple);
+
+        var attribute = new SuppressValidationAttribute();
+        Assert.NotNull(attribute);
+    }
+
     public class MyRequestEventHandler : IHttpRequestEventHandler
     {
         /// <inheritdoc />

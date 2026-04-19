@@ -25,7 +25,8 @@ public class HttpDeclarativeBuilderTests
         Assert.NotNull(builder.Args);
         Assert.NotNull(builder.InterfaceType);
         Assert.Equal(typeof(IHttpDeclarativeTest), builder.InterfaceType);
-        Assert.False(builder._hasLoadedExtractors);
+        Assert.Equal(0, HttpDeclarativeBuilder._hasLoadedExtractors);
+        Assert.Null(HttpDeclarativeBuilder._cachedExtractors);
 
         Dictionary<Type, IHttpDeclarativeExtractor> extractors = new()
         {
@@ -111,7 +112,9 @@ public class HttpDeclarativeBuilderTests
         var httpRequestBuilder = builder.Build(new HttpRemoteOptions(), serviceProvider);
         Assert.Equal(HttpMethod.Get, httpRequestBuilder.HttpMethod);
         Assert.Equal("https://furion.net/", httpRequestBuilder.RequestUri?.ToString());
-        Assert.True(builder._hasLoadedExtractors);
+        Assert.Equal(1, HttpDeclarativeBuilder._hasLoadedExtractors);
+        Assert.NotNull(HttpDeclarativeBuilder._cachedExtractors);
+        Assert.NotEmpty(HttpDeclarativeBuilder._cachedExtractors);
 
         Assert.Equal(
             $"System.Threading.Tasks.Task<System.String> Method1() | {method.DeclaringType.ToFriendlyString()}",
@@ -131,7 +134,9 @@ public class HttpDeclarativeBuilderTests
                 serviceProvider);
         Assert.Equal(HttpMethod.Get, httpRequestBuilder.HttpMethod);
         Assert.Equal("https://furion.net/", httpRequestBuilder.RequestUri?.ToString());
-        Assert.True(builder._hasLoadedExtractors);
+        Assert.Equal(1, HttpDeclarativeBuilder._hasLoadedExtractors);
+        Assert.NotNull(HttpDeclarativeBuilder._cachedExtractors);
+        Assert.NotEmpty(HttpDeclarativeBuilder._cachedExtractors);
 
         Dictionary<Type, IHttpDeclarativeExtractor> extractors = new()
         {

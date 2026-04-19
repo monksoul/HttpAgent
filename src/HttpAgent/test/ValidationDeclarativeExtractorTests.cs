@@ -39,6 +39,15 @@ public class ValidationDeclarativeExtractorTests
             new HttpDeclarativeExtractorContext(method1, ["furion", new ValidationModel { Name = "furion" }],
                 new HttpDeclarativeMethodMetadata(method1, typeof(IValidationAttributeDeclarativeTest)));
         new ValidationDeclarativeExtractor().Extract(httpRequestBuilder1, context3);
+
+        // 验证禁用验证
+        var method6 =
+            typeof(IValidationAttributeDeclarativeTest).GetMethod(nameof(IValidationAttributeDeclarativeTest.Test6))!;
+        var httpRequestBuilder6 = HttpRequestBuilder.Get("http://localhost");
+        var context6 =
+            new HttpDeclarativeExtractorContext(method6, ["百小僧"],
+                new HttpDeclarativeMethodMetadata(method6, typeof(IValidationAttributeDeclarativeTest)));
+        new ValidationDeclarativeExtractor().Extract(httpRequestBuilder6, context6);
     }
 
     [Fact]
@@ -166,6 +175,10 @@ public interface IValidationAttributeDeclarativeTest : IHttpDeclarative
 
     [Get("http://localhost:5000")]
     Task Test5([StringEqual("Furion")] string str);
+
+    [Get("http://localhost:5000")]
+    [SuppressValidation]
+    Task Test6([StringEqual("Furion")] string str);
 }
 
 public class ValidationModel

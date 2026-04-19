@@ -57,7 +57,12 @@ public sealed class HttpDeclarativeBuilder
     /// <summary>
     ///     标识是否已加载自定义 HTTP 声明式提取器
     /// </summary>
-    internal bool _hasLoadedExtractors;
+    internal static int _hasLoadedExtractors;
+
+    /// <summary>
+    ///     HTTP 声明式提取器缓存
+    /// </summary>
+    internal static volatile IHttpDeclarativeExtractor[]? _cachedExtractors;
 
     /// <summary>
     ///     <inheritdoc cref="HttpDeclarativeBuilder" />
@@ -109,38 +114,60 @@ public sealed class HttpDeclarativeBuilder
         // 空检查
         ArgumentNullException.ThrowIfNull(httpRemoteOptions);
 
-        // 检查被调用方法是否贴有 [HttpMethod] 特性
-        if (!Method.IsDefined(typeof(HttpMethodAttribute), true))
+        // 初始化方法信息友好字符串
+        var declaringTypeFriendlyString = Method.DeclaringType?.ToFriendlyString();
+        var methodFriendlyString = Method.ToFriendlyString();
+
+        // 获取 HttpMethodAttribute 实例并检查被调用方法是否贴有 [HttpMethod] 特性
+        var httpMethodAttribute = Method.GetCustomAttribute<HttpMethodAttribute>(true);
+        if (httpMethodAttribute is null)
         {
             throw new InvalidOperationException(
-                $"No `[HttpMethod]` annotation was found in method `{Method.ToFriendlyString()}` of type `{Method.DeclaringType?.ToFriendlyString()}`.");
+                $"No `[HttpMethod]` annotation was found in method `{methodFriendlyString}` of type `{declaringTypeFriendlyString}`.");
         }
-
-        // 获取 HttpMethodAttribute 实例
-        var httpMethodAttribute = Method.GetCustomAttribute<HttpMethodAttribute>(true)!;
 
         // 初始化 HttpRequestBuilder 实例并添加声明式方法签名
         var httpRequestBuilder = HttpRequestBuilder
             .Create(httpMethodAttribute.HttpMethod, httpMethodAttribute.RequestUri)
-            .WithProperty(Constants.DECLARATIVE_METHOD_KEY,
-                $"{Method.ToFriendlyString()} | {Method.DeclaringType.ToFriendlyString()}");
+            .WithProperty(Constants.DECLARATIVE_METHOD_KEY, $"{methodFriendlyString} | {declaringTypeFriendlyString}");
 
         // 初始化 HttpDeclarativeExtractorContext 实例
         var httpDeclarativeExtractorContext = new HttpDeclarativeExtractorContext(Method, Args,
             new HttpDeclarativeMethodMetadata(Method, InterfaceType), serviceProvider);
 
         // 检查是否已加载自定义 HTTP 声明式提取器
-        if (!_hasLoadedExtractors)
+        if (Interlocked.CompareExchange(ref _hasLoadedExtractors, 1, 0) == 0)
         {
-            _hasLoadedExtractors = true;
+            // 批量添加自定义 HTTP 声明式提取器列表
+            var customExtractors = httpRemoteOptions.HttpDeclarativeExtractors?.SelectMany(u => u.Invoke()) ?? [];
+            foreach (var extractor in customExtractors)
+            {
+                // 获取 HTTP 声明式提取器类型
+                var extractorType = extractor.GetType();
 
-            // 添加自定义 IHttpDeclarativeExtractor 数组
-            _extractors.TryAdd(httpRemoteOptions.HttpDeclarativeExtractors?.SelectMany(u => u.Invoke()).ToArray(),
-                value => value.GetType());
+                // 检查 HTTP 声明式提取器是否实现 IFrozenHttpDeclarativeExtractor 接口
+                if (extractor is IFrozenHttpDeclarativeExtractor frozenExtractor)
+                {
+                    _frozenExtractors.TryAdd(extractorType, frozenExtractor);
+                }
+                else
+                {
+                    _extractors.TryAdd(extractorType, extractor);
+                }
+            }
+
+            // 自定义提取器已变更，清空缓存
+            _cachedExtractors = null;
         }
 
         // 组合所有 HTTP 声明式提取器
-        var extractors = _extractors.Values.Concat(_frozenExtractors.Values.OrderByDescending(e => e.Order)).ToArray();
+        var extractors = _cachedExtractors;
+        if (extractors is null)
+        {
+            var newExtractors = _extractors.Values
+                .Concat(_frozenExtractors.Values.OrderByDescending(e => e.Order).ToArray()).ToArray();
+            extractors = Interlocked.CompareExchange(ref _cachedExtractors, newExtractors, null) ?? newExtractors;
+        }
 
         // 遍历 HTTP 声明式提取器集合
         foreach (var extractor in extractors)
