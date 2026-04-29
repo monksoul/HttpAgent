@@ -10,11 +10,6 @@ namespace HttpAgent;
 public sealed class StressTestHarnessResult
 {
     /// <summary>
-    ///     用于将 <see cref="Stopwatch" /> 的 <c>ticks</c> 转换为毫秒
-    /// </summary>
-    internal static readonly double _ticksPerMillisecond = Stopwatch.Frequency / 1000.0;
-
-    /// <summary>
     ///     <inheritdoc cref="StressTestHarnessResult" />
     /// </summary>
     /// <param name="totalRequests">总请求次数</param>
@@ -24,7 +19,7 @@ public sealed class StressTestHarnessResult
     /// <param name="responseTimes">请求的响应时间数组</param>
     /// <exception cref="ArgumentException"></exception>
     public StressTestHarnessResult(long totalRequests, double totalTimeInSeconds, long successfulRequests,
-        long failedRequests, long[] responseTimes)
+        long failedRequests, double[] responseTimes)
     {
         // 检查请求的响应时间数组长度是否等于总请求次数
         if (responseTimes.Length != totalRequests)
@@ -158,34 +153,61 @@ public sealed class StressTestHarnessResult
     /// </summary>
     /// <param name="responseTimes">每个请求的响应时间数组</param>
     /// <param name="totalRequests">总请求次数</param>
-    internal void CalculateMinMaxAvgResponseTime(long[] responseTimes, long totalRequests)
+    internal void CalculateMinMaxAvgResponseTime(double[] responseTimes, long totalRequests)
     {
-        // 计算最小响应时间和最大响应时间并转换为毫秒
-        MinResponseTime = responseTimes.Min() / _ticksPerMillisecond;
-        MaxResponseTime = responseTimes.Max() / _ticksPerMillisecond;
+        // 检查总请求次数是否为 0
+        if (totalRequests == 0)
+        {
+            MinResponseTime = MaxResponseTime = AverageResponseTime = 0;
+            return;
+        }
 
-        // 计算总响应时间
-        var totalResponseTime = responseTimes.Sum();
+        // 初始化计算所需变量
+        var min = double.MaxValue;
+        var max = double.MinValue;
+        var sum = 0.0;
 
-        // 计算平均响应时间
-        var averageResponseTime = totalResponseTime > 0
-            ? totalResponseTime / totalRequests
-            : 0L;
+        // 计算总响应时间（毫秒）
+        foreach (var t in responseTimes)
+        {
+            if (t < min)
+            {
+                min = t;
+            }
 
-        // 将平均响应时间转换为毫秒
-        AverageResponseTime = averageResponseTime / _ticksPerMillisecond;
+            if (t > max)
+            {
+                max = t;
+            }
+
+            sum += t;
+        }
+
+        // 计算最小响应时间和最大响应时间（毫秒）
+        MinResponseTime = min;
+        MaxResponseTime = max;
+
+        // 计算平均响应时间（毫秒）
+        AverageResponseTime = sum / totalRequests;
     }
 
     /// <summary>
     ///     计算各个百分位的响应时间（毫秒）
     /// </summary>
     /// <param name="responseTimes">请求的响应时间数组</param>
-    internal void CalculatePercentiles(long[] responseTimes)
+    internal void CalculatePercentiles(double[] responseTimes)
     {
-        // 对请求响应时间数组进行排序
-        var sortedResponseTimes = responseTimes.OrderBy(t => t).ToArray();
+        // 检查请求的响应时间数组是否为 0
+        if (responseTimes.Length == 0)
+        {
+            return;
+        }
 
-        // 计算百分位数的响应时间并转换为毫秒
+        // 对请求响应时间数组进行排序
+        var sortedResponseTimes = (double[])responseTimes.Clone();
+        Array.Sort(sortedResponseTimes);
+
+        // 计算百分位数的响应时间（毫秒）
         Percentile10ResponseTime = CalculatePercentile(sortedResponseTimes, 0.1);
         Percentile25ResponseTime = CalculatePercentile(sortedResponseTimes, 0.25);
         Percentile50ResponseTime = CalculatePercentile(sortedResponseTimes, 0.5);
@@ -196,14 +218,14 @@ public sealed class StressTestHarnessResult
     }
 
     /// <summary>
-    ///     计算百分位数并转换为毫秒
+    ///     计算百分位数（毫秒）
     /// </summary>
     /// <param name="sortedResponseTimes">排序后的请求的响应时间数组</param>
     /// <param name="percentile">百分位数</param>
     /// <returns>
     ///     <see cref="double" />
     /// </returns>
-    internal static double CalculatePercentile(long[] sortedResponseTimes, double percentile)
+    internal static double CalculatePercentile(double[] sortedResponseTimes, double percentile)
     {
         var index = (int)Math.Ceiling(percentile * sortedResponseTimes.Length) - 1;
         if (index >= sortedResponseTimes.Length)
@@ -211,6 +233,11 @@ public sealed class StressTestHarnessResult
             index = sortedResponseTimes.Length - 1;
         }
 
-        return sortedResponseTimes[index] / _ticksPerMillisecond;
+        if (index < 0)
+        {
+            index = 0;
+        }
+
+        return sortedResponseTimes[index];
     }
 }

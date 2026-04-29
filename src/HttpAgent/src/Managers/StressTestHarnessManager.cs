@@ -86,111 +86,62 @@ internal sealed class StressTestHarnessManager
         var totalFailedRequests = 0L;
 
         // 用于记录每个请求的响应时间
-        var allResponseTimes = new List<long>();
+        var allResponseTimes = new List<double>(numberOfRequests * numberOfRounds);
 
         // 初始化总的测试时间
         var totalTime = TimeSpan.Zero;
 
         // 初始化信号量来控制并发度
-        var semaphoreSlim = new SemaphoreSlim(_httpStressTestHarnessBuilder.MaxDegreeOfParallelism);
+        using var semaphoreSlim = new SemaphoreSlim(_httpStressTestHarnessBuilder.MaxDegreeOfParallelism);
 
         // 初始化 Stopwatch 实例并开启计时操作
         var stopwatch = Stopwatch.StartNew();
 
-        // 循环执行指定轮次
-        for (var round = 0; round < numberOfRounds && !cancellationToken.IsCancellationRequested; round++)
+        try
         {
-            // 初始化 Task 数组来存储所有并发任务
-            var tasks = new Task[numberOfRequests];
-
-            // 重置响应时间数组
-            var responseTimes = new long[numberOfRequests];
-
-            // 重新开始计时
-            stopwatch.Restart();
-
-            // 循环创建指定并发请求数量的任务
-            for (var i = 0; i < numberOfRequests && !cancellationToken.IsCancellationRequested; i++)
+            // 循环执行指定轮次
+            for (var round = 0; round < numberOfRounds; round++)
             {
-                var index = i;
+                // 如果请求了取消，则抛出 OperationCanceledException 
+                cancellationToken.ThrowIfCancellationRequested();
 
-                // 创建新的异步任务
-                tasks[i] = Task.Run(async () =>
+                // 初始化 Task 数组来存储所有并发任务
+                var tasks = new Task[numberOfRequests];
+
+                // 初始化响应时间数组
+                var responseTimes = new double[numberOfRequests];
+
+                // 重新开始计时
+                stopwatch.Restart();
+
+                // 循环创建指定并发请求数量的任务
+                for (var i = 0; i < numberOfRequests; i++)
                 {
-                    // 等待信号量
-                    await semaphoreSlim.WaitAsync(cancellationToken);
+                    tasks[i] = ExecuteRequestAsync(i, semaphoreSlim, completionOption, responseTimes,
+                        cancellationToken);
+                }
 
-                    // 请求开始时间
-                    var requestStart = Stopwatch.GetTimestamp();
+                // 等待所有任务完成
+                await Task.WhenAll(tasks).ConfigureAwait(false);
 
-                    try
-                    {
-                        // 发送 HTTP 远程请求
-                        var httpResponseMessage =
-                            await _httpRemoteService.SendAsync(RequestBuilder, completionOption, cancellationToken);
+                // 记录本轮测试结束时间，并累加总的测试时间
+                totalTime += stopwatch.Elapsed;
 
-                        // 空检查
-                        if (httpResponseMessage is null)
-                        {
-                            // 输出调试信息
-                            Debugging.Error(Constants.HTTP_RESPONSE_MESSAGE_ISNULL_MESSAGE);
-
-                            return;
-                        }
-
-                        // 检查响应状态码是否是成功状态
-                        if (httpResponseMessage.IsSuccessStatusCode)
-                        {
-                            // 原子递增成功请求计数
-                            Interlocked.Increment(ref totalSuccessfulRequests);
-                        }
-                        else
-                        {
-                            // 原子递增失败请求计数
-                            Interlocked.Increment(ref totalFailedRequests);
-                        }
-                    }
-                    // 任务被取消
-                    catch (Exception e) when (cancellationToken.IsCancellationRequested ||
-                                              e is OperationCanceledException)
-                    {
-                        throw;
-                    }
-                    catch (Exception)
-                    {
-                        // 原子递增失败请求计数
-                        Interlocked.Increment(ref totalFailedRequests);
-                    }
-                    finally
-                    {
-                        // 计算并存储请求的响应时间
-                        var requestEnd = Stopwatch.GetTimestamp();
-                        responseTimes[index] = requestEnd - requestStart;
-
-                        // 释放信号量
-                        semaphoreSlim.Release();
-                    }
-                }, cancellationToken);
+                // 将本轮的响应时间追加到总的响应时间数组中
+                allResponseTimes.AddRange(responseTimes);
             }
-
-            // 等待所有任务完成
-            await Task.WhenAll(tasks).ConfigureAwait(false);
-
-            // 记录本轮测试结束时间，并累加总的测试时间
-            totalTime += stopwatch.Elapsed;
-
-            // 将本轮的响应时间追加到总的响应时间数组中
-            allResponseTimes.AddRange(responseTimes);
         }
+        finally
+        {
+            // 停止计时
+            stopwatch.Stop();
 
-        // 停止计时
-        stopwatch.Stop();
+            // 释放资源集合
+            RequestBuilder.ReleaseResources();
+        }
 
         // 获取请求总用时（秒）
         var totalTimeInSeconds = totalTime.TotalSeconds;
-
-        // 释放资源集合
-        RequestBuilder.ReleaseResources();
 
         return new StressTestHarnessResult(
             numberOfRequests * numberOfRounds,
@@ -198,5 +149,65 @@ internal sealed class StressTestHarnessManager
             totalSuccessfulRequests,
             totalFailedRequests,
             allResponseTimes.ToArray());
+
+        // 封装单次请求异步方法
+        async Task ExecuteRequestAsync(int idx, SemaphoreSlim semaphore, HttpCompletionOption option, double[] times,
+            CancellationToken ct)
+        {
+            // 等待信号量
+            await semaphore.WaitAsync(ct).ConfigureAwait(false);
+
+            // 请求开始时间
+            var requestStart = Stopwatch.GetTimestamp();
+
+            try
+            {
+                // 发送 HTTP 远程请求
+                var httpResponseMessage =
+                    await _httpRemoteService.SendAsync(RequestBuilder, option, ct).ConfigureAwait(false);
+
+                // 空检查
+                if (httpResponseMessage is null)
+                {
+                    // 输出调试信息
+                    Debugging.Error(Constants.HTTP_RESPONSE_MESSAGE_ISNULL_MESSAGE);
+
+                    // 原子递增失败请求计数
+                    Interlocked.Increment(ref totalFailedRequests);
+                    return;
+                }
+
+                // 检查响应状态码是否是成功状态
+                if (httpResponseMessage.IsSuccessStatusCode)
+                {
+                    // 原子递增成功请求计数
+                    Interlocked.Increment(ref totalSuccessfulRequests);
+                }
+                else
+                {
+                    // 原子递增失败请求计数
+                    Interlocked.Increment(ref totalFailedRequests);
+                }
+            }
+            // 任务被取消
+            catch (Exception e) when (ct.IsCancellationRequested || e is OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception)
+            {
+                // 原子递增失败请求计数
+                Interlocked.Increment(ref totalFailedRequests);
+            }
+            finally
+            {
+                // 计算并存储请求的响应时间
+                var requestEnd = Stopwatch.GetTimestamp();
+                times[idx] = (requestEnd - requestStart) * 1000.0 / Stopwatch.Frequency;
+
+                // 释放信号量
+                semaphore.Release();
+            }
+        }
     }
 }

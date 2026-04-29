@@ -10304,12 +10304,7 @@
                 压力测试结果
             </summary>
         </member>
-        <member name="F:HttpAgent.StressTestHarnessResult._ticksPerMillisecond">
-            <summary>
-                用于将 <see cref="T:System.Diagnostics.Stopwatch" /> 的 <c>ticks</c> 转换为毫秒
-            </summary>
-        </member>
-        <member name="M:HttpAgent.StressTestHarnessResult.#ctor(System.Int64,System.Double,System.Int64,System.Int64,System.Int64[])">
+        <member name="M:HttpAgent.StressTestHarnessResult.#ctor(System.Int64,System.Double,System.Int64,System.Int64,System.Double[])">
             <summary>
                 <inheritdoc cref="T:HttpAgent.StressTestHarnessResult" />
             </summary>
@@ -10405,22 +10400,22 @@
             <param name="totalRequests">总请求次数</param>
             <param name="totalTimeInSeconds">总用时（秒）</param>
         </member>
-        <member name="M:HttpAgent.StressTestHarnessResult.CalculateMinMaxAvgResponseTime(System.Int64[],System.Int64)">
+        <member name="M:HttpAgent.StressTestHarnessResult.CalculateMinMaxAvgResponseTime(System.Double[],System.Int64)">
             <summary>
                 计算最小、最大和平均响应时间（毫秒）
             </summary>
             <param name="responseTimes">每个请求的响应时间数组</param>
             <param name="totalRequests">总请求次数</param>
         </member>
-        <member name="M:HttpAgent.StressTestHarnessResult.CalculatePercentiles(System.Int64[])">
+        <member name="M:HttpAgent.StressTestHarnessResult.CalculatePercentiles(System.Double[])">
             <summary>
                 计算各个百分位的响应时间（毫秒）
             </summary>
             <param name="responseTimes">请求的响应时间数组</param>
         </member>
-        <member name="M:HttpAgent.StressTestHarnessResult.CalculatePercentile(System.Int64[],System.Double)">
+        <member name="M:HttpAgent.StressTestHarnessResult.CalculatePercentile(System.Double[],System.Double)">
             <summary>
-                计算百分位数并转换为毫秒
+                计算百分位数（毫秒）
             </summary>
             <param name="sortedResponseTimes">排序后的请求的响应时间数组</param>
             <param name="percentile">百分位数</param>
