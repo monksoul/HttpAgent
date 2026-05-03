@@ -274,6 +274,13 @@ public class HttpRequestBuilderTests
         httpRequestBuilder6.AppendQueryParameters(uriBuilder6, new TestUrlParameterFormatter());
         Assert.Equal("?date=2025-05-22",
             uriBuilder6.Query);
+
+        var httpRequestBuilder7 =
+            new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost?name=monksoul&id=10"))
+                .WithQueryParameter("age", 30).WithQueryParametersSorter(arr => arr.OrderBy(u => u).ToArray());
+        var uriBuilder7 = new UriBuilder(httpRequestBuilder7.RequestUri!);
+        httpRequestBuilder7.AppendQueryParameters(uriBuilder7, formatter);
+        Assert.Equal("?age=30&id=10&name=monksoul", uriBuilder7.Query);
     }
 
     [Fact]

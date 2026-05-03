@@ -22,8 +22,12 @@
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.0"/>
     </ItemGroup>
 
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net11.0' ">
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="11.0.0-preview.3.26207.106"/>
+    </ItemGroup>
+
     <ItemGroup>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.4.0"/>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.5.1"/>
         <PackageReference Include="xunit.v3" Version="3.2.2"/>
         <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
             <PrivateAssets>all</PrivateAssets>

@@ -779,8 +779,8 @@ internal sealed partial class HttpRemoteService : IHttpRemoteService
             return;
         }
 
-        httpClient.DefaultRequestHeaders.TryAddWithoutValidation(HeaderNames.UserAgent,
-            Constants.USER_AGENT_OF_BROWSER);
+        // 设置默认 User-Agent
+        httpClient.DefaultRequestHeaders.TryAddWithoutValidation(HeaderNames.UserAgent, UserAgents.Edge.PC);
     }
 
     /// <summary>

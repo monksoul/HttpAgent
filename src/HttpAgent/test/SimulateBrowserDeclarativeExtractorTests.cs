@@ -50,7 +50,7 @@ public class SimulateBrowserDeclarativeExtractorTests
         Assert.Single(httpRequestBuilder3.Headers);
         Assert.Equal("User-Agent", httpRequestBuilder3.Headers.Keys.First());
         Assert.Equal(
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0",
             httpRequestBuilder3.Headers.Values.First().First());
 
         var method4 =
@@ -64,7 +64,7 @@ public class SimulateBrowserDeclarativeExtractorTests
         Assert.Single(httpRequestBuilder4.Headers);
         Assert.Equal("User-Agent", httpRequestBuilder4.Headers.Keys.First());
         Assert.Equal(
-            "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Mobile Safari/537.36 Edg/142.0.0.0",
+            "Mozilla/5.0 (Linux; Android 15; SM-S928B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Mobile Safari/537.36 EdgA/145.0.0.0",
             httpRequestBuilder4.Headers.Values.First().First());
     }
 }

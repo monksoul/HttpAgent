@@ -744,6 +744,23 @@ public sealed partial class HttpRequestBuilder
     }
 
     /// <summary>
+    ///     设置查询参数排序规则
+    /// </summary>
+    /// <param name="sorter">查询参数排序委托，接收 <c>key=value</c> 格式的字符串数组，返回排序后的新数组。返回 <c>null</c> 时不执行排序，保持原始添加顺序</param>
+    /// <returns>
+    ///     <see cref="HttpRequestBuilder" />
+    /// </returns>
+    public HttpRequestBuilder WithQueryParametersSorter(Func<string[], string[]> sorter)
+    {
+        // 空检查
+        ArgumentNullException.ThrowIfNull(sorter);
+
+        QueryParametersSorter = sorter;
+
+        return this;
+    }
+
+    /// <summary>
     ///     设置需要从 URL 中移除的查询参数集合
     /// </summary>
     /// <remarks>支持多次调用。</remarks>
@@ -1361,16 +1378,26 @@ public sealed partial class HttpRequestBuilder
         WithHeader(HeaderNames.Referer, referer, replace: true);
 
     /// <summary>
-    ///     设置模拟浏览器环境
+    ///     设置请求标头的 <c>User-Agent</c> 值
     /// </summary>
-    /// <remarks>设置此配置后，将在单次请求标头中添加主流浏览器的 <c>User-Agent</c> 值。</remarks>
-    /// <param name="simulateMobile">是否模拟移动端，默认值为：<c>false</c>（即模拟桌面端）。</param>
+    /// <remarks>推荐使用 <see cref="UserAgents" /> 静态类。</remarks>
+    /// <param name="userAgent"><c>User-Agent</c> 值</param>
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
-    public HttpRequestBuilder SimulateBrowser(bool simulateMobile = false) =>
-        WithHeader(HeaderNames.UserAgent,
-            !simulateMobile ? Constants.USER_AGENT_OF_BROWSER : Constants.USER_AGENT_OF_MOBILE_BROWSER, replace: true);
+    public HttpRequestBuilder UseUserAgent(string? userAgent) =>
+        WithHeader(HeaderNames.UserAgent, userAgent, replace: true);
+
+    /// <summary>
+    ///     设置模拟浏览器环境
+    /// </summary>
+    /// <remarks>支持桌面端或移动端切换。设置此配置后，将在单次请求标头中添加 <c>User-Agent</c> 值。</remarks>
+    /// <param name="isMobile">是否为移动端，默认值为：<c>false</c>（即桌面端）</param>
+    /// <returns>
+    ///     <see cref="HttpRequestBuilder" />
+    /// </returns>
+    public HttpRequestBuilder SimulateBrowser(bool isMobile = false) =>
+        UseUserAgent(!isMobile ? UserAgents.Edge.PC : UserAgents.Edge.Mobile);
 
     /// <summary>
     ///     添加状态码处理程序

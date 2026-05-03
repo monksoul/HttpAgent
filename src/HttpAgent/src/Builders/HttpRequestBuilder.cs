@@ -260,10 +260,13 @@ public sealed partial class HttpRequestBuilder
                 u => QueryParametersToRemove?.TryGetValue(u.Key, out _) == false).Select(u => $"{u.Key}={u.Value}")
             .ToArray();
 
+        // 调用查询参数排序委托
+        var sortedQueryParameters = QueryParametersSorter?.Invoke(finalQueryParameters) ?? finalQueryParameters;
+
         // 构建查询字符串赋值给 UriBuilder 的 Query 属性
-        uriBuilder.Query = finalQueryParameters.Length == 0
+        uriBuilder.Query = sortedQueryParameters.Length == 0
             ? string.Empty
-            : '?' + string.Join('&', finalQueryParameters);
+            : '?' + string.Join('&', sortedQueryParameters);
     }
 
     /// <summary>

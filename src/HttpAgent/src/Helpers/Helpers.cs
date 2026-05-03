@@ -45,8 +45,7 @@ internal static class Helpers
         // httpClient.PerformanceOptimization();
 
         // 设置默认 User-Agent
-        httpClient.DefaultRequestHeaders.TryAddWithoutValidation(HeaderNames.UserAgent,
-            Constants.USER_AGENT_OF_BROWSER);
+        httpClient.DefaultRequestHeaders.TryAddWithoutValidation(HeaderNames.UserAgent, UserAgents.Edge.PC);
 
         try
         {

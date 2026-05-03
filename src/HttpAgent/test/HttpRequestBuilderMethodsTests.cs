@@ -882,6 +882,23 @@ public class HttpRequestBuilderMethodsTests
     }
 
     [Fact]
+    public void WithQueryParametersSorter_Invalid_Parameters()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        Assert.Throws<ArgumentNullException>(() => httpRequestBuilder.WithQueryParametersSorter(null!));
+    }
+
+    [Fact]
+    public void WithQueryParametersSorter_ReturnOK()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        Assert.Null(httpRequestBuilder.QueryParametersSorter);
+
+        httpRequestBuilder.WithQueryParametersSorter(arr => arr);
+        Assert.NotNull(httpRequestBuilder.QueryParametersSorter);
+    }
+
+    [Fact]
     public void RemoveQueryParameters_Invalid_Parameters()
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
@@ -1595,6 +1612,47 @@ public class HttpRequestBuilderMethodsTests
     }
 
     [Fact]
+    public void UseUserAgent_ReturnOK()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        httpRequestBuilder.UseUserAgent(null);
+
+        Assert.NotNull(httpRequestBuilder.Headers);
+        Assert.Single(httpRequestBuilder.Headers);
+        Assert.Null(httpRequestBuilder.Headers["User-Agent"].First());
+
+        httpRequestBuilder.UseUserAgent(UserAgents.Edge.PC);
+
+        Assert.NotNull(httpRequestBuilder.Headers);
+        Assert.Single(httpRequestBuilder.Headers);
+        Assert.Equal(
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0",
+            httpRequestBuilder.Headers["User-Agent"].First());
+
+        httpRequestBuilder.UseUserAgent(UserAgents.Edge.Mobile);
+        Assert.NotNull(httpRequestBuilder.Headers);
+        Assert.Single(httpRequestBuilder.Headers);
+        Assert.Equal(
+            "Mozilla/5.0 (Linux; Android 15; SM-S928B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Mobile Safari/537.36 EdgA/145.0.0.0",
+            httpRequestBuilder.Headers["User-Agent"].First());
+    }
+
+    [Fact]
+    public void UseUserAgent_Duplicate_ReturnOK()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        httpRequestBuilder.UseUserAgent(UserAgents.Edge.PC);
+        httpRequestBuilder.UseUserAgent(UserAgents.Edge.PC);
+
+        Assert.NotNull(httpRequestBuilder.Headers);
+        Assert.Single(httpRequestBuilder.Headers);
+        Assert.Single(httpRequestBuilder.Headers["User-Agent"]);
+        Assert.Equal(
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0",
+            httpRequestBuilder.Headers["User-Agent"].First());
+    }
+
+    [Fact]
     public void SimulateBrowser_ReturnOK()
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
@@ -1603,7 +1661,7 @@ public class HttpRequestBuilderMethodsTests
         Assert.NotNull(httpRequestBuilder.Headers);
         Assert.Single(httpRequestBuilder.Headers);
         Assert.Equal(
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0",
             httpRequestBuilder.Headers["User-Agent"].First());
 
         httpRequestBuilder.SimulateBrowser(true);
@@ -1611,7 +1669,7 @@ public class HttpRequestBuilderMethodsTests
         Assert.NotNull(httpRequestBuilder.Headers);
         Assert.Single(httpRequestBuilder.Headers);
         Assert.Equal(
-            "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Mobile Safari/537.36 Edg/142.0.0.0",
+            "Mozilla/5.0 (Linux; Android 15; SM-S928B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Mobile Safari/537.36 EdgA/145.0.0.0",
             httpRequestBuilder.Headers["User-Agent"].First());
     }
 
@@ -1626,7 +1684,7 @@ public class HttpRequestBuilderMethodsTests
         Assert.Single(httpRequestBuilder.Headers);
         Assert.Single(httpRequestBuilder.Headers["User-Agent"]);
         Assert.Equal(
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0",
             httpRequestBuilder.Headers["User-Agent"].First());
     }
 

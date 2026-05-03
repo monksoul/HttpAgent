@@ -101,6 +101,12 @@ public sealed partial class HttpRequestBuilder
     public IDictionary<string, List<object?>>? QueryParameters { get; private set; }
 
     /// <summary>
+    ///     查询参数排序委托
+    /// </summary>
+    /// <remarks>接收 <c>key=value</c> 格式的字符串数组，返回排序后的新数组。返回 <c>null</c> 时不执行排序，保持原始添加顺序。</remarks>
+    public Func<string[], string[]>? QueryParametersSorter { get; private set; }
+
+    /// <summary>
     ///     需要从 URL 中移除的查询参数集合
     /// </summary>
     public HashSet<string>? QueryParametersToRemove { get; private set; }
