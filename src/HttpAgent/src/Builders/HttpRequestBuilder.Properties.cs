@@ -103,7 +103,7 @@ public sealed partial class HttpRequestBuilder
     /// <summary>
     ///     查询参数排序委托
     /// </summary>
-    /// <remarks>接收 <c>key=value</c> 格式的字符串数组，返回排序后的新数组。返回 <c>null</c> 时不执行排序，保持原始添加顺序。</remarks>
+    /// <remarks>接收 <c>key=value</c> 格式的字符串数组，返回排序后的新数组。为 <c>null</c> 时不执行排序，保持原始添加顺序。</remarks>
     public Func<string[], string[]>? QueryParametersSorter { get; private set; }
 
     /// <summary>

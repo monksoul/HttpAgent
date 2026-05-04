@@ -21,6 +21,15 @@ public sealed class HttpMultipartFormDataBuilder
     internal Action<HttpContent, string>? _onPreAddContent;
 
     /// <summary>
+    ///     多部分表单内容项排序委托
+    /// </summary>
+    /// <remarks>
+    ///     接收原始 <see cref="MultipartFormDataItem" /> 集合，返回排序后的可枚举集合。为 <c>null</c>
+    ///     时使用默认排序：非二进制内容（如字符串、对象）优先，二进制内容（如文件流、字节数组）后置。
+    /// </remarks>
+    internal Func<IEnumerable<MultipartFormDataItem>, IEnumerable<MultipartFormDataItem>>? FormItemsSorter;
+
+    /// <summary>
     ///     用于处理在添加 <see cref="HttpContent" /> 表单项内容前，对表单名称进行自定义转换的转换器
     /// </summary>
     internal Func<string, string?>? FormNameTransformer;
@@ -124,6 +133,24 @@ public sealed class HttpMultipartFormDataBuilder
             FormNamingPolicy.KebabCaseUpper => JsonNamingPolicy.KebabCaseUpper.ConvertName,
             _ => throw new ArgumentOutOfRangeException(nameof(namingPolicy), namingPolicy, null)
         });
+
+    /// <summary>
+    ///     设置多部分表单内容项的排序规则
+    /// </summary>
+    /// <param name="sorter">
+    ///     接收原始 <see cref="MultipartFormDataItem" /> 集合，返回排序后的可枚举集合。为 <c>null</c>
+    ///     时使用默认排序：非二进制内容（如字符串、对象）优先，二进制内容（如文件流、字节数组）后置
+    /// </param>
+    /// <returns>
+    ///     <see cref="HttpMultipartFormDataBuilder" />
+    /// </returns>
+    public HttpMultipartFormDataBuilder SetFormItemsSorter(
+        Func<IEnumerable<MultipartFormDataItem>, IEnumerable<MultipartFormDataItem>>? sorter)
+    {
+        FormItemsSorter = sorter;
+
+        return this;
+    }
 
     /// <summary>
     ///     添加 JSON 内容
@@ -786,8 +813,7 @@ public sealed class HttpMultipartFormDataBuilder
     ///     <see cref="MultipartFormDataContent" />
     /// </returns>
     internal MultipartFormDataContent? Build(HttpRemoteOptions httpRemoteOptions,
-        IHttpContentProcessorFactory httpContentProcessorFactory,
-        params IHttpContentProcessor[]? processors)
+        IHttpContentProcessorFactory httpContentProcessorFactory, params IHttpContentProcessor[]? processors)
     {
         // 空检查
         ArgumentNullException.ThrowIfNull(httpRemoteOptions);
@@ -814,9 +840,13 @@ public sealed class HttpMultipartFormDataBuilder
                 MediaTypeHeaderValue.Parse($"{MediaTypeNames.Multipart.FormData}; boundary={boundary}");
         }
 
-        // 为确保请求分析工具能完整显示所有表单数据（避免因打印裁剪导致信息丢失），先对数据排序，再逐条遍历添加
-        // 这里留有一个疑问：若第三方接口依赖请求数据的顺序，当前做法是否可能导致请求失败？
-        foreach (var dataItem in _partContents.OrderBy(u => u.RawContent is byte[] or Stream or HttpContent ? 1 : 0))
+        // 调用自定义多部分表单内容项排序委托
+        // 为 null 时使用默认排序：非二进制内容（如字符串、对象）优先，二进制内容（如文件流、字节数组）后置：主要解决请求分析工具不能完整显示所有表单数据问题（避免因打印裁剪导致信息丢失）
+        var sortedPartContents = FormItemsSorter?.Invoke(_partContents) ??
+                                 _partContents.OrderBy(u => u.RawContent is byte[] or Stream or HttpContent ? 1 : 0);
+
+        // 逐条遍历添加
+        foreach (var dataItem in sortedPartContents)
         {
             // 尝试获取转换后的表单名称
             var transformedName = FormNameTransformer?.Invoke(dataItem.Name) ?? dataItem.Name;

@@ -24,6 +24,7 @@ public class HttpMultipartFormDataBuilderTests
         Assert.Null(builder._onPreAddContent);
         Assert.Null(builder.OnPreAddContent);
         Assert.Null(builder.FormNameTransformer);
+        Assert.Null(builder.FormItemsSorter);
     }
 
     [Fact]
@@ -83,6 +84,19 @@ public class HttpMultipartFormDataBuilderTests
 
         builder.SetFormNameTransformer(u => u);
         Assert.NotNull(builder.FormNameTransformer);
+    }
+
+    [Fact]
+    public void SetFormItemsSorter_ReturnOK()
+    {
+        var builder = new HttpMultipartFormDataBuilder(HttpRequestBuilder.Get("http://localhost"));
+        Assert.Null(builder.FormItemsSorter);
+
+        builder.SetFormItemsSorter(arr => arr);
+        Assert.NotNull(builder.FormItemsSorter);
+
+        builder.SetFormItemsSorter(null);
+        Assert.Null(builder.FormItemsSorter);
     }
 
     [Fact]

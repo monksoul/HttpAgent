@@ -1,21 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
     <ItemGroup>
-        <PackageReference Include="MessagePack" Version="3.1.4"/>
-        <PackageReference Include="Shapeless" Version="1.1.7"/>
+        <PackageReference Include="MessagePack" Version="3.1.4" />
+        <PackageReference Include="Shapeless" Version="1.2.0" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\src\HttpAgent.csproj"/>
+        <ProjectReference Include="..\src\HttpAgent.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <None Remove="test.txt"/>
-        <None Remove="test2.txt"/>
-        <None Remove="test3.txt"/>
-        <None Remove="test4.txt"/>
-        <None Remove="test5.txt"/>
-        <None Remove="test6.txt"/>
+        <None Remove="test.txt" />
+        <None Remove="test2.txt" />
+        <None Remove="test3.txt" />
+        <None Remove="test4.txt" />
+        <None Remove="test5.txt" />
+        <None Remove="test6.txt" />
         <Content Include="test.txt">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>

@@ -746,15 +746,12 @@ public sealed partial class HttpRequestBuilder
     /// <summary>
     ///     设置查询参数排序规则
     /// </summary>
-    /// <param name="sorter">查询参数排序委托，接收 <c>key=value</c> 格式的字符串数组，返回排序后的新数组。返回 <c>null</c> 时不执行排序，保持原始添加顺序</param>
+    /// <param name="sorter">查询参数排序委托，接收 <c>key=value</c> 格式的字符串数组，返回排序后的新数组。为 <c>null</c> 时不执行排序，保持原始添加顺序</param>
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
-    public HttpRequestBuilder WithQueryParametersSorter(Func<string[], string[]> sorter)
+    public HttpRequestBuilder WithQueryParametersSorter(Func<string[], string[]>? sorter)
     {
-        // 空检查
-        ArgumentNullException.ThrowIfNull(sorter);
-
         QueryParametersSorter = sorter;
 
         return this;

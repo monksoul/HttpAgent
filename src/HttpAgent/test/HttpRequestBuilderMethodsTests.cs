@@ -882,13 +882,6 @@ public class HttpRequestBuilderMethodsTests
     }
 
     [Fact]
-    public void WithQueryParametersSorter_Invalid_Parameters()
-    {
-        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
-        Assert.Throws<ArgumentNullException>(() => httpRequestBuilder.WithQueryParametersSorter(null!));
-    }
-
-    [Fact]
     public void WithQueryParametersSorter_ReturnOK()
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
@@ -896,6 +889,9 @@ public class HttpRequestBuilderMethodsTests
 
         httpRequestBuilder.WithQueryParametersSorter(arr => arr);
         Assert.NotNull(httpRequestBuilder.QueryParametersSorter);
+
+        httpRequestBuilder.WithQueryParametersSorter(null);
+        Assert.Null(httpRequestBuilder.QueryParametersSorter);
     }
 
     [Fact]
