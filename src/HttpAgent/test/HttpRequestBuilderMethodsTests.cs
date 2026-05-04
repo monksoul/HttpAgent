@@ -882,15 +882,15 @@ public class HttpRequestBuilderMethodsTests
     }
 
     [Fact]
-    public void WithQueryParametersSorter_ReturnOK()
+    public void SetQueryParametersSorter_ReturnOK()
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
         Assert.Null(httpRequestBuilder.QueryParametersSorter);
 
-        httpRequestBuilder.WithQueryParametersSorter(arr => arr);
+        httpRequestBuilder.SetQueryParametersSorter(arr => arr);
         Assert.NotNull(httpRequestBuilder.QueryParametersSorter);
 
-        httpRequestBuilder.WithQueryParametersSorter(null);
+        httpRequestBuilder.SetQueryParametersSorter(null);
         Assert.Null(httpRequestBuilder.QueryParametersSorter);
     }
 
@@ -1608,16 +1608,16 @@ public class HttpRequestBuilderMethodsTests
     }
 
     [Fact]
-    public void UseUserAgent_ReturnOK()
+    public void SetUserAgent_ReturnOK()
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
-        httpRequestBuilder.UseUserAgent(null);
+        httpRequestBuilder.SetUserAgent(null);
 
         Assert.NotNull(httpRequestBuilder.Headers);
         Assert.Single(httpRequestBuilder.Headers);
         Assert.Null(httpRequestBuilder.Headers["User-Agent"].First());
 
-        httpRequestBuilder.UseUserAgent(UserAgents.Edge.PC);
+        httpRequestBuilder.SetUserAgent(UserAgents.Edge.PC);
 
         Assert.NotNull(httpRequestBuilder.Headers);
         Assert.Single(httpRequestBuilder.Headers);
@@ -1625,7 +1625,7 @@ public class HttpRequestBuilderMethodsTests
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0",
             httpRequestBuilder.Headers["User-Agent"].First());
 
-        httpRequestBuilder.UseUserAgent(UserAgents.Edge.Mobile);
+        httpRequestBuilder.SetUserAgent(UserAgents.Edge.Mobile);
         Assert.NotNull(httpRequestBuilder.Headers);
         Assert.Single(httpRequestBuilder.Headers);
         Assert.Equal(
@@ -1634,11 +1634,11 @@ public class HttpRequestBuilderMethodsTests
     }
 
     [Fact]
-    public void UseUserAgent_Duplicate_ReturnOK()
+    public void SetUserAgent_Duplicate_ReturnOK()
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
-        httpRequestBuilder.UseUserAgent(UserAgents.Edge.PC);
-        httpRequestBuilder.UseUserAgent(UserAgents.Edge.PC);
+        httpRequestBuilder.SetUserAgent(UserAgents.Edge.PC);
+        httpRequestBuilder.SetUserAgent(UserAgents.Edge.PC);
 
         Assert.NotNull(httpRequestBuilder.Headers);
         Assert.Single(httpRequestBuilder.Headers);

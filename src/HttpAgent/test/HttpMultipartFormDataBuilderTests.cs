@@ -1104,6 +1104,18 @@ public class HttpMultipartFormDataBuilderTests
         Assert.Equal(2, multipartFormDataContent4.Count());
         Assert.Equal("form-data; name=\"_test\"",
             multipartFormDataContent4.First().Headers.ContentDisposition?.ToString());
+
+        builder.AddByteArray([1, 2, 3]);
+        builder.AddText("furion", "txt");
+        var multipartFormDataContent5 = builder.Build(httpRemoteOptions, httpContentProcessorFactory, null);
+        Assert.NotNull(multipartFormDataContent5);
+        Assert.Equal(4, multipartFormDataContent5.Count());
+        Assert.True(multipartFormDataContent5.Last() is ByteArrayContent);
+
+        builder.SetFormItemsSorter(items => items.OrderBy(u => u.RawContent is byte[] ? 0 : 1));
+        var multipartFormDataContent6 = builder.Build(httpRemoteOptions, httpContentProcessorFactory, null);
+        Assert.NotNull(multipartFormDataContent6);
+        Assert.True(multipartFormDataContent6.First() is ByteArrayContent);
     }
 
     [Fact]

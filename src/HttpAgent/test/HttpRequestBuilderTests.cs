@@ -277,7 +277,7 @@ public class HttpRequestBuilderTests
 
         var httpRequestBuilder7 =
             new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost?name=monksoul&id=10"))
-                .WithQueryParameter("age", 30).WithQueryParametersSorter(arr => arr.OrderBy(u => u).ToArray());
+                .WithQueryParameter("age", 30).SetQueryParametersSorter(arr => arr.OrderBy(u => u).ToArray());
         var uriBuilder7 = new UriBuilder(httpRequestBuilder7.RequestUri!);
         httpRequestBuilder7.AppendQueryParameters(uriBuilder7, formatter);
         Assert.Equal("?age=30&id=10&name=monksoul", uriBuilder7.Query);

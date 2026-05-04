@@ -750,7 +750,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
-    public HttpRequestBuilder WithQueryParametersSorter(Func<string[], string[]>? sorter)
+    public HttpRequestBuilder SetQueryParametersSorter(Func<string[], string[]>? sorter)
     {
         QueryParametersSorter = sorter;
 
@@ -1382,7 +1382,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
-    public HttpRequestBuilder UseUserAgent(string? userAgent) =>
+    public HttpRequestBuilder SetUserAgent(string? userAgent) =>
         WithHeader(HeaderNames.UserAgent, userAgent, replace: true);
 
     /// <summary>
@@ -1394,7 +1394,7 @@ public sealed partial class HttpRequestBuilder
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
     public HttpRequestBuilder SimulateBrowser(bool isMobile = false) =>
-        UseUserAgent(!isMobile ? UserAgents.Edge.PC : UserAgents.Edge.Mobile);
+        SetUserAgent(!isMobile ? UserAgents.Edge.PC : UserAgents.Edge.Mobile);
 
     /// <summary>
     ///     添加状态码处理程序
