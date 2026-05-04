@@ -478,10 +478,10 @@ public class DeclarativeAttributeTests
         Assert.False(attributeUsage.AllowMultiple);
 
         var attribute = new SimulateBrowserAttribute();
-        Assert.False(attribute.Mobile);
+        Assert.False(attribute.IsMobile);
 
-        var attribute2 = new SimulateBrowserAttribute { Mobile = true };
-        Assert.True(attribute2.Mobile);
+        var attribute2 = new SimulateBrowserAttribute { IsMobile = true };
+        Assert.True(attribute2.IsMobile);
     }
 
     [Fact]

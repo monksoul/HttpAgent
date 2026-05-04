@@ -34,6 +34,8 @@ consumption and high test coverage.
   exchange efficiency.
 - **`WebService` Support**: Comprehensive support for `SOAP` and `RESTful WebService`, including automatic client proxy
   generation, `WSDL` parsing, `XML/JSON` data binding, simplifying integration and interaction.
+- **`OData` Support**: Built-in `OData` client with support for standard query options including `$filter`, `$select`,
+  and `$expand`, streamlining `OData` service integration.
 - **Flexible Response Transformation**: Provides common `HTTP` response transformers and supports custom transformation
   logic.
 - **High Performance and Resource Management**: Employs memory optimization techniques and connection pool management to

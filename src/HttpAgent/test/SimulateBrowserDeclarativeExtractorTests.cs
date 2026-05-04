@@ -84,6 +84,6 @@ public interface ISimulateBrowserDeclarativeExtractorTest2 : IHttpDeclarative
     [SimulateBrowser]
     Task Test2();
 
-    [SimulateBrowser(Mobile = true)]
+    [SimulateBrowser(IsMobile = true)]
     Task Test3();
 }

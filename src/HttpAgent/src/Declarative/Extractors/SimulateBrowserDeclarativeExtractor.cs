@@ -19,6 +19,6 @@ internal sealed class SimulateBrowserDeclarativeExtractor : IHttpDeclarativeExtr
         }
 
         // 设置模拟浏览器环境
-        httpRequestBuilder.SimulateBrowser(simulateBrowserAttribute.Mobile);
+        httpRequestBuilder.SimulateBrowser(simulateBrowserAttribute.IsMobile);
     }
 }
