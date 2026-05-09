@@ -34,7 +34,7 @@ public static class StringUtility
         }
 
         // 注册 CodePagesEncodingProvider，使得程序能够识别并使用 Windows 代码页中的各种编码
-        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        EncodingUtility.Initialize();
 
         // 获取最长键名长度用于对齐键名字符串
         var totalByteCount = keyValuePairs.Max(h => h.Key.Length) + 5;

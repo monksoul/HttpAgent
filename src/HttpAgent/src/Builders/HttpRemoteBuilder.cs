@@ -250,7 +250,7 @@ public sealed class HttpRemoteBuilder
     internal void Build(IServiceCollection services)
     {
         // 注册 CodePagesEncodingProvider，使得程序能够识别并使用 Windows 代码页中的各种编码
-        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        EncodingUtility.Initialize();
 
         // 注册日志服务
         services.AddLogging();

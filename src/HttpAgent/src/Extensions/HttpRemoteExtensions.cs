@@ -318,7 +318,7 @@ public static partial class HttpRemoteExtensions
         var bytesToShow = Math.Min(total, maxBytesToDisplay);
 
         // 注册 CodePagesEncodingProvider，使得程序能够识别并使用 Windows 代码页中的各种编码
-        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        EncodingUtility.Initialize();
 
         // 获取内容编码
         var charset = httpContent.Headers.ContentType?.CharSet ?? "utf-8";
