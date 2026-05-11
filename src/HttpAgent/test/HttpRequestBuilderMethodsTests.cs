@@ -122,10 +122,10 @@ public class HttpRequestBuilderMethodsTests
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
         httpRequestBuilder.SetContentEncoding("gbk");
-        Assert.Equal("gb2312", httpRequestBuilder.ContentEncoding?.BodyName);
+        Assert.Equal("gb2312", httpRequestBuilder.ContentEncoding?.WebName);
 
         httpRequestBuilder.SetContentEncoding("gb2312");
-        Assert.Equal("gb2312", httpRequestBuilder.ContentEncoding?.BodyName);
+        Assert.Equal("gb2312", httpRequestBuilder.ContentEncoding?.WebName);
     }
 
     [Fact]

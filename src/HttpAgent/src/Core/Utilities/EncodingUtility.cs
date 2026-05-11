@@ -12,11 +12,9 @@ public static class EncodingUtility
     /// <summary>
     ///     <inheritdoc cref="EncodingUtility" />
     /// </summary>
-    static EncodingUtility()
-    {
+    static EncodingUtility() =>
         // 注册 CodePagesEncodingProvider，使得程序能够识别并使用 Windows 代码页中的各种编码
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-    }
 
     /// <summary>
     ///     显式初始化方法

@@ -28,7 +28,7 @@ public class StreamContentProcessor : HttpContentProcessorBase
             // 初始化 StreamContent 实例
             var streamContent = new StreamContent(stream);
             streamContent.Headers.ContentType =
-                new MediaTypeHeaderValue(contentType) { CharSet = encoding?.BodyName };
+                new MediaTypeHeaderValue(contentType) { CharSet = encoding?.WebName };
 
             return streamContent;
         }

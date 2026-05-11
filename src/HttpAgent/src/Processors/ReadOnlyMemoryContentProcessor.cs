@@ -29,7 +29,7 @@ public class ReadOnlyMemoryContentProcessor : HttpContentProcessorBase
             var readOnlyMemoryContent = new ReadOnlyMemoryContent(readOnlyMemory);
             readOnlyMemoryContent.Headers.ContentType = new MediaTypeHeaderValue(contentType)
             {
-                CharSet = encoding?.BodyName
+                CharSet = encoding?.WebName
             };
 
             return readOnlyMemoryContent;

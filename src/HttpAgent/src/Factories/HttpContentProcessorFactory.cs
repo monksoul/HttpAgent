@@ -31,7 +31,8 @@ internal sealed class HttpContentProcessorFactory : IHttpContentProcessorFactory
             [typeof(ByteArrayContentProcessor)] = new ByteArrayContentProcessor(),
             [typeof(StreamContentProcessor)] = new StreamContentProcessor(),
             [typeof(MultipartFormDataContentProcessor)] = new MultipartFormDataContentProcessor(),
-            [typeof(ReadOnlyMemoryContentProcessor)] = new ReadOnlyMemoryContentProcessor()
+            [typeof(ReadOnlyMemoryContentProcessor)] = new ReadOnlyMemoryContentProcessor(),
+            [typeof(JsonLinesContentProcessor)] = new JsonLinesContentProcessor()
         };
 
         // 添加自定义 IHttpContentProcessor 数组

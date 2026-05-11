@@ -23,10 +23,7 @@ public class HttpRemoteBuilderTests
     {
         var builder = new HttpRemoteBuilder();
 
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-            builder.AddHttpContentProcessors(null!);
-        });
+        Assert.Throws<ArgumentNullException>(() => { builder.AddHttpContentProcessors(null!); });
     }
 
     [Fact]
@@ -56,10 +53,7 @@ public class HttpRemoteBuilderTests
     {
         var builder = new HttpRemoteBuilder();
 
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-            builder.AddHttpContentConverters(null!);
-        });
+        Assert.Throws<ArgumentNullException>(() => { builder.AddHttpContentConverters(null!); });
     }
 
     [Fact]
@@ -192,10 +186,7 @@ public class HttpRemoteBuilderTests
     {
         var builder = new HttpRemoteBuilder();
 
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-            builder.AddHttpDeclarativeExtractors(null!);
-        });
+        Assert.Throws<ArgumentNullException>(() => { builder.AddHttpDeclarativeExtractors(null!); });
     }
 
     [Fact]
@@ -225,10 +216,7 @@ public class HttpRemoteBuilderTests
     {
         var builder = new HttpRemoteBuilder();
 
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-            builder.AddHttpDeclarativeExtractorsFromAssemblies(null!);
-        });
+        Assert.Throws<ArgumentNullException>(() => { builder.AddHttpDeclarativeExtractorsFromAssemblies(null!); });
     }
 
     [Fact]
@@ -357,13 +345,13 @@ public class HttpRemoteBuilderTests
         var httpContentProcessorFactory =
             (HttpContentProcessorFactory)serviceProvider.GetRequiredService(typeof(IHttpContentProcessorFactory));
         Assert.NotNull(httpContentProcessorFactory._processors);
-        Assert.Equal(7, httpContentProcessorFactory._processors.Count);
+        Assert.Equal(8, httpContentProcessorFactory._processors.Count);
         Assert.Equal(
             [
                 typeof(StringContentProcessor), typeof(FormUrlEncodedContentProcessor),
                 typeof(ByteArrayContentProcessor), typeof(StreamContentProcessor),
                 typeof(MultipartFormDataContentProcessor), typeof(ReadOnlyMemoryContentProcessor),
-                typeof(CustomStringContentProcessor)
+                typeof(JsonLinesContentProcessor), typeof(CustomStringContentProcessor)
             ],
             httpContentProcessorFactory._processors.Select(u => u.Key));
 

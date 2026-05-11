@@ -63,7 +63,7 @@ public class MessagePackContentProcessor : HttpContentProcessorBase
 
         // 初始化 ByteArrayContent 实例
         var byteArrayContent = new ByteArrayContent(content);
-        byteArrayContent.Headers.ContentType = new MediaTypeHeaderValue(contentType) { CharSet = encoding?.BodyName };
+        byteArrayContent.Headers.ContentType = new MediaTypeHeaderValue(contentType) { CharSet = encoding?.WebName };
 
         return byteArrayContent;
     }

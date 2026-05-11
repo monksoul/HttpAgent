@@ -44,7 +44,7 @@ public abstract class HttpContentProcessorBase : IHttpContentProcessor, IService
             case HttpContent content:
                 // 设置 Content-Type
                 content.Headers.ContentType ??=
-                    new MediaTypeHeaderValue(contentType) { CharSet = encoding?.BodyName };
+                    new MediaTypeHeaderValue(contentType) { CharSet = encoding?.WebName };
 
                 httpContent = content;
                 return true;
@@ -53,4 +53,14 @@ public abstract class HttpContentProcessorBase : IHttpContentProcessor, IService
                 return false;
         }
     }
+
+    /// <summary>
+    ///     解析 JSON 序列化配置
+    /// </summary>
+    /// <returns>
+    ///     <see cref="JsonSerializerOptions" />
+    /// </returns>
+    public virtual JsonSerializerOptions ResolveJsonSerializerOptions() =>
+        this.GetService<IOptions<HttpRemoteOptions>>()?.Value.JsonSerializerOptions ??
+        HttpRemoteOptions.JsonSerializerOptionsDefault;
 }

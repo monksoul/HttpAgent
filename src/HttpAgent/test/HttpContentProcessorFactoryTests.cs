@@ -13,25 +13,26 @@ public class HttpContentProcessorFactoryTests
         var httpContentProcessorFactory1 = new HttpContentProcessorFactory(serviceProvider, null);
         Assert.NotNull(httpContentProcessorFactory1.ServiceProvider);
         Assert.NotNull(httpContentProcessorFactory1._processors);
-        Assert.Equal(6, httpContentProcessorFactory1._processors.Count);
+        Assert.Equal(7, httpContentProcessorFactory1._processors.Count);
         Assert.Equal(
             [
                 typeof(StringContentProcessor), typeof(FormUrlEncodedContentProcessor),
                 typeof(ByteArrayContentProcessor), typeof(StreamContentProcessor),
-                typeof(MultipartFormDataContentProcessor), typeof(ReadOnlyMemoryContentProcessor)
+                typeof(MultipartFormDataContentProcessor), typeof(ReadOnlyMemoryContentProcessor),
+                typeof(JsonLinesContentProcessor)
             ],
             httpContentProcessorFactory1._processors.Select(u => u.Key));
 
         var httpContentProcessorFactory2 =
             new HttpContentProcessorFactory(serviceProvider, [new CustomStringContentProcessor()]);
         Assert.NotNull(httpContentProcessorFactory2._processors);
-        Assert.Equal(7, httpContentProcessorFactory2._processors.Count);
+        Assert.Equal(8, httpContentProcessorFactory2._processors.Count);
         Assert.Equal(
             [
                 typeof(StringContentProcessor), typeof(FormUrlEncodedContentProcessor),
                 typeof(ByteArrayContentProcessor), typeof(StreamContentProcessor),
                 typeof(MultipartFormDataContentProcessor), typeof(ReadOnlyMemoryContentProcessor),
-                typeof(CustomStringContentProcessor)
+                typeof(JsonLinesContentProcessor), typeof(CustomStringContentProcessor)
             ],
             httpContentProcessorFactory2._processors.Select(u => u.Key));
 
@@ -39,12 +40,13 @@ public class HttpContentProcessorFactoryTests
             new HttpContentProcessorFactory(serviceProvider,
                 [new StringContentProcessor(), new FormUrlEncodedContentProcessor()]);
         Assert.NotNull(httpContentProcessorFactory3._processors);
-        Assert.Equal(6, httpContentProcessorFactory3._processors.Count);
+        Assert.Equal(7, httpContentProcessorFactory3._processors.Count);
         Assert.Equal(
             [
                 typeof(StringContentProcessor), typeof(FormUrlEncodedContentProcessor),
                 typeof(ByteArrayContentProcessor), typeof(StreamContentProcessor),
-                typeof(MultipartFormDataContentProcessor), typeof(ReadOnlyMemoryContentProcessor)
+                typeof(MultipartFormDataContentProcessor), typeof(ReadOnlyMemoryContentProcessor),
+                typeof(JsonLinesContentProcessor)
             ],
             httpContentProcessorFactory3._processors.Select(u => u.Key));
     }
@@ -76,6 +78,10 @@ public class HttpContentProcessorFactoryTests
     [InlineData("text/plain", typeof(StringContentProcessor))]
     [InlineData("application/x-www-form-urlencoded", typeof(FormUrlEncodedContentProcessor))]
     [InlineData("multipart/form-data", typeof(MultipartFormDataContentProcessor))]
+    [InlineData("application/x-ndjson", typeof(JsonLinesContentProcessor))]
+    [InlineData("application/x-jsonlines", typeof(JsonLinesContentProcessor))]
+    [InlineData("application/jsonlines", typeof(JsonLinesContentProcessor))]
+    [InlineData("application/jsonl", typeof(JsonLinesContentProcessor))]
     public void GetProcessor_From_ContentType_ReturnOK(string contentType, Type type)
     {
         var services = new ServiceCollection();

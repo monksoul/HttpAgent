@@ -32,6 +32,13 @@ public class HttpContentProcessorBaseTests
         Assert.NotNull(processor.GetService(typeof(IMyService)));
     }
 
+    [Fact]
+    public void ResolveJsonSerializerOptions_ReturnOK()
+    {
+        var processor = new StringContentProcessor();
+        Assert.NotNull(processor.ResolveJsonSerializerOptions());
+    }
+
     public class MyService : IMyService;
 
     public interface IMyService;

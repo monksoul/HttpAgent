@@ -601,7 +601,7 @@ public class HttpRequestBuilderStaticMethodsTests
 
 
         Assert.Equal("application/json", httpRequestBuilder.ContentType);
-        Assert.Equal("utf-8", httpRequestBuilder.ContentEncoding?.BodyName);
+        Assert.Equal("utf-8", httpRequestBuilder.ContentEncoding?.WebName);
         Assert.Equal("{\"id\":1,\"name\":\"百小僧\",\"age\":30}", httpRequestBuilder.RawContent);
     }
 
