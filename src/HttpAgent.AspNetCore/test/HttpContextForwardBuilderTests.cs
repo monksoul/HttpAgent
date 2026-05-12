@@ -94,35 +94,39 @@ public class HttpContextForwardBuilderTests
         builder.Services.AddHttpClient();
         await using var app = builder.Build();
 
-        app.MapGet("/test/{id:int}", async (HttpContext context, [FromQuery] string name, [FromRoute] int id) =>
-        {
-            var httpMethod = Helpers.ParseHttpMethod(context.Request.Method);
-            var requestUri = new Uri($"http://localhost:{port}");
-            var httpContextForwardBuilder = new HttpContextForwardBuilder(context, httpMethod, requestUri);
-            var httpRequestBuilder = HttpRequestBuilder.Create(httpMethod, requestUri);
+        app.MapGet("/test/{id:int}",
+            async (HttpContext context, [FromQuery] string name, [FromQuery] string giveup, [FromRoute] int id) =>
+            {
+                var httpMethod = Helpers.ParseHttpMethod(context.Request.Method);
+                var requestUri = new Uri($"http://localhost:{port}");
+                var httpContextForwardBuilder = new HttpContextForwardBuilder(context, httpMethod, requestUri,
+                    new HttpContextForwardOptions { IgnoreQueryParameters = ["giveup"] });
+                var httpRequestBuilder = HttpRequestBuilder.Create(httpMethod, requestUri);
 
-            httpContextForwardBuilder.CopyQueryAndRouteValues(httpRequestBuilder);
+                httpContextForwardBuilder.CopyQueryAndRouteValues(httpRequestBuilder);
 
-            Assert.NotNull(httpRequestBuilder.QueryParameters);
-            Assert.Single(httpRequestBuilder.QueryParameters);
-            Assert.Equal("name", httpRequestBuilder.QueryParameters.First().Key);
+                Assert.NotNull(httpRequestBuilder.QueryParameters);
+                Assert.Single(httpRequestBuilder.QueryParameters);
+                Assert.Equal("name", httpRequestBuilder.QueryParameters.First().Key);
 
-            Assert.NotNull(httpRequestBuilder.PathParameters);
-            Assert.Equal(2, httpRequestBuilder.PathParameters.Count);
-            Assert.Equal("name", httpRequestBuilder.PathParameters.ElementAt(0).Key);
-            Assert.Equal("furion", httpRequestBuilder.PathParameters.ElementAt(0).Value);
-            Assert.Equal("id", httpRequestBuilder.PathParameters.ElementAt(1).Key);
-            Assert.Equal("1", httpRequestBuilder.PathParameters.ElementAt(1).Value);
+                Assert.NotNull(httpRequestBuilder.PathParameters);
+                Assert.Equal(3, httpRequestBuilder.PathParameters.Count);
+                Assert.Equal("name", httpRequestBuilder.PathParameters.ElementAt(0).Key);
+                Assert.Equal("furion", httpRequestBuilder.PathParameters.ElementAt(0).Value);
+                Assert.Equal("giveup", httpRequestBuilder.PathParameters.ElementAt(1).Key);
+                Assert.Equal("miss", httpRequestBuilder.PathParameters.ElementAt(1).Value);
+                Assert.Equal("id", httpRequestBuilder.PathParameters.ElementAt(2).Key);
+                Assert.Equal("1", httpRequestBuilder.PathParameters.ElementAt(2).Value);
 
-            await context.Response.WriteAsync("Hello World!");
-        });
+                await context.Response.WriteAsync("Hello World!");
+            });
 
         await app.StartAsync();
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
         var httpResponseMessage =
             await httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get,
-                new Uri($"http://localhost:{port}/test/1?name=furion")));
+                new Uri($"http://localhost:{port}/test/1?name=furion&giveup=miss")));
         httpResponseMessage.EnsureSuccessStatusCode();
 
         await app.StopAsync();

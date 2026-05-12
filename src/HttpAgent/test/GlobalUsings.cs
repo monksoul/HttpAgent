@@ -18,6 +18,7 @@ global using System.Collections.Specialized;
 global using System.ComponentModel.DataAnnotations;
 global using System.Diagnostics;
 global using System.Globalization;
+global using System.IO.Compression;
 global using System.Net;
 global using System.Net.Mime;
 global using System.Text;

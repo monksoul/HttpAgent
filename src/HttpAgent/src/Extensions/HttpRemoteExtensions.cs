@@ -311,7 +311,20 @@ public static partial class HttpRemoteExtensions
          * 强烈建议在生产环境中禁用或关闭此类一次性读取操作，尤其是对于高并发或大流量场景，
          * 以避免因内存溢出（OOM）或线程阻塞导致的服务不可用风险。
          */
-        var buffer = await httpContent.ReadAsByteArrayAsync(cancellationToken);
+        var rawBuffer = await httpContent.ReadAsByteArrayAsync(cancellationToken);
+        var buffer = rawBuffer;
+
+        // 空检查
+        if (httpResponseMessage is not null)
+        {
+            // 获取响应内容 Content-Encoding 标头
+            var contentEncoding = httpResponseMessage.Content.Headers.ContentEncoding.FirstOrDefault();
+
+            // 根据响应内容 Content-Encoding 标头解压字节数组
+            buffer = await DecompressAsync(rawBuffer, contentEncoding, cancellationToken);
+        }
+
+        // 获取内容大小
         var total = buffer.Length;
 
         // 计算要显示的部分
@@ -350,6 +363,53 @@ public static partial class HttpRemoteExtensions
         return StringUtility.FormatKeyValuesSummary(
             [new KeyValuePair<string, IEnumerable<string>>(string.Empty, [bodyString])],
             $"{summary} ({httpContent.GetType().Name}, total: {total} bytes)");
+    }
+
+    /// <summary>
+    ///     根据响应内容 Content-Encoding 标头解压字节数组
+    /// </summary>
+    /// <remarks>支持 gzip/deflate/br 解压。</remarks>
+    /// <param name="buffer">解压缩的原始字节数据</param>
+    /// <param name="contentEncoding">响应内容 Content-Encoding 标头</param>
+    /// <param name="cancellationToken">
+    ///     <see cref="CancellationToken" />
+    /// </param>
+    /// <returns><see cref="byte" />[]</returns>
+    internal static async Task<byte[]> DecompressAsync(byte[] buffer, string? contentEncoding,
+        CancellationToken cancellationToken = default)
+    {
+        // 空检查
+        if (string.IsNullOrWhiteSpace(contentEncoding))
+        {
+            return buffer;
+        }
+
+        // 初始化原始字节数据流和输出流
+        using var source = new MemoryStream(buffer);
+        using var output = new MemoryStream();
+
+        // 根据响应内容 Content-Encoding 标头创建解压流
+        Stream? decompressor = contentEncoding.Trim().ToLowerInvariant() switch
+        {
+            "gzip" => new GZipStream(source, CompressionMode.Decompress, true),
+            "deflate" => new DeflateStream(source, CompressionMode.Decompress, true),
+            "br" => new BrotliStream(source, CompressionMode.Decompress, true),
+            _ => null
+        };
+
+        // 空检查（未知编码）
+        if (decompressor is null)
+        {
+            return buffer;
+        }
+
+        // 拷贝并释放解压流
+        await using (decompressor)
+        {
+            await decompressor.CopyToAsync(output, cancellationToken);
+        }
+
+        return output.ToArray();
     }
 
     /// <summary>

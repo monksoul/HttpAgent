@@ -521,4 +521,64 @@ public class HttpRemoteExtensionsTests
         httpResponseMessage2.RequestMessage = httpRequestMessage2;
         Assert.False(httpResponseMessage2.IsEnableJsonResponseWrapping(serviceProvider));
     }
+
+    [Fact]
+    public async Task DecompressAsync_ReturnOK()
+    {
+        const string originalText = "测试数据 DecompressAsync @2026 #UTF8 中文/English/123";
+        var originalBytes = Encoding.UTF8.GetBytes(originalText);
+
+        // gzip
+
+        using var compressStream = new MemoryStream();
+        await using (var gzip = new GZipStream(compressStream, CompressionMode.Compress, true))
+        {
+            await gzip.WriteAsync(originalBytes);
+        }
+
+        var compressedBytes = compressStream.ToArray();
+        var result = await HttpRemoteExtensions.DecompressAsync(compressedBytes, "gzip");
+
+        var resultText = Encoding.UTF8.GetString(result);
+        Assert.Equal(originalText, resultText);
+        Assert.Equal(originalBytes.Length, result.Length);
+
+        // deflate
+
+        using var compressStream2 = new MemoryStream();
+        await using (var deflate = new DeflateStream(compressStream2, CompressionMode.Compress, true))
+        {
+            await deflate.WriteAsync(originalBytes);
+        }
+
+        var compressedBytes2 = compressStream2.ToArray();
+        var result2 = await HttpRemoteExtensions.DecompressAsync(compressedBytes2, "deflate");
+
+        var resultText2 = Encoding.UTF8.GetString(result2);
+        Assert.Equal(originalText, resultText2);
+        Assert.Equal(originalBytes.Length, result2.Length);
+
+        // brotli
+
+        using var compressStream3 = new MemoryStream();
+        await using (var brotli = new BrotliStream(compressStream3, CompressionMode.Compress, true))
+        {
+            await brotli.WriteAsync(originalBytes);
+        }
+
+        var compressedBytes3 = compressStream3.ToArray();
+        var result3 = await HttpRemoteExtensions.DecompressAsync(compressedBytes3, "br");
+
+        var resultText3 = Encoding.UTF8.GetString(result3);
+        Assert.Equal(originalText, resultText3);
+        Assert.Equal(originalBytes.Length, result3.Length);
+
+        // unknown
+
+        var result4 = await HttpRemoteExtensions.DecompressAsync(originalBytes, "unknown");
+
+        var resultText4 = Encoding.UTF8.GetString(result4);
+        Assert.Equal(originalText, resultText4);
+        Assert.Equal(originalBytes.Length, result4.Length);
+    }
 }

@@ -46,6 +46,11 @@ public sealed class HttpContextForwardOptions
     public bool ResetHostRequestHeader { get; set; }
 
     /// <summary>
+    ///     忽略在转发时需要跳过的查询参数（URL 参数）列表
+    /// </summary>
+    public string[]? IgnoreQueryParameters { get; set; }
+
+    /// <summary>
     ///     忽略在转发时需要跳过的请求标头列表
     /// </summary>
     public string[]? IgnoreRequestHeaders { get; set; }

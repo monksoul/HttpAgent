@@ -182,15 +182,19 @@ public sealed class HttpContextForwardBuilder
             // 检查是否转发查询参数（URL 参数）
             if (ForwardOptions.WithQueryParameters)
             {
+                // 初始化忽略在转发时需要跳过的查询参数（URL 参数）列表
+                var ignoreQueryParameters = ForwardOptions.IgnoreQueryParameters ?? [];
+
                 // 将查询参数添加到查询参数集合中
-                httpRequestBuilder.WithQueryParameters(queryValues);
+                httpRequestBuilder.WithQueryParameters(queryValues.Where(u =>
+                    !u.Key.IsIn(ignoreQueryParameters, StringComparer.OrdinalIgnoreCase)));
             }
 
             // 将查询参数添加到路径参数集合中
             httpRequestBuilder.WithPathParameters(queryValues);
         }
 
-        // 获取路由参数集合
+        // 获取路由参数（[FromRoute]）集合
         var routeValues = HttpContext.Request.RouteValues;
 
         // 空检查

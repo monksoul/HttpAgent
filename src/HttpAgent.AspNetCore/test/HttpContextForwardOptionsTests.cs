@@ -15,6 +15,7 @@ public class HttpContextForwardOptionsTests
         Assert.True(options.WithResponseStatusCode);
         Assert.True(options.WithResponseHeaders);
         Assert.True(options.WithResponseContentHeaders);
+        Assert.Null(options.IgnoreQueryParameters);
         Assert.Null(options.IgnoreRequestHeaders);
         Assert.Null(options.IgnoreResponseHeaders);
         Assert.False(options.ResetHostRequestHeader);

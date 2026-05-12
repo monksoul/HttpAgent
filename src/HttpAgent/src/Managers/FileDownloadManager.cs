@@ -1052,7 +1052,8 @@ internal sealed class FileDownloadManager
     internal static Stream WrapDecompressionStream(Stream rawContentStream, HttpResponseMessage httpResponseMessage)
     {
         // 获取响应内容 Content-Encoding 标头
-        var contentEncoding = httpResponseMessage.Content.Headers.ContentEncoding.FirstOrDefault()?.ToLower();
+        var contentEncoding = httpResponseMessage.Content.Headers.ContentEncoding.FirstOrDefault()?.Trim()
+            .ToLowerInvariant();
 
         // 尝试解压操作
         return contentEncoding switch

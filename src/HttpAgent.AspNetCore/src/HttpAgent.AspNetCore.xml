@@ -1849,6 +1849,11 @@
             </summary>
             <remarks>在一些目标服务器中，可能需要校验该请求标头。默认值为：<c>false</c>。</remarks>
         </member>
+        <member name="P:HttpAgent.HttpContextForwardOptions.IgnoreQueryParameters">
+            <summary>
+                忽略在转发时需要跳过的查询参数（URL 参数）列表
+            </summary>
+        </member>
         <member name="P:HttpAgent.HttpContextForwardOptions.IgnoreRequestHeaders">
             <summary>
                 忽略在转发时需要跳过的请求标头列表

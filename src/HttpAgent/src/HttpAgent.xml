@@ -7794,6 +7794,18 @@
                 <see cref="T:System.String" />
             </returns>
         </member>
+        <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.DecompressAsync(System.Byte[],System.String,System.Threading.CancellationToken)">
+            <summary>
+                根据响应内容 Content-Encoding 标头解压字节数组
+            </summary>
+            <remarks>支持 gzip/deflate/br 解压。</remarks>
+            <param name="buffer">解压缩的原始字节数据</param>
+            <param name="contentEncoding">响应内容 Content-Encoding 标头</param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns><see cref="T:System.Byte" />[]</returns>
+        </member>
         <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.GetColoredText(System.Net.Http.HttpResponseMessage,System.String,System.Boolean)">
             <summary>
                 获取带颜色的文本
@@ -15022,6 +15034,7 @@
             <param name="completionOption">
                 <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
+            <param name="configure">自定义配置委托</param
             <param name="configure">自定义配置委托</param>
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
@@ -16125,9 +16138,7 @@
                 设置别名特性
             </summary>
         </member>
-        <member name="M:System.AliasAsAttribute.#ctor(System.String)">
-            <summary>
-                <inheritdoc cref="T:System.AliasAsAttribute" />
+        <member name="M:System.AliasAsAttr    <inheritdoc cref="T:System.AliasAsAttribute" />
             </summary>
             <param name="aliasAs">别名</param>
         </member>
@@ -16276,7 +16287,7 @@
             <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
         </member>
         <member name="M:System.Text.RegularExpressions.Generated.Regex_1.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
-            <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
+            <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match="inputSpan"/> starting from base.runtextstart for the next match.</summary>
             <param name="inputSpan">The text being scanned by the regular expression.</param>
         </member>
         <member name="M:System.Text.RegularExpressions.Generated.Regex_1.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
@@ -16493,8 +16504,7 @@
         <member name="M:System.Text.RegularExpressions.Generated.Utilities.IsWordChar(System.Char)">
             <summary>Determines whether the character is part of the [\w] set.</summary>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPop(System.Int32[],System.Int32@,System.Int32@,System.Int32@)">
-            <summary>Pops 2 values from the backtracking stack.</summary>
+        <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPop(Syst    <summary>Pops 2 values from the backtracking stack.</summary>
         </member>
         <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32)">
             <summary>Pushes 1 value onto the backtracking stack.</summary>
