@@ -3161,7 +3161,7 @@
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpRequestBuilder.EnableAssertions">
+        <member name="M:HttpAgent.HttpRequestBuilder.UseAssertions">
             <summary>
                 启用断言功能
             </summary>
@@ -3169,7 +3169,7 @@
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpRequestBuilder.EnableAssertions(System.Boolean)">
+        <member name="M:HttpAgent.HttpRequestBuilder.UseAssertions(System.Boolean)">
             <summary>
                 设置是否开启断言功能
             </summary>
@@ -3183,7 +3183,7 @@
                 配置断言逻辑
             </summary>
             <remarks>
-                <para>当 <see cref="M:HttpAgent.HttpRequestBuilder.EnableAssertions" /> 处于启用状态有效。</para>
+                <para>当 <see cref="M:HttpAgent.HttpRequestBuilder.UseAssertions" /> 处于启用状态有效。</para>
                 <para>支持多次调用。</para>
             </remarks>
             <param name="configure">自定义配置委托</param>
@@ -3191,7 +3191,7 @@
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpRequestBuilder.JsonResponseWrapping">
+        <member name="M:HttpAgent.HttpRequestBuilder.UseJsonResponseWrapper">
             <summary>
                 设置启用 JSON 响应反序列化包装器
             </summary>
@@ -3200,7 +3200,7 @@
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpRequestBuilder.JsonResponseWrapping(System.Boolean)">
+        <member name="M:HttpAgent.HttpRequestBuilder.UseJsonResponseWrapper(System.Boolean)">
             <summary>
                 设置是否启用 JSON 响应反序列化包装器
             </summary>
@@ -3210,11 +3210,19 @@
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpRequestBuilder.DisableJsonResponseWrapping">
+        <member name="M:HttpAgent.HttpRequestBuilder.UseJsonResponseStringUnwrap">
             <summary>
-                设置禁用 JSON 响应反序列化包装器
+                设置启用 JSON 响应内容字符串的解包处理（双重序列化）
             </summary>
-            <remarks>当配置了 <see cref="P:HttpAgent.HttpClientOptions.JsonResponseWrapper" /> 时有效。</remarks>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.UseJsonResponseStringUnwrap(System.Boolean)">
+            <summary>
+                设置是否启用 JSON 响应内容字符串的解包处理（双重序列化）
+            </summary>
+            <param name="enabled">是否启用</param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
@@ -3521,7 +3529,7 @@
             </summary>
             <remarks><c>Host</c> 标头是 <c>HTTP/1.1</c> 协议中的一个必需标头。默认值为：<c>false</c>，表示不默认添加 <c>Host</c> 标头。</remarks>
         </member>
-        <member name="P:HttpAgent.HttpRequestBuilder.__Disable_Profiler__">
+        <member name="P:HttpAgent.HttpRequestBuilder.ProfilerDisabled">
             <summary>
                 表示禁用请求分析工具标识
             </summary>
@@ -3559,13 +3567,21 @@
                 用于处理在构建最终请求 URL 的操作
             </summary>
         </member>
-        <member name="P:HttpAgent.HttpRequestBuilder.__Enable__JsonResponseWrapping__">
+        <member name="P:HttpAgent.HttpRequestBuilder.JsonResponseWrapperEnabled">
             <summary>
                 表示启用 JSON 响应反序列化包装器
             </summary>
             <remarks>
                 当配置了 <see cref="P:HttpAgent.HttpClientOptions.JsonResponseWrapper" /> 时有效。配置信息将写入到
                 <see cref="P:System.Net.Http.HttpRequestMessage.Options" /> 中。默认值为：null。
+            </remarks>
+        </member>
+        <member name="P:HttpAgent.HttpRequestBuilder.JsonResponseStringUnwrapEnabled">
+            <summary>
+                表示启用 JSON 响应内容字符串的解包处理（双重序列化）
+            </summary>
+            <remarks>
+                配置信息将写入到 <see cref="P:System.Net.Http.HttpRequestMessage.Options" /> 中。默认值为：null。
             </remarks>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.Get(System.String,System.Action{HttpAgent.HttpRequestBuilder})">
@@ -4477,9 +4493,15 @@
             </summary>
             <remarks>解决重复打印问题。被用于从 <see cref="T:System.Net.Http.HttpRequestMessage" /> 的 <c>Options</c> 属性中读取。</remarks>
         </member>
-        <member name="F:HttpAgent.Constants.ENABLE_JSON_RESPONSE_WRAPPING_KEY">
+        <member name="F:HttpAgent.Constants.ENABLE_JSON_RESPONSE_WRAPPER_KEY">
             <summary>
                 启用 JSON 响应反序列化包装器键
+            </summary>
+            <remarks>被用于从 <see cref="T:System.Net.Http.HttpRequestMessage" /> 的 <c>Options</c> 属性中读取。</remarks>
+        </member>
+        <member name="F:HttpAgent.Constants.ENABLE_JSON_RESPONSE_STRING_UNWRAP_KEY">
+            <summary>
+                启用 JSON 响应内容字符串的解包处理（双重序列化）
             </summary>
             <remarks>被用于从 <see cref="T:System.Net.Http.HttpRequestMessage" /> 的 <c>Options</c> 属性中读取。</remarks>
         </member>
@@ -6360,23 +6382,44 @@
                 HTTP 版本
             </summary>
         </member>
-        <member name="T:HttpAgent.JsonResponseWrappingAttribute">
+        <member name="T:HttpAgent.JsonResponseStringUnwrapAttribute">
+            <summary>
+                HTTP 声明式启用 JSON 响应内容字符串的解包处理（双重序列化）
+            </summary>
+        </member>
+        <member name="M:HttpAgent.JsonResponseStringUnwrapAttribute.#ctor">
+            <summary>
+                <inheritdoc cref="T:HttpAgent.JsonResponseStringUnwrapAttribute" />
+            </summary>
+        </member>
+        <member name="M:HttpAgent.JsonResponseStringUnwrapAttribute.#ctor(System.Boolean)">
+            <summary>
+                <inheritdoc cref="T:HttpAgent.JsonResponseStringUnwrapAttribute" />
+            </summary>
+            <param name="enabled">是否启用</param>
+        </member>
+        <member name="P:HttpAgent.JsonResponseStringUnwrapAttribute.Enabled">
+            <summary>
+                是否启用
+            </summary>
+        </member>
+        <member name="T:HttpAgent.JsonResponseWrapperAttribute">
             <summary>
                 HTTP 声明式启用 JSON 响应反序列化包装器
             </summary>
         </member>
-        <member name="M:HttpAgent.JsonResponseWrappingAttribute.#ctor">
+        <member name="M:HttpAgent.JsonResponseWrapperAttribute.#ctor">
             <summary>
-                <inheritdoc cref="T:HttpAgent.JsonResponseWrappingAttribute" />
+                <inheritdoc cref="T:HttpAgent.JsonResponseWrapperAttribute" />
             </summary>
         </member>
-        <member name="M:HttpAgent.JsonResponseWrappingAttribute.#ctor(System.Boolean)">
+        <member name="M:HttpAgent.JsonResponseWrapperAttribute.#ctor(System.Boolean)">
             <summary>
-                <inheritdoc cref="T:HttpAgent.JsonResponseWrappingAttribute" />
+                <inheritdoc cref="T:HttpAgent.JsonResponseWrapperAttribute" />
             </summary>
             <param name="enabled">是否启用</param>
         </member>
-        <member name="P:HttpAgent.JsonResponseWrappingAttribute.Enabled">
+        <member name="P:HttpAgent.JsonResponseWrapperAttribute.Enabled">
             <summary>
                 是否启用
             </summary>
@@ -7198,12 +7241,20 @@
                 <see cref="T:HttpAgent.HttpDeclarativeExtractorContext" />
             </param>
         </member>
-        <member name="T:HttpAgent.JsonResponseWrappingDeclarativeExtractor">
+        <member name="T:HttpAgent.JsonResponseStringUnwrapDeclarativeExtractor">
             <summary>
-                HTTP 声明式 <see cref="T:HttpAgent.JsonResponseWrappingAttribute" /> 特性提取器
+                HTTP 声明式 <see cref="T:HttpAgent.JsonResponseStringUnwrapAttribute" /> 特性提取器
             </summary>
         </member>
-        <member name="M:HttpAgent.JsonResponseWrappingDeclarativeExtractor.Extract(HttpAgent.HttpRequestBuilder,HttpAgent.HttpDeclarativeExtractorContext)">
+        <member name="M:HttpAgent.JsonResponseStringUnwrapDeclarativeExtractor.Extract(HttpAgent.HttpRequestBuilder,HttpAgent.HttpDeclarativeExtractorContext)">
+            <inheritdoc />
+        </member>
+        <member name="T:HttpAgent.JsonResponseWrapperDeclarativeExtractor">
+            <summary>
+                HTTP 声明式 <see cref="T:HttpAgent.JsonResponseWrapperAttribute" /> 特性提取器
+            </summary>
+        </member>
+        <member name="M:HttpAgent.JsonResponseWrapperDeclarativeExtractor.Extract(HttpAgent.HttpRequestBuilder,HttpAgent.HttpDeclarativeExtractorContext)">
             <inheritdoc />
         </member>
         <member name="T:HttpAgent.MultipartDeclarativeExtractor">
@@ -7914,7 +7965,7 @@
                 <see cref="T:System.String" />
             </returns>
         </member>
-        <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.IsEnableJsonResponseWrapping(System.Net.Http.HttpResponseMessage,System.IServiceProvider)">
+        <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.ShouldUseJsonResponseWrapper(System.Net.Http.HttpResponseMessage,System.IServiceProvider)">
             <summary>
                 检查是否启用 JSON 响应反序列化包装器
             </summary>
@@ -7926,6 +7977,35 @@
             </param>
             <returns>
                 <see cref="T:System.Boolean" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.ShouldJsonResponseStringUnwrap(System.Net.Http.HttpResponseMessage)">
+            <summary>
+                检查是否启用 JSON 响应内容字符串的解包处理（双重序列化）
+            </summary>
+            <param name="httpResponseMessage">
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </param>
+            <returns>
+                <see cref="T:System.Boolean" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.ReadAndUnwrapFromJsonAsync(System.Net.Http.HttpContent,System.Type,System.Text.Json.JsonSerializerOptions,System.Threading.CancellationToken)">
+            <summary>
+                解析经过双重序列化的 JSON 字符串，并将其反序列化为指定类型
+            </summary>
+            <param name="httpContent">
+                <see cref="T:System.Net.Http.HttpContent" />
+            </param>
+            <param name="resultType">目标类型</param>
+            <param name="jsonSerializerOptions">
+                <see cref="T:System.Text.Json.JsonSerializerOptions" />
+            </param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns>
+                <see cref="T:System.Object" />
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.GetHostEnvironmentName(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
@@ -10628,10 +10708,10 @@
             <summary>
                 指定 JSON 响应反序列化包装器
             </summary>
-            <remarks>使用时需明确调用 <see cref="M:HttpAgent.HttpRequestBuilder.JsonResponseWrapping" />。</remarks>
+            <remarks>使用时需明确调用 <see cref="M:HttpAgent.HttpRequestBuilder.UseJsonResponseWrapper" />。</remarks>
             TODO: 未来可以考虑不同的 HTTP 状态码使用不同的包装器
         </member>
-        <member name="P:HttpAgent.HttpClientOptions.UseJsonResponseWrapping">
+        <member name="P:HttpAgent.HttpClientOptions.UseJsonResponseWrapper">
             <summary>
                 是否全局启用 JSON 响应反序列化包装器
             </summary>
@@ -15034,7 +15114,6 @@
             <param name="completionOption">
                 <see cref="T:System.Net.Http.HttpCompletionOption" />
             </param>
-            <param name="configure">自定义配置委托</param
             <param name="configure">自定义配置委托</param>
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
@@ -16138,7 +16217,9 @@
                 设置别名特性
             </summary>
         </member>
-        <member name="M:System.AliasAsAttr    <inheritdoc cref="T:System.AliasAsAttribute" />
+        <member name="M:System.AliasAsAttribute.#ctor(System.String)">
+            <summary>
+                <inheritdoc cref="T:System.AliasAsAttribute" />
             </summary>
             <param name="aliasAs">别名</param>
         </member>
@@ -16287,7 +16368,7 @@
             <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
         </member>
         <member name="M:System.Text.RegularExpressions.Generated.Regex_1.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
-            <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match="inputSpan"/> starting from base.runtextstart for the next match.</summary>
+            <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
             <param name="inputSpan">The text being scanned by the regular expression.</param>
         </member>
         <member name="M:System.Text.RegularExpressions.Generated.Regex_1.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
@@ -16504,7 +16585,8 @@
         <member name="M:System.Text.RegularExpressions.Generated.Utilities.IsWordChar(System.Char)">
             <summary>Determines whether the character is part of the [\w] set.</summary>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPop(Syst    <summary>Pops 2 values from the backtracking stack.</summary>
+        <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPop(System.Int32[],System.Int32@,System.Int32@,System.Int32@)">
+            <summary>Pops 2 values from the backtracking stack.</summary>
         </member>
         <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32)">
             <summary>Pushes 1 value onto the backtracking stack.</summary>

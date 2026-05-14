@@ -196,7 +196,7 @@ public class ObjectContentConverterTests
     }
 
     [Fact]
-    public async Task ReadAsync_WithJsonResponseWrapper_And_EnableJsonResponseWrapping_ReturnOK()
+    public async Task ReadAsync_WithJsonResponseWrapper_And_UseJsonResponseWrapper_ReturnOK()
     {
         var services = new ServiceCollection();
         services.AddHttpClient(string.Empty).ConfigureOptions(options =>
@@ -208,7 +208,7 @@ public class ObjectContentConverterTests
         using var stringContent = new StringContent("""{"success":true,"data":{"id":10,"name":"furion"}}""");
         var httpResponseMessage = new HttpResponseMessage();
         var httpRequestMessage = new HttpRequestMessage();
-        httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPING_KEY, "TRUE");
+        httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPER_KEY, "TRUE");
         httpResponseMessage.RequestMessage = httpRequestMessage;
         httpResponseMessage.Content = stringContent;
 
@@ -222,7 +222,7 @@ public class ObjectContentConverterTests
     }
 
     [Fact]
-    public async Task ReadAsync_WithJsonResponseWrapper_And_EnableJsonResponseWrapping_WithNull_ReturnOK()
+    public async Task ReadAsync_WithJsonResponseWrapper_And_UseJsonResponseWrapper_WithNull_ReturnOK()
     {
         var services = new ServiceCollection();
         services.AddHttpClient(string.Empty).ConfigureOptions(options =>
@@ -234,7 +234,7 @@ public class ObjectContentConverterTests
         using var stringContent = new StringContent("null");
         var httpResponseMessage = new HttpResponseMessage();
         var httpRequestMessage = new HttpRequestMessage();
-        httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPING_KEY, "TRUE");
+        httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPER_KEY, "TRUE");
         httpResponseMessage.RequestMessage = httpRequestMessage;
         httpResponseMessage.Content = stringContent;
 
@@ -246,7 +246,7 @@ public class ObjectContentConverterTests
     }
 
     [Fact]
-    public async Task ReadAsync_WithJsonResponseWrapper_And_EnableJsonResponseWrapping_WithEmptyObject_ReturnOK()
+    public async Task ReadAsync_WithJsonResponseWrapper_And_UseJsonResponseWrapper_WithEmptyObject_ReturnOK()
     {
         var services = new ServiceCollection();
         services.AddHttpClient(string.Empty).ConfigureOptions(options =>
@@ -258,7 +258,7 @@ public class ObjectContentConverterTests
         using var stringContent = new StringContent("{}");
         var httpResponseMessage = new HttpResponseMessage();
         var httpRequestMessage = new HttpRequestMessage();
-        httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPING_KEY, "TRUE");
+        httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPER_KEY, "TRUE");
         httpResponseMessage.RequestMessage = httpRequestMessage;
         httpResponseMessage.Content = stringContent;
 
@@ -270,7 +270,7 @@ public class ObjectContentConverterTests
     }
 
     [Fact]
-    public async Task ReadAsync_WithJsonResponseWrapper_And_EnableJsonResponseWrapping_WithString_ReturnOK()
+    public async Task ReadAsync_WithJsonResponseWrapper_And_UseJsonResponseWrapper_WithString_ReturnOK()
     {
         var services = new ServiceCollection();
         services.AddHttpClient(string.Empty).ConfigureOptions(options =>
@@ -282,7 +282,7 @@ public class ObjectContentConverterTests
         using var stringContent = new StringContent("""{"success":true,"data":"test string"}""");
         var httpResponseMessage = new HttpResponseMessage();
         var httpRequestMessage = new HttpRequestMessage();
-        httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPING_KEY, "TRUE");
+        httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPER_KEY, "TRUE");
         httpResponseMessage.RequestMessage = httpRequestMessage;
         httpResponseMessage.Content = stringContent;
 
@@ -294,7 +294,7 @@ public class ObjectContentConverterTests
     }
 
     [Fact]
-    public async Task ReadAsync_WithJsonResponseWrapper_And_DiableJsonResponseWrapping_ReturnOK()
+    public async Task ReadAsync_WithJsonResponseWrapper_And_DisableJsonResponseWrapper_ReturnOK()
     {
         var services = new ServiceCollection();
         services.AddHttpClient(string.Empty).ConfigureOptions(options =>
@@ -317,7 +317,7 @@ public class ObjectContentConverterTests
     }
 
     [Fact]
-    public async Task ReadAsync_WithJsonResponseWrapper_And_DiableJsonResponseWrapping_WithNull_ReturnOK()
+    public async Task ReadAsync_WithJsonResponseWrapper_And_DisableJsonResponseWrapper_WithNull_ReturnOK()
     {
         var services = new ServiceCollection();
         services.AddHttpClient(string.Empty).ConfigureOptions(options =>
@@ -338,7 +338,7 @@ public class ObjectContentConverterTests
     }
 
     [Fact]
-    public async Task ReadAsync_WithJsonResponseWrapper_And_DiableJsonResponseWrapping_WithEmptyObject_ReturnOK()
+    public async Task ReadAsync_WithJsonResponseWrapper_And_DisableJsonResponseWrapper_WithEmptyObject_ReturnOK()
     {
         var services = new ServiceCollection();
         services.AddHttpClient(string.Empty).ConfigureOptions(options =>
@@ -360,13 +360,13 @@ public class ObjectContentConverterTests
     }
 
     [Fact]
-    public async Task ReadAsync_WithJsonResponseWrapper_And_UseJsonResponseWrapping_ReturnOK()
+    public async Task ReadAsync_WithJsonResponseWrapper_And_UseJsonResponseWrapperProperty_ReturnOK()
     {
         var services = new ServiceCollection();
         services.AddHttpClient(string.Empty).ConfigureOptions(options =>
         {
             options.JsonResponseWrapper = new JsonResponseWrapper(typeof(ApiResult<>), nameof(ApiResult<>.Data));
-            options.UseJsonResponseWrapping = true;
+            options.UseJsonResponseWrapper = true;
         });
         var serviceProvider = services.BuildServiceProvider();
 
@@ -384,13 +384,13 @@ public class ObjectContentConverterTests
     }
 
     [Fact]
-    public async Task ReadAsync_WithJsonResponseWrapper_And_UseJsonResponseWrapping_WithNull_ReturnOK()
+    public async Task ReadAsync_WithJsonResponseWrapper_And_UseJsonResponseWrapperProperty_WithNull_ReturnOK()
     {
         var services = new ServiceCollection();
         services.AddHttpClient(string.Empty).ConfigureOptions(options =>
         {
             options.JsonResponseWrapper = new JsonResponseWrapper(typeof(ApiResult<>), nameof(ApiResult<>.Data));
-            options.UseJsonResponseWrapping = true;
+            options.UseJsonResponseWrapper = true;
         });
         var serviceProvider = services.BuildServiceProvider();
 
@@ -406,13 +406,13 @@ public class ObjectContentConverterTests
     }
 
     [Fact]
-    public async Task ReadAsync_WithJsonResponseWrapper_And_UseJsonResponseWrapping_WithEmptyObject_ReturnOK()
+    public async Task ReadAsync_WithJsonResponseWrapper_And_UseJsonResponseWrapperProperty_WithEmptyObject_ReturnOK()
     {
         var services = new ServiceCollection();
         services.AddHttpClient(string.Empty).ConfigureOptions(options =>
         {
             options.JsonResponseWrapper = new JsonResponseWrapper(typeof(ApiResult<>), nameof(ApiResult<>.Data));
-            options.UseJsonResponseWrapping = true;
+            options.UseJsonResponseWrapper = true;
         });
         var serviceProvider = services.BuildServiceProvider();
 
@@ -428,20 +428,20 @@ public class ObjectContentConverterTests
     }
 
     [Fact]
-    public async Task ReadAsync_WithJsonResponseWrapper_And_UseJsonResponseWrapping_WithString_ReturnOK()
+    public async Task ReadAsync_WithJsonResponseWrapper_And_UseJsonResponseWrapperProperty_WithString_ReturnOK()
     {
         var services = new ServiceCollection();
         services.AddHttpClient(string.Empty).ConfigureOptions(options =>
         {
             options.JsonResponseWrapper = new JsonResponseWrapper(typeof(ApiResult<>), nameof(ApiResult<>.Data));
-            options.UseJsonResponseWrapping = true;
+            options.UseJsonResponseWrapper = true;
         });
         var serviceProvider = services.BuildServiceProvider();
 
         using var stringContent = new StringContent("""{"success":true,"data":"test string"}""");
         var httpResponseMessage = new HttpResponseMessage();
         var httpRequestMessage = new HttpRequestMessage();
-        httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPING_KEY, "TRUE");
+        httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPER_KEY, "TRUE");
         httpResponseMessage.RequestMessage = httpRequestMessage;
         httpResponseMessage.Content = stringContent;
 
@@ -454,20 +454,20 @@ public class ObjectContentConverterTests
 
     [Fact]
     public async Task
-        ReadAsync_WithJsonResponseWrapper_And_UseJsonResponseWrapping_DiableJsonResponseWrapping_ReturnOK()
+        ReadAsync_WithJsonResponseWrapper_And_UseJsonResponseWrapperProperty_DisableJsonResponseWrapper_ReturnOK()
     {
         var services = new ServiceCollection();
         services.AddHttpClient(string.Empty).ConfigureOptions(options =>
         {
             options.JsonResponseWrapper = new JsonResponseWrapper(typeof(ApiResult<>), nameof(ApiResult<>.Data));
-            options.UseJsonResponseWrapping = true;
+            options.UseJsonResponseWrapper = true;
         });
         var serviceProvider = services.BuildServiceProvider();
 
         using var stringContent = new StringContent("""{"success":true,"data":{"id":10,"name":"furion"}}""");
         var httpResponseMessage = new HttpResponseMessage();
         var httpRequestMessage = new HttpRequestMessage();
-        httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPING_KEY, "FALSE");
+        httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPER_KEY, "FALSE");
         httpResponseMessage.RequestMessage = httpRequestMessage;
         httpResponseMessage.Content = stringContent;
 
@@ -482,20 +482,20 @@ public class ObjectContentConverterTests
 
     [Fact]
     public async Task
-        ReadAsync_WithJsonResponseWrapper_And_UseJsonResponseWrapping_DiableJsonResponseWrapping_WithNull_ReturnOK()
+        ReadAsync_WithJsonResponseWrapper_And_UseJsonResponseWrapperProperty_DisableJsonResponseWrapper_WithNull_ReturnOK()
     {
         var services = new ServiceCollection();
         services.AddHttpClient(string.Empty).ConfigureOptions(options =>
         {
             options.JsonResponseWrapper = new JsonResponseWrapper(typeof(ApiResult<>), nameof(ApiResult<>.Data));
-            options.UseJsonResponseWrapping = true;
+            options.UseJsonResponseWrapper = true;
         });
         var serviceProvider = services.BuildServiceProvider();
 
         using var stringContent = new StringContent("null");
         var httpResponseMessage = new HttpResponseMessage();
         var httpRequestMessage = new HttpRequestMessage();
-        httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPING_KEY, "FALSE");
+        httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPER_KEY, "FALSE");
         httpResponseMessage.RequestMessage = httpRequestMessage;
         httpResponseMessage.Content = stringContent;
 
@@ -508,20 +508,20 @@ public class ObjectContentConverterTests
 
     [Fact]
     public async Task
-        ReadAsync_WithJsonResponseWrapper_And_UseJsonResponseWrapping_DiableJsonResponseWrapping_WithEmptyObject_ReturnOK()
+        ReadAsync_WithJsonResponseWrapper_And_UseJsonResponseWrapperProperty_DisableJsonResponseWrapper_WithEmptyObject_ReturnOK()
     {
         var services = new ServiceCollection();
         services.AddHttpClient(string.Empty).ConfigureOptions(options =>
         {
             options.JsonResponseWrapper = new JsonResponseWrapper(typeof(ApiResult<>), nameof(ApiResult<>.Data));
-            options.UseJsonResponseWrapping = true;
+            options.UseJsonResponseWrapper = true;
         });
         var serviceProvider = services.BuildServiceProvider();
 
         using var stringContent = new StringContent("{}");
         var httpResponseMessage = new HttpResponseMessage();
         var httpRequestMessage = new HttpRequestMessage();
-        httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPING_KEY, "FALSE");
+        httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPER_KEY, "FALSE");
         httpResponseMessage.RequestMessage = httpRequestMessage;
         httpResponseMessage.Content = stringContent;
 
@@ -531,6 +531,27 @@ public class ObjectContentConverterTests
         Assert.Null(objectModel.Data);
 
         await serviceProvider.DisposeAsync();
+    }
+
+    [Fact]
+    public async Task ReadAsync_UseJsonResponseStringUnwrap_ReturnOK()
+    {
+        using var stringContent = new StringContent("\"{\\\"id\\\":10, \\\"name\\\":\\\"furion\\\"}\"");
+        var httpResponseMessage = new HttpResponseMessage();
+        var httpRequestMessage = new HttpRequestMessage();
+
+        httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_STRING_UNWRAP_KEY, "TRUE");
+        httpResponseMessage.RequestMessage = httpRequestMessage;
+        httpResponseMessage.Content = stringContent;
+
+        var converter = new ObjectContentConverter<JsonModel>();
+        var objectModel = await converter.ReadAsync(httpResponseMessage);
+        Assert.NotNull(objectModel);
+        Assert.Equal(10, objectModel.Id);
+        Assert.Equal("furion", objectModel.Name);
+
+        httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_STRING_UNWRAP_KEY, "FALSE");
+        await Assert.ThrowsAsync<JsonException>(async () => await converter.ReadAsync(httpResponseMessage));
     }
 
     public class ApiResult<T>

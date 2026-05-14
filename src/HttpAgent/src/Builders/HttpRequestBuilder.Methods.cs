@@ -1520,7 +1520,7 @@ public sealed partial class HttpRequestBuilder
     public HttpRequestBuilder Profiler(bool enabled)
     {
         ProfilerEnabled = enabled;
-        __Disable_Profiler__ = !enabled;
+        ProfilerDisabled = !enabled;
 
         return this;
     }
@@ -1848,7 +1848,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
-    public HttpRequestBuilder EnableAssertions() => EnableAssertions(true);
+    public HttpRequestBuilder UseAssertions() => UseAssertions(true);
 
     /// <summary>
     ///     设置是否开启断言功能
@@ -1857,7 +1857,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
-    public HttpRequestBuilder EnableAssertions(bool enabled)
+    public HttpRequestBuilder UseAssertions(bool enabled)
     {
         AssertionsEnabled = enabled;
 
@@ -1868,7 +1868,7 @@ public sealed partial class HttpRequestBuilder
     ///     配置断言逻辑
     /// </summary>
     /// <remarks>
-    ///     <para>当 <see cref="EnableAssertions()" /> 处于启用状态有效。</para>
+    ///     <para>当 <see cref="UseAssertions()" /> 处于启用状态有效。</para>
     ///     <para>支持多次调用。</para>
     /// </remarks>
     /// <param name="configure">自定义配置委托</param>
@@ -1906,7 +1906,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
-    public HttpRequestBuilder JsonResponseWrapping() => JsonResponseWrapping(true);
+    public HttpRequestBuilder UseJsonResponseWrapper() => UseJsonResponseWrapper(true);
 
     /// <summary>
     ///     设置是否启用 JSON 响应反序列化包装器
@@ -1916,21 +1916,34 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
-    public HttpRequestBuilder JsonResponseWrapping(bool enabled)
+    public HttpRequestBuilder UseJsonResponseWrapper(bool enabled)
     {
-        __Enable__JsonResponseWrapping__ = enabled;
+        JsonResponseWrapperEnabled = enabled;
 
         return this;
     }
 
     /// <summary>
-    ///     设置禁用 JSON 响应反序列化包装器
+    ///     设置启用 JSON 响应内容字符串的解包处理（双重序列化）
     /// </summary>
-    /// <remarks>当配置了 <see cref="HttpClientOptions.JsonResponseWrapper" /> 时有效。</remarks>
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
-    public HttpRequestBuilder DisableJsonResponseWrapping() => JsonResponseWrapping(false);
+    public HttpRequestBuilder UseJsonResponseStringUnwrap() => UseJsonResponseStringUnwrap(true);
+
+    /// <summary>
+    ///     设置是否启用 JSON 响应内容字符串的解包处理（双重序列化）
+    /// </summary>
+    /// <param name="enabled">是否启用</param>
+    /// <returns>
+    ///     <see cref="HttpRequestBuilder" />
+    /// </returns>
+    public HttpRequestBuilder UseJsonResponseStringUnwrap(bool enabled)
+    {
+        JsonResponseStringUnwrapEnabled = enabled;
+
+        return this;
+    }
 
     /// <summary>
     ///     设置在构建最终请求 URL 的操作

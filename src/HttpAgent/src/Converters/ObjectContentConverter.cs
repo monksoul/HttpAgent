@@ -15,19 +15,8 @@ public class ObjectContentConverter : IHttpContentConverter
 
     /// <inheritdoc />
     public virtual object? Read(Type resultType, HttpResponseMessage httpResponseMessage,
-        CancellationToken cancellationToken = default)
-    {
-        // 根据 HTTP 响应消息和服务提供器，解析出 HttpClient 客户端对应的 JSON 响应反序列化时的上下文信息
-        var jsonSerializationContext =
-            HttpRemoteUtility.ResolveJsonSerializationContext(resultType, httpResponseMessage, ServiceProvider);
-
-        // 获取 JSON 反序列化的值
-        var deserializedValue = AsyncUtility.RunSync(() => httpResponseMessage.Content.ReadFromJsonAsync(
-            jsonSerializationContext.ResultType, jsonSerializationContext.JsonSerializerOptions, cancellationToken));
-
-        // 获取转换的目标类型值
-        return jsonSerializationContext.GetResultValue(deserializedValue);
-    }
+        CancellationToken cancellationToken = default) =>
+        AsyncUtility.RunSync(() => ReadAsync(resultType, httpResponseMessage, cancellationToken));
 
     /// <inheritdoc />
     public virtual async Task<object?> ReadAsync(Type resultType, HttpResponseMessage httpResponseMessage,
@@ -38,8 +27,12 @@ public class ObjectContentConverter : IHttpContentConverter
             HttpRemoteUtility.ResolveJsonSerializationContext(resultType, httpResponseMessage, ServiceProvider);
 
         // 获取 JSON 反序列化的值
-        var deserializedValue = await httpResponseMessage.Content.ReadFromJsonAsync(jsonSerializationContext.ResultType,
-            jsonSerializationContext.JsonSerializerOptions, cancellationToken);
+        var deserializedValue = !httpResponseMessage.ShouldJsonResponseStringUnwrap()
+            ? await httpResponseMessage.Content.ReadFromJsonAsync(jsonSerializationContext.ResultType,
+                jsonSerializationContext.JsonSerializerOptions, cancellationToken)
+            // 解析经过双重序列化的 JSON 字符串，并将其反序列化为指定类型
+            : await httpResponseMessage.Content.ReadAndUnwrapFromJsonAsync(jsonSerializationContext.ResultType,
+                jsonSerializationContext.JsonSerializerOptions, cancellationToken);
 
         // 获取转换的目标类型值
         return jsonSerializationContext.GetResultValue(deserializedValue);

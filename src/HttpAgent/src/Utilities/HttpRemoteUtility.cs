@@ -148,7 +148,7 @@ public static class HttpRemoteUtility
             HttpRemoteOptions.JsonSerializerOptionsDefault;
 
         // 检查是否启用 JSON 响应反序列化包装器并获取指定 JSON 响应反序列化包装器实例
-        var jsonResponseWrapper = httpResponseMessage.IsEnableJsonResponseWrapping(serviceProvider)
+        var jsonResponseWrapper = httpResponseMessage.ShouldUseJsonResponseWrapper(serviceProvider)
             ? httpClientOptions?.JsonResponseWrapper
             : null;
         var jsonResponseWrapperType = jsonResponseWrapper?.GenericType;

@@ -616,16 +616,23 @@ public sealed partial class HttpRequestBuilder
         }
 
         // 检查是否禁用全局请求分析工具
-        if (__Disable_Profiler__)
+        if (ProfilerDisabled)
         {
             httpRequestMessage.Options.AddOrUpdate(Constants.DISABLE_PROFILER_KEY, "TRUE");
         }
 
         // 检查是否显式启用或禁用 JSON 响应反序列化包装器
-        if (__Enable__JsonResponseWrapping__ is not null)
+        if (JsonResponseWrapperEnabled is not null)
         {
-            httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPING_KEY,
-                __Enable__JsonResponseWrapping__.Value ? "TRUE" : "FALSE");
+            httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPER_KEY,
+                JsonResponseWrapperEnabled.Value ? "TRUE" : "FALSE");
+        }
+        
+        // 检查是否显式启用或禁用 JSON 响应内容字符串的解包处理（双重序列化）
+        if (JsonResponseStringUnwrapEnabled is not null)
+        {
+            httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_STRING_UNWRAP_KEY,
+                JsonResponseStringUnwrapEnabled.Value ? "TRUE" : "FALSE");
         }
 
         // 添加 HttpClient 实例的配置名称

@@ -58,7 +58,8 @@ public class HttpDeclarativeBuilderTests
             { typeof(HttpVersionDeclarativeExtractor), new HttpVersionDeclarativeExtractor() },
             { typeof(SuppressExceptionsDeclarativeExtractor), new SuppressExceptionsDeclarativeExtractor() },
             { typeof(RequestEventHandlerDeclarativeExtractor), new RequestEventHandlerDeclarativeExtractor() },
-            { typeof(JsonResponseWrappingDeclarativeExtractor), new JsonResponseWrappingDeclarativeExtractor() },
+            { typeof(JsonResponseWrapperDeclarativeExtractor), new JsonResponseWrapperDeclarativeExtractor() },
+            { typeof(JsonResponseStringUnwrapDeclarativeExtractor), new JsonResponseStringUnwrapDeclarativeExtractor() },
             { typeof(BodyDeclarativeExtractor), new BodyDeclarativeExtractor() }
         };
 
@@ -168,7 +169,8 @@ public class HttpDeclarativeBuilderTests
             { typeof(HttpVersionDeclarativeExtractor), new HttpVersionDeclarativeExtractor() },
             { typeof(SuppressExceptionsDeclarativeExtractor), new SuppressExceptionsDeclarativeExtractor() },
             { typeof(RequestEventHandlerDeclarativeExtractor), new RequestEventHandlerDeclarativeExtractor() },
-            { typeof(JsonResponseWrappingDeclarativeExtractor), new JsonResponseWrappingDeclarativeExtractor() },
+            { typeof(JsonResponseWrapperDeclarativeExtractor), new JsonResponseWrapperDeclarativeExtractor() },
+            { typeof(JsonResponseStringUnwrapDeclarativeExtractor), new JsonResponseStringUnwrapDeclarativeExtractor() },
             { typeof(BodyDeclarativeExtractor), new BodyDeclarativeExtractor() },
             { typeof(CustomHttpDeclarativeExtractor), new CustomHttpDeclarativeExtractor() }
         };

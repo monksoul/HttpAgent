@@ -584,12 +584,19 @@ public class HttpRequestBuilderTests
             new HttpRequestOptionsKey<string>(Constants.HTTP_CLIENT_NAME), out var value2));
         Assert.Equal(string.Empty, value2);
 
-        httpRequestBuilder.JsonResponseWrapping();
+        httpRequestBuilder.UseJsonResponseWrapper();
         httpRequestBuilder.AppendProperties(httpRequestMessage);
         Assert.Equal(5, httpRequestMessage.Options.Count());
         Assert.True(httpRequestMessage.Options.TryGetValue(
-            new HttpRequestOptionsKey<string>(Constants.ENABLE_JSON_RESPONSE_WRAPPING_KEY), out var value4));
+            new HttpRequestOptionsKey<string>(Constants.ENABLE_JSON_RESPONSE_WRAPPER_KEY), out var value4));
         Assert.Equal("TRUE", value4);
+
+        httpRequestBuilder.UseJsonResponseStringUnwrap();
+        httpRequestBuilder.AppendProperties(httpRequestMessage);
+        Assert.Equal(6, httpRequestMessage.Options.Count());
+        Assert.True(httpRequestMessage.Options.TryGetValue(
+            new HttpRequestOptionsKey<string>(Constants.ENABLE_JSON_RESPONSE_STRING_UNWRAP_KEY), out var value5));
+        Assert.Equal("TRUE", value5);
 
         var httpRequestBuilder2 =
             new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost")).SetHttpClientName("github");

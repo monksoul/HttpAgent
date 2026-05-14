@@ -593,17 +593,32 @@ public class DeclarativeAttributeTests
     }
 
     [Fact]
-    public void JsonResponseWrappingAttribute_ReturnOK()
+    public void JsonResponseWrapperAttribute_ReturnOK()
     {
-        var attributeUsage = typeof(JsonResponseWrappingAttribute).GetCustomAttribute<AttributeUsageAttribute>();
+        var attributeUsage = typeof(JsonResponseWrapperAttribute).GetCustomAttribute<AttributeUsageAttribute>();
         Assert.NotNull(attributeUsage);
         Assert.Equal(AttributeTargets.Method | AttributeTargets.Interface, attributeUsage.ValidOn);
         Assert.False(attributeUsage.AllowMultiple);
 
-        var attribute = new JsonResponseWrappingAttribute();
+        var attribute = new JsonResponseWrapperAttribute();
         Assert.True(attribute.Enabled);
 
-        var attribute2 = new JsonResponseWrappingAttribute(false);
+        var attribute2 = new JsonResponseWrapperAttribute(false);
+        Assert.False(attribute2.Enabled);
+    }
+    
+    [Fact]
+    public void JsonResponseStringUnwrapAttribute_ReturnOK()
+    {
+        var attributeUsage = typeof(JsonResponseStringUnwrapAttribute).GetCustomAttribute<AttributeUsageAttribute>();
+        Assert.NotNull(attributeUsage);
+        Assert.Equal(AttributeTargets.Method | AttributeTargets.Interface, attributeUsage.ValidOn);
+        Assert.False(attributeUsage.AllowMultiple);
+
+        var attribute = new JsonResponseStringUnwrapAttribute();
+        Assert.True(attribute.Enabled);
+
+        var attribute2 = new JsonResponseStringUnwrapAttribute(false);
         Assert.False(attribute2.Enabled);
     }
 

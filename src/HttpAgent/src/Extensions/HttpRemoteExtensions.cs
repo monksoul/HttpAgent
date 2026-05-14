@@ -663,12 +663,12 @@ public static partial class HttpRemoteExtensions
     /// <returns>
     ///     <see cref="bool" />
     /// </returns>
-    internal static bool IsEnableJsonResponseWrapping(this HttpResponseMessage? httpResponseMessage,
+    internal static bool ShouldUseJsonResponseWrapper(this HttpResponseMessage? httpResponseMessage,
         IServiceProvider? serviceProvider)
     {
         // 检查是否局部启用或禁用 JSON 响应反序列化包装器
         if (httpResponseMessage?.RequestMessage?.Options.TryGetValue(
-                new HttpRequestOptionsKey<string>(Constants.ENABLE_JSON_RESPONSE_WRAPPING_KEY), out var enableValue) ==
+                new HttpRequestOptionsKey<string>(Constants.ENABLE_JSON_RESPONSE_WRAPPER_KEY), out var enableValue) ==
             true)
         {
             return enableValue == "TRUE";
@@ -676,7 +676,60 @@ public static partial class HttpRemoteExtensions
 
         // 否则使用全局配置
         return HttpRemoteUtility.ResolveHttpClientOptions(httpResponseMessage, serviceProvider)
-            ?.UseJsonResponseWrapping == true;
+            ?.UseJsonResponseWrapper == true;
+    }
+
+    /// <summary>
+    ///     检查是否启用 JSON 响应内容字符串的解包处理（双重序列化）
+    /// </summary>
+    /// <param name="httpResponseMessage">
+    ///     <see cref="HttpResponseMessage" />
+    /// </param>
+    /// <returns>
+    ///     <see cref="bool" />
+    /// </returns>
+    internal static bool ShouldJsonResponseStringUnwrap(this HttpResponseMessage? httpResponseMessage)
+    {
+        // 检查是否启用或禁用 JSON 响应反序列化包装器
+        if (httpResponseMessage?.RequestMessage?.Options.TryGetValue(
+                new HttpRequestOptionsKey<string>(Constants.ENABLE_JSON_RESPONSE_STRING_UNWRAP_KEY),
+                out var enableValue) ==
+            true)
+        {
+            return enableValue == "TRUE";
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    ///     解析经过双重序列化的 JSON 字符串，并将其反序列化为指定类型
+    /// </summary>
+    /// <param name="httpContent">
+    ///     <see cref="HttpContent" />
+    /// </param>
+    /// <param name="resultType">目标类型</param>
+    /// <param name="jsonSerializerOptions">
+    ///     <see cref="JsonSerializerOptions" />
+    /// </param>
+    /// <param name="cancellationToken">
+    ///     <see cref="CancellationToken" />
+    /// </param>
+    /// <returns>
+    ///     <see cref="object" />
+    /// </returns>
+    internal static async Task<object?> ReadAndUnwrapFromJsonAsync(this HttpContent httpContent, Type resultType,
+        JsonSerializerOptions? jsonSerializerOptions = null, CancellationToken cancellationToken = default)
+    {
+        // 读取响应内容字符串
+        var responseString = await httpContent.ReadAsStringAsync(cancellationToken);
+
+        // 处理双重序列化问题
+        var innerJson = JsonSerializer.Deserialize<string>(responseString);
+
+        return innerJson is null
+            ? null
+            : JsonSerializer.Deserialize(innerJson, resultType, jsonSerializerOptions);
     }
 
     /// <summary>

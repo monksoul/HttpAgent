@@ -85,7 +85,7 @@ public class HttpContentConverterFactoryTests
             httpContentConverterFactory.GetConverter<ObjectModel>(httpResponseMessage).GetType());
 
         var httpRequestMessage = new HttpRequestMessage();
-        httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPING_KEY, "TRUE");
+        httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPER_KEY, "TRUE");
         httpResponseMessage.RequestMessage = httpRequestMessage;
         Assert.Equal(typeof(ObjectContentConverter<HttpResponseMessage>),
             httpContentConverterFactory.GetConverter<HttpResponseMessage>(httpResponseMessage).GetType());
@@ -243,7 +243,7 @@ public class HttpContentConverterFactoryTests
             httpContentConverterFactory.GetConverter(typeof(ObjectModel), httpResponseMessage).GetType());
 
         var httpRequestMessage = new HttpRequestMessage();
-        httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPING_KEY, "TRUE");
+        httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPER_KEY, "TRUE");
         httpResponseMessage.RequestMessage = httpRequestMessage;
         Assert.Equal(typeof(ObjectContentConverter),
             httpContentConverterFactory.GetConverter(typeof(string), httpResponseMessage).GetType());

@@ -1667,7 +1667,7 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
         var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.NoContent);
         await HttpRemoteService.ExecuteAssertionsAsync(httpRequestBuilder, httpResponseMessage, 100, serviceProvider);
 
-        httpRequestBuilder.EnableAssertions().Asserts(u => u.StatusCode(200));
+        httpRequestBuilder.UseAssertions().Asserts(u => u.StatusCode(200));
 
         var exception = await Assert.ThrowsAsync<HttpAssertionException>(async () =>
             await HttpRemoteService.ExecuteAssertionsAsync(httpRequestBuilder, httpResponseMessage, 100,
@@ -1696,7 +1696,7 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
         var httpRemoteService = app.Services.GetRequiredService<IHttpRemoteService>();
 
         var exception = await Assert.ThrowsAsync<HttpAssertionException>(async () => await httpRemoteService.SendAsync(
-            HttpRequestBuilder.Get($"http://localhost:{port}/test").EnableAssertions()
+            HttpRequestBuilder.Get($"http://localhost:{port}/test").UseAssertions()
                 .Asserts(u => u.StatusCode(200))));
         Assert.Equal("Expected status code to be 200, but found 500.", exception.Message);
 

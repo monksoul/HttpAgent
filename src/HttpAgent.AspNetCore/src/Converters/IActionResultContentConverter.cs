@@ -11,51 +11,8 @@ public class IActionResultContentConverter : HttpContentConverterBase<IActionRes
 {
     /// <inheritdoc />
     public override IActionResult? Read(HttpResponseMessage httpResponseMessage,
-        CancellationToken cancellationToken = default)
-    {
-        // 尝试为无内容响应生成对应的 IActionResult
-        if (TryGetEmptyContentResult(httpResponseMessage, out var statusCode, out var emptyContentResult))
-        {
-            return emptyContentResult;
-        }
-
-        // 获取响应内容标头
-        var contentHeaders = httpResponseMessage.Content.Headers;
-
-        // 获取内容类型
-        var contentType = contentHeaders.ContentType;
-        var mediaType = contentType?.MediaType;
-
-        switch (mediaType)
-        {
-            case MediaTypeNames.Application.Json:
-            case MediaTypeNames.Application.JsonPatch:
-            case MediaTypeNames.Application.Xml:
-            case MediaTypeNames.Application.XmlPatch:
-            case MediaTypeNames.Text.Xml:
-            case MediaTypeNames.Text.Html:
-            case MediaTypeNames.Text.Plain:
-            case MediaTypeNames.Application.Soap:
-                // 读取字符串内容
-                var stringContent =
-                    AsyncUtility.RunSync(() => httpResponseMessage.Content.ReadAsStringAsync(cancellationToken));
-
-                return new ContentResult
-                {
-                    Content = stringContent, StatusCode = (int)statusCode, ContentType = contentType?.ToString()
-                };
-            default:
-                // 读取流内容
-                var streamContent = httpResponseMessage.Content.ReadAsStream(cancellationToken);
-
-                return new FileStreamResult(streamContent, contentType?.ToString() ?? MediaTypeNames.Application.Octet)
-                {
-                    // 尝试从响应标头 Content-Disposition 中解析文件名
-                    FileDownloadName = Helpers.ExtractFileNameFromContentDisposition(contentHeaders.ContentDisposition),
-                    LastModified = contentHeaders.LastModified?.UtcDateTime
-                };
-        }
-    }
+        CancellationToken cancellationToken = default) =>
+        AsyncUtility.RunSync(() => ReadAsync(httpResponseMessage, cancellationToken));
 
     /// <inheritdoc />
     public override async Task<IActionResult?> ReadAsync(HttpResponseMessage httpResponseMessage,

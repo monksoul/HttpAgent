@@ -491,35 +491,51 @@ public class HttpRemoteExtensionsTests
     }
 
     [Fact]
-    public void IsEnableJsonResponseWrapping_ReturnOK()
+    public void ShouldUseJsonResponseWrapper_ReturnOK()
     {
         var httpResponseMessage = new HttpResponseMessage();
-        Assert.False(httpResponseMessage.IsEnableJsonResponseWrapping(null));
+        Assert.False(httpResponseMessage.ShouldUseJsonResponseWrapper(null));
 
         var httpRequestMessage = new HttpRequestMessage();
-        httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPING_KEY, "TRUE");
+        httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPER_KEY, "TRUE");
         httpResponseMessage.RequestMessage = httpRequestMessage;
-        Assert.True(httpResponseMessage.IsEnableJsonResponseWrapping(null));
+        Assert.True(httpResponseMessage.ShouldUseJsonResponseWrapper(null));
 
-        httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPING_KEY, "FALSE");
+        httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPER_KEY, "FALSE");
         httpResponseMessage.RequestMessage = httpRequestMessage;
-        Assert.False(httpResponseMessage.IsEnableJsonResponseWrapping(null));
+        Assert.False(httpResponseMessage.ShouldUseJsonResponseWrapper(null));
 
         var services = new ServiceCollection();
-        services.AddHttpClient(string.Empty).ConfigureOptions(u => u.UseJsonResponseWrapping = true);
+        services.AddHttpClient(string.Empty).ConfigureOptions(u => u.UseJsonResponseWrapper = true);
         using var serviceProvider = services.BuildServiceProvider();
 
         var httpResponseMessage2 = new HttpResponseMessage();
-        Assert.True(httpResponseMessage2.IsEnableJsonResponseWrapping(serviceProvider));
+        Assert.True(httpResponseMessage2.ShouldUseJsonResponseWrapper(serviceProvider));
 
         var httpRequestMessage2 = new HttpRequestMessage();
-        httpRequestMessage2.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPING_KEY, "TRUE");
+        httpRequestMessage2.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPER_KEY, "TRUE");
         httpResponseMessage2.RequestMessage = httpRequestMessage2;
-        Assert.True(httpResponseMessage2.IsEnableJsonResponseWrapping(serviceProvider));
+        Assert.True(httpResponseMessage2.ShouldUseJsonResponseWrapper(serviceProvider));
 
-        httpRequestMessage2.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPING_KEY, "FALSE");
+        httpRequestMessage2.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPER_KEY, "FALSE");
         httpResponseMessage2.RequestMessage = httpRequestMessage2;
-        Assert.False(httpResponseMessage2.IsEnableJsonResponseWrapping(serviceProvider));
+        Assert.False(httpResponseMessage2.ShouldUseJsonResponseWrapper(serviceProvider));
+    }
+
+    [Fact]
+    public void ShouldJsonResponseStringUnwrap_ReturnOK()
+    {
+        var httpResponseMessage = new HttpResponseMessage();
+        Assert.False(httpResponseMessage.ShouldJsonResponseStringUnwrap());
+
+        var httpRequestMessage = new HttpRequestMessage();
+        httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_STRING_UNWRAP_KEY, "TRUE");
+        httpResponseMessage.RequestMessage = httpRequestMessage;
+        Assert.True(httpResponseMessage.ShouldJsonResponseStringUnwrap());
+
+        httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_STRING_UNWRAP_KEY, "FALSE");
+        httpResponseMessage.RequestMessage = httpRequestMessage;
+        Assert.False(httpResponseMessage.ShouldJsonResponseStringUnwrap());
     }
 
     [Fact]
@@ -580,5 +596,23 @@ public class HttpRemoteExtensionsTests
         var resultText4 = Encoding.UTF8.GetString(result4);
         Assert.Equal(originalText, resultText4);
         Assert.Equal(originalBytes.Length, result4.Length);
+    }
+
+    [Fact]
+    public async Task ReadAndUnwrapFromJsonAsync_ReturnOK()
+    {
+        using var stringContent = new StringContent("\"{\\\"id\\\":10, \\\"name\\\":\\\"furion\\\"}\"");
+
+        var objectModel = await stringContent.ReadAndUnwrapFromJsonAsync(typeof(JsonModel),
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) as JsonModel;
+        Assert.NotNull(objectModel);
+        Assert.Equal(10, objectModel.Id);
+        Assert.Equal("furion", objectModel.Name);
+    }
+
+    public class JsonModel
+    {
+        public int Id { get; set; }
+        public string? Name { get; set; }
     }
 }

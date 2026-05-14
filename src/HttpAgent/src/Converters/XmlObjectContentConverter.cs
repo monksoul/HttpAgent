@@ -15,8 +15,7 @@ public class XmlObjectContentConverter : IHttpContentConverter
     /// <inheritdoc />
     public virtual object? Read(Type resultType, HttpResponseMessage httpResponseMessage,
         CancellationToken cancellationToken = default) =>
-        DeserializeXml(resultType,
-            AsyncUtility.RunSync(() => httpResponseMessage.Content.ReadAsStringAsync(cancellationToken)));
+        AsyncUtility.RunSync(() => ReadAsync(resultType, httpResponseMessage, cancellationToken));
 
     /// <inheritdoc />
     public virtual async Task<object?> ReadAsync(Type resultType, HttpResponseMessage httpResponseMessage,

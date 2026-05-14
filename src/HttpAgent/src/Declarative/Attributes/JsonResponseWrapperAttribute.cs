@@ -8,21 +8,21 @@ namespace HttpAgent;
 ///     HTTP 声明式启用 JSON 响应反序列化包装器
 /// </summary>
 [AttributeUsage(AttributeTargets.Method | AttributeTargets.Interface)]
-public sealed class JsonResponseWrappingAttribute : Attribute
+public sealed class JsonResponseWrapperAttribute : Attribute
 {
     /// <summary>
-    ///     <inheritdoc cref="JsonResponseWrappingAttribute" />
+    ///     <inheritdoc cref="JsonResponseWrapperAttribute" />
     /// </summary>
-    public JsonResponseWrappingAttribute()
+    public JsonResponseWrapperAttribute()
         : this(true)
     {
     }
 
     /// <summary>
-    ///     <inheritdoc cref="JsonResponseWrappingAttribute" />
+    ///     <inheritdoc cref="JsonResponseWrapperAttribute" />
     /// </summary>
     /// <param name="enabled">是否启用</param>
-    public JsonResponseWrappingAttribute(bool enabled) => Enabled = enabled;
+    public JsonResponseWrapperAttribute(bool enabled) => Enabled = enabled;
 
     /// <summary>
     ///     是否启用

@@ -24,12 +24,12 @@ public sealed class HttpClientOptions
     /// <summary>
     ///     指定 JSON 响应反序列化包装器
     /// </summary>
-    /// <remarks>使用时需明确调用 <see cref="HttpRequestBuilder.JsonResponseWrapping()" />。</remarks>
+    /// <remarks>使用时需明确调用 <see cref="HttpRequestBuilder.UseJsonResponseWrapper()" />。</remarks>
     /// TODO: 未来可以考虑不同的 HTTP 状态码使用不同的包装器
     public JsonResponseWrapper? JsonResponseWrapper { get; set; }
 
     /// <summary>
     ///     是否全局启用 JSON 响应反序列化包装器
     /// </summary>
-    public bool? UseJsonResponseWrapping { get; set; }
+    public bool? UseJsonResponseWrapper { get; set; }
 }

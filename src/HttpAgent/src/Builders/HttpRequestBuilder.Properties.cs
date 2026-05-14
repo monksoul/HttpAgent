@@ -292,7 +292,7 @@ public sealed partial class HttpRequestBuilder
     ///     表示禁用请求分析工具标识
     /// </summary>
     /// <remarks>用于禁用全局请求分析工具。配置信息将写入到 <see cref="HttpRequestMessage.Options" /> 中。默认值为：<c>false</c>。</remarks>
-    internal bool __Disable_Profiler__ { get; private set; }
+    internal bool ProfilerDisabled { get; private set; }
 
     /// <summary>
     ///     状态码处理程序
@@ -341,5 +341,13 @@ public sealed partial class HttpRequestBuilder
     ///     当配置了 <see cref="HttpClientOptions.JsonResponseWrapper" /> 时有效。配置信息将写入到
     ///     <see cref="HttpRequestMessage.Options" /> 中。默认值为：null。
     /// </remarks>
-    internal bool? __Enable__JsonResponseWrapping__ { get; private set; }
+    internal bool? JsonResponseWrapperEnabled { get; private set; }
+
+    /// <summary>
+    ///     表示启用 JSON 响应内容字符串的解包处理（双重序列化）
+    /// </summary>
+    /// <remarks>
+    ///     配置信息将写入到 <see cref="HttpRequestMessage.Options" /> 中。默认值为：null。
+    /// </remarks>
+    internal bool? JsonResponseStringUnwrapEnabled { get; private set; }
 }

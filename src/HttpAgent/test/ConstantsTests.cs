@@ -60,8 +60,12 @@ public class ConstantsTests
         Assert.Equal("__PROFILER_PRINTED__", Constants.PROFILER_PRINTED_KEY);
 
     [Fact]
-    public void ENABLE_JSON_RESPONSE_WRAPPING_KEY() =>
-        Assert.Equal("__ENABLE__JSON_RESPONSE_WRAPPING__", Constants.ENABLE_JSON_RESPONSE_WRAPPING_KEY);
+    public void ENABLE_JSON_RESPONSE_WRAPPER_KEY() =>
+        Assert.Equal("__ENABLE_JSON_RESPONSE_WRAPPER__", Constants.ENABLE_JSON_RESPONSE_WRAPPER_KEY);
+    
+    [Fact]
+    public void ENABLE_JSON_RESPONSE_STRING_UNWRAP_KEY() =>
+        Assert.Equal("__ENABLE_JSON_RESPONSE_STRING_UNWRAP__", Constants.ENABLE_JSON_RESPONSE_STRING_UNWRAP_KEY);
 
     [Fact]
     public void DECLARATIVE_METHOD_KEY() =>

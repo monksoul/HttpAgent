@@ -12,7 +12,7 @@ public class StringContentConverter : HttpContentConverterBase<string>
     /// <inheritdoc />
     public override string? Read(HttpResponseMessage httpResponseMessage,
         CancellationToken cancellationToken = default) =>
-        AsyncUtility.RunSync(() => httpResponseMessage.Content.ReadAsStringAsync(cancellationToken));
+        AsyncUtility.RunSync(() => ReadAsync(httpResponseMessage, cancellationToken));
 
     /// <inheritdoc />
     public override async Task<string?> ReadAsync(HttpResponseMessage httpResponseMessage,

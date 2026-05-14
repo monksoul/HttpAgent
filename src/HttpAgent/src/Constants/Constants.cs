@@ -85,7 +85,13 @@ internal static class Constants
     ///     启用 JSON 响应反序列化包装器键
     /// </summary>
     /// <remarks>被用于从 <see cref="HttpRequestMessage" /> 的 <c>Options</c> 属性中读取。</remarks>
-    internal const string ENABLE_JSON_RESPONSE_WRAPPING_KEY = "__ENABLE__JSON_RESPONSE_WRAPPING__";
+    internal const string ENABLE_JSON_RESPONSE_WRAPPER_KEY = "__ENABLE_JSON_RESPONSE_WRAPPER__";
+    
+    /// <summary>
+    ///     启用 JSON 响应内容字符串的解包处理（双重序列化）
+    /// </summary>
+    /// <remarks>被用于从 <see cref="HttpRequestMessage" /> 的 <c>Options</c> 属性中读取。</remarks>
+    internal const string ENABLE_JSON_RESPONSE_STRING_UNWRAP_KEY = "__ENABLE_JSON_RESPONSE_STRING_UNWRAP__";
 
     /// <summary>
     ///     HTTP 声明式请求方法签名键

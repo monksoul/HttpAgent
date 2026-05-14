@@ -181,7 +181,7 @@ public class HttpRemoteUtilityTests
     }
 
     [Fact]
-    public void ResolveJsonSerializationContext_WithHttpClientOptions_WithEnableJsonResponseWrapping_ReturnOK()
+    public void ResolveJsonSerializationContext_WithHttpClientOptions_UseJsonResponseWrapper_ReturnOK()
     {
         var services = new ServiceCollection();
         services.AddHttpClient(string.Empty).ConfigureOptions(options =>
@@ -194,7 +194,7 @@ public class HttpRemoteUtilityTests
         using var stringContent = new StringContent("""{"success":true,"data":{"id":10,"name":"furion"}}""");
         var httpResponseMessage = new HttpResponseMessage();
         var httpRequestMessage = new HttpRequestMessage();
-        httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPING_KEY, "TRUE");
+        httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPER_KEY, "TRUE");
         httpResponseMessage.RequestMessage = httpRequestMessage;
         httpResponseMessage.Content = stringContent;
 

@@ -5,20 +5,20 @@
 namespace HttpAgent;
 
 /// <summary>
-///     HTTP 声明式 <see cref="JsonResponseWrappingAttribute" /> 特性提取器
+///     HTTP 声明式 <see cref="JsonResponseWrapperAttribute" /> 特性提取器
 /// </summary>
-internal sealed class JsonResponseWrappingDeclarativeExtractor : IHttpDeclarativeExtractor
+internal sealed class JsonResponseWrapperDeclarativeExtractor : IHttpDeclarativeExtractor
 {
     /// <inheritdoc />
     public void Extract(HttpRequestBuilder httpRequestBuilder, HttpDeclarativeExtractorContext context)
     {
-        // 检查方法或接口是否贴有 [JsonResponseWrapping] 特性
-        if (!context.IsMethodDefined<JsonResponseWrappingAttribute>(out var jsonResponseWrappingAttribute, true))
+        // 检查方法或接口是否贴有 [JsonResponseWrapper] 特性
+        if (!context.IsMethodDefined<JsonResponseWrapperAttribute>(out var jsonResponseWrapperAttribute, true))
         {
             return;
         }
 
         // 设置是否启用 JSON 响应反序列化包装器
-        httpRequestBuilder.JsonResponseWrapping(jsonResponseWrappingAttribute.Enabled);
+        httpRequestBuilder.UseJsonResponseWrapper(jsonResponseWrapperAttribute.Enabled);
     }
 }
