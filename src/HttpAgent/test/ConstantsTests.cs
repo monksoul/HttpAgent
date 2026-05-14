@@ -62,7 +62,7 @@ public class ConstantsTests
     [Fact]
     public void ENABLE_JSON_RESPONSE_WRAPPER_KEY() =>
         Assert.Equal("__ENABLE_JSON_RESPONSE_WRAPPER__", Constants.ENABLE_JSON_RESPONSE_WRAPPER_KEY);
-    
+
     [Fact]
     public void ENABLE_JSON_RESPONSE_STRING_UNWRAP_KEY() =>
         Assert.Equal("__ENABLE_JSON_RESPONSE_STRING_UNWRAP__", Constants.ENABLE_JSON_RESPONSE_STRING_UNWRAP_KEY);

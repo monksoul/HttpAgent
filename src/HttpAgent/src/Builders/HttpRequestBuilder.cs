@@ -627,7 +627,7 @@ public sealed partial class HttpRequestBuilder
             httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPER_KEY,
                 JsonResponseWrapperEnabled.Value ? "TRUE" : "FALSE");
         }
-        
+
         // 检查是否显式启用或禁用 JSON 响应内容字符串的解包处理（双重序列化）
         if (JsonResponseStringUnwrapEnabled is not null)
         {

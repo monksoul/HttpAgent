@@ -606,7 +606,7 @@ public class DeclarativeAttributeTests
         var attribute2 = new JsonResponseWrapperAttribute(false);
         Assert.False(attribute2.Enabled);
     }
-    
+
     [Fact]
     public void JsonResponseStringUnwrapAttribute_ReturnOK()
     {

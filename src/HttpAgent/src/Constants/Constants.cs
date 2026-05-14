@@ -86,7 +86,7 @@ internal static class Constants
     /// </summary>
     /// <remarks>被用于从 <see cref="HttpRequestMessage" /> 的 <c>Options</c> 属性中读取。</remarks>
     internal const string ENABLE_JSON_RESPONSE_WRAPPER_KEY = "__ENABLE_JSON_RESPONSE_WRAPPER__";
-    
+
     /// <summary>
     ///     启用 JSON 响应内容字符串的解包处理（双重序列化）
     /// </summary>
