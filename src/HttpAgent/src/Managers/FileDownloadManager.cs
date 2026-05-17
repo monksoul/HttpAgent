@@ -50,7 +50,12 @@ internal sealed class FileDownloadManager
         _httpFileDownloadBuilder = httpFileDownloadBuilder;
 
         // 初始化文件传输进度信息的通道
-        _progressChannel = Channel.CreateUnbounded<FileTransferProgress>();
+        _progressChannel = Channel.CreateUnbounded<FileTransferProgress>(new UnboundedChannelOptions
+        {
+            SingleReader = true,
+            SingleWriter = false,
+            AllowSynchronousContinuations = true
+        });
 
         // 初始化节流器实例
         _throttler = new Throttler(_httpFileDownloadBuilder.ProgressInterval);

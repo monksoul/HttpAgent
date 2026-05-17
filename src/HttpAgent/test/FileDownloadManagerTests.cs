@@ -28,7 +28,7 @@ public class FileDownloadManagerTests(ITestOutputHelper output)
         Assert.NotNull(fileDownloadManager._httpFileDownloadBuilder);
         Assert.NotNull(fileDownloadManager._httpRemoteService);
         Assert.NotNull(fileDownloadManager._progressChannel);
-        Assert.Equal("UnboundedChannel`1", fileDownloadManager._progressChannel.GetType().Name);
+        Assert.Equal("SingleConsumerUnboundedChannel`1", fileDownloadManager._progressChannel.GetType().Name);
         Assert.NotNull(fileDownloadManager.RequestBuilder);
         Assert.Null(fileDownloadManager.FileTransferEventHandler);
         Assert.Equal(0, fileDownloadManager._totalBytesReceived);

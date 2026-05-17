@@ -68,7 +68,12 @@ internal sealed class LongPollingManager
     internal void Start(CancellationToken cancellationToken = default)
     {
         // 初始化数据接收传输的通道
-        var dataChannel = Channel.CreateUnbounded<HttpResponseMessage>();
+        var dataChannel = Channel.CreateUnbounded<HttpResponseMessage>(new UnboundedChannelOptions
+        {
+            SingleWriter = true,
+            SingleReader = true,
+            AllowSynchronousContinuations = true
+        });
 
         // 初始化接收服务器响应数据任务
         var fetchResponseTask = FetchResponseAsync(dataChannel, cancellationToken);
@@ -147,7 +152,12 @@ internal sealed class LongPollingManager
     internal async Task StartAsync(CancellationToken cancellationToken = default)
     {
         // 初始化数据接收传输的通道
-        var dataChannel = Channel.CreateUnbounded<HttpResponseMessage>();
+        var dataChannel = Channel.CreateUnbounded<HttpResponseMessage>(new UnboundedChannelOptions
+        {
+            SingleWriter = true,
+            SingleReader = true,
+            AllowSynchronousContinuations = true
+        });
 
         // 初始化接收服务器响应数据任务
         var fetchResponseTask = FetchResponseAsync(dataChannel, cancellationToken);

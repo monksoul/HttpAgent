@@ -39,7 +39,12 @@ internal sealed class FileUploadManager
         _httpFileUploadBuilder = httpFileUploadBuilder;
 
         // 初始化文件传输进度信息的通道
-        _progressChannel = Channel.CreateUnbounded<FileTransferProgress>();
+        _progressChannel = Channel.CreateUnbounded<FileTransferProgress>(new UnboundedChannelOptions
+        {
+            SingleWriter = true,
+            SingleReader = true,
+            AllowSynchronousContinuations = true
+        });
 
         // 解析 IHttpFileTransferEventHandler 事件处理程序
         FileTransferEventHandler = (httpFileUploadBuilder.FileTransferEventHandlerType is not null

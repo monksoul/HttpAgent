@@ -29,7 +29,7 @@ public class FileUploadManagerTests(ITestOutputHelper output)
         Assert.NotNull(fileUploadManager._httpFileUploadBuilder);
         Assert.NotNull(fileUploadManager._httpRemoteService);
         Assert.NotNull(fileUploadManager._progressChannel);
-        Assert.Equal("UnboundedChannel`1", fileUploadManager._progressChannel.GetType().Name);
+        Assert.Equal("SingleConsumerUnboundedChannel`1", fileUploadManager._progressChannel.GetType().Name);
         Assert.NotNull(fileUploadManager.RequestBuilder);
         Assert.Null(fileUploadManager.FileTransferEventHandler);
 
