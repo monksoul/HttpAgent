@@ -135,9 +135,11 @@ public sealed class ProfilerDelegatingHandler(IHttpRemoteLogger logger, IOptions
         HttpRequestMessage request, HttpRemoteAnalyzer? httpRemoteAnalyzer = null, HttpClient? httpClient = null,
         CancellationToken cancellationToken = default)
     {
-        Log(logger, remoteOptions, request.ProfilerHeaders(httpClient), httpRemoteAnalyzer);
-        Log(logger, remoteOptions, await request.Content.ProfilerAsync(cancellationToken: cancellationToken),
-            httpRemoteAnalyzer);
+        // 解析请求标头和内容信息
+        var requestSummary = request.ProfilerHeaders(httpClient);
+        var requestContentSummary = await request.Content.ProfilerAsync(cancellationToken: cancellationToken);
+
+        Log(logger, remoteOptions, $"{requestSummary}\r\n{requestContentSummary}", httpRemoteAnalyzer);
     }
 
     /// <summary>
@@ -163,12 +165,13 @@ public sealed class ProfilerDelegatingHandler(IHttpRemoteLogger logger, IOptions
         HttpResponseMessage httpResponseMessage, long requestDuration, HttpRemoteAnalyzer? httpRemoteAnalyzer = null,
         CancellationToken cancellationToken = default)
     {
-        Log(logger, remoteOptions, httpResponseMessage.ProfilerGeneralAndHeaders(generalCustomKeyValues:
-                [new KeyValuePair<string, IEnumerable<string>>("Request Duration (ms)", [$"{requestDuration:N2}"])]),
-            httpRemoteAnalyzer);
-        Log(logger, remoteOptions,
-            await httpResponseMessage.Content.ProfilerAsync("Response Body", httpResponseMessage, cancellationToken),
-            httpRemoteAnalyzer);
+        // 解析常规和响应内容信息
+        var generalSummary = httpResponseMessage.ProfilerGeneralAndHeaders(generalCustomKeyValues:
+            [new KeyValuePair<string, IEnumerable<string>>("Request Duration (ms)", [$"{requestDuration:N2}"])]);
+        var responseContentSummary =
+            await httpResponseMessage.Content.ProfilerAsync("Response Body", httpResponseMessage, cancellationToken);
+
+        Log(logger, remoteOptions, $"{generalSummary}\r\n{responseContentSummary}", httpRemoteAnalyzer);
     }
 
     /// <summary>
