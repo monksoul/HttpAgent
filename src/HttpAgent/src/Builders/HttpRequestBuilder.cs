@@ -23,6 +23,13 @@ public sealed partial class HttpRequestBuilder
     /// <summary>
     ///     <inheritdoc cref="HttpRequestBuilder" />
     /// </summary>
+    private HttpRequestBuilder()
+    {
+    }
+
+    /// <summary>
+    ///     <inheritdoc cref="HttpRequestBuilder" />
+    /// </summary>
     /// <param name="httpMethod">请求方式</param>
     /// <param name="requestUri">请求地址</param>
     internal HttpRequestBuilder(HttpMethod httpMethod, Uri? requestUri)

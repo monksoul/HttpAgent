@@ -1831,7 +1831,7 @@ public sealed partial class HttpRequestBuilder
         ArgumentNullException.ThrowIfNull(HttpMethod);
 
         // 初始化新的 HttpRequestBuilder 实例
-        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod, RequestUri);
+        var httpRequestBuilder = new HttpRequestBuilder();
 
         // 遍历所有属性并设置给 httpRequestBuilder 实例
         foreach (var property in _cachedProperties.Value)

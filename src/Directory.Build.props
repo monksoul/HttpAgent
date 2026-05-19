@@ -9,10 +9,10 @@
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <PackageOutputPath>$(SolutionDir)nupkgs</PackageOutputPath>
-        <Version>1.11.4</Version>
+        <Version>1.11.5</Version>
         <PackageVersion>$(Version)</PackageVersion>
         <Authors>百小僧</Authors>
-        <Description>HttpAgent 是一个高性能、灵活且易用的开源库，提供了全面的 HTTP 功能支持，包括文件传输、轮询、测试工具、实时通信、请求管理、Media 类型处理、MessagePack 支持等，并具有低资源消耗和高测试覆盖率的特点。</Description>
+        <Description>HttpAgent 是一个高性能、灵活且易用的开源库，提供了全面的 HTTP 功能支持，包括文件传输、轮询、测试工具、实时通信、请求管理、Media 类型处理、MessagePack 支持、声明式请求等，并具有低资源消耗和高测试覆盖率的特点。</Description>
         <PackageTags>HTTP;HttpClient;HTTP Agent;MessagePack;SSE;Test;HTTP Forward;Furion;ASP.NET;dotNET China;Cross Platform;百小僧;Monk;MonkSoul</PackageTags>
         <Company>百签科技（广东）有限公司</Company>
         <Product>HttpAgent</Product>
