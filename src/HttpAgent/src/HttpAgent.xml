@@ -5186,7 +5186,7 @@
         </member>
         <member name="M:HttpAgent.Core.Extensions.NumberExtensions.FormatDuration(System.Int64)">
             <summary>
-                将毫秒格式化为更直观的时间单位字符串（如 ms, s, min, h, d, y）
+                将毫秒格式化为更直观的时间单位字符串（如 ms, s, m, h, d, y）
             </summary>
             <param name="millisecond">毫秒</param>
             <returns>
@@ -5195,7 +5195,7 @@
         </member>
         <member name="M:HttpAgent.Core.Extensions.NumberExtensions.FormatDuration(System.Double)">
             <summary>
-                将毫秒格式化为更直观的时间单位字符串（如 ms, s, min, h, d, y）
+                将毫秒格式化为更直观的时间单位字符串（如 ms, s, m, h, d, y）
             </summary>
             <param name="millisecond">毫秒</param>
             <returns>
@@ -16654,7 +16654,7 @@
         </member>
     </members>
 </doc>
-ection" />
+tensions.DependencyInjection.IServiceCollection" />
             </param>
             <param name="httpRemoteBuilder">
                 <see cref="T:HttpAgent.HttpRemoteBuilder" />

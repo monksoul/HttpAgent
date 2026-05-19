@@ -55,7 +55,7 @@ public static class NumberExtensions
     public static double ToSizeUnits(this long byteSize, string unit) => ((double)byteSize).ToSizeUnits(unit);
 
     /// <summary>
-    ///     将毫秒格式化为更直观的时间单位字符串（如 ms, s, min, h, d, y）
+    ///     将毫秒格式化为更直观的时间单位字符串（如 ms, s, m, h, d, y）
     /// </summary>
     /// <param name="millisecond">毫秒</param>
     /// <returns>
@@ -84,7 +84,7 @@ public static class NumberExtensions
     }
 
     /// <summary>
-    ///     将毫秒格式化为更直观的时间单位字符串（如 ms, s, min, h, d, y）
+    ///     将毫秒格式化为更直观的时间单位字符串（如 ms, s, m, h, d, y）
     /// </summary>
     /// <param name="millisecond">毫秒</param>
     /// <returns>
