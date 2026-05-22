@@ -4,6 +4,7 @@
 
 namespace HttpAgent.Tests;
 
+[Collection("FileDownloadManagerTests")]
 public class HttpDeclarativeBuilderTests
 {
     [Fact]

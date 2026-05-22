@@ -7,14 +7,24 @@ namespace HttpAgent.Tests;
 [Collection("HttpRemoteClientTests")]
 public class HttpRemoteClientTests
 {
+    public HttpRemoteClientTests() => ResetStaticState();
+
+    private static void ResetStaticState()
+    {
+        HttpRemoteClient._isDisposed = false;
+        HttpRemoteClient.ReleaseServiceProvider();
+
+        HttpRemoteClient._serviceInstance = null;
+        HttpRemoteClient._configure = services => services.AddHttpRemote();
+    }
+
     [Fact]
     public void New_ReturnOK()
     {
         var httpRemoteService = HttpRemoteClient.Service;
         Assert.NotNull(HttpRemoteClient._serviceProvider);
-        Assert.NotNull(HttpRemoteClient._httpRemoteService);
-        Assert.NotNull(HttpRemoteClient._httpRemoteService.Value);
-        Assert.NotNull(HttpRemoteClient._initializationLock);
+        Assert.NotNull(HttpRemoteClient._serviceInstance);
+        Assert.NotNull(HttpRemoteClient._lock);
         Assert.NotNull(HttpRemoteClient._configure);
         Assert.False(HttpRemoteClient._isDisposed);
         Assert.NotNull(HttpRemoteClient.Service);
@@ -70,7 +80,7 @@ public class HttpRemoteClientTests
 
         var httpRemoteService2 = HttpRemoteClient.CreateService();
         var httpRemoteService3 = HttpRemoteClient.CreateService();
-        Assert.Same(httpRemoteService2, httpRemoteService3);
+        Assert.NotSame(httpRemoteService2, httpRemoteService3);
     }
 
     [Fact]

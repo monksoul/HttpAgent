@@ -10,33 +10,28 @@ namespace HttpAgent;
 /// <remarks>支持服务的延迟初始化、配置更新以及资源释放。</remarks>
 public static class HttpRemoteClient
 {
+    /// <summary>
+    ///     标记服务是否已释放
+    /// </summary>
+    internal static volatile bool _isDisposed;
+
+    /// <summary>
+    ///     当前 <see cref="IHttpRemoteService" /> 实例
+    /// </summary>
+    internal static volatile IHttpRemoteService? _serviceInstance;
+
     /// <inheritdoc cref="IServiceProvider" />
     internal static IServiceProvider? _serviceProvider;
 
     /// <summary>
-    ///     延迟加载的 <see cref="IHttpRemoteService" /> 实例
-    /// </summary>
-    internal static Lazy<IHttpRemoteService> _httpRemoteService;
-
-    /// <summary>
     ///     并发锁对象
     /// </summary>
-    internal static readonly SemaphoreSlim _initializationLock = new(1, 1);
-
-    /// <summary>
-    ///     标记服务是否已释放
-    /// </summary>
-    internal static bool _isDisposed;
+    internal static readonly object _lock = new();
 
     /// <summary>
     ///     自定义服务注册逻辑的委托
     /// </summary>
     internal static Action<IServiceCollection> _configure = services => services.AddHttpRemote();
-
-    /// <summary>
-    ///     <inheritdoc cref="HttpRemoteClient" />
-    /// </summary>
-    static HttpRemoteClient() => _httpRemoteService = new Lazy<IHttpRemoteService>(CreateService);
 
     /// <summary>
     ///     获取当前配置下的 <see cref="IHttpRemoteService" /> 实例
@@ -48,7 +43,25 @@ public static class HttpRemoteClient
             // 释放检查
             ObjectDisposedException.ThrowIf(_isDisposed, typeof(HttpRemoteClient));
 
-            return _httpRemoteService.Value;
+            // 双重检查锁定
+            // ReSharper disable once InvertIf
+            if (_serviceInstance is null)
+            {
+                lock (_lock)
+                {
+                    // 释放检查
+                    ObjectDisposedException.ThrowIf(_isDisposed, typeof(HttpRemoteClient));
+
+                    // 空检查
+                    // ReSharper disable once ConvertIfStatementToNullCoalescingAssignment
+                    if (_serviceInstance is null)
+                    {
+                        _serviceInstance = CreateService();
+                    }
+                }
+            }
+
+            return _serviceInstance;
         }
     }
 
@@ -60,22 +73,23 @@ public static class HttpRemoteClient
         // 空检查
         ArgumentNullException.ThrowIfNull(configure);
 
-        // 初始化锁
-        _initializationLock.Wait();
-
-        try
+        lock (_lock)
         {
-            // 释放检查
             ObjectDisposedException.ThrowIf(_isDisposed, typeof(HttpRemoteClient));
 
             // 更新配置委托
+            var previousConfigure = _configure;
             _configure = services =>
             {
-                // 调用自定义配置委托
+                // 调用历史配置委托
+                previousConfigure(services);
+
+                // 调用当前自定义配置委托
                 configure(services);
 
-                // 检查 HTTP 远程请求服务是否已注册，若未注册则自动完成注册
-                if (services.All(u => u.ServiceType != typeof(IHttpRemoteService)))
+                // 检查 HTTP 远程请求服务是否已注册，若未注册则自动完成注册 
+                // ReSharper disable once SimplifyLinqExpressionUseAll
+                if (!services.Any(u => u.ServiceType == typeof(IHttpRemoteService)))
                 {
                     services.AddHttpRemote();
                 }
@@ -83,11 +97,6 @@ public static class HttpRemoteClient
 
             // 重新初始化服务
             Reinitialize();
-        }
-        finally
-        {
-            // 释放锁
-            _initializationLock.Release();
         }
     }
 
@@ -97,27 +106,19 @@ public static class HttpRemoteClient
     /// <remarks>通常在应用程序关闭或不再需要 HTTP 远程请求服务时调用。</remarks>
     public static void Dispose()
     {
-        // 初始化锁
-        _initializationLock.Wait();
-
-        try
+        lock (_lock)
         {
-            // 幂等性处理
             if (_isDisposed)
             {
                 return;
             }
 
-            // 重新初始化服务
-            Reinitialize();
+            // 清理资源并重置实例
+            ReleaseServiceProvider();
+            _serviceInstance = null;
 
             // 标记为已释放状态
             _isDisposed = true;
-        }
-        finally
-        {
-            // 释放锁
-            _initializationLock.Release();
         }
     }
 
@@ -130,62 +131,38 @@ public static class HttpRemoteClient
     /// <exception cref="InvalidOperationException"></exception>
     internal static IHttpRemoteService CreateService()
     {
-        // 初始化锁
-        _initializationLock.Wait();
-
         try
         {
-            // 释放检查
-            ObjectDisposedException.ThrowIf(_isDisposed, typeof(HttpRemoteClient));
+            // 初始化 ServiceCollection 实例
+            var services = new ServiceCollection();
 
-            // 如果值已创建，直接返回
-            if (_httpRemoteService.IsValueCreated)
-            {
-                return _httpRemoteService.Value;
-            }
+            // 调用自定义服务注册逻辑的委托
+            _configure(services);
 
-            try
-            {
-                // 初始化 ServiceCollection 实例
-                var services = new ServiceCollection();
+            // 构建服务提供器
+            var provider = services.BuildServiceProvider();
+            _serviceProvider = provider;
 
-                // 调用自定义服务注册逻辑的委托
-                _configure(services);
-
-                // 构建服务提供器
-                _serviceProvider = services.BuildServiceProvider();
-
-                // 解析 IHttpRemoteService 实例并返回
-                return _serviceProvider.GetRequiredService<IHttpRemoteService>();
-            }
-            catch (Exception ex)
-            {
-                // 重新初始化服务
-                Reinitialize();
-
-                throw new InvalidOperationException("Failed to initialize IHttpRemoteService.", ex);
-            }
+            // 解析并返回
+            return provider.GetRequiredService<IHttpRemoteService>();
         }
-        finally
+        catch (Exception ex)
         {
-            // 释放锁
-            _initializationLock.Release();
+            // 清理资源
+            ReleaseServiceProvider();
+
+            throw new InvalidOperationException("Failed to initialize IHttpRemoteService.", ex);
         }
     }
 
     /// <summary>
-    ///     使用最新的 <see cref="Configure" /> 配置重新初始化服务
+    ///     使用最新的配置重新初始化服务
     /// </summary>
     internal static void Reinitialize()
     {
-        // 释放检查
-        ObjectDisposedException.ThrowIf(_isDisposed, typeof(HttpRemoteClient));
-
         // 释放旧资源
         ReleaseServiceProvider();
-
-        // 重置延迟加载实例
-        _httpRemoteService = new Lazy<IHttpRemoteService>(CreateService);
+        _serviceInstance = null;
     }
 
     /// <summary>

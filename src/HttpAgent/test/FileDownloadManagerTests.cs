@@ -4,6 +4,7 @@
 
 namespace HttpAgent.Tests;
 
+[Collection("FileDownloadManagerTests")]
 public class FileDownloadManagerTests(ITestOutputHelper output)
 {
     [Fact]
