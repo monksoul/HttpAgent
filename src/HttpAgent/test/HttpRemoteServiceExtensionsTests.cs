@@ -4,6 +4,7 @@
 
 namespace HttpAgent.Tests;
 
+[Collection("HttpRemoteServiceExtensionsTests")]
 public class HttpRemoteServiceExtensionsTests
 {
     [Fact]

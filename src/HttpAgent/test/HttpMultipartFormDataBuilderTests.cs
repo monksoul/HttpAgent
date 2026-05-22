@@ -748,7 +748,7 @@ public class HttpMultipartFormDataBuilderTests
     public void AddStream_Invalid_Parameters()
     {
         var builder = new HttpMultipartFormDataBuilder(HttpRequestBuilder.Get("http://localhost"));
-        using var stream = new MemoryStream();
+        var stream = new MemoryStream();
 
         // stream 为空
         Assert.Throws<ArgumentNullException>(() => builder.AddStream(null!, null!));
@@ -757,6 +757,10 @@ public class HttpMultipartFormDataBuilderTests
         Assert.Throws<ArgumentNullException>(() => builder.AddStream(stream, null!));
         Assert.Throws<ArgumentException>(() => builder.AddStream(stream, string.Empty));
         Assert.Throws<ArgumentException>(() => builder.AddStream(stream, " "));
+
+        stream.Dispose();
+        var exception = Assert.Throws<ArgumentException>(() => builder.AddStream(stream));
+        Assert.Equal("Stream must be readable. (Parameter 'stream')", exception.Message);
     }
 
     [Fact]
@@ -772,6 +776,7 @@ public class HttpMultipartFormDataBuilderTests
         Assert.Null(builder._partContents[0].ContentEncoding);
         Assert.Equal(stream, builder._partContents[0].RawContent);
         Assert.Equal("image.jpg", builder._partContents[0].FileName);
+        Assert.Equal(0, stream.Position);
 
         builder.AddStream(stream, "test", "image.jpg", "image/jpeg;charset=utf-8");
         Assert.Equal(2, builder._partContents.Count);

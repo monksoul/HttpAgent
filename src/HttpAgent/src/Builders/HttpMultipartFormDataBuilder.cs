@@ -590,6 +590,20 @@ public sealed class HttpMultipartFormDataBuilder
         ArgumentNullException.ThrowIfNull(stream);
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
 
+        // 检查流是否可读
+        if (!stream.CanRead)
+        {
+            // ReSharper disable once LocalizableElement
+            throw new ArgumentException("Stream must be readable.", nameof(stream));
+        }
+
+        // 检查流是否支持查找
+        if (stream.CanSeek)
+        {
+            // 重置到起始位置
+            stream.Position = 0;
+        }
+
         // 解析内容类型字符串
         var mediaType = ParseContentType(contentType, contentEncoding, out var encoding);
 
