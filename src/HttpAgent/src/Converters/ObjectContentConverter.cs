@@ -22,7 +22,7 @@ public class ObjectContentConverter : IHttpContentConverter
     public virtual async Task<object?> ReadAsync(Type resultType, HttpResponseMessage httpResponseMessage,
         CancellationToken cancellationToken = default)
     {
-        // 根据 HTTP 响应消息和服务提供器，解析出 HttpClient 客户端对应的 JSON 响应反序列化时的上下文信息
+        // 解析 HttpClient 客户端对应的 JSON 序列化上下文信息
         var jsonSerializationContext =
             HttpRemoteUtility.ResolveJsonSerializationContext(resultType, httpResponseMessage, ServiceProvider);
 

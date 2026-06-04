@@ -675,7 +675,7 @@ public static partial class HttpRemoteExtensions
         }
 
         // 否则使用全局配置
-        return HttpRemoteUtility.ResolveHttpClientOptions(httpResponseMessage, serviceProvider)
+        return HttpRemoteUtility.ResolveHttpClientOptions(httpResponseMessage?.RequestMessage, serviceProvider)
             ?.UseJsonResponseWrapper == true;
     }
 

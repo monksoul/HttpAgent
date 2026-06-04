@@ -70,9 +70,7 @@ internal sealed class LongPollingManager
         // 初始化数据接收传输的通道
         var dataChannel = Channel.CreateUnbounded<HttpResponseMessage>(new UnboundedChannelOptions
         {
-            SingleWriter = true,
-            SingleReader = true,
-            AllowSynchronousContinuations = true
+            SingleWriter = true, SingleReader = true, AllowSynchronousContinuations = true
         });
 
         // 初始化接收服务器响应数据任务
@@ -154,9 +152,7 @@ internal sealed class LongPollingManager
         // 初始化数据接收传输的通道
         var dataChannel = Channel.CreateUnbounded<HttpResponseMessage>(new UnboundedChannelOptions
         {
-            SingleWriter = true,
-            SingleReader = true,
-            AllowSynchronousContinuations = true
+            SingleWriter = true, SingleReader = true, AllowSynchronousContinuations = true
         });
 
         // 初始化接收服务器响应数据任务

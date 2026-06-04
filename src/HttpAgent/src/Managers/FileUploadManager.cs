@@ -41,9 +41,7 @@ internal sealed class FileUploadManager
         // 初始化文件传输进度信息的通道
         _progressChannel = Channel.CreateUnbounded<FileTransferProgress>(new UnboundedChannelOptions
         {
-            SingleWriter = true,
-            SingleReader = true,
-            AllowSynchronousContinuations = true
+            SingleWriter = true, SingleReader = true, AllowSynchronousContinuations = true
         });
 
         // 解析 IHttpFileTransferEventHandler 事件处理程序

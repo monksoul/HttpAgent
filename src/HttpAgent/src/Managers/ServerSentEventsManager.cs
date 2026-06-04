@@ -79,9 +79,7 @@ internal sealed class ServerSentEventsManager
         // 初始化事件消息传输的通道
         var messageChannel = Channel.CreateUnbounded<ServerSentEventsData>(new UnboundedChannelOptions
         {
-            SingleWriter = true,
-            SingleReader = true,
-            AllowSynchronousContinuations = true
+            SingleWriter = true, SingleReader = true, AllowSynchronousContinuations = true
         });
 
         // 初始化接收事件消息任务
@@ -187,9 +185,7 @@ internal sealed class ServerSentEventsManager
         // 初始化事件消息传输的通道
         var messageChannel = Channel.CreateUnbounded<ServerSentEventsData>(new UnboundedChannelOptions
         {
-            SingleWriter = true,
-            SingleReader = true,
-            AllowSynchronousContinuations = true
+            SingleWriter = true, SingleReader = true, AllowSynchronousContinuations = true
         });
 
         // 初始化接收事件消息任务
