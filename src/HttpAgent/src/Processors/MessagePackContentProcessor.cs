@@ -46,24 +46,25 @@ public class MessagePackContentProcessor : HttpContentProcessorBase
     internal static Func<object, byte[]> MessagePackSerializer => _messagePackSerializerLazy.Value;
 
     /// <inheritdoc />
-    public override bool CanProcess(object? rawContent, string contentType) =>
-        contentType.IsIn(["application/msgpack"], StringComparer.OrdinalIgnoreCase);
+    public override bool CanProcess(HttpContentProcessorContext context) =>
+        context.ContentType.IsIn(["application/msgpack"], StringComparer.OrdinalIgnoreCase);
 
     /// <inheritdoc />
-    public override HttpContent? Process(object? rawContent, string contentType, Encoding? encoding)
+    public override HttpContent? Process(HttpContentProcessorContext context)
     {
         // 尝试解析 HttpContent 类型
-        if (TryProcess(rawContent, contentType, encoding, out var httpContent))
+        if (TryProcess(context, out var httpContent))
         {
             return httpContent;
         }
 
         // 将原始请求内容转换为字节数组
-        var content = rawContent as byte[] ?? MessagePackSerializer(rawContent);
+        var content = context.RawContent as byte[] ?? MessagePackSerializer(context.RawContent!);
 
         // 初始化 ByteArrayContent 实例
         var byteArrayContent = new ByteArrayContent(content);
-        byteArrayContent.Headers.ContentType = new MediaTypeHeaderValue(contentType) { CharSet = encoding?.WebName };
+        byteArrayContent.Headers.ContentType =
+            new MediaTypeHeaderValue(context.ContentType) { CharSet = context.Encoding?.WebName };
 
         return byteArrayContent;
     }

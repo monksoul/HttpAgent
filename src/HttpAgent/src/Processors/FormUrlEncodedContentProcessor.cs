@@ -10,27 +10,28 @@ namespace HttpAgent;
 public class FormUrlEncodedContentProcessor : HttpContentProcessorBase
 {
     /// <inheritdoc />
-    public override bool CanProcess(object? rawContent, string contentType) =>
-        rawContent is FormUrlEncodedContent || contentType.IsIn([MediaTypeNames.Application.FormUrlEncoded],
-            StringComparer.OrdinalIgnoreCase);
+    public override bool CanProcess(HttpContentProcessorContext context) =>
+        context.RawContent is FormUrlEncodedContent ||
+        context.ContentType.IsIn([MediaTypeNames.Application.FormUrlEncoded], StringComparer.OrdinalIgnoreCase);
 
     /// <inheritdoc />
-    public override HttpContent? Process(object? rawContent, string contentType, Encoding? encoding)
+    public override HttpContent? Process(HttpContentProcessorContext context)
     {
         // 尝试解析 HttpContent 类型
-        if (TryProcess(rawContent, contentType, encoding, out var httpContent))
+        if (TryProcess(context, out var httpContent))
         {
             return httpContent;
         }
 
         // 将原始请求类型转换为字符串字典类型
-        var nameValueCollection = rawContent.ObjectToDictionary()!.ToDictionary(u => u.Key.ToInvariantCultureString()!,
+        var nameValueCollection = context.RawContent.ObjectToDictionary()!.ToDictionary(
+            u => u.Key.ToInvariantCultureString()!,
             u => u.Value?.ToInvariantCultureString());
 
         // 初始化 FormUrlEncodedContent 实例
         var formUrlEncodedContent = new FormUrlEncodedContent(nameValueCollection);
         formUrlEncodedContent.Headers.ContentType =
-            new MediaTypeHeaderValue(contentType) { CharSet = encoding?.WebName };
+            new MediaTypeHeaderValue(context.ContentType) { CharSet = context.Encoding?.WebName };
 
         return formUrlEncodedContent;
     }

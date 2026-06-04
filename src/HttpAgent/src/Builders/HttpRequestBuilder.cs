@@ -586,7 +586,9 @@ public sealed partial class HttpRequestBuilder
         SetDefaultContentType(httpRemoteOptions.DefaultContentType);
 
         // 构建 HttpContent 实例
-        var httpContent = httpContentProcessorFactory.Build(RawContent, ContentType!, ContentEncoding, processors);
+        var httpContent =
+            httpContentProcessorFactory.Build(
+                new HttpContentProcessorContext(RawContent, ContentType!, ContentEncoding), processors);
 
         // 空检查
         if (httpContent is null)

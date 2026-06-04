@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
     <ItemGroup>
-        <PackageReference Include="MessagePack" Version="3.1.4"/>
+        <PackageReference Include="MessagePack" Version="3.1.6"/>
         <PackageReference Include="Shapeless" Version="1.2.2"/>
     </ItemGroup>
 

@@ -276,7 +276,7 @@ public sealed class HttpContextForwardBuilder
         ArgumentNullException.ThrowIfNull(contentType);
 
         // 读取 HttpContext 请求体流
-        var bodyStream = await ReadBodyAsync(httpRequestBuilder);
+        var bodyStream = ReadBody();
 
         // 检查请求内容类型是否为 multipart/form-data
         if (!contentType.IsIn([MediaTypeNames.Multipart.FormData], StringComparer.OrdinalIgnoreCase))
@@ -414,31 +414,30 @@ public sealed class HttpContextForwardBuilder
     internal static async Task CopyFileMultipartSectionAsync(FileMultipartSection fileMultipartSection,
         HttpMultipartFormDataBuilder httpMultipartFormDataBuilder, CancellationToken cancellationToken)
     {
-        // 初始化 MemoryStream 实例
-        var memoryStream = new MemoryStream();
+        // 使用文件缓冲流，自动在内存和磁盘间切换
+        var bufferingStream =
+            new FileBufferingReadStream(fileMultipartSection.Section.Body, 64 * 1024);
 
-        // 将多部分表单内容流复制到内存流
-        await fileMultipartSection.Section.Body.CopyToAsync(memoryStream, cancellationToken);
+        // 将节内容读入缓冲流
+        await bufferingStream.DrainAsync(cancellationToken);
 
-        // 将内存流的位置重置到起始位置
-        memoryStream.Position = 0;
+        // 将缓冲流的位置重置回起始位置
+        bufferingStream.Position = 0;
 
         // 添加文件流
-        httpMultipartFormDataBuilder.AddStream(memoryStream, fileMultipartSection.Name, fileMultipartSection.FileName,
+        httpMultipartFormDataBuilder.AddStream(bufferingStream, fileMultipartSection.Name,
+            fileMultipartSection.FileName,
             fileMultipartSection.Section.ContentType, disposeStreamOnRequestCompletion: true);
     }
 
     /// <summary>
     ///     读取 <see cref="HttpContext" /> 请求体流
     /// </summary>
-    /// <param name="httpRequestBuilder">
-    ///     <see cref="HttpRequestBuilder" />
-    /// </param>
     /// <returns>
     ///     <see cref="Stream" />
     /// </returns>
     /// <exception cref="InvalidOperationException"></exception>
-    internal async Task<Stream> ReadBodyAsync(HttpRequestBuilder httpRequestBuilder)
+    internal Stream ReadBody()
     {
         // 获取请求体流
         var body = HttpContext.Request.Body;
@@ -453,18 +452,6 @@ public sealed class HttpContextForwardBuilder
         // 将请求体流的位置重置回起始位置
         body.Position = 0;
 
-        // 初始化 MemoryStream 实例
-        var memoryStream = new MemoryStream();
-
-        // 将请求体流复制到内存流
-        await body.CopyToAsync(memoryStream, HttpContext.RequestAborted);
-
-        // 将内存流的位置重置到起始位置
-        memoryStream.Position = 0;
-
-        // 添加内存流到请求结束时需要释放的集合中
-        httpRequestBuilder.AddDisposable(memoryStream);
-
-        return memoryStream;
+        return body;
     }
 }

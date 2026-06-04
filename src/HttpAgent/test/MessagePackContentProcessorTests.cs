@@ -27,10 +27,11 @@ public class MessagePackContentProcessorTests
     {
         var processor = new MessagePackContentProcessor();
 
-        Assert.True(processor.CanProcess(null, "application/msgpack"));
-        Assert.True(processor.CanProcess(Array.Empty<byte>(), "application/msgpack"));
-        Assert.True(processor.CanProcess(Array.Empty<byte>(), "Application/Msgpack"));
-        Assert.True(processor.CanProcess(new MessagePackModel1(), "Application/Msgpack"));
+        Assert.True(processor.CanProcess(new HttpContentProcessorContext(null, "application/msgpack")));
+        Assert.True(processor.CanProcess(new HttpContentProcessorContext(Array.Empty<byte>(), "application/msgpack")));
+        Assert.True(processor.CanProcess(new HttpContentProcessorContext(Array.Empty<byte>(), "Application/Msgpack")));
+        Assert.True(
+            processor.CanProcess(new HttpContentProcessorContext(new MessagePackModel1(), "Application/Msgpack")));
     }
 
     [Fact]
@@ -39,7 +40,7 @@ public class MessagePackContentProcessorTests
         var processor = new MessagePackContentProcessor();
 
         Assert.Throws<TargetInvocationException>(() =>
-            processor.Process(new MessagePackModel0(), "application/msgpack", null));
+            processor.Process(new HttpContentProcessorContext(new MessagePackModel0(), "application/msgpack")));
     }
 
     [Fact]
@@ -47,26 +48,26 @@ public class MessagePackContentProcessorTests
     {
         var processor = new MessagePackContentProcessor();
 
-        var messagePackContent1 = processor.Process(null, "application/msgpack", null);
+        var messagePackContent1 = processor.Process(new HttpContentProcessorContext(null, "application/msgpack"));
         Assert.Null(messagePackContent1);
 
         var messagePackContent2 =
-            processor.Process(Array.Empty<byte>(), "application/msgpack", null);
+            processor.Process(new HttpContentProcessorContext(Array.Empty<byte>(), "application/msgpack"));
         Assert.NotNull(messagePackContent2);
         Assert.NotNull(messagePackContent2.ReadAsStream());
         Assert.Equal("application/msgpack", messagePackContent2.Headers.ContentType?.MediaType);
         Assert.Null(messagePackContent2.Headers.ContentType?.CharSet);
 
         var messagePackContent3 =
-            processor.Process(Array.Empty<byte>(), "application/msgpack", Encoding.UTF32);
+            processor.Process(new HttpContentProcessorContext(Array.Empty<byte>(), "application/msgpack",
+                Encoding.UTF32));
         Assert.NotNull(messagePackContent3);
         Assert.NotNull(messagePackContent3.ReadAsStream());
         Assert.Equal("application/msgpack", messagePackContent3.Headers.ContentType?.MediaType);
         Assert.Equal("utf-32", messagePackContent3.Headers.ContentType?.CharSet);
 
         var messagePackContent4 =
-            processor.Process(new MessagePackModel1(), "application/msgpack",
-                null);
+            processor.Process(new HttpContentProcessorContext(new MessagePackModel1(), "application/msgpack"));
         Assert.NotNull(messagePackContent4);
         Assert.NotNull(messagePackContent4.ReadAsStream());
         Assert.Equal("application/msgpack", messagePackContent4.Headers.ContentType?.MediaType);

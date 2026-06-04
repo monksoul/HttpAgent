@@ -10,14 +10,14 @@ namespace HttpAgent;
 public class MultipartFormDataContentProcessor : HttpContentProcessorBase
 {
     /// <inheritdoc />
-    public override bool CanProcess(object? rawContent, string contentType) =>
-        rawContent is MultipartFormDataContent ||
-        contentType.IsIn([MediaTypeNames.Multipart.FormData], StringComparer.OrdinalIgnoreCase);
+    public override bool CanProcess(HttpContentProcessorContext context) =>
+        context.RawContent is MultipartFormDataContent ||
+        context.ContentType.IsIn([MediaTypeNames.Multipart.FormData], StringComparer.OrdinalIgnoreCase);
 
     /// <inheritdoc />
-    public override HttpContent? Process(object? rawContent, string contentType, Encoding? encoding) =>
+    public override HttpContent? Process(HttpContentProcessorContext context) =>
         // 尝试解析 HttpContent 类型
-        TryProcess(rawContent, contentType, encoding, out var httpContent)
+        TryProcess(context, out var httpContent)
             ? httpContent
             : throw new NotImplementedException();
 }

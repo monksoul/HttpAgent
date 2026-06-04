@@ -21,13 +21,22 @@ public class StringContentForFormUrlEncodedContentProcessorTests
     {
         var formUrlEncodedContentProcessor = new StringContentForFormUrlEncodedContentProcessor();
 
-        Assert.False(formUrlEncodedContentProcessor.CanProcess(null, "application/octet-stream"));
-        Assert.True(formUrlEncodedContentProcessor.CanProcess(null, "application/x-www-form-urlencoded"));
-        Assert.True(formUrlEncodedContentProcessor.CanProcess(null, "Application/X-www-form-urlencoded"));
-        Assert.False(formUrlEncodedContentProcessor.CanProcess(null, "application/json"));
-        Assert.True(formUrlEncodedContentProcessor.CanProcess(new { }, "application/x-www-form-urlencoded"));
-        Assert.True(formUrlEncodedContentProcessor.CanProcess(new FormUrlEncodedContent([]),
-            "application/x-www-form-urlencoded"));
+        Assert.False(
+            formUrlEncodedContentProcessor.CanProcess(
+                new HttpContentProcessorContext(null, "application/octet-stream")));
+        Assert.True(
+            formUrlEncodedContentProcessor.CanProcess(
+                new HttpContentProcessorContext(null, "application/x-www-form-urlencoded")));
+        Assert.True(
+            formUrlEncodedContentProcessor.CanProcess(
+                new HttpContentProcessorContext(null, "Application/X-www-form-urlencoded")));
+        Assert.False(
+            formUrlEncodedContentProcessor.CanProcess(new HttpContentProcessorContext(null, "application/json")));
+        Assert.True(
+            formUrlEncodedContentProcessor.CanProcess(
+                new HttpContentProcessorContext(new { }, "application/x-www-form-urlencoded")));
+        Assert.True(formUrlEncodedContentProcessor.CanProcess(
+            new HttpContentProcessorContext(new FormUrlEncodedContent([]), "application/x-www-form-urlencoded")));
     }
 
     [Fact]
@@ -37,12 +46,12 @@ public class StringContentForFormUrlEncodedContentProcessorTests
 
         Assert.Throws<NotSupportedException>(() =>
         {
-            processor.Process(1, "application/x-www-form-urlencoded", null);
+            processor.Process(new HttpContentProcessorContext(1, "application/x-www-form-urlencoded"));
         });
 
         var exception = Assert.Throws<FormatException>(() =>
         {
-            processor.Process("furion", "application/x-www-form-urlencoded", null);
+            processor.Process(new HttpContentProcessorContext("furion", "application/x-www-form-urlencoded"));
         });
         Assert.Equal("The content must contain only form url encoded string.", exception.Message);
     }
@@ -52,21 +61,25 @@ public class StringContentForFormUrlEncodedContentProcessorTests
     {
         var processor = new StringContentForFormUrlEncodedContentProcessor();
 
-        Assert.Null(processor.Process(null, "application/x-www-form-urlencoded", null));
+        Assert.Null(
+            processor.Process(new HttpContentProcessorContext(null, "application/x-www-form-urlencoded")));
 
         var formUrlEncodedContent =
             new FormUrlEncodedContent(new List<KeyValuePair<string, string>> { new("key", "value") });
-        var httpContent1 = processor.Process(formUrlEncodedContent, "application/x-www-form-urlencoded", null);
+        var httpContent1 =
+            processor.Process(new HttpContentProcessorContext(formUrlEncodedContent,
+                "application/x-www-form-urlencoded"));
         Assert.Same(formUrlEncodedContent, httpContent1);
 
-        var httpContent2 = processor.Process(new { }, "application/x-www-form-urlencoded", null);
+        var httpContent2 =
+            processor.Process(new HttpContentProcessorContext(new { }, "application/x-www-form-urlencoded"));
         Assert.NotNull(httpContent2);
         Assert.Equal(typeof(StringContent), httpContent2.GetType());
         Assert.Equal("application/x-www-form-urlencoded", httpContent2.Headers.ContentType?.MediaType);
         Assert.Null(httpContent2.Headers.ContentType?.CharSet);
 
-        var httpContent3 = processor.Process(new { id = 1, name = "furion" }, "application/x-www-form-urlencoded",
-            Encoding.UTF32);
+        var httpContent3 = processor.Process(new HttpContentProcessorContext(new { id = 1, name = "furion" },
+            "application/x-www-form-urlencoded", Encoding.UTF32));
         Assert.NotNull(httpContent3);
         Assert.Equal(typeof(StringContent), httpContent3.GetType());
         Assert.Equal("application/x-www-form-urlencoded", httpContent3.Headers.ContentType?.MediaType);
@@ -75,10 +88,9 @@ public class StringContentForFormUrlEncodedContentProcessorTests
         var result = await httpContent3.ReadAsStringAsync();
         Assert.Equal("id=1&name=furion", result);
 
-        var httpContent4 = processor.Process(
+        var httpContent4 = processor.Process(new HttpContentProcessorContext(
             new StringContent("id=1&name=furion", null, "application/x-www-form-urlencoded"),
-            "application/x-www-form-urlencoded",
-            null);
+            "application/x-www-form-urlencoded"));
         Assert.NotNull(httpContent4);
         Assert.Equal(typeof(StringContent), httpContent4.GetType());
         Assert.Equal("application/x-www-form-urlencoded", httpContent4.Headers.ContentType?.MediaType);
@@ -86,11 +98,11 @@ public class StringContentForFormUrlEncodedContentProcessorTests
 
         var processor2 = new StringContentForFormUrlEncodedContentProcessor { UrlEncode = false };
         var httpContent5 =
-            processor2.Process(
+            processor2.Process(new HttpContentProcessorContext(
                 new KeyValuePair<string, string?>[]
                 {
                     new("id", "1"), new("name", "fur ion"), new("data", """{"plateNo":"京A12345","color":"1"}""")
-                }, "application/x-www-form-urlencoded", null)!;
+                }, "application/x-www-form-urlencoded"))!;
         Assert.Equal("""id=1&name=fur ion&data={"plateNo":"京A12345","color":"1"}""",
             await httpContent5.ReadAsStringAsync());
     }

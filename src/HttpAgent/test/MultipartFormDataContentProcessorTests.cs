@@ -19,14 +19,14 @@ public class MultipartFormDataContentProcessorTests
     {
         var processor = new MultipartFormDataContentProcessor();
 
-        Assert.False(processor.CanProcess(null, "application/octet-stream"));
-        Assert.False(processor.CanProcess(null, "application/x-www-form-urlencoded"));
-        Assert.True(processor.CanProcess(null, "multipart/form-data"));
-        Assert.True(processor.CanProcess(null, "Multipart/Form-data"));
+        Assert.False(processor.CanProcess(new HttpContentProcessorContext(null, "application/octet-stream")));
+        Assert.False(processor.CanProcess(new HttpContentProcessorContext(null, "application/x-www-form-urlencoded")));
+        Assert.True(processor.CanProcess(new HttpContentProcessorContext(null, "multipart/form-data")));
+        Assert.True(processor.CanProcess(new HttpContentProcessorContext(null, "Multipart/Form-data")));
 
-        Assert.True(processor.CanProcess(new { }, "multipart/form-data"));
-        Assert.True(processor.CanProcess(new MultipartContent(),
-            "multipart/form-data"));
+        Assert.True(processor.CanProcess(new HttpContentProcessorContext(new { }, "multipart/form-data")));
+        Assert.True(
+            processor.CanProcess(new HttpContentProcessorContext(new MultipartContent(), "multipart/form-data")));
     }
 
     [Fact]
@@ -36,7 +36,7 @@ public class MultipartFormDataContentProcessorTests
 
         Assert.Throws<NotImplementedException>(() =>
         {
-            processor.Process("furion", "multipart/form-data", null);
+            processor.Process(new HttpContentProcessorContext("furion", "multipart/form-data"));
         });
     }
 
@@ -45,11 +45,12 @@ public class MultipartFormDataContentProcessorTests
     {
         var processor = new MultipartFormDataContentProcessor();
 
-        Assert.Null(processor.Process(null, "multipart/form-data", null));
+        Assert.Null(processor.Process(new HttpContentProcessorContext(null, "multipart/form-data")));
 
         var multipartFormDataContent =
             new MultipartContent();
-        var httpContent1 = processor.Process(multipartFormDataContent, "multipart/form-data", null);
+        var httpContent1 =
+            processor.Process(new HttpContentProcessorContext(multipartFormDataContent, "multipart/form-data"));
         Assert.Same(multipartFormDataContent, httpContent1);
     }
 }

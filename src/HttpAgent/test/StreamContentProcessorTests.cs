@@ -20,11 +20,13 @@ public class StreamContentProcessorTests
         var processor = new StreamContentProcessor();
         using var stream = new MemoryStream();
 
-        Assert.False(processor.CanProcess(null, "application/octet-stream"));
-        Assert.True(processor.CanProcess(stream, "Application/Octet-stream"));
-        Assert.True(processor.CanProcess(stream, "application/json"));
-        Assert.True(processor.CanProcess(stream, "application/octet-stream"));
-        Assert.True(processor.CanProcess(new StreamContent(stream), "application/octet-stream"));
+        Assert.False(processor.CanProcess(new HttpContentProcessorContext(null, "application/octet-stream")));
+        Assert.True(processor.CanProcess(new HttpContentProcessorContext(stream, "Application/Octet-stream")));
+        Assert.True(processor.CanProcess(new HttpContentProcessorContext(stream, "application/json")));
+        Assert.True(processor.CanProcess(new HttpContentProcessorContext(stream, "application/octet-stream")));
+        Assert.True(
+            processor.CanProcess(new HttpContentProcessorContext(new StreamContent(stream),
+                "application/octet-stream")));
     }
 
     [Fact]
@@ -34,7 +36,7 @@ public class StreamContentProcessorTests
 
         var exception = Assert.Throws<InvalidOperationException>(() =>
         {
-            processor.Process("furion", "application/octet-stream", null);
+            processor.Process(new HttpContentProcessorContext("furion", "application/octet-stream"));
         });
 
         Assert.Equal("Expected a stream, but received an object of type `System.String`.", exception.Message);
@@ -45,25 +47,27 @@ public class StreamContentProcessorTests
     {
         var processor = new StreamContentProcessor();
 
-        var streamContent1 = processor.Process(null, "application/octet-stream", null);
+        var streamContent1 = processor.Process(new HttpContentProcessorContext(null, "application/octet-stream"));
         Assert.Null(streamContent1);
 
         using var stream = new MemoryStream();
 
-        var streamContent2 = processor.Process(stream, "application/octet-stream", null);
+        var streamContent2 =
+            processor.Process(new HttpContentProcessorContext(stream, "application/octet-stream"));
         Assert.NotNull(streamContent2);
         Assert.NotNull(streamContent2.ReadAsStream());
         Assert.Equal("application/octet-stream", streamContent2.Headers.ContentType?.MediaType);
         Assert.Null(streamContent2.Headers.ContentType?.CharSet);
 
-        var streamContent3 = processor.Process(stream, "application/octet-stream", Encoding.UTF32);
+        var streamContent3 =
+            processor.Process(new HttpContentProcessorContext(stream, "application/octet-stream", Encoding.UTF32));
         Assert.NotNull(streamContent3);
         Assert.NotNull(streamContent3.ReadAsStream());
         Assert.Equal("application/octet-stream", streamContent3.Headers.ContentType?.MediaType);
         Assert.Equal("utf-32", streamContent3.Headers.ContentType?.CharSet);
 
         var streamContent4 =
-            processor.Process(new StreamContent(stream), "application/octet-stream", null);
+            processor.Process(new HttpContentProcessorContext(new StreamContent(stream), "application/octet-stream"));
         Assert.NotNull(streamContent4);
         Assert.NotNull(streamContent4.ReadAsStream());
         Assert.Equal("application/octet-stream", streamContent4.Headers.ContentType?.MediaType);

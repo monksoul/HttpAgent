@@ -60,7 +60,7 @@ public class HttpContentProcessorFactoryTests
 
         var exception = Assert.Throws<InvalidOperationException>(() =>
         {
-            httpContentProcessorFactory1.GetProcessor(null, "image/jpeg");
+            httpContentProcessorFactory1.GetProcessor(new HttpContentProcessorContext(null, "image/jpeg"));
         });
 
         Assert.Equal(
@@ -88,7 +88,7 @@ public class HttpContentProcessorFactoryTests
         using var serviceProvider = services.BuildServiceProvider();
         var httpContentProcessorFactory1 = new HttpContentProcessorFactory(serviceProvider, null);
 
-        var processor1 = httpContentProcessorFactory1.GetProcessor(null, contentType);
+        var processor1 = httpContentProcessorFactory1.GetProcessor(new HttpContentProcessorContext(null, contentType));
         Assert.Equal(type, processor1.GetType());
     }
 
@@ -99,46 +99,53 @@ public class HttpContentProcessorFactoryTests
         using var serviceProvider = services.BuildServiceProvider();
         var httpContentProcessorFactory1 = new HttpContentProcessorFactory(serviceProvider, null);
 
-        var processor1 = httpContentProcessorFactory1.GetProcessor(new StringContent(""), "application/json");
+        var processor1 =
+            httpContentProcessorFactory1.GetProcessor(new HttpContentProcessorContext(new StringContent(""),
+                "application/json"));
         Assert.Equal(typeof(StringContentProcessor), processor1.GetType());
 
         var processor2 =
-            httpContentProcessorFactory1.GetProcessor(new FormUrlEncodedContent([]),
-                "application/x-www-form-urlencoded");
+            httpContentProcessorFactory1.GetProcessor(new HttpContentProcessorContext(new FormUrlEncodedContent([]),
+                "application/x-www-form-urlencoded"));
         Assert.Equal(typeof(FormUrlEncodedContentProcessor), processor2.GetType());
 
-        var processor3 = httpContentProcessorFactory1.GetProcessor(new ByteArrayContent([]),
-            "application/octet-stream");
+        var processor3 = httpContentProcessorFactory1.GetProcessor(new HttpContentProcessorContext(
+            new ByteArrayContent([]),
+            "application/octet-stream"));
         Assert.Equal(typeof(ByteArrayContentProcessor), processor3.GetType());
 
         using var stream = new MemoryStream();
-        var processor4 = httpContentProcessorFactory1.GetProcessor(new StreamContent(stream),
-            "application/octet-stream");
+        var processor4 = httpContentProcessorFactory1.GetProcessor(new HttpContentProcessorContext(
+            new StreamContent(stream),
+            "application/octet-stream"));
         Assert.Equal(typeof(StreamContentProcessor), processor4.GetType());
 
-        var processor5 = httpContentProcessorFactory1.GetProcessor(Array.Empty<byte>(),
-            "application/octet-stream");
+        var processor5 = httpContentProcessorFactory1.GetProcessor(new HttpContentProcessorContext(Array.Empty<byte>(),
+            "application/octet-stream"));
         Assert.Equal(typeof(ByteArrayContentProcessor), processor5.GetType());
 
-        var processor6 = httpContentProcessorFactory1.GetProcessor(stream,
-            "application/octet-stream");
+        var processor6 = httpContentProcessorFactory1.GetProcessor(new HttpContentProcessorContext(stream,
+            "application/octet-stream"));
         Assert.Equal(typeof(StreamContentProcessor), processor6.GetType());
 
-        var processor7 = httpContentProcessorFactory1.GetProcessor(new MultipartContent(),
-            "multipart/form-data");
+        var processor7 = httpContentProcessorFactory1.GetProcessor(new HttpContentProcessorContext(
+            new MultipartContent(),
+            "multipart/form-data"));
         Assert.Equal(typeof(MultipartFormDataContentProcessor), processor7.GetType());
 
-        var processor8 = httpContentProcessorFactory1.GetProcessor(new { }, "application/json");
+        var processor8 =
+            httpContentProcessorFactory1.GetProcessor(new HttpContentProcessorContext(new { }, "application/json"));
         Assert.Equal(typeof(StringContentProcessor), processor8.GetType());
 
         var processor9 =
-            httpContentProcessorFactory1.GetProcessor(new ReadOnlyMemory<byte>([]),
-                "application/octet-stream");
+            httpContentProcessorFactory1.GetProcessor(new HttpContentProcessorContext(new ReadOnlyMemory<byte>([]),
+                "application/octet-stream"));
         Assert.Equal(typeof(ReadOnlyMemoryContentProcessor), processor9.GetType());
 
         var processor10 =
-            httpContentProcessorFactory1.GetProcessor(new ReadOnlyMemoryContent(new ReadOnlyMemory<byte>([])),
-                "application/octet-stream");
+            httpContentProcessorFactory1.GetProcessor(new HttpContentProcessorContext(
+                new ReadOnlyMemoryContent(new ReadOnlyMemory<byte>([])),
+                "application/octet-stream"));
         Assert.Equal(typeof(ReadOnlyMemoryContentProcessor), processor10.GetType());
     }
 
@@ -149,10 +156,13 @@ public class HttpContentProcessorFactoryTests
         using var serviceProvider = services.BuildServiceProvider();
         var httpContentProcessorFactory1 =
             new HttpContentProcessorFactory(serviceProvider, [new CustomStringContentProcessor()]);
-        var processor1 = httpContentProcessorFactory1.GetProcessor(new StringContent(""), "application/json");
+        var processor1 =
+            httpContentProcessorFactory1.GetProcessor(new HttpContentProcessorContext(new StringContent(""),
+                "application/json"));
         Assert.Equal(typeof(CustomStringContentProcessor), processor1.GetType());
 
-        var processor2 = httpContentProcessorFactory1.GetProcessor(new StringContent(""), "application/json",
+        var processor2 = httpContentProcessorFactory1.GetProcessor(
+            new HttpContentProcessorContext(new StringContent(""), "application/json"),
             new CustomStringContentProcessor2());
         Assert.Equal(typeof(CustomStringContentProcessor2), processor2.GetType());
     }
@@ -164,23 +174,25 @@ public class HttpContentProcessorFactoryTests
         using var serviceProvider = services.BuildServiceProvider();
         var httpContentProcessorFactory1 = new HttpContentProcessorFactory(serviceProvider, null);
 
-        var httpContent1 = httpContentProcessorFactory1.Build("", "application/json");
+        var httpContent1 = httpContentProcessorFactory1.Build(new HttpContentProcessorContext("", "application/json"));
         Assert.NotNull(httpContent1);
         Assert.Equal(typeof(StringContent), httpContent1.GetType());
 
         var httpContent2 =
-            httpContentProcessorFactory1.Build(new Dictionary<string, string>(),
-                "application/x-www-form-urlencoded");
+            httpContentProcessorFactory1.Build(new HttpContentProcessorContext(new Dictionary<string, string>(),
+                "application/x-www-form-urlencoded"));
         Assert.NotNull(httpContent2);
         Assert.Equal(typeof(FormUrlEncodedContent), httpContent2.GetType());
 
         var httpContent3 =
-            httpContentProcessorFactory1.Build(Array.Empty<byte>(), "application/octet-stream");
+            httpContentProcessorFactory1.Build(new HttpContentProcessorContext(Array.Empty<byte>(),
+                "application/octet-stream"));
         Assert.NotNull(httpContent3);
         Assert.Equal(typeof(ByteArrayContent), httpContent3.GetType());
 
         using var stream = new MemoryStream();
-        var httpContent4 = httpContentProcessorFactory1.Build(stream, "application/octet-stream");
+        var httpContent4 =
+            httpContentProcessorFactory1.Build(new HttpContentProcessorContext(stream, "application/octet-stream"));
         Assert.NotNull(httpContent4);
         Assert.Equal(typeof(StreamContent), httpContent4.GetType());
     }

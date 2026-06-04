@@ -19,14 +19,15 @@ public class FormUrlEncodedContentProcessorTests
     {
         var processor = new FormUrlEncodedContentProcessor();
 
-        Assert.False(processor.CanProcess(null, "application/octet-stream"));
-        Assert.True(processor.CanProcess(null, "application/x-www-form-urlencoded"));
-        Assert.True(processor.CanProcess(null, "Application/X-www-form-urlencoded"));
-        Assert.False(processor.CanProcess(null, "application/json"));
+        Assert.False(processor.CanProcess(new HttpContentProcessorContext(null, "application/octet-stream")));
+        Assert.True(processor.CanProcess(new HttpContentProcessorContext(null, "application/x-www-form-urlencoded")));
+        Assert.True(processor.CanProcess(new HttpContentProcessorContext(null, "Application/X-www-form-urlencoded")));
+        Assert.False(processor.CanProcess(new HttpContentProcessorContext(null, "application/json")));
 
-        Assert.True(processor.CanProcess(new { }, "application/x-www-form-urlencoded"));
-        Assert.True(processor.CanProcess(new FormUrlEncodedContent([]),
-            "application/x-www-form-urlencoded"));
+        Assert.True(
+            processor.CanProcess(new HttpContentProcessorContext(new { }, "application/x-www-form-urlencoded")));
+        Assert.True(processor.CanProcess(new HttpContentProcessorContext(new FormUrlEncodedContent([]),
+            "application/x-www-form-urlencoded")));
     }
 
     [Fact]
@@ -36,7 +37,7 @@ public class FormUrlEncodedContentProcessorTests
 
         Assert.Throws<NotSupportedException>(() =>
         {
-            processor.Process("furion", "application/x-www-form-urlencoded", null);
+            processor.Process(new HttpContentProcessorContext("furion", "application/x-www-form-urlencoded"));
         });
     }
 
@@ -45,27 +46,33 @@ public class FormUrlEncodedContentProcessorTests
     {
         var processor = new FormUrlEncodedContentProcessor();
 
-        Assert.Null(processor.Process(null, "application/x-www-form-urlencoded", null));
+        Assert.Null(
+            processor.Process(new HttpContentProcessorContext(null, "application/x-www-form-urlencoded")));
 
         var formUrlEncodedContent =
             new FormUrlEncodedContent(new List<KeyValuePair<string, string>> { new("key", "value") });
-        var httpContent1 = processor.Process(formUrlEncodedContent, "application/x-www-form-urlencoded", null);
+        var httpContent1 =
+            processor.Process(new HttpContentProcessorContext(formUrlEncodedContent,
+                "application/x-www-form-urlencoded"));
         Assert.Same(formUrlEncodedContent, httpContent1);
 
-        var httpContent2 = processor.Process(new { }, "application/x-www-form-urlencoded", null);
+        var httpContent2 =
+            processor.Process(new HttpContentProcessorContext(new { }, "application/x-www-form-urlencoded"));
         Assert.NotNull(httpContent2);
         Assert.Equal(typeof(FormUrlEncodedContent), httpContent2.GetType());
         Assert.Equal("application/x-www-form-urlencoded", httpContent2.Headers.ContentType?.MediaType);
         Assert.Null(httpContent2.Headers.ContentType?.CharSet);
 
-        var httpContent3 = processor.Process(new { }, "application/x-www-form-urlencoded", Encoding.UTF32);
+        var httpContent3 =
+            processor.Process(new HttpContentProcessorContext(new { }, "application/x-www-form-urlencoded",
+                Encoding.UTF32));
         Assert.NotNull(httpContent3);
         Assert.Equal(typeof(FormUrlEncodedContent), httpContent3.GetType());
         Assert.Equal("application/x-www-form-urlencoded", httpContent3.Headers.ContentType?.MediaType);
         Assert.Equal("utf-32", httpContent3.Headers.ContentType?.CharSet);
 
-        var httpContent4 = processor.Process(new FormUrlEncodedContent(new List<KeyValuePair<string, string>>()),
-            "application/x-www-form-urlencoded", null);
+        var httpContent4 = processor.Process(new HttpContentProcessorContext(
+            new FormUrlEncodedContent(new List<KeyValuePair<string, string>>()), "application/x-www-form-urlencoded"));
         Assert.NotNull(httpContent4);
         Assert.Equal(typeof(FormUrlEncodedContent), httpContent4.GetType());
         Assert.Equal("application/x-www-form-urlencoded", httpContent4.Headers.ContentType?.MediaType);

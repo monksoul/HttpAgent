@@ -19,18 +19,21 @@ public class ByteArrayContentProcessorTests
     {
         var processor = new ByteArrayContentProcessor();
 
-        Assert.False(processor.CanProcess(null, "application/octet-stream"));
-        Assert.True(processor.CanProcess(Array.Empty<byte>(), "application/octet-stream"));
-        Assert.True(processor.CanProcess(Array.Empty<byte>(), "Application/Octet-stream"));
-        Assert.True(processor.CanProcess(Array.Empty<byte>(), "image/jpeg"));
-        Assert.True(processor.CanProcess(Array.Empty<byte>(), "image/png"));
-        Assert.True(processor.CanProcess(Array.Empty<byte>(), "application/json"));
-        Assert.True(processor.CanProcess(new ByteArrayContent([]),
-            "application/octet-stream"));
-        Assert.False(processor.CanProcess(new FormUrlEncodedContent([]),
-            "application/octet-stream"));
-        Assert.False(processor.CanProcess(new StringContent(""),
-            "application/octet-stream"));
+        Assert.False(processor.CanProcess(new HttpContentProcessorContext(null, "application/octet-stream")));
+        Assert.True(
+            processor.CanProcess(new HttpContentProcessorContext(Array.Empty<byte>(), "application/octet-stream")));
+        Assert.True(
+            processor.CanProcess(new HttpContentProcessorContext(Array.Empty<byte>(), "Application/Octet-stream")));
+        Assert.True(processor.CanProcess(new HttpContentProcessorContext(Array.Empty<byte>(), "image/jpeg")));
+        Assert.True(processor.CanProcess(new HttpContentProcessorContext(Array.Empty<byte>(), "image/png")));
+        Assert.True(
+            processor.CanProcess(new HttpContentProcessorContext(Array.Empty<byte>(), "application/json")));
+        Assert.True(processor.CanProcess(new HttpContentProcessorContext(new ByteArrayContent([]),
+            "application/octet-stream")));
+        Assert.False(processor.CanProcess(new HttpContentProcessorContext(new FormUrlEncodedContent([]),
+            "application/octet-stream")));
+        Assert.False(
+            processor.CanProcess(new HttpContentProcessorContext(new StringContent(""), "application/octet-stream")));
     }
 
     [Fact]
@@ -40,7 +43,7 @@ public class ByteArrayContentProcessorTests
 
         var exception = Assert.Throws<InvalidOperationException>(() =>
         {
-            processor.Process("furion", "application/octet-stream", null);
+            processor.Process(new HttpContentProcessorContext("furion", "application/octet-stream"));
         });
 
         Assert.Equal("Expected a byte array, but received an object of type `System.String`.", exception.Message);
@@ -51,26 +54,26 @@ public class ByteArrayContentProcessorTests
     {
         var processor = new ByteArrayContentProcessor();
 
-        var byteArrayContent1 = processor.Process(null, "application/octet-stream", null);
+        var byteArrayContent1 = processor.Process(new HttpContentProcessorContext(null, "application/octet-stream"));
         Assert.Null(byteArrayContent1);
 
         var byteArrayContent2 =
-            processor.Process(Array.Empty<byte>(), "application/octet-stream", null);
+            processor.Process(new HttpContentProcessorContext(Array.Empty<byte>(), "application/octet-stream"));
         Assert.NotNull(byteArrayContent2);
         Assert.NotNull(byteArrayContent2.ReadAsStream());
         Assert.Equal("application/octet-stream", byteArrayContent2.Headers.ContentType?.MediaType);
         Assert.Null(byteArrayContent2.Headers.ContentType?.CharSet);
 
         var byteArrayContent3 =
-            processor.Process(Array.Empty<byte>(), "application/octet-stream", Encoding.UTF32);
+            processor.Process(new HttpContentProcessorContext(Array.Empty<byte>(), "application/octet-stream",
+                Encoding.UTF32));
         Assert.NotNull(byteArrayContent3);
         Assert.NotNull(byteArrayContent3.ReadAsStream());
         Assert.Equal("application/octet-stream", byteArrayContent3.Headers.ContentType?.MediaType);
         Assert.Equal("utf-32", byteArrayContent3.Headers.ContentType?.CharSet);
 
         var byteArrayContent4 =
-            processor.Process(new ByteArrayContent([]), "application/octet-stream",
-                null);
+            processor.Process(new HttpContentProcessorContext(new ByteArrayContent([]), "application/octet-stream"));
         Assert.NotNull(byteArrayContent4);
         Assert.NotNull(byteArrayContent4.ReadAsStream());
         Assert.Equal("application/octet-stream", byteArrayContent4.Headers.ContentType?.MediaType);

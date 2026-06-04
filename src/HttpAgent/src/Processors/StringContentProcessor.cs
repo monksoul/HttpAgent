@@ -10,9 +10,9 @@ namespace HttpAgent;
 public class StringContentProcessor : HttpContentProcessorBase
 {
     /// <inheritdoc />
-    public override bool CanProcess(object? rawContent, string contentType) =>
-        rawContent is StringContent or JsonContent ||
-        contentType.IsIn([
+    public override bool CanProcess(HttpContentProcessorContext context) =>
+        context.RawContent is StringContent or JsonContent ||
+        context.ContentType.IsIn([
             MediaTypeNames.Application.Json,
             MediaTypeNames.Application.JsonPatch,
             MediaTypeNames.Application.Xml,
@@ -24,22 +24,22 @@ public class StringContentProcessor : HttpContentProcessorBase
         ], StringComparer.OrdinalIgnoreCase);
 
     /// <inheritdoc />
-    public override HttpContent? Process(object? rawContent, string contentType, Encoding? encoding)
+    public override HttpContent? Process(HttpContentProcessorContext context)
     {
         // 尝试解析 HttpContent 类型
-        if (TryProcess(rawContent, contentType, encoding, out var httpContent))
+        if (TryProcess(context, out var httpContent))
         {
             return httpContent;
         }
 
         // 将原始请求内容转换为字符串
-        var content = rawContent.GetType().IsBasicType() || rawContent is JsonElement or JsonNode
-            ? rawContent.ToInvariantCultureString()
-            : rawContent.ToJsonString(ResolveJsonSerializerOptions());
+        var content = context.RawContent!.GetType().IsBasicType() || context.RawContent is JsonElement or JsonNode
+            ? context.RawContent.ToInvariantCultureString()
+            : context.RawContent.ToJsonString(ResolveJsonSerializerOptions());
 
         // 初始化 StringContent 实例
-        var stringContent = new StringContent(content!, encoding,
-            new MediaTypeHeaderValue(contentType) { CharSet = encoding?.WebName });
+        var stringContent = new StringContent(content!, context.Encoding,
+            new MediaTypeHeaderValue(context.ContentType) { CharSet = context.Encoding?.WebName });
 
         return stringContent;
     }

@@ -760,9 +760,8 @@ public class HttpContextForwardBuilderTests
             Assert.Equal("test.txt", httpMultipartFormDataBuilder._partContents[2].FileName);
             Assert.Equal("text/plain", httpMultipartFormDataBuilder._partContents[2].ContentType);
             Assert.NotNull(httpRequestBuilder.Disposables);
-            Assert.Equal(2, httpRequestBuilder.Disposables.Count);
-            Assert.Equal(httpMultipartFormDataBuilder._partContents[2].RawContent,
-                httpRequestBuilder.Disposables.Last());
+            Assert.Single(httpRequestBuilder.Disposables);
+            Assert.Equal(typeof(FileBufferingReadStream), httpRequestBuilder.Disposables.Last().GetType());
 
             await context.Response.WriteAsync("Hello World!");
         }).DisableAntiforgery();
@@ -960,9 +959,8 @@ public class HttpContextForwardBuilderTests
             Assert.Equal("test.txt", httpMultipartFormDataBuilder._partContents[2].FileName);
             Assert.Equal("text/plain", httpMultipartFormDataBuilder._partContents[2].ContentType);
             Assert.NotNull(httpRequestBuilder.Disposables);
-            Assert.Equal(2, httpRequestBuilder.Disposables.Count);
-            Assert.Equal(httpMultipartFormDataBuilder._partContents[2].RawContent,
-                httpRequestBuilder.Disposables.Last());
+            Assert.Single(httpRequestBuilder.Disposables);
+            Assert.Equal(typeof(FileBufferingReadStream), httpRequestBuilder.Disposables.Last().GetType());
 
             await context.Response.WriteAsync("Hello World!");
         }).DisableAntiforgery();
@@ -1171,9 +1169,8 @@ public class HttpContextForwardBuilderTests
             Assert.Equal("test.txt", httpMultipartFormDataBuilder._partContents[2].FileName);
             Assert.Equal("text/plain", httpMultipartFormDataBuilder._partContents[2].ContentType);
             Assert.NotNull(httpRequestBuilder.Disposables);
-            Assert.Equal(2, httpRequestBuilder.Disposables.Count);
-            Assert.Equal(httpMultipartFormDataBuilder._partContents[2].RawContent,
-                httpRequestBuilder.Disposables.Last());
+            Assert.Single(httpRequestBuilder.Disposables);
+            Assert.Equal(typeof(FileBufferingReadStream), httpRequestBuilder.Disposables.Last().GetType());
 
             await context.Response.WriteAsync("Hello World!");
         }).DisableAntiforgery();
@@ -1202,7 +1199,7 @@ public class HttpContextForwardBuilderTests
     }
 
     [Fact]
-    public async Task ReadBodyAsync_Invalid_Parameters()
+    public async Task ReadBody_Invalid_Parameters()
     {
         var port = NetworkUtility.FindAvailableTcpPort();
         var urls = new[] { "--urls", $"http://localhost:{port}" };
@@ -1219,7 +1216,7 @@ public class HttpContextForwardBuilderTests
 
             try
             {
-                await httpContextForwardBuilder.ReadBodyAsync(httpRequestBuilder);
+                httpContextForwardBuilder.ReadBody();
             }
             catch (Exception e)
             {
@@ -1250,7 +1247,7 @@ public class HttpContextForwardBuilderTests
     }
 
     [Fact]
-    public async Task ReadBodyAsync_ReturnOK()
+    public async Task ReadBody_ReturnOK()
     {
         var port = NetworkUtility.FindAvailableTcpPort();
         var urls = new[] { "--urls", $"http://localhost:{port}" };
@@ -1272,10 +1269,9 @@ public class HttpContextForwardBuilderTests
             var httpContextForwardBuilder = new HttpContextForwardBuilder(context, httpMethod, requestUri);
             var httpRequestBuilder = HttpRequestBuilder.Create(httpMethod, requestUri);
 
-            await httpContextForwardBuilder.ReadBodyAsync(httpRequestBuilder);
+            httpContextForwardBuilder.ReadBody();
 
-            Assert.NotNull(httpRequestBuilder.Disposables);
-            Assert.Single(httpRequestBuilder.Disposables);
+            Assert.Null(httpRequestBuilder.Disposables);
 
             await context.Response.WriteAsync("Hello World!");
         });

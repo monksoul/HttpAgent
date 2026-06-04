@@ -917,8 +917,9 @@ public sealed class HttpMultipartFormDataBuilder
         ArgumentException.ThrowIfNullOrWhiteSpace(contentType);
 
         // 构建 HttpContent 实例
-        var httpContent = httpContentProcessorFactory.Build(multipartFormDataItem.RawContent, contentType,
-            multipartFormDataItem.ContentEncoding, processors);
+        var httpContent = httpContentProcessorFactory.Build(
+            new HttpContentProcessorContext(multipartFormDataItem.RawContent, contentType,
+                multipartFormDataItem.ContentEncoding), processors);
 
         // 空检查
         if (httpContent is not null && httpContent.Headers.ContentDisposition is null)

@@ -10,30 +10,30 @@ namespace HttpAgent;
 public class StreamContentProcessor : HttpContentProcessorBase
 {
     /// <inheritdoc />
-    public override bool CanProcess(object? rawContent, string contentType) =>
-        rawContent is StreamContent or Stream;
+    public override bool CanProcess(HttpContentProcessorContext context) =>
+        context.RawContent is StreamContent or Stream;
 
     /// <inheritdoc />
-    public override HttpContent? Process(object? rawContent, string contentType, Encoding? encoding)
+    public override HttpContent? Process(HttpContentProcessorContext context)
     {
         // 尝试解析 HttpContent 类型
-        if (TryProcess(rawContent, contentType, encoding, out var httpContent))
+        if (TryProcess(context, out var httpContent))
         {
             return httpContent;
         }
 
         // 检查是否是流类型
-        if (rawContent is Stream stream)
+        if (context.RawContent is Stream stream)
         {
             // 初始化 StreamContent 实例
             var streamContent = new StreamContent(stream);
             streamContent.Headers.ContentType =
-                new MediaTypeHeaderValue(contentType) { CharSet = encoding?.WebName };
+                new MediaTypeHeaderValue(context.ContentType) { CharSet = context.Encoding?.WebName };
 
             return streamContent;
         }
 
         throw new InvalidOperationException(
-            $"Expected a stream, but received an object of type `{rawContent.GetType()}`.");
+            $"Expected a stream, but received an object of type `{context.RawContent!.GetType()}`.");
     }
 }

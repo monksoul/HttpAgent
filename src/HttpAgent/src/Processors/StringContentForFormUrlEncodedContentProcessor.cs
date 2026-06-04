@@ -24,30 +24,30 @@ public class StringContentForFormUrlEncodedContentProcessor : FormUrlEncodedCont
     public bool UrlEncode { get; set; } = true;
 
     /// <inheritdoc />
-    public override HttpContent? Process(object? rawContent, string contentType, Encoding? encoding)
+    public override HttpContent? Process(HttpContentProcessorContext context)
     {
         // 尝试解析 HttpContent 类型
-        if (TryProcess(rawContent, contentType, encoding, out var httpContent))
+        if (TryProcess(context, out var httpContent))
         {
             return httpContent;
         }
 
         // 如果原始内容是字符串类型且不是有效的 application/x-www-form-urlencoded 格式
-        if (rawContent is string rawString && !rawString.IsUrlEncodedFormFormat())
+        if (context.RawContent is string rawString && !rawString.IsUrlEncodedFormFormat())
         {
             throw new FormatException("The content must contain only form url encoded string.");
         }
 
         // 将原始请求内容转换为字符串
-        var content = rawContent as string ?? GetContentString(
+        var content = context.RawContent as string ?? GetContentString(
             // 将原始请求类型转换为字符串字典类型
-            rawContent.ObjectToDictionary()!.ToDictionary(u => u.Key.ToInvariantCultureString()!,
+            context.RawContent.ObjectToDictionary()!.ToDictionary(u => u.Key.ToInvariantCultureString()!,
                 u => u.Value?.ToInvariantCultureString()), UrlEncode
         );
 
         // 初始化 StringContent 实例
-        var stringContent = new StringContent(content, encoding,
-            new MediaTypeHeaderValue(contentType) { CharSet = encoding?.WebName });
+        var stringContent = new StringContent(content, context.Encoding,
+            new MediaTypeHeaderValue(context.ContentType) { CharSet = context.Encoding?.WebName });
 
         return stringContent;
     }

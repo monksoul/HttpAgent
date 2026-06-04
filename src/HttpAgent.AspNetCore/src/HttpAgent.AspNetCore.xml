@@ -181,15 +181,12 @@
                 <see cref="T:System.Threading.CancellationToken"/>
             </param>
         </member>
-        <member name="M:HttpAgent.HttpContextForwardBuilder.ReadBodyAsync(HttpAgent.HttpRequestBuilder)">
+        <member name="M:HttpAgent.HttpContextForwardBuilder.ReadBody">
             <summary>
                 读取
                 <see cref="P:HttpAgent.HttpContextForwardBuilder.HttpContext"/>
                 请求体流
             </summary>
-            <param name="httpRequestBuilder">
-                <see cref="T:HttpAgent.HttpRequestBuilder"/>
-            </param>
             <returns>
                 <see cref="T:System.IO.Stream"/>
             </returns>

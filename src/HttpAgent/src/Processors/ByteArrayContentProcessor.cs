@@ -10,32 +10,32 @@ namespace HttpAgent;
 public class ByteArrayContentProcessor : HttpContentProcessorBase
 {
     /// <inheritdoc />
-    public override bool CanProcess(object? rawContent, string contentType) =>
-        rawContent is (ByteArrayContent or byte[]) and not (FormUrlEncodedContent or StringContent);
+    public override bool CanProcess(HttpContentProcessorContext context) =>
+        context.RawContent is (ByteArrayContent or byte[]) and not (FormUrlEncodedContent or StringContent);
 
     /// <inheritdoc />
-    public override HttpContent? Process(object? rawContent, string contentType, Encoding? encoding)
+    public override HttpContent? Process(HttpContentProcessorContext context)
     {
         // 尝试解析 HttpContent 类型
-        if (TryProcess(rawContent, contentType, encoding, out var httpContent))
+        if (TryProcess(context, out var httpContent))
         {
             return httpContent;
         }
 
         // 检查是否是字节数组类型
-        if (rawContent is byte[] bytes)
+        if (context.RawContent is byte[] bytes)
         {
             // 初始化 ByteArrayContent 实例
             var byteArrayContent = new ByteArrayContent(bytes);
-            byteArrayContent.Headers.ContentType = new MediaTypeHeaderValue(contentType)
+            byteArrayContent.Headers.ContentType = new MediaTypeHeaderValue(context.ContentType)
             {
-                CharSet = encoding?.WebName
+                CharSet = context.Encoding?.WebName
             };
 
             return byteArrayContent;
         }
 
         throw new InvalidOperationException(
-            $"Expected a byte array, but received an object of type `{rawContent.GetType()}`.");
+            $"Expected a byte array, but received an object of type `{context.RawContent!.GetType()}`.");
     }
 }

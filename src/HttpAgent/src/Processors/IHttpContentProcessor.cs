@@ -18,21 +18,22 @@ public interface IHttpContentProcessor
     /// <summary>
     ///     判断当前处理器是否可以处理指定的内容类型
     /// </summary>
-    /// <param name="rawContent">原始请求内容</param>
-    /// <param name="contentType">内容类型</param>
+    /// <param name="context">
+    ///     <see cref="HttpContentProcessorContext" />
+    /// </param>
     /// <returns>
     ///     <see cref="bool" />
     /// </returns>
-    bool CanProcess(object? rawContent, string contentType);
+    bool CanProcess(HttpContentProcessorContext context);
 
     /// <summary>
     ///     将原始请求内容转换为 <see cref="HttpContent" /> 实例
     /// </summary>
-    /// <param name="rawContent">原始请求内容</param>
-    /// <param name="contentType">内容类型</param>
-    /// <param name="encoding">内容编码</param>
+    /// <param name="context">
+    ///     <see cref="HttpContentProcessorContext" />
+    /// </param>
     /// <returns>
     ///     <see cref="HttpContent" />
     /// </returns>
-    HttpContent? Process(object? rawContent, string contentType, Encoding? encoding);
+    HttpContent? Process(HttpContentProcessorContext context);
 }

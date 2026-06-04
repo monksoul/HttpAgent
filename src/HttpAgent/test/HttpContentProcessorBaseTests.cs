@@ -10,13 +10,16 @@ public class HttpContentProcessorBaseTests
     public void TryProcess_ReturnOK()
     {
         var processor = new StringContentProcessor();
-        Assert.True(processor.TryProcess(null, "application/json", null, out var result1));
+        Assert.True(processor.TryProcess(new HttpContentProcessorContext(null, "application/json"),
+            out var result1));
         Assert.Null(result1);
 
-        Assert.True(processor.TryProcess(new StringContent("Furion"), "application/json", null, out var result2));
+        Assert.True(processor.TryProcess(
+            new HttpContentProcessorContext(new StringContent("Furion"), "application/json"), out var result2));
         Assert.NotNull(result2);
 
-        Assert.False(processor.TryProcess(new { }, "application/json", null, out var result3));
+        Assert.False(processor.TryProcess(new HttpContentProcessorContext(new { }, "application/json"),
+            out var result3));
         Assert.Null(result3);
     }
 

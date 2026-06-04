@@ -13,10 +13,10 @@ public abstract class HttpContentProcessorBase : IHttpContentProcessor, IService
     public IServiceProvider? ServiceProvider { get; set; }
 
     /// <inheritdoc />
-    public abstract bool CanProcess(object? rawContent, string contentType);
+    public abstract bool CanProcess(HttpContentProcessorContext context);
 
     /// <inheritdoc />
-    public abstract HttpContent? Process(object? rawContent, string contentType, Encoding? encoding);
+    public abstract HttpContent? Process(HttpContentProcessorContext context);
 
     /// <inheritdoc />
     public object? GetService(Type serviceType) => ServiceProvider?.GetService(serviceType);
@@ -24,19 +24,18 @@ public abstract class HttpContentProcessorBase : IHttpContentProcessor, IService
     /// <summary>
     ///     尝试解析 <see cref="HttpContent" /> 类型
     /// </summary>
-    /// <param name="rawContent">原始请求内容</param>
-    /// <param name="contentType">内容类型</param>
-    /// <param name="encoding">内容编码</param>
+    /// <param name="context">
+    ///     <see cref="HttpContentProcessorContext" />
+    /// </param>
     /// <param name="httpContent">
     ///     <see cref="HttpContent" />
     /// </param>
     /// <returns>
     ///     <see cref="HttpContent" />
     /// </returns>
-    public virtual bool TryProcess([NotNullWhen(false)] object? rawContent, string contentType, Encoding? encoding,
-        out HttpContent? httpContent)
+    public virtual bool TryProcess(HttpContentProcessorContext context, out HttpContent? httpContent)
     {
-        switch (rawContent)
+        switch (context.RawContent)
         {
             case null:
                 httpContent = null;
@@ -44,7 +43,7 @@ public abstract class HttpContentProcessorBase : IHttpContentProcessor, IService
             case HttpContent content:
                 // 设置 Content-Type
                 content.Headers.ContentType ??=
-                    new MediaTypeHeaderValue(contentType) { CharSet = encoding?.WebName };
+                    new MediaTypeHeaderValue(context.ContentType) { CharSet = context.Encoding?.WebName };
 
                 httpContent = content;
                 return true;

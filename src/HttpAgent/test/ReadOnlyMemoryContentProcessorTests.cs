@@ -19,15 +19,17 @@ public class ReadOnlyMemoryContentProcessorTests
     {
         var processor = new ReadOnlyMemoryContentProcessor();
 
-        Assert.False(processor.CanProcess(null, "application/octet-stream"));
+        Assert.False(processor.CanProcess(new HttpContentProcessorContext(null, "application/octet-stream")));
         Assert.True(
-            processor.CanProcess(new ReadOnlyMemory<byte>([]), "application/octet-stream"));
-        Assert.True(processor.CanProcess(new ReadOnlyMemory<byte>([]),
-            "application/octet-stream"));
-        Assert.False(processor.CanProcess(new FormUrlEncodedContent([]),
-            "application/octet-stream"));
-        Assert.False(processor.CanProcess(new StringContent(""),
-            "application/octet-stream"));
+            processor.CanProcess(new HttpContentProcessorContext(new ReadOnlyMemory<byte>([]),
+                "application/octet-stream")));
+        Assert.True(
+            processor.CanProcess(new HttpContentProcessorContext(new ReadOnlyMemory<byte>([]),
+                "application/octet-stream")));
+        Assert.False(processor.CanProcess(new HttpContentProcessorContext(new FormUrlEncodedContent([]),
+            "application/octet-stream")));
+        Assert.False(
+            processor.CanProcess(new HttpContentProcessorContext(new StringContent(""), "application/octet-stream")));
     }
 
     [Fact]
@@ -37,7 +39,7 @@ public class ReadOnlyMemoryContentProcessorTests
 
         var exception = Assert.Throws<InvalidOperationException>(() =>
         {
-            processor.Process(Array.Empty<byte>(), "application/octet-stream", null);
+            processor.Process(new HttpContentProcessorContext(Array.Empty<byte>(), "application/octet-stream"));
         });
 
         Assert.Equal("Expected a ReadOnlyMemory<byte>, but received an object of type `System.Byte[]`.",
@@ -49,19 +51,21 @@ public class ReadOnlyMemoryContentProcessorTests
     {
         var processor = new ReadOnlyMemoryContentProcessor();
 
-        var readOnlyMemoryContent1 = processor.Process(null, "application/octet-stream", null);
+        var readOnlyMemoryContent1 =
+            processor.Process(new HttpContentProcessorContext(null, "application/octet-stream"));
         Assert.Null(readOnlyMemoryContent1);
 
         var readOnlyMemoryContent2 =
-            processor.Process(new ReadOnlyMemory<byte>([]), "application/octet-stream", null);
+            processor.Process(new HttpContentProcessorContext(new ReadOnlyMemory<byte>([]),
+                "application/octet-stream"));
         Assert.NotNull(readOnlyMemoryContent2);
         Assert.NotNull(readOnlyMemoryContent2.ReadAsStream());
         Assert.Equal("application/octet-stream", readOnlyMemoryContent2.Headers.ContentType?.MediaType);
         Assert.Null(readOnlyMemoryContent2.Headers.ContentType?.CharSet);
 
         var readOnlyMemoryContent3 =
-            processor.Process(new ReadOnlyMemory<byte>([]), "application/octet-stream",
-                Encoding.UTF32);
+            processor.Process(new HttpContentProcessorContext(new ReadOnlyMemory<byte>([]), "application/octet-stream",
+                Encoding.UTF32));
         Assert.NotNull(readOnlyMemoryContent3);
         Assert.NotNull(readOnlyMemoryContent3.ReadAsStream());
         Assert.Equal("application/octet-stream", readOnlyMemoryContent3.Headers.ContentType?.MediaType);

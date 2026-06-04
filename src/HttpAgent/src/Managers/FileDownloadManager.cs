@@ -113,8 +113,8 @@ internal sealed class FileDownloadManager
         try
         {
             // 发送 HTTP 远程请求
-            var httpResponseMessage = _httpRemoteService.Send(RequestBuilder, HttpCompletionOption.ResponseHeadersRead,
-                cancellationToken);
+            using var httpResponseMessage = _httpRemoteService.Send(RequestBuilder,
+                HttpCompletionOption.ResponseHeadersRead, cancellationToken);
 
             // 设置文件下载地址和响应状态码
             fileTransferResult.RequestUri =
@@ -163,9 +163,6 @@ internal sealed class FileDownloadManager
             // 检查是否启用了多线程下载，且服务器支持 Range 请求、文件大小有效
             if (_httpFileDownloadBuilder.MaxThreads > 1 && supportsRange && contentLength > 0)
             {
-                // 释放原始响应
-                httpResponseMessage.Dispose();
-
                 // 多线程分块下载
                 DownloadInChunks(contentLength, fileStream, fileTransferProgress, stopwatch,
                     cancellationToken);
@@ -262,7 +259,7 @@ internal sealed class FileDownloadManager
         try
         {
             // 发送 HTTP 远程请求
-            var httpResponseMessage = await _httpRemoteService.SendAsync(RequestBuilder,
+            using var httpResponseMessage = await _httpRemoteService.SendAsync(RequestBuilder,
                 HttpCompletionOption.ResponseHeadersRead, cancellationToken);
 
             // 设置文件下载地址和响应状态码
@@ -312,9 +309,6 @@ internal sealed class FileDownloadManager
             // 检查是否启用了多线程下载，且服务器支持 Range 请求、文件大小有效
             if (_httpFileDownloadBuilder.MaxThreads > 1 && supportsRange && contentLength > 0)
             {
-                // 释放原始响应
-                httpResponseMessage.Dispose();
-
                 // 多线程分块下载
                 await DownloadInChunksAsync(contentLength, fileStream, fileTransferProgress, stopwatch,
                     cancellationToken);
@@ -514,7 +508,7 @@ internal sealed class FileDownloadManager
         var httpRequestBuilder = RequestBuilder.Clone().WithHeader(HeaderNames.Range, $"bytes={start}-{end}");
 
         // 发送 HTTP 远程请求
-        var httpResponseMessage = await _httpRemoteService.SendAsync(httpRequestBuilder,
+        using var httpResponseMessage = await _httpRemoteService.SendAsync(httpRequestBuilder,
             HttpCompletionOption.ResponseHeadersRead, cancellationToken);
 
         // 空检查
@@ -600,7 +594,7 @@ internal sealed class FileDownloadManager
         var httpRequestBuilder = RequestBuilder.Clone().WithHeader(HeaderNames.Range, $"bytes={start}-{end}");
 
         // 发送 HTTP 远程请求
-        var httpResponseMessage = _httpRemoteService.Send(httpRequestBuilder,
+        using var httpResponseMessage = _httpRemoteService.Send(httpRequestBuilder,
             HttpCompletionOption.ResponseHeadersRead, cancellationToken);
 
         // 空检查

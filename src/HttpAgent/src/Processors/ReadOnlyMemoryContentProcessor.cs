@@ -10,32 +10,32 @@ namespace HttpAgent;
 public class ReadOnlyMemoryContentProcessor : HttpContentProcessorBase
 {
     /// <inheritdoc />
-    public override bool CanProcess(object? rawContent, string contentType) =>
-        rawContent is ReadOnlyMemoryContent or ReadOnlyMemory<byte>;
+    public override bool CanProcess(HttpContentProcessorContext context) =>
+        context.RawContent is ReadOnlyMemoryContent or ReadOnlyMemory<byte>;
 
     /// <inheritdoc />
-    public override HttpContent? Process(object? rawContent, string contentType, Encoding? encoding)
+    public override HttpContent? Process(HttpContentProcessorContext context)
     {
         // 尝试解析 HttpContent 类型
-        if (TryProcess(rawContent, contentType, encoding, out var httpContent))
+        if (TryProcess(context, out var httpContent))
         {
             return httpContent;
         }
 
         // 检查是否是 ReadOnlyMemory<byte> 类型
-        if (rawContent is ReadOnlyMemory<byte> readOnlyMemory)
+        if (context.RawContent is ReadOnlyMemory<byte> readOnlyMemory)
         {
             // 初始化 ReadOnlyMemoryContent 实例
             var readOnlyMemoryContent = new ReadOnlyMemoryContent(readOnlyMemory);
-            readOnlyMemoryContent.Headers.ContentType = new MediaTypeHeaderValue(contentType)
+            readOnlyMemoryContent.Headers.ContentType = new MediaTypeHeaderValue(context.ContentType)
             {
-                CharSet = encoding?.WebName
+                CharSet = context.Encoding?.WebName
             };
 
             return readOnlyMemoryContent;
         }
 
         throw new InvalidOperationException(
-            $"Expected a ReadOnlyMemory<byte>, but received an object of type `{rawContent.GetType()}`.");
+            $"Expected a ReadOnlyMemory<byte>, but received an object of type `{context.RawContent!.GetType()}`.");
     }
 }

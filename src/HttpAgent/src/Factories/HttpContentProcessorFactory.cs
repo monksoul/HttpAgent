@@ -43,28 +43,34 @@ internal sealed class HttpContentProcessorFactory : IHttpContentProcessorFactory
     public IServiceProvider ServiceProvider { get; }
 
     /// <inheritdoc />
-    public HttpContent? Build(object? rawContent, string contentType, Encoding? encoding = null,
-        params IHttpContentProcessor[]? processors)
+    public HttpContent? Build(HttpContentProcessorContext context, params IHttpContentProcessor[]? processors)
     {
+        // 空检查
+        ArgumentNullException.ThrowIfNull(context);
+
         // 查找可以处理指定内容类型或数据类型的 IHttpContentProcessor 实例
-        var httpContentProcessor = GetProcessor(rawContent, contentType, processors);
+        var httpContentProcessor = GetProcessor(context, processors);
 
         // 将原始请求内容转换为 HttpContent 实例
-        return httpContentProcessor.Process(rawContent, contentType, encoding);
+        return httpContentProcessor.Process(context);
     }
 
     /// <summary>
     ///     查找可以处理指定内容类型或数据类型的 <see cref="IHttpContentProcessor" /> 实例
     /// </summary>
-    /// <param name="rawContent">原始请求内容</param>
-    /// <param name="contentType">内容类型</param>
+    /// <param name="context">
+    ///     <see cref="HttpContentProcessorContext" />
+    /// </param>
     /// <param name="processors">自定义 <see cref="IHttpContentProcessor" /> 数组</param>
     /// <returns>
     ///     <see cref="IHttpContentProcessor" />
     /// </returns>
-    internal IHttpContentProcessor GetProcessor(object? rawContent, string contentType,
+    internal IHttpContentProcessor GetProcessor(HttpContentProcessorContext context,
         params IHttpContentProcessor[]? processors)
     {
+        // 空检查
+        ArgumentNullException.ThrowIfNull(context);
+
         // 初始化新的 IHttpContentProcessor 字典集合
         var unionProcessors = new Dictionary<Type, IHttpContentProcessor>(_processors);
 
@@ -72,9 +78,9 @@ internal sealed class HttpContentProcessorFactory : IHttpContentProcessorFactory
         unionProcessors.TryAdd(processors, value => value.GetType());
 
         // 查找可以处理指定内容类型或数据类型的 IHttpContentProcessor 实例
-        var processor = unionProcessors.Values.LastOrDefault(u => u.CanProcess(rawContent, contentType)) ??
+        var processor = unionProcessors.Values.LastOrDefault(u => u.CanProcess(context)) ??
                         throw new InvalidOperationException(
-                            $"No processor found that can handle the content type `{contentType}` and the provided raw content of type `{rawContent?.GetType()}`. " +
+                            $"No processor found that can handle the content type `{context.ContentType}` and the provided raw content of type `{context.RawContent?.GetType()}`. " +
                             "Please ensure that the correct content type is specified and that a suitable processor is registered.");
 
         // 设置服务提供器
