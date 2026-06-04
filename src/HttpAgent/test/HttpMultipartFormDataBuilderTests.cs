@@ -1126,28 +1126,29 @@ public class HttpMultipartFormDataBuilderTests
     [Fact]
     public void BuildHttpContent_Invalid_Parameters()
     {
+        var builder = new HttpMultipartFormDataBuilder(HttpRequestBuilder.Get("http://localhost"));
         var services = new ServiceCollection();
         using var serviceProvider = services.BuildServiceProvider();
 
         Assert.Throws<ArgumentNullException>(() =>
-            HttpMultipartFormDataBuilder.BuildHttpContent(null!, null!, null!, null));
+            builder.BuildHttpContent(null!, null!, null!, null));
         Assert.Throws<ArgumentNullException>(() =>
-            HttpMultipartFormDataBuilder.BuildHttpContent(new MultipartFormDataItem("test"), null!, null!, null));
+            builder.BuildHttpContent(new MultipartFormDataItem("test"), null!, null!, null));
         Assert.Throws<ArgumentException>(() =>
-            HttpMultipartFormDataBuilder.BuildHttpContent(new MultipartFormDataItem("test"), string.Empty, null!,
+            builder.BuildHttpContent(new MultipartFormDataItem("test"), string.Empty, null!,
                 null));
         Assert.Throws<ArgumentException>(() =>
-            HttpMultipartFormDataBuilder.BuildHttpContent(new MultipartFormDataItem("test"), " ", null!, null));
+            builder.BuildHttpContent(new MultipartFormDataItem("test"), " ", null!, null));
         Assert.Throws<ArgumentNullException>(() =>
-            HttpMultipartFormDataBuilder.BuildHttpContent(new MultipartFormDataItem("test"), "test",
+            builder.BuildHttpContent(new MultipartFormDataItem("test"), "test",
                 new HttpContentProcessorFactory(serviceProvider, []), null));
         Assert.Throws<ArgumentException>(() =>
-            HttpMultipartFormDataBuilder.BuildHttpContent(
+            builder.BuildHttpContent(
                 new MultipartFormDataItem("test") { ContentType = string.Empty }, "test",
                 new HttpContentProcessorFactory(serviceProvider, []),
                 null));
         Assert.Throws<ArgumentException>(() =>
-            HttpMultipartFormDataBuilder.BuildHttpContent(
+            builder.BuildHttpContent(
                 new MultipartFormDataItem("test") { ContentType = " " }, "test",
                 new HttpContentProcessorFactory(serviceProvider, []),
                 null));
@@ -1156,25 +1157,26 @@ public class HttpMultipartFormDataBuilderTests
     [Fact]
     public void BuildHttpContent_ReturnOK()
     {
+        var builder = new HttpMultipartFormDataBuilder(HttpRequestBuilder.Get("http://localhost"));
         var services = new ServiceCollection();
         services.AddOptions<HttpRemoteOptions>();
         using var serviceProvider = services.BuildServiceProvider();
         var httpContentProcessorFactory = new HttpContentProcessorFactory(serviceProvider, []);
 
         var httpContent1 =
-            HttpMultipartFormDataBuilder.BuildHttpContent(
+            builder.BuildHttpContent(
                 new MultipartFormDataItem("test") { ContentType = "text/plain" }, "test", httpContentProcessorFactory,
                 null)!;
         Assert.Null(httpContent1);
 
         var httpContent2 =
-            HttpMultipartFormDataBuilder.BuildHttpContent(
+            builder.BuildHttpContent(
                 new MultipartFormDataItem("test") { ContentType = "text/plain", RawContent = new { } }, "test",
                 httpContentProcessorFactory, null)!;
         Assert.NotNull(httpContent2);
 
         var httpContent3 =
-            HttpMultipartFormDataBuilder.BuildHttpContent(
+            builder.BuildHttpContent(
                 new MultipartFormDataItem("test")
                 {
                     ContentType = "text/plain", RawContent = new StringContent("test"), FileName = "text.txt"
@@ -1185,7 +1187,7 @@ public class HttpMultipartFormDataBuilderTests
             httpContent3.Headers.ContentDisposition?.ToString());
 
         var httpContent4 =
-            HttpMultipartFormDataBuilder.BuildHttpContent(
+            builder.BuildHttpContent(
                 new MultipartFormDataItem("test")
                 {
                     ContentType = "application/octet-stream",
@@ -1205,7 +1207,7 @@ public class HttpMultipartFormDataBuilderTests
 
         using var stream = new MemoryStream();
         var httpContent5 =
-            HttpMultipartFormDataBuilder.BuildHttpContent(
+            builder.BuildHttpContent(
                 new MultipartFormDataItem("test")
                 {
                     ContentType = "application/octet-stream",
@@ -1225,7 +1227,7 @@ public class HttpMultipartFormDataBuilderTests
 #endif
 
         var httpContent6 =
-            HttpMultipartFormDataBuilder.BuildHttpContent(
+            builder.BuildHttpContent(
                 new MultipartFormDataItem("test")
                 {
                     ContentType = "application/x-www-form-urlencoded",
@@ -1238,7 +1240,7 @@ public class HttpMultipartFormDataBuilderTests
             httpContent6.Headers.ContentDisposition?.ToString());
 
         var httpContent7 =
-            HttpMultipartFormDataBuilder.BuildHttpContent(
+            builder.BuildHttpContent(
                 new MultipartFormDataItem("test")
                 {
                     ContentType = "application/x-www-form-urlencoded",
@@ -1251,7 +1253,7 @@ public class HttpMultipartFormDataBuilderTests
             httpContent7.Headers.ContentDisposition?.ToString());
 
         var httpContent8 =
-            HttpMultipartFormDataBuilder.BuildHttpContent(
+            builder.BuildHttpContent(
                 new MultipartFormDataItem("test")
                 {
                     ContentType = "application/octet-stream",
@@ -1264,7 +1266,7 @@ public class HttpMultipartFormDataBuilderTests
             .StartsWith("form-data; name=\"test\"; filename=\"Unnamed_"));
 
         var httpContent9 =
-            HttpMultipartFormDataBuilder.BuildHttpContent(
+            builder.BuildHttpContent(
                 new MultipartFormDataItem("test")
                 {
                     ContentType = "text/plain", RawContent = new StringContent("test"), FileName = "text.txt"

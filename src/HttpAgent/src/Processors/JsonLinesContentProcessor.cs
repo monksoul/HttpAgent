@@ -40,7 +40,7 @@ public class JsonLinesContentProcessor : HttpContentProcessorBase
         var stringBuilder = new StringBuilder();
 
         // 解析 JSON 序列化配置
-        var jsonSerializerOptions = ResolveJsonSerializerOptions();
+        var jsonSerializerOptions = ResolveJsonSerializerOptions(context.HttpClientName);
 
         // 构建 JSON Lines 格式内容
         foreach (var item in enumerable)

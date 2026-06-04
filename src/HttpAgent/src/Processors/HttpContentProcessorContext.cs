@@ -10,4 +10,10 @@ namespace HttpAgent;
 /// <param name="RawContent">原始内容</param>
 /// <param name="ContentType">内容类型</param>
 /// <param name="Encoding">内容编码</param>
-public sealed record HttpContentProcessorContext(object? RawContent, string ContentType, Encoding? Encoding = null);
+public sealed record HttpContentProcessorContext(object? RawContent, string ContentType, Encoding? Encoding = null)
+{
+    /// <summary>
+    ///     <see cref="HttpClient" /> 实例的配置名称
+    /// </summary>
+    public string? HttpClientName { get; init; }
+}

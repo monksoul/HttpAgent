@@ -39,7 +39,7 @@ public class HttpContentProcessorBaseTests
     public void ResolveJsonSerializerOptions_ReturnOK()
     {
         var processor = new StringContentProcessor();
-        Assert.NotNull(processor.ResolveJsonSerializerOptions());
+        Assert.NotNull(processor.ResolveJsonSerializerOptions(null));
     }
 
     public class MyService : IMyService;

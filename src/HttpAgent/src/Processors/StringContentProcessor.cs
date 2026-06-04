@@ -35,7 +35,7 @@ public class StringContentProcessor : HttpContentProcessorBase
         // 将原始请求内容转换为字符串
         var content = context.RawContent!.GetType().IsBasicType() || context.RawContent is JsonElement or JsonNode
             ? context.RawContent.ToInvariantCultureString()
-            : context.RawContent.ToJsonString(ResolveJsonSerializerOptions());
+            : context.RawContent.ToJsonString(ResolveJsonSerializerOptions(context.HttpClientName));
 
         // 初始化 StringContent 实例
         var stringContent = new StringContent(content!, context.Encoding,

@@ -13,5 +13,6 @@ public class HttpContentProcessorContextTests
         Assert.Equal("furion", context.RawContent);
         Assert.Equal("text/plain", context.ContentType);
         Assert.Equal("utf-8", context.Encoding?.WebName);
+        Assert.Null(context.HttpClientName);
     }
 }

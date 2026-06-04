@@ -904,7 +904,7 @@ public sealed class HttpMultipartFormDataBuilder
     /// <returns>
     ///     <see cref="HttpContent" />
     /// </returns>
-    internal static HttpContent? BuildHttpContent(MultipartFormDataItem multipartFormDataItem, string name,
+    internal HttpContent? BuildHttpContent(MultipartFormDataItem multipartFormDataItem, string name,
         IHttpContentProcessorFactory httpContentProcessorFactory, params IHttpContentProcessor[]? processors)
     {
         // 空检查
@@ -919,7 +919,8 @@ public sealed class HttpMultipartFormDataBuilder
         // 构建 HttpContent 实例
         var httpContent = httpContentProcessorFactory.Build(
             new HttpContentProcessorContext(multipartFormDataItem.RawContent, contentType,
-                multipartFormDataItem.ContentEncoding), processors);
+                multipartFormDataItem.ContentEncoding) { HttpClientName = _httpRequestBuilder.HttpClientName },
+            processors);
 
         // 空检查
         if (httpContent is not null && httpContent.Headers.ContentDisposition is null)
