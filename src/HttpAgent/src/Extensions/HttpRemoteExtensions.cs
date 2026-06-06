@@ -637,6 +637,27 @@ public static partial class HttpRemoteExtensions
             StringComparer.OrdinalIgnoreCase) == true;
 
     /// <summary>
+    ///     根据 HTTP 响应消息解析出 <see cref="HttpClient" /> 实例的配置名称
+    /// </summary>
+    /// <param name="httpResponseMessage">
+    ///     <see cref="HttpResponseMessage" />
+    /// </param>
+    /// <returns>
+    ///     <see cref="string" />
+    /// </returns>
+    public static string? ResolveHttpClientName(this HttpResponseMessage? httpResponseMessage)
+    {
+        // 获取 HttpClient 实例的配置名称
+        if (httpResponseMessage?.RequestMessage?.Options.TryGetValue(
+                new HttpRequestOptionsKey<string>(Constants.HTTP_CLIENT_NAME), out var httpClientName) != true)
+        {
+            httpClientName = string.Empty;
+        }
+
+        return httpClientName;
+    }
+
+    /// <summary>
     ///     将对象转换为 JSON 字符串
     /// </summary>
     /// <param name="obj">
@@ -675,7 +696,7 @@ public static partial class HttpRemoteExtensions
         }
 
         // 否则使用全局配置
-        return HttpRemoteUtility.ResolveHttpClientOptions(httpResponseMessage?.RequestMessage, serviceProvider)
+        return HttpRemoteUtility.ResolveHttpClientOptions(httpResponseMessage, serviceProvider)
             ?.UseJsonResponseWrapper == true;
     }
 

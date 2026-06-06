@@ -14,5 +14,6 @@ public class HttpContentProcessorContextTests
         Assert.Equal("text/plain", context.ContentType);
         Assert.Equal("utf-8", context.Encoding?.WebName);
         Assert.Null(context.HttpClientName);
+        Assert.False(context.AsFormItem);
     }
 }

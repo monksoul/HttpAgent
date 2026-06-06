@@ -22,4 +22,6 @@ public class HttpRemoteMultipartModel2
     public int? Id { get; set; }
     public string? Name { get; set; }
     public MultipartFile? File { get; set; }
+
+    public FileInfo? File2 { get; set; }
 }

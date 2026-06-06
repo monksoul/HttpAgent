@@ -210,7 +210,8 @@ internal static class Helpers
                     .Octet,
             MultipartContent => MediaTypeNames.Multipart.FormData,
             MultipartFile => MediaTypeNames.Application.Octet,
-            _ => defaultContentType ?? Constants.TEXT_PLAIN_MIME_TYPE
+            FileInfo fileInfo => FileTypeMapper.GetContentType(fileInfo.Name),
+            _ => defaultContentType ?? MediaTypeNames.Text.Plain
         };
 
     /// <summary>

@@ -449,6 +449,20 @@ public class HttpRemoteExtensionsTests
     }
 
     [Fact]
+    public void ResolveHttpClientName_ReturnOK()
+    {
+        Assert.Equal(string.Empty, ((HttpResponseMessage?)null).ResolveHttpClientName());
+        Assert.Equal(string.Empty, new HttpResponseMessage().ResolveHttpClientName());
+
+        var httpResponseMessage = new HttpResponseMessage();
+        var httpRequestMessage = new HttpRequestMessage();
+        httpRequestMessage.Options.AddOrUpdate(Constants.HTTP_CLIENT_NAME, "Github");
+        httpResponseMessage.RequestMessage = httpRequestMessage;
+
+        Assert.Equal("Github", httpResponseMessage.ResolveHttpClientName());
+    }
+
+    [Fact]
     public void ToJsonString_ReturnOK()
     {
         Assert.Equal("null", HttpRemoteExtensions.ToJsonString(null));

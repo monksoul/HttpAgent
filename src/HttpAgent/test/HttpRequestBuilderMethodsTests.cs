@@ -1026,7 +1026,7 @@ public class HttpRequestBuilderMethodsTests
         httpRequestBuilder.WithPathParameters(new ObjectModel(), "Model");
 
         Assert.NotNull(httpRequestBuilder.ObjectPathParameters);
-        Assert.Equal(2, httpRequestBuilder.ObjectPathParameters.Count);
+        Assert.Single(httpRequestBuilder.ObjectPathParameters);
     }
 
     [Fact]

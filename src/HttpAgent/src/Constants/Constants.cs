@@ -20,11 +20,6 @@ internal static class Constants
     internal const string UNKNOWN_USER_AGENT_VERSION = "unknown";
 
     /// <summary>
-    ///     内容正文部分的处置类型
-    /// </summary>
-    internal const string FORM_DATA_DISPOSITION_TYPE = "form-data";
-
-    /// <summary>
     ///     Basic 授权标识
     /// </summary>
     internal const string BASIC_AUTHENTICATION_SCHEME = "Basic";
@@ -38,11 +33,6 @@ internal static class Constants
     ///     Digest 授权标识
     /// </summary>
     internal const string DIGEST_AUTHENTICATION_SCHEME = "Digest";
-
-    /// <summary>
-    ///     <c>text/plain</c> 内容类型
-    /// </summary>
-    internal const string TEXT_PLAIN_MIME_TYPE = "text/plain";
 
     /// <summary>
     ///     响应结束符标头

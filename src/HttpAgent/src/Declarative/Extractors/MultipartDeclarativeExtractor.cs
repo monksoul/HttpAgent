@@ -117,7 +117,11 @@ internal sealed class MultipartDeclarativeExtractor : IFrozenHttpDeclarativeExtr
                 break;
             // 添加 MultipartFile
             case MultipartFile multipartFile:
-                httpMultipartFormDataBuilder.AddFile(multipartFile);
+                httpMultipartFormDataBuilder.AddFile(multipartFile, name);
+                break;
+            // 检查原始请求内容是否是 FileInfo 类型
+            case FileInfo fileInfo:
+                httpMultipartFormDataBuilder.AddFile(fileInfo, name);
                 break;
             // 添加 HttpContent
             case HttpContent httpContent:

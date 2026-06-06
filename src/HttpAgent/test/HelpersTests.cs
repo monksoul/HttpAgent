@@ -152,6 +152,10 @@ public class HelpersTests
             HttpAgent.Helpers.GetContentTypeOrDefault(
                 MultipartFile.CreateFromPath(Path.Combine(AppContext.BaseDirectory, "test.txt")),
                 MediaTypeNames.Application.Octet));
+
+        Assert.Equal(MediaTypeNames.Text.Plain,
+            HttpAgent.Helpers.GetContentTypeOrDefault(new FileInfo(Path.Combine(AppContext.BaseDirectory, "test.txt")),
+                MediaTypeNames.Application.Octet));
     }
 
     [Fact]

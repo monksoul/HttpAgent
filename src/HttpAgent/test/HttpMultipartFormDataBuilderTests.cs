@@ -394,19 +394,26 @@ public class HttpMultipartFormDataBuilderTests
 
         builder.AddObject(new MultipartFileModel
         {
-            Id = Guid.Empty, File = MultipartFile.CreateFromPath(Path.Combine(AppContext.BaseDirectory, "test.txt"))
+            Id = Guid.Empty,
+            File = MultipartFile.CreateFromPath(Path.Combine(AppContext.BaseDirectory, "test.txt")),
+            File2 = new FileInfo(Path.Combine(AppContext.BaseDirectory, "test.txt"))
         });
-        Assert.Equal(9, builder._partContents.Count);
+        Assert.Equal(10, builder._partContents.Count);
 
         Assert.Equal("Id", builder._partContents[7].Name);
         Assert.Equal("text/plain", builder._partContents[7].ContentType);
         Assert.NotNull(builder._partContents[7].RawContent);
         Assert.Equal(Guid.Empty, builder._partContents[7].RawContent);
 
-        Assert.Equal("file", builder._partContents[8].Name);
+        Assert.Equal("File", builder._partContents[8].Name);
         Assert.Equal(MediaTypeNames.Text.Plain, builder._partContents[8].ContentType);
         Assert.NotNull(builder._partContents[8].RawContent);
         Assert.True(builder._partContents[8].RawContent is FileStream);
+
+        Assert.Equal("File2", builder._partContents[9].Name);
+        Assert.Equal(MediaTypeNames.Text.Plain, builder._partContents[9].ContentType);
+        Assert.NotNull(builder._partContents[9].RawContent);
+        Assert.True(builder._partContents[9].RawContent is FileInfo);
     }
 
     [Fact]
@@ -713,7 +720,8 @@ public class HttpMultipartFormDataBuilderTests
     public void AddFile_Invalid_Parameters()
     {
         var builder = new HttpMultipartFormDataBuilder(HttpRequestBuilder.Get("http://localhost"));
-        Assert.Throws<ArgumentNullException>(() => builder.AddFile(null!));
+        Assert.Throws<ArgumentNullException>(() => builder.AddFile((MultipartFile)null!));
+        Assert.Throws<ArgumentNullException>(() => builder.AddFile((FileInfo)null!));
     }
 
     [Fact]
@@ -731,6 +739,8 @@ public class HttpMultipartFormDataBuilderTests
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
         builder.AddFile(MultipartFile.CreateFromPath(filePath));
         Assert.Equal(3, builder._partContents.Count);
+        Assert.Equal("file", builder._partContents[2].Name);
+        Assert.Equal("test.txt", builder._partContents[2].FileName);
 
         var base64String = Convert.ToBase64String(File.ReadAllBytes(filePath));
         builder.AddFile(MultipartFile.CreateFromBase64String(base64String));
@@ -742,6 +752,11 @@ public class HttpMultipartFormDataBuilderTests
         builder.AddFile(MultipartFile.CreateFromRemote("https://furion.net/img/furionlogo.png"), "file2");
         Assert.Equal(6, builder._partContents.Count);
         Assert.Equal("file2", builder._partContents[5].Name);
+
+        builder.AddFile(new FileInfo(Path.Combine(AppContext.BaseDirectory, "test.txt")), "file3");
+        Assert.Equal(7, builder._partContents.Count);
+        Assert.Equal("file3", builder._partContents[6].Name);
+        Assert.Equal("test.txt", builder._partContents[6].FileName);
     }
 
     [Fact]

@@ -136,8 +136,8 @@ public static class HttpRemoteUtility
         // 空检查
         ArgumentNullException.ThrowIfNull(resultType);
 
-        // 根据 HTTP 请求消息和服务提供器，解析出 HttpClient 客户端配置选项
-        var httpClientOptions = ResolveHttpClientOptions(httpResponseMessage?.RequestMessage, serviceProvider);
+        // 根据 HTTP 响应消息和服务提供器，解析出 HttpClient 客户端配置选项
+        var httpClientOptions = ResolveHttpClientOptions(httpResponseMessage, serviceProvider);
 
         // 获取 JsonSerializerOptions 配置
         // 优先级：指定名称的 HttpClientOptions -> HttpRemoteOptions -> 默认值
@@ -262,10 +262,10 @@ public static class HttpRemoteUtility
     }
 
     /// <summary>
-    ///     根据 HTTP 请求消息和服务提供器，解析出 <see cref="HttpClient" /> 客户端配置选项
+    ///     根据 HTTP 响应消息和服务提供器，解析出 <see cref="HttpClient" /> 客户端配置选项
     /// </summary>
-    /// <param name="httpRequestMessage">
-    ///     <see cref="HttpRequestMessage" />
+    /// <param name="httpResponseMessage">
+    ///     <see cref="HttpResponseMessage" />
     /// </param>
     /// <param name="serviceProvider">
     ///     <see cref="IServiceProvider" />
@@ -273,18 +273,8 @@ public static class HttpRemoteUtility
     /// <returns>
     ///     <see cref="HttpClientOptions" />
     /// </returns>
-    internal static HttpClientOptions? ResolveHttpClientOptions(HttpRequestMessage? httpRequestMessage,
-        IServiceProvider? serviceProvider)
-    {
-        // 获取 HttpClient 实例的配置名称
-        if (httpRequestMessage?.Options.TryGetValue(new HttpRequestOptionsKey<string>(Constants.HTTP_CLIENT_NAME),
-                out var httpClientName) != true)
-        {
-            httpClientName = string.Empty;
-        }
-
-        // 获取 HttpClientOptions 实例
-        var httpClientOptions = serviceProvider?.GetService<IOptionsMonitor<HttpClientOptions>>()?.Get(httpClientName);
-        return httpClientOptions;
-    }
+    internal static HttpClientOptions? ResolveHttpClientOptions(HttpResponseMessage? httpResponseMessage,
+        IServiceProvider? serviceProvider) =>
+        serviceProvider?.GetService<IOptionsMonitor<HttpClientOptions>>()
+            ?.Get(httpResponseMessage.ResolveHttpClientName());
 }

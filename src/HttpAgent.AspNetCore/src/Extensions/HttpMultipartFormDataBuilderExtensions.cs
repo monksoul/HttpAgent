@@ -32,17 +32,8 @@ public static class HttpMultipartFormDataBuilderExtensions
         // 空检查
         ArgumentNullException.ThrowIfNull(formFile);
 
-        // 初始化 MemoryStream 实例
-        var memoryStream = new MemoryStream();
-
-        // 将 IFormFile 内容复制到内存流
-        formFile.CopyTo(memoryStream);
-
-        // 将内存流的位置重置到起始位置
-        memoryStream.Position = 0;
-
         // 添加文件流
-        return httpMultipartFormDataBuilder.AddStream(memoryStream, name ?? formFile.Name,
+        return httpMultipartFormDataBuilder.AddStream(formFile.OpenReadStream(), name ?? formFile.Name,
             fileName ?? formFile.FileName, contentType ?? formFile.ContentType, contentEncoding,
             true);
     }

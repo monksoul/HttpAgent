@@ -14,9 +14,6 @@ public class ConstantsTests
     public void UNKNOWN_USER_AGENT_VERSION() => Assert.Equal("unknown", Constants.UNKNOWN_USER_AGENT_VERSION);
 
     [Fact]
-    public void FORM_DATA_DISPOSITION_TYPE() => Assert.Equal("form-data", Constants.FORM_DATA_DISPOSITION_TYPE);
-
-    [Fact]
     public void BASIC_AUTHENTICATION_SCHEME() => Assert.Equal("Basic", Constants.BASIC_AUTHENTICATION_SCHEME);
 
     [Fact]
@@ -26,10 +23,6 @@ public class ConstantsTests
     [Fact]
     public void DIGEST_AUTHENTICATION_SCHEME() =>
         Assert.Equal("Digest", Constants.DIGEST_AUTHENTICATION_SCHEME);
-
-    [Fact]
-    public void TEXT_PLAIN_MIME_TYPE() =>
-        Assert.Equal("text/plain", Constants.TEXT_PLAIN_MIME_TYPE);
 
     [Fact]
     public void X_END_OF_STREAM_HEADER() =>

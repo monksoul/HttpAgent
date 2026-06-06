@@ -16,4 +16,10 @@ public sealed record HttpContentProcessorContext(object? RawContent, string Cont
     ///     <see cref="HttpClient" /> 实例的配置名称
     /// </summary>
     public string? HttpClientName { get; init; }
+
+    /// <summary>
+    ///     表示是否作为表单的一项
+    /// </summary>
+    /// <remarks>默认值为：<c>false</c>。</remarks>
+    public bool AsFormItem { get; init; }
 }

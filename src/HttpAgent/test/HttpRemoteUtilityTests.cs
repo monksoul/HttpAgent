@@ -236,26 +236,23 @@ public class HttpRemoteUtilityTests
     public void ResolveHttpClientOptions_ReturnOK()
     {
         Assert.Null(HttpRemoteUtility.ResolveHttpClientOptions(null, null));
-        Assert.Null(HttpRemoteUtility.ResolveHttpClientOptions(new HttpResponseMessage().RequestMessage, null));
+        Assert.Null(HttpRemoteUtility.ResolveHttpClientOptions(new HttpResponseMessage(), null));
 
         var services = new ServiceCollection();
         using var serviceProvider = services.BuildServiceProvider();
-        Assert.Null(
-            HttpRemoteUtility.ResolveHttpClientOptions(new HttpResponseMessage().RequestMessage, serviceProvider));
+        Assert.Null(HttpRemoteUtility.ResolveHttpClientOptions(new HttpResponseMessage(), serviceProvider));
 
         var services2 = new ServiceCollection();
         services2.AddHttpClient(string.Empty);
         using var serviceProvider2 = services2.BuildServiceProvider();
-        Assert.NotNull(
-            HttpRemoteUtility.ResolveHttpClientOptions(new HttpResponseMessage().RequestMessage, serviceProvider2));
+        Assert.NotNull(HttpRemoteUtility.ResolveHttpClientOptions(new HttpResponseMessage(), serviceProvider2));
 
         var httpResponseMessage = new HttpResponseMessage();
         var httpRequestMessage = new HttpRequestMessage();
         httpRequestMessage.Options.AddOrUpdate(Constants.HTTP_CLIENT_NAME, "Github");
         httpResponseMessage.RequestMessage = httpRequestMessage;
 
-        Assert.NotNull(
-            HttpRemoteUtility.ResolveHttpClientOptions(httpResponseMessage.RequestMessage, serviceProvider2));
+        Assert.NotNull(HttpRemoteUtility.ResolveHttpClientOptions(httpResponseMessage, serviceProvider2));
     }
 
     public class ApiResult<T>

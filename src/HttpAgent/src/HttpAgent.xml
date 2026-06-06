@@ -1651,6 +1651,18 @@
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
         </member>
+        <member name="M:HttpAgent.HttpMultipartFormDataBuilder.AddFile(System.IO.FileInfo,System.String)">
+            <summary>
+                添加文件
+            </summary>
+            <param name="fileInfo">
+                <see cref="T:System.IO.FileInfo" />
+            </param>
+            <param name="name">表单名称</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
+            </returns>
+        </member>
         <member name="M:HttpAgent.HttpMultipartFormDataBuilder.AddFile(HttpAgent.MultipartFile,System.String)">
             <summary>
                 添加文件
@@ -4436,11 +4448,6 @@
                 未知 <c>User Agent</c> 版本
             </summary>
         </member>
-        <member name="F:HttpAgent.Constants.FORM_DATA_DISPOSITION_TYPE">
-            <summary>
-                内容正文部分的处置类型
-            </summary>
-        </member>
         <member name="F:HttpAgent.Constants.BASIC_AUTHENTICATION_SCHEME">
             <summary>
                 Basic 授权标识
@@ -4454,11 +4461,6 @@
         <member name="F:HttpAgent.Constants.DIGEST_AUTHENTICATION_SCHEME">
             <summary>
                 Digest 授权标识
-            </summary>
-        </member>
-        <member name="F:HttpAgent.Constants.TEXT_PLAIN_MIME_TYPE">
-            <summary>
-                <c>text/plain</c> 内容类型
             </summary>
         </member>
         <member name="F:HttpAgent.Constants.X_END_OF_STREAM_HEADER">
@@ -7966,6 +7968,17 @@
                 <see cref="T:System.Boolean" />
             </returns>
         </member>
+        <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.ResolveHttpClientName(System.Net.Http.HttpResponseMessage)">
+            <summary>
+                根据 HTTP 响应消息解析出 <see cref="T:System.Net.Http.HttpClient" /> 实例的配置名称
+            </summary>
+            <param name="httpResponseMessage">
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </param>
+            <returns>
+                <see cref="T:System.String" />
+            </returns>
+        </member>
         <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.ToJsonString(System.Object,System.Text.Json.JsonSerializerOptions)">
             <summary>
                 将对象转换为 JSON 字符串
@@ -10847,6 +10860,17 @@
         <member name="M:HttpAgent.ByteArrayContentProcessor.Process(HttpAgent.HttpContentProcessorContext)">
             <inheritdoc />
         </member>
+        <member name="T:HttpAgent.FileInfoContentProcessor">
+            <summary>
+                <see cref="T:System.IO.FileInfo" /> 内容处理器
+            </summary>
+        </member>
+        <member name="M:HttpAgent.FileInfoContentProcessor.CanProcess(HttpAgent.HttpContentProcessorContext)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.FileInfoContentProcessor.Process(HttpAgent.HttpContentProcessorContext)">
+            <inheritdoc />
+        </member>
         <member name="T:HttpAgent.FormUrlEncodedContentProcessor">
             <summary>
                 URL 编码的表单内容处理器
@@ -10927,6 +10951,12 @@
             <summary>
                 <see cref="T:System.Net.Http.HttpClient" /> 实例的配置名称
             </summary>
+        </member>
+        <member name="P:HttpAgent.HttpContentProcessorContext.AsFormItem">
+            <summary>
+                表示是否作为表单的一项
+            </summary>
+            <remarks>默认值为：<c>false</c>。</remarks>
         </member>
         <member name="T:HttpAgent.IHttpContentProcessor">
             <summary>
@@ -15903,12 +15933,12 @@
                 <see cref="T:System.IO.Stream" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpRemoteUtility.ResolveHttpClientOptions(System.Net.Http.HttpRequestMessage,System.IServiceProvider)">
+        <member name="M:HttpAgent.HttpRemoteUtility.ResolveHttpClientOptions(System.Net.Http.HttpResponseMessage,System.IServiceProvider)">
             <summary>
-                根据 HTTP 请求消息和服务提供器，解析出 <see cref="T:System.Net.Http.HttpClient" /> 客户端配置选项
+                根据 HTTP 响应消息和服务提供器，解析出 <see cref="T:System.Net.Http.HttpClient" /> 客户端配置选项
             </summary>
-            <param name="httpRequestMessage">
-                <see cref="T:System.Net.Http.HttpRequestMessage" />
+            <param name="httpResponseMessage">
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
             </param>
             <param name="serviceProvider">
                 <see cref="T:System.IServiceProvider" />
@@ -16671,6 +16701,12 @@
         <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32,System.Int32,System.Int32)">
             <summary>Pushes 3 values onto the backtracking stack.</summary>
         </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_1F52B1A4D2E82B6FEDE25EC8C55F85BB36775196837076691C96925040F90D32">
+            <summary>Supports searching for the string "\\u".</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_EBC667BDABA1472FA863B5B39B31251EF2B4C95DD643BDECF694CB1CE7BDC178">
+            <summary>Supports searching for the string "[[".</summary>
+        </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions">
             <summary>
                 HTTP 远程请求模块 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" /> 扩展类
@@ -16704,10 +16740,7 @@
         </member>
     </members>
 </doc>
-         添加 HTTP 远程请求服务
-            </summary>
-            <param name="services">
-                <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
+ection" />
             </param>
             <param name="httpRemoteBuilder">
                 <see cref="T:HttpAgent.HttpRemoteBuilder" />
@@ -16718,14 +16751,6 @@
         </member>
     </members>
 </doc>
-ection" />
-            </param>
-            <param name="httpRemoteBuilder">
-                <see cref="T:HttpAgent.HttpRemoteBuilder" />
-            </param>
-            <returns>
-                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
-            </returns>
-        </member>
+      </member>
     </members>
 </doc>

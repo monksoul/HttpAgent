@@ -107,19 +107,22 @@ public class MultipartDeclarativeExtractorTests
             {
                 Id = 1,
                 Name = "Furion",
-                File = MultipartFile.CreateFromPath(Path.Combine(AppContext.BaseDirectory, "test.txt"), "File")
+                File = MultipartFile.CreateFromPath(Path.Combine(AppContext.BaseDirectory, "test.txt"), "File"),
+                File2 = new FileInfo(Path.Combine(AppContext.BaseDirectory, "test.txt"))
             }
         ], new HttpDeclarativeMethodMetadata(method5, typeof(IMultipartDeclarativeExtractorTest)));
         var httpRequestBuilder5 = HttpRequestBuilder.Get("http://localhost");
         new MultipartDeclarativeExtractor().Extract(httpRequestBuilder5, context5);
         Assert.NotNull(httpRequestBuilder5.MultipartFormDataBuilder);
-        Assert.Equal(3, httpRequestBuilder5.MultipartFormDataBuilder._partContents.Count);
+        Assert.Equal(4, httpRequestBuilder5.MultipartFormDataBuilder._partContents.Count);
         Assert.Equal("Id", httpRequestBuilder5.MultipartFormDataBuilder._partContents[0].Name);
         Assert.Equal("text/plain", httpRequestBuilder5.MultipartFormDataBuilder._partContents[0].ContentType);
         Assert.Equal("Name", httpRequestBuilder5.MultipartFormDataBuilder._partContents[1].Name);
         Assert.Equal("text/plain", httpRequestBuilder5.MultipartFormDataBuilder._partContents[1].ContentType);
         Assert.Equal("File", httpRequestBuilder5.MultipartFormDataBuilder._partContents[2].Name);
         Assert.Equal("text/plain", httpRequestBuilder5.MultipartFormDataBuilder._partContents[2].ContentType);
+        Assert.Equal("File2", httpRequestBuilder5.MultipartFormDataBuilder._partContents[3].Name);
+        Assert.Equal("text/plain", httpRequestBuilder5.MultipartFormDataBuilder._partContents[3].ContentType);
     }
 
     [Fact]

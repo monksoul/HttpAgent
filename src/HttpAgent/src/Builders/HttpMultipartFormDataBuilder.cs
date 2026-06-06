@@ -300,7 +300,7 @@ public sealed class HttpMultipartFormDataBuilder
         // 解析内容类型字符串
         Encoding? encoding = null;
         var mediaType = string.IsNullOrWhiteSpace(contentType)
-            ? Constants.TEXT_PLAIN_MIME_TYPE
+            ? MediaTypeNames.Text.Plain
             : ParseContentType(contentType, contentEncoding, out encoding);
 
         // 空检查
@@ -326,19 +326,27 @@ public sealed class HttpMultipartFormDataBuilder
         // 遍历字典集合并逐条追加
         foreach (var (itemName, rawContent) in formDataItems)
         {
-            // 检查原始请求内容是否是 MultipartFile 类型
-            if (rawContent is MultipartFile multipartFile)
+            // 初始化表单名称
+            var formName = itemName.ToInvariantCultureString()!;
+
+            switch (rawContent)
             {
-                AddFile(multipartFile);
-            }
-            else
-            {
-                _partContents.Add(new MultipartFormDataItem(itemName.ToInvariantCultureString()!)
-                {
-                    ContentType = Helpers.GetContentTypeOrDefault(rawContent, MediaTypeNames.Text.Plain),
-                    RawContent = rawContent,
-                    ContentEncoding = encoding
-                });
+                // 检查原始请求内容是否是 MultipartFile 类型
+                case MultipartFile multipartFile:
+                    AddFile(multipartFile, formName);
+                    break;
+                // 检查原始请求内容是否是 FileInfo 类型
+                case FileInfo fileInfo:
+                    AddFile(fileInfo, formName);
+                    break;
+                default:
+                    _partContents.Add(new MultipartFormDataItem(formName)
+                    {
+                        ContentType = Helpers.GetContentTypeOrDefault(rawContent, MediaTypeNames.Text.Plain),
+                        RawContent = rawContent,
+                        ContentEncoding = encoding
+                    });
+                    break;
             }
         }
 
@@ -524,6 +532,31 @@ public sealed class HttpMultipartFormDataBuilder
     /// <summary>
     ///     添加文件
     /// </summary>
+    /// <param name="fileInfo">
+    ///     <see cref="FileInfo" />
+    /// </param>
+    /// <param name="name">表单名称</param>
+    /// <returns>
+    ///     <see cref="HttpMultipartFormDataBuilder" />
+    /// </returns>
+    public HttpMultipartFormDataBuilder AddFile(FileInfo fileInfo, string? name = null)
+    {
+        // 空检查
+        ArgumentNullException.ThrowIfNull(fileInfo);
+
+        _partContents.Add(new MultipartFormDataItem(name ?? "file")
+        {
+            ContentType = Helpers.GetContentTypeOrDefault(fileInfo, MediaTypeNames.Application.Octet),
+            RawContent = fileInfo,
+            FileName = fileInfo.Name
+        });
+
+        return this;
+    }
+
+    /// <summary>
+    ///     添加文件
+    /// </summary>
     /// <remarks>使用 <c>MultipartFile.CreateFrom[Source]</c> 静态方法创建。</remarks>
     /// <param name="multipartFile">
     ///     <see cref="MultipartFile" />
@@ -538,7 +571,7 @@ public sealed class HttpMultipartFormDataBuilder
         ArgumentNullException.ThrowIfNull(multipartFile);
 
         // 获取表单名称
-        var formName = name ?? multipartFile.Name!;
+        var formName = name ?? multipartFile.Name ?? "file";
 
         switch (multipartFile.FileSourceType)
         {
@@ -593,7 +626,6 @@ public sealed class HttpMultipartFormDataBuilder
         // 检查流是否可读
         if (!stream.CanRead)
         {
-            // ReSharper disable once LocalizableElement
             throw new ArgumentException("Stream must be readable.", nameof(stream));
         }
 
@@ -919,15 +951,17 @@ public sealed class HttpMultipartFormDataBuilder
         // 构建 HttpContent 实例
         var httpContent = httpContentProcessorFactory.Build(
             new HttpContentProcessorContext(multipartFormDataItem.RawContent, contentType,
-                multipartFormDataItem.ContentEncoding) { HttpClientName = _httpRequestBuilder.HttpClientName },
-            processors);
+                multipartFormDataItem.ContentEncoding)
+            {
+                HttpClientName = _httpRequestBuilder.HttpClientName, AsFormItem = true
+            }, processors);
 
         // 空检查
         if (httpContent is not null && httpContent.Headers.ContentDisposition is null)
         {
             // 设置表单项内容 Content-Disposition 标头
             httpContent.Headers.ContentDisposition =
-                new ContentDispositionHeaderValue(Constants.FORM_DATA_DISPOSITION_TYPE)
+                new ContentDispositionHeaderValue("form-data")
                 {
                     Name = name.AddQuotes(),
                     FileName =
