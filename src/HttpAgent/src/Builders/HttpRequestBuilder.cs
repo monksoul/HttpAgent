@@ -646,8 +646,11 @@ public sealed partial class HttpRequestBuilder
                 JsonResponseStringUnwrapEnabled.Value ? "TRUE" : "FALSE");
         }
 
-        // 添加 HttpClient 实例的配置名称
-        httpRequestMessage.Options.AddOrUpdate(Constants.HTTP_CLIENT_NAME, HttpClientName ?? string.Empty);
+        // 检查是否配置了 HttpClient 实例名称
+        if (HttpClientName is not null)
+        {
+            httpRequestMessage.Options.AddOrUpdate(Constants.HTTP_CLIENT_NAME, HttpClientName);
+        }
     }
 
     /// <summary>

@@ -190,12 +190,8 @@ public sealed class HttpRemoteResult<TResult>
         // 获取 HTTP 版本
         Version = ResponseMessage.Version;
 
-        // 获取 HttpClient 实例的配置名称
-        if (ResponseMessage.RequestMessage?.Options.TryGetValue(
-                new HttpRequestOptionsKey<string>(Constants.HTTP_CLIENT_NAME), out var httpClientName) == true)
-        {
-            HttpClientName = httpClientName;
-        }
+        // 根据 HTTP 响应消息解析出 HttpClient 实例的配置名称
+        HttpClientName = ResponseMessage.ResolveHttpClientName();
     }
 
     /// <summary>

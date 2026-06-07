@@ -200,12 +200,11 @@ public static partial class HttpRemoteExtensions
                 ? [new KeyValuePair<string, IEnumerable<string>>("Declarative", [methodSignature])]
                 : null;
 
-        // 格式化 HttpClient 实例的配置条目
-        IEnumerable<KeyValuePair<string, IEnumerable<string>>>? httpClientKeyValues =
-            httpRequestMessage.Options.TryGetValue(new HttpRequestOptionsKey<string>(Constants.HTTP_CLIENT_NAME),
-                out var httpClientName)
-                ? [new KeyValuePair<string, IEnumerable<string>>("HttpClient Name", [httpClientName])]
-                : null;
+        // 根据 HTTP 响应消息解析出 HttpClient 实例的配置名称
+        var httpClientName = httpResponseMessage.ResolveHttpClientName();
+        IEnumerable<KeyValuePair<string, IEnumerable<string>>>? httpClientKeyValues = httpClientName is not null
+            ? [new KeyValuePair<string, IEnumerable<string>>("HttpClient Name", [httpClientName])]
+            : null;
 
         // 格式化常规条目
         var generalEntry = StringUtility.FormatKeyValuesSummary(new[]
@@ -647,14 +646,10 @@ public static partial class HttpRemoteExtensions
     /// </returns>
     public static string? ResolveHttpClientName(this HttpResponseMessage? httpResponseMessage)
     {
-        // 获取 HttpClient 实例的配置名称
-        if (httpResponseMessage?.RequestMessage?.Options.TryGetValue(
-                new HttpRequestOptionsKey<string>(Constants.HTTP_CLIENT_NAME), out var httpClientName) != true)
-        {
-            httpClientName = string.Empty;
-        }
-
-        return httpClientName;
+        return httpResponseMessage?.RequestMessage?.Options.TryGetValue(
+            new HttpRequestOptionsKey<string>(Constants.HTTP_CLIENT_NAME), out var httpClientName) != true
+            ? null
+            : httpClientName;
     }
 
     /// <summary>

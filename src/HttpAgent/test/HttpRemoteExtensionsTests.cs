@@ -451,8 +451,8 @@ public class HttpRemoteExtensionsTests
     [Fact]
     public void ResolveHttpClientName_ReturnOK()
     {
-        Assert.Equal(string.Empty, ((HttpResponseMessage?)null).ResolveHttpClientName());
-        Assert.Equal(string.Empty, new HttpResponseMessage().ResolveHttpClientName());
+        Assert.Null(((HttpResponseMessage?)null).ResolveHttpClientName());
+        Assert.Null(new HttpResponseMessage().ResolveHttpClientName());
 
         var httpResponseMessage = new HttpResponseMessage();
         var httpRequestMessage = new HttpRequestMessage();
