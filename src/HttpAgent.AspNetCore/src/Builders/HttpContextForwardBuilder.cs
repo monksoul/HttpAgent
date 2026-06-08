@@ -116,26 +116,8 @@ public sealed class HttpContextForwardBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
-    internal HttpRequestBuilder Build(Action<HttpRequestBuilder>? configure = null)
-    {
-        // 初始化 HttpRequestBuilder 实例
-        var httpRequestBuilder = HttpRequestBuilder.Create(HttpMethod, RequestUri)
-            .AddHttpContentConverters(() => [_actionResultContentConverterInstance.Value]).DisableCache();
-
-        // 复制查询参数和路由参数
-        CopyQueryAndRouteValues(httpRequestBuilder);
-
-        // 复制请求标头
-        CopyHeaders(httpRequestBuilder);
-
-        // 复制请求内容
-        CopyBodyAsync(httpRequestBuilder).Wait(HttpContext.RequestAborted);
-
-        // 调用自定义配置委托
-        configure?.Invoke(httpRequestBuilder);
-
-        return httpRequestBuilder;
-    }
+    internal HttpRequestBuilder Build(Action<HttpRequestBuilder>? configure = null) =>
+        AsyncUtility.RunSync(() => BuildAsync(configure));
 
     /// <summary>
     ///     构建 <see cref="HttpRequestBuilder" /> 实例
