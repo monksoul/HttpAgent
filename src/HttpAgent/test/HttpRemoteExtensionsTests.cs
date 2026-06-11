@@ -624,6 +624,131 @@ public class HttpRemoteExtensionsTests
         Assert.Equal("furion", objectModel.Name);
     }
 
+    [Fact]
+    public void ResolveFilePath_Invalid_Parameters()
+    {
+        Assert.Throws<ArgumentNullException>(() => HttpRemoteExtensions.ResolveFilePath(null!));
+        Assert.Throws<ArgumentException>(() => HttpRemoteExtensions.ResolveFilePath(string.Empty));
+        Assert.Throws<ArgumentException>(() => HttpRemoteExtensions.ResolveFilePath(" "));
+    }
+
+    [Fact]
+    public void ResolveFilePath_ReturnOK()
+    {
+        var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
+        var normalizedPath = Path.GetFullPath(filePath);
+
+        Assert.Equal(normalizedPath, HttpRemoteExtensions.ResolveFilePath("test.txt"));
+        Assert.Equal(normalizedPath, HttpRemoteExtensions.ResolveFilePath(filePath));
+        Assert.Equal(normalizedPath, HttpRemoteExtensions.ResolveFilePath(normalizedPath));
+    }
+
+    [Fact]
+    public async Task SaveToFileAsync_Invalid_Parameters()
+    {
+        await Assert.ThrowsAsync<ArgumentNullException>(() =>
+            ((Stream)null!).SaveToFileAsync(null!));
+        await Assert.ThrowsAsync<ArgumentNullException>(() =>
+            ((byte[])null!).SaveToFileAsync(null!));
+
+        using var stream = new MemoryStream();
+        await Assert.ThrowsAsync<ArgumentNullException>(() => stream.SaveToFileAsync(null!));
+        await Assert.ThrowsAsync<ArgumentException>(() => stream.SaveToFileAsync(string.Empty));
+        await Assert.ThrowsAsync<ArgumentException>(() => stream.SaveToFileAsync(" "));
+
+        var bytes = stream.ToArray();
+        await Assert.ThrowsAsync<ArgumentNullException>(() => bytes.SaveToFileAsync(null!));
+        await Assert.ThrowsAsync<ArgumentException>(() => bytes.SaveToFileAsync(string.Empty));
+        await Assert.ThrowsAsync<ArgumentException>(() => bytes.SaveToFileAsync(" "));
+    }
+
+    [Fact]
+    public async Task SaveToFileAsync_ReturnOK()
+    {
+        var originalFilePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
+        await using var stream = File.OpenRead(originalFilePath);
+        var filePath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+
+        try
+        {
+            await stream.SaveToFileAsync(filePath);
+            Assert.True(File.Exists(filePath));
+
+            Assert.Equal("测试文件内容", await File.ReadAllTextAsync(filePath));
+        }
+        finally
+        {
+            File.Delete(filePath);
+        }
+
+        var bytes = await File.ReadAllBytesAsync(originalFilePath);
+        var filePath2 = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+
+        try
+        {
+            await bytes.SaveToFileAsync(filePath2);
+            Assert.True(File.Exists(filePath2));
+
+            Assert.Equal("测试文件内容", await File.ReadAllTextAsync(filePath2));
+        }
+        finally
+        {
+            File.Delete(filePath2);
+        }
+    }
+
+    [Fact]
+    public void SaveToFile_Invalid_Parameters()
+    {
+        Assert.Throws<ArgumentNullException>(() => ((Stream)null!).SaveToFile(null!));
+        Assert.Throws<ArgumentNullException>(() => ((byte[])null!).SaveToFile(null!));
+
+        using var stream = new MemoryStream();
+        Assert.Throws<ArgumentNullException>(() => stream.SaveToFile(null!));
+        Assert.Throws<ArgumentException>(() => stream.SaveToFile(string.Empty));
+        Assert.Throws<ArgumentException>(() => stream.SaveToFile(" "));
+
+        var bytes = stream.ToArray();
+        Assert.Throws<ArgumentNullException>(() => bytes.SaveToFile(null!));
+        Assert.Throws<ArgumentException>(() => bytes.SaveToFile(string.Empty));
+        Assert.Throws<ArgumentException>(() => bytes.SaveToFile(" "));
+    }
+
+    [Fact]
+    public void SaveToFile_ReturnOK()
+    {
+        var originalFilePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
+        using var stream = File.OpenRead(originalFilePath);
+        var filePath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+
+        try
+        {
+            stream.SaveToFile(filePath);
+            Assert.True(File.Exists(filePath));
+
+            Assert.Equal("测试文件内容", File.ReadAllText(filePath));
+        }
+        finally
+        {
+            File.Delete(filePath);
+        }
+
+        var bytes = File.ReadAllBytes(originalFilePath);
+        var filePath2 = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+
+        try
+        {
+            bytes.SaveToFile(filePath2);
+            Assert.True(File.Exists(filePath2));
+
+            Assert.Equal("测试文件内容", File.ReadAllText(filePath2));
+        }
+        finally
+        {
+            File.Delete(filePath2);
+        }
+    }
+
     public class JsonModel
     {
         public int Id { get; set; }

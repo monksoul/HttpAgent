@@ -7993,6 +7993,64 @@
                 <see cref="T:System.String" />
             </returns>
         </member>
+        <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.SaveToFileAsync(System.Byte[],System.String,System.Threading.CancellationToken)">
+            <summary>
+                将字节数组写入本地文件
+            </summary>
+            <param name="data">字节数组</param>
+            <param name="filePath">目标文件路径</param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
+        <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.SaveToFile(System.Byte[],System.String)">
+            <summary>
+                将字节数组写入本地文件
+            </summary>
+            <param name="data">字节数组</param>
+            <param name="filePath">目标文件路径</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
+        <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.SaveToFileAsync(System.IO.Stream,System.String,System.Threading.CancellationToken)">
+            <summary>
+                将流从当前位置开始的内容写入本地文件
+            </summary>
+            <remarks>如果希望总是从流的开头保存，可提前设置：<c>stream.Seek(0, SeekOrigin.Begin);</c>。</remarks>
+            <param name="stream">
+                <see cref="T:System.IO.Stream" />
+            </param>
+            <param name="filePath">目标文件路径</param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
+        <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.SaveToFile(System.IO.Stream,System.String)">
+            <summary>
+                将流从当前位置开始的内容写入本地文件
+            </summary>
+            <remarks>如果希望总是从流的开头保存，可提前设置：<c>stream.Seek(0, SeekOrigin.Begin);</c>。</remarks>
+            <param name="stream">
+                <see cref="T:System.IO.Stream" />
+            </param>
+            <param name="filePath">目标文件路径</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
+        <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.ResolveFilePath(System.String)">
+            <summary>
+                解析文件路径
+            </summary>
+            <remarks>如果已是绝对路径，直接返回。如果是相对路径，基于 <see cref="P:System.AppContext.BaseDirectory" /> 解析。</remarks>
+            <param name="filePath">文件路径</param>
+            <returns>
+                <see cref="T:System.String" />
+            </returns>
+        </member>
         <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.ShouldUseJsonResponseWrapper(System.Net.Http.HttpResponseMessage,System.IServiceProvider)">
             <summary>
                 检查是否启用 JSON 响应反序列化包装器
@@ -14730,7 +14788,10 @@
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
             <returns>
-               <member name="M:HttpAgent.IHttpRemoteService.Options(System.String,System.Net.Http.HttpCompletionOption,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.IHttpRemoteService.Options(System.String,System.Net.Http.HttpCompletionOption,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
             <summary>
                 发送 HTTP OPTIONS 远程请求
             </summary>
@@ -14806,7 +14867,7 @@
                 <see cref="T:HttpAgent.HttpRemoteResult`1" />
             </returns>
         </member>
-        <member name="M:HttpAgent.IHttpRemoteService.OptionsAsAsync``1(System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CanteService.OptionsAsAsync``1(System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.IHttpRemoteService.OptionsAsAsync``1(System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
             <summary>
                 发送 HTTP OPTIONS 远程请求
             </summary>
@@ -16731,7 +16792,8 @@
         </member>
     </members>
 </doc>
-:HttpAgent.IHttpRemoteBuilder" />
+  <returns>
+                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
             </returns>
         </member>
         <member name="M:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions.AddHttpRemote(Microsoft.Extensions.DependencyInjection.IServiceCollection,HttpAgent.HttpRemoteBuilder)">
@@ -16748,8 +16810,5 @@
                 <see cref="T:HttpAgent.IHttpRemoteBuilder" />
             </returns>
         </member>
-    </members>
-</doc>
-      </member>
     </members>
 </doc>
