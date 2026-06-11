@@ -5294,6 +5294,69 @@
                 <see cref="T:System.Object" />
             </returns>
         </member>
+        <member name="T:HttpAgent.Core.Extensions.StreamExtensions">
+            <summary>
+                <see cref="T:System.IO.Stream" /> 扩展类
+            </summary>
+        </member>
+        <member name="M:HttpAgent.Core.Extensions.StreamExtensions.SaveToFileAsync(System.Byte[],System.String,System.Threading.CancellationToken)">
+            <summary>
+                将字节数组写入本地文件
+            </summary>
+            <param name="data">字节数组</param>
+            <param name="filePath">目标文件路径</param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
+        <member name="M:HttpAgent.Core.Extensions.StreamExtensions.SaveToFile(System.Byte[],System.String)">
+            <summary>
+                将字节数组写入本地文件
+            </summary>
+            <param name="data">字节数组</param>
+            <param name="filePath">目标文件路径</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
+        <member name="M:HttpAgent.Core.Extensions.StreamExtensions.SaveToFileAsync(System.IO.Stream,System.String,System.Threading.CancellationToken)">
+            <summary>
+                将流从当前位置开始的内容写入本地文件
+            </summary>
+            <remarks>如果希望总是从流的开头保存，可提前设置：<c>stream.Seek(0, SeekOrigin.Begin);</c>。</remarks>
+            <param name="stream">
+                <see cref="T:System.IO.Stream" />
+            </param>
+            <param name="filePath">目标文件路径</param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
+        <member name="M:HttpAgent.Core.Extensions.StreamExtensions.SaveToFile(System.IO.Stream,System.String)">
+            <summary>
+                将流从当前位置开始的内容写入本地文件
+            </summary>
+            <remarks>如果希望总是从流的开头保存，可提前设置：<c>stream.Seek(0, SeekOrigin.Begin);</c>。</remarks>
+            <param name="stream">
+                <see cref="T:System.IO.Stream" />
+            </param>
+            <param name="filePath">目标文件路径</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
+        <member name="M:HttpAgent.Core.Extensions.StreamExtensions.ResolveFilePath(System.String)">
+            <summary>
+                解析文件路径
+            </summary>
+            <remarks>如果已是绝对路径，直接返回。如果是相对路径，基于 <see cref="P:System.AppContext.BaseDirectory" /> 解析。</remarks>
+            <param name="filePath">文件路径</param>
+            <returns>
+                <see cref="T:System.String" />
+            </returns>
+        </member>
         <member name="T:HttpAgent.Core.Extensions.StringExtensions">
             <summary>
                 <see cref="T:System.String" /> 扩展类
@@ -7989,64 +8052,6 @@
             <param name="jsonSerializerOptions">
                 <see cref="T:System.Text.Json.JsonSerializerOptions" />
             </param>
-            <returns>
-                <see cref="T:System.String" />
-            </returns>
-        </member>
-        <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.SaveToFileAsync(System.Byte[],System.String,System.Threading.CancellationToken)">
-            <summary>
-                将字节数组写入本地文件
-            </summary>
-            <param name="data">字节数组</param>
-            <param name="filePath">目标文件路径</param>
-            <param name="cancellationToken">
-                <see cref="T:System.Threading.CancellationToken" />
-            </param>
-            <exception cref="T:System.ArgumentNullException"></exception>
-            <exception cref="T:System.ArgumentException"></exception>
-        </member>
-        <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.SaveToFile(System.Byte[],System.String)">
-            <summary>
-                将字节数组写入本地文件
-            </summary>
-            <param name="data">字节数组</param>
-            <param name="filePath">目标文件路径</param>
-            <exception cref="T:System.ArgumentNullException"></exception>
-            <exception cref="T:System.ArgumentException"></exception>
-        </member>
-        <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.SaveToFileAsync(System.IO.Stream,System.String,System.Threading.CancellationToken)">
-            <summary>
-                将流从当前位置开始的内容写入本地文件
-            </summary>
-            <remarks>如果希望总是从流的开头保存，可提前设置：<c>stream.Seek(0, SeekOrigin.Begin);</c>。</remarks>
-            <param name="stream">
-                <see cref="T:System.IO.Stream" />
-            </param>
-            <param name="filePath">目标文件路径</param>
-            <param name="cancellationToken">
-                <see cref="T:System.Threading.CancellationToken" />
-            </param>
-            <exception cref="T:System.ArgumentNullException"></exception>
-            <exception cref="T:System.ArgumentException"></exception>
-        </member>
-        <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.SaveToFile(System.IO.Stream,System.String)">
-            <summary>
-                将流从当前位置开始的内容写入本地文件
-            </summary>
-            <remarks>如果希望总是从流的开头保存，可提前设置：<c>stream.Seek(0, SeekOrigin.Begin);</c>。</remarks>
-            <param name="stream">
-                <see cref="T:System.IO.Stream" />
-            </param>
-            <param name="filePath">目标文件路径</param>
-            <exception cref="T:System.ArgumentNullException"></exception>
-            <exception cref="T:System.ArgumentException"></exception>
-        </member>
-        <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.ResolveFilePath(System.String)">
-            <summary>
-                解析文件路径
-            </summary>
-            <remarks>如果已是绝对路径，直接返回。如果是相对路径，基于 <see cref="P:System.AppContext.BaseDirectory" /> 解析。</remarks>
-            <param name="filePath">文件路径</param>
             <returns>
                 <see cref="T:System.String" />
             </returns>
@@ -10920,9 +10925,7 @@
         </member>
         <member name="T:HttpAgent.FileInfoContentProcessor">
             <summary>
-                <see cref="T:System.IO.FileInfo" /> 内容处理器
-            </summary>
-        </member>
+                <see cref="T:System.IO.FileIn
         <member name="M:HttpAgent.FileInfoContentProcessor.CanProcess(HttpAgent.HttpContentProcessorContext)">
             <inheritdoc />
         </member>
@@ -11519,7 +11522,7 @@
             <code>
             ○ Match if at the beginning of the string.<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
-            ○ Match a character in the set [-~].<br/>
+            ○ Match a character in the set [\-~].<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
@@ -16759,6 +16762,18 @@
         <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32,System.Int32,System.Int32)">
             <summary>Pushes 3 values onto the backtracking stack.</summary>
         </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.WordCategoriesMask">
+            <summary>Provides a mask of Unicode categories that combine to form [\w].</summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.Generated.Utilities.WordCharBitmap">
+            <summary>Gets a bitmap for whether each character 0 through 127 is in [\w]</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_1F52B1A4D2E82B6FEDE25EC8C55F85BB36775196837076691C96925040F90D32">
+            <summary>Supports searching for the string "\\u".</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_EBC667BDABA1472FA863B5B39B31251EF2B4C95DD643BDECF694CB1CE7BDC178">
+            <summary>Supports searching for the string "[[".</summary>
+        </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions">
             <summary>
                 HTTP 远程请求模块 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" /> 扩展类
@@ -16773,26 +16788,6 @@
             </param>
             <param name="configure">自定义配置委托</param>
             <returns>
-                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
-            </returns>
-        </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions.AddHttpRemote(Microsoft.Extensions.DependencyInjection.IServiceCollection,HttpAgent.HttpRemoteBuilder)">
-            <summary>
-                添加 HTTP 远程请求服务
-            </summary>
-            <param name="services">
-                <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
-            </param>
-            <param name="httpRemoteBuilder">
-                <see cref="T:HttpAgent.HttpRemoteBuilder" />
-            </param>
-            <returns>
-                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
-            </returns>
-        </member>
-    </members>
-</doc>
-  <returns>
                 <see cref="T:HttpAgent.IHttpRemoteBuilder" />
             </returns>
         </member>
