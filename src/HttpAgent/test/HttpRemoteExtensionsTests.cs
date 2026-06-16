@@ -553,63 +553,133 @@ public class HttpRemoteExtensionsTests
     }
 
     [Fact]
-    public async Task DecompressAsync_ReturnOK()
+    public async Task ReadAndDecompressFirstBytesAsync_ReturnOK()
     {
         const string originalText = "测试数据 DecompressAsync @2026 #UTF8 中文/English/123";
         var originalBytes = Encoding.UTF8.GetBytes(originalText);
+        var originalLength = originalBytes.Length;
 
-        // gzip
-
-        using var compressStream = new MemoryStream();
-        await using (var gzip = new GZipStream(compressStream, CompressionMode.Compress, true))
+        // gzip 全量解压
+        using var gzipCompressedStream = new MemoryStream();
+        await using (var gzip = new GZipStream(gzipCompressedStream, CompressionMode.Compress, true))
         {
             await gzip.WriteAsync(originalBytes);
         }
 
-        var compressedBytes = compressStream.ToArray();
-        var result = await HttpRemoteExtensions.DecompressAsync(compressedBytes, "gzip");
+        gzipCompressedStream.Position = 0;
 
-        var resultText = Encoding.UTF8.GetString(result);
-        Assert.Equal(originalText, resultText);
-        Assert.Equal(originalBytes.Length, result.Length);
+        var (gzipBuffer, gzipRead, gzipTruncated) = await HttpRemoteExtensions.ReadAndDecompressFirstBytesAsync(
+            gzipCompressedStream, "gzip", originalLength + 100, CancellationToken.None);
 
-        // deflate
+        var gzipResult = Encoding.UTF8.GetString(gzipBuffer, 0, gzipRead);
+        Assert.Equal(originalText, gzipResult);
+        Assert.Equal(originalLength, gzipRead);
+        Assert.False(gzipTruncated); // 未截断
 
-        using var compressStream2 = new MemoryStream();
-        await using (var deflate = new DeflateStream(compressStream2, CompressionMode.Compress, true))
+        // deflate 全量解压
+        using var deflateCompressedStream = new MemoryStream();
+        await using (var deflate = new DeflateStream(deflateCompressedStream, CompressionMode.Compress, true))
         {
             await deflate.WriteAsync(originalBytes);
         }
 
-        var compressedBytes2 = compressStream2.ToArray();
-        var result2 = await HttpRemoteExtensions.DecompressAsync(compressedBytes2, "deflate");
+        deflateCompressedStream.Position = 0;
 
-        var resultText2 = Encoding.UTF8.GetString(result2);
-        Assert.Equal(originalText, resultText2);
-        Assert.Equal(originalBytes.Length, result2.Length);
+        var (deflateBuffer, deflateRead, deflateTruncated) =
+            await HttpRemoteExtensions.ReadAndDecompressFirstBytesAsync(
+                deflateCompressedStream, "deflate", originalLength + 100, CancellationToken.None);
 
-        // brotli
+        var deflateResult = Encoding.UTF8.GetString(deflateBuffer, 0, deflateRead);
+        Assert.Equal(originalText, deflateResult);
+        Assert.Equal(originalLength, deflateRead);
+        Assert.False(deflateTruncated);
 
-        using var compressStream3 = new MemoryStream();
-        await using (var brotli = new BrotliStream(compressStream3, CompressionMode.Compress, true))
+        // brotli 全量解压
+        using var brCompressedStream = new MemoryStream();
+        await using (var brotli = new BrotliStream(brCompressedStream, CompressionMode.Compress, true))
         {
             await brotli.WriteAsync(originalBytes);
         }
 
-        var compressedBytes3 = compressStream3.ToArray();
-        var result3 = await HttpRemoteExtensions.DecompressAsync(compressedBytes3, "br");
+        brCompressedStream.Position = 0;
 
-        var resultText3 = Encoding.UTF8.GetString(result3);
-        Assert.Equal(originalText, resultText3);
-        Assert.Equal(originalBytes.Length, result3.Length);
+        var (brBuffer, brRead, brTruncated) = await HttpRemoteExtensions.ReadAndDecompressFirstBytesAsync(
+            brCompressedStream, "br", originalLength + 100, CancellationToken.None);
 
-        // unknown
+        var brResult = Encoding.UTF8.GetString(brBuffer, 0, brRead);
+        Assert.Equal(originalText, brResult);
+        Assert.Equal(originalLength, brRead);
+        Assert.False(brTruncated);
 
-        var result4 = await HttpRemoteExtensions.DecompressAsync(originalBytes, "unknown");
+        // 未知编码（无压缩）
+        using var unknownStream = new MemoryStream(originalBytes);
+        unknownStream.Position = 0;
 
-        var resultText4 = Encoding.UTF8.GetString(result4);
-        Assert.Equal(originalText, resultText4);
-        Assert.Equal(originalBytes.Length, result4.Length);
+        var (unknownBuffer, unknownRead, unknownTruncated) =
+            await HttpRemoteExtensions.ReadAndDecompressFirstBytesAsync(
+                unknownStream, "unknown", originalLength + 100, CancellationToken.None);
+
+        var unknownResult = Encoding.UTF8.GetString(unknownBuffer, 0, unknownRead);
+        Assert.Equal(originalText, unknownResult);
+        Assert.Equal(originalLength, unknownRead);
+        Assert.False(unknownTruncated);
+
+        // 空编码（无压缩）
+        using var nullEncodingStream = new MemoryStream(originalBytes);
+        nullEncodingStream.Position = 0;
+
+        var (nullEncBuffer, nullEncRead, nullEncTruncated) =
+            await HttpRemoteExtensions.ReadAndDecompressFirstBytesAsync(
+                nullEncodingStream, null, originalLength + 100, CancellationToken.None);
+
+        var nullEncResult = Encoding.UTF8.GetString(nullEncBuffer, 0, nullEncRead);
+        Assert.Equal(originalText, nullEncResult);
+        Assert.Equal(originalLength, nullEncRead);
+        Assert.False(nullEncTruncated);
+    }
+
+    [Fact]
+    public async Task ReadAndDecompressFirstBytesAsync_Truncated_ReturnPartialContent()
+    {
+        const string originalText = "这是一个较长的测试文本，用于验证截断行为。";
+        var originalBytes = Encoding.UTF8.GetBytes(originalText);
+
+        using var compressedStream = new MemoryStream();
+        await using (var gzip = new GZipStream(compressedStream, CompressionMode.Compress, true))
+        {
+            await gzip.WriteAsync(originalBytes);
+        }
+
+        compressedStream.Position = 0;
+
+        const int maxBytes = 10;
+        var (buffer, totalRead, isTruncated) = await HttpRemoteExtensions.ReadAndDecompressFirstBytesAsync(
+            compressedStream, "gzip", maxBytes, CancellationToken.None);
+
+        Assert.Equal(maxBytes, totalRead);
+        Assert.True(isTruncated);
+
+        var expectedPrefix = Encoding.UTF8.GetBytes(originalText)[..maxBytes];
+        var actualPrefix = buffer[..totalRead];
+        Assert.Equal(expectedPrefix, actualPrefix);
+    }
+
+    [Fact]
+    public async Task ReadAndDecompressFirstBytesAsync_EmptyContent_ReturnEmpty()
+    {
+        using var emptyStream = new MemoryStream();
+        await using (_ = new GZipStream(emptyStream, CompressionMode.Compress, true))
+        {
+        }
+
+        emptyStream.Position = 0;
+
+        var (buffer, totalRead, isTruncated) = await HttpRemoteExtensions.ReadAndDecompressFirstBytesAsync(
+            emptyStream, "gzip", 1024, CancellationToken.None);
+
+        Assert.Equal(0, totalRead);
+        Assert.False(isTruncated);
+        Assert.Empty(buffer);
     }
 
     [Fact]

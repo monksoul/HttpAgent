@@ -285,7 +285,7 @@ public static partial class HttpRemoteExtensions
 #if NET8_0
             await httpContent.LoadIntoBufferAsync(maxAllowedSize);
 #else
-            await httpContent.LoadIntoBufferAsync(maxAllowedSize, cancellationToken);
+        await httpContent.LoadIntoBufferAsync(maxAllowedSize, cancellationToken);
 #endif
         }
         catch
@@ -297,44 +297,36 @@ public static partial class HttpRemoteExtensions
                 ], $"{summary} ({httpContent.GetType().Name}, Skipped due to size)");
         }
 
-        // 默认只读取 8KB 的内容
-        const int maxBytesToDisplay = 8 * 1024; // 8KB
+        // 获取已缓冲的内部流
+        var stream = await httpContent.ReadAsStreamAsync(cancellationToken);
+        stream.Seek(0, SeekOrigin.Begin);
 
-        /*
-         * 读取内容为字节数组
-         *
-         * 由于 HttpContent 的流设计为单次读取（即流内容在首次读取后会被消耗，无法重复读取），
-         * 当前实现（即使用 ReadAsByteArrayAsync(cancellationToken)）中对于较大内容会一次性加载至内存，
-         * 这可能导致性能问题（如内存占用过高或响应延迟），不过目前尚未找到更优的解决方案。
-         *
-         * 强烈建议在生产环境中禁用或关闭此类一次性读取操作，尤其是对于高并发或大流量场景，
-         * 以避免因内存溢出（OOM）或线程阻塞导致的服务不可用风险。
-         */
-        var rawBuffer = await httpContent.ReadAsByteArrayAsync(cancellationToken);
-        var buffer = rawBuffer;
+        // 默认只读取 8KB 的内容
+        const int maxBytesToDisplay = 8 * 1024;
+
+        // 获取响应内容 Content-Encoding 标头
+        string? contentEncoding = null;
 
         // 空检查
         if (httpResponseMessage is not null)
         {
-            // 获取响应内容 Content-Encoding 标头
-            var contentEncoding = httpResponseMessage.Content.Headers.ContentEncoding.FirstOrDefault();
-
-            // 根据响应内容 Content-Encoding 标头解压字节数组
-            buffer = await DecompressAsync(rawBuffer, contentEncoding, cancellationToken);
+            contentEncoding = httpResponseMessage.Content.Headers.ContentEncoding.FirstOrDefault();
         }
 
-        // 获取内容大小
-        var total = buffer.Length;
+        // 从流中按需解压并读取前 (maxBytesToDisplay + 1) 字节，用于判断是否发生截断
+        var (partialBuffer, totalRead, isTruncated) =
+            await ReadAndDecompressFirstBytesAsync(stream, contentEncoding, maxBytesToDisplay + 1, cancellationToken);
 
-        // 计算要显示的部分
-        var bytesToShow = Math.Min(total, maxBytesToDisplay);
+        // 重置流位置
+        stream.Seek(0, SeekOrigin.Begin);
 
         // 注册 CodePagesEncodingProvider，使得程序能够识别并使用 Windows 代码页中的各种编码
         EncodingUtility.Initialize();
 
         // 获取内容编码
         var charset = httpContent.Headers.ContentType?.CharSet ?? "utf-8";
-        var partialContent = Encoding.GetEncoding(charset).GetString(buffer, 0, bytesToShow);
+        var bytesToShow = isTruncated ? maxBytesToDisplay : totalRead;
+        var partialContent = Encoding.GetEncoding(charset).GetString(partialBuffer, 0, bytesToShow);
 
         // 解决退格导致显示不全问题：保留 \n 和 \r，仅过滤其他 ASCII 控制字符（ASCII < 32 且不是 \n 或 \r）
         partialContent = new string(partialContent
@@ -342,7 +334,7 @@ public static partial class HttpRemoteExtensions
             .ToArray());
 
         // 检查是否是完整的 Unicode 转义字符串
-        if (total == bytesToShow && UnicodeEscapeRegex().IsMatch(partialContent))
+        if (!isTruncated && UnicodeEscapeRegex().IsMatch(partialContent))
         {
             partialContent = Regex.Unescape(partialContent);
         }
@@ -354,61 +346,84 @@ public static partial class HttpRemoteExtensions
             partialContent = httpResponseMessage.GetColoredText(partialContent, false);
         }
 
-        // 如果实际读取的数据小于最大显示大小，则直接返回；否则，添加省略号表示内容被截断
-        var bodyString = total <= maxBytesToDisplay
+        // 如果未发生截断，则直接返回；否则，添加省略号表示内容被截断
+        var bodyString = !isTruncated
             ? partialContent
-            : partialContent + $"\e[36m\e[1m ... [truncated, total: {total} bytes]\e[0m";
+            : partialContent + $"\e[36m\e[1m ... [truncated, > {maxBytesToDisplay} bytes]\e[0m";
 
         return StringUtility.FormatKeyValuesSummary(
             [new KeyValuePair<string, IEnumerable<string>>(string.Empty, [bodyString])],
-            $"{summary} ({httpContent.GetType().Name}, total: {total} bytes)");
+            $"{summary} ({httpContent.GetType().Name}, total: {(isTruncated ? $"> {maxBytesToDisplay}" : totalRead.ToString())} bytes)");
     }
 
     /// <summary>
-    ///     根据响应内容 Content-Encoding 标头解压字节数组
+    ///     从流中读取最多指定数量的解压后字节
     /// </summary>
-    /// <remarks>支持 gzip/deflate/br 解压。</remarks>
-    /// <param name="buffer">解压缩的原始字节数据</param>
-    /// <param name="contentEncoding">响应内容 Content-Encoding 标头</param>
+    /// <param name="compressedStream">压缩数据流</param>
+    /// <param name="contentEncoding">内容编码（gzip, deflate, br 等）</param>
+    /// <param name="maxBytes">最多读取的字节数（解压后）</param>
     /// <param name="cancellationToken">
     ///     <see cref="CancellationToken" />
     /// </param>
-    /// <returns><see cref="byte" />[]</returns>
-    internal static async Task<byte[]> DecompressAsync(byte[] buffer, string? contentEncoding,
-        CancellationToken cancellationToken = default)
+    /// <returns>
+    ///     <see cref="Tuple{T1,T2,T3}" />：包含解压后字节数组、实际读取字节数以及是否截断的值元组
+    /// </returns>
+    internal static async Task<(byte[] buffer, int totalRead, bool isTruncated)> ReadAndDecompressFirstBytesAsync(
+        Stream compressedStream, string? contentEncoding, int maxBytes, CancellationToken cancellationToken)
     {
+        Stream? decompressor = null;
+
         // 空检查
-        if (string.IsNullOrWhiteSpace(contentEncoding))
+        if (!string.IsNullOrWhiteSpace(contentEncoding))
         {
-            return buffer;
+            decompressor = contentEncoding.Trim().ToLowerInvariant() switch
+            {
+                "gzip" => new GZipStream(compressedStream, CompressionMode.Decompress, true),
+                "deflate" => new DeflateStream(compressedStream, CompressionMode.Decompress, true),
+                "br" => new BrotliStream(compressedStream, CompressionMode.Decompress, true),
+                _ => null
+            };
         }
 
-        // 初始化原始字节数据流和输出流
-        using var source = new MemoryStream(buffer);
-        using var output = new MemoryStream();
-
-        // 根据响应内容 Content-Encoding 标头创建解压流
-        Stream? decompressor = contentEncoding.Trim().ToLowerInvariant() switch
+        var readStream = decompressor ?? compressedStream;
+        try
         {
-            "gzip" => new GZipStream(source, CompressionMode.Decompress, true),
-            "deflate" => new DeflateStream(source, CompressionMode.Decompress, true),
-            "br" => new BrotliStream(source, CompressionMode.Decompress, true),
-            _ => null
-        };
+            // 初始化最大读取字节数的缓冲区
+            var buffer = new byte[maxBytes];
+            var totalRead = 0;
 
-        // 空检查（未知编码）
-        if (decompressor is null)
-        {
-            return buffer;
+            // 循环读取直到填满缓冲区或流已结束
+            while (totalRead < buffer.Length)
+            {
+                // 从流中读取数据并写入缓冲区
+                var read = await readStream.ReadAsync(buffer.AsMemory(totalRead, buffer.Length - totalRead),
+                    cancellationToken);
+
+                // 检查流结束
+                if (read == 0)
+                {
+                    break;
+                }
+
+                totalRead += read;
+            }
+
+            // 读满了缓冲区，说明可能还有更多数据
+            var isTruncated = totalRead == maxBytes;
+            // 裁剪缓冲区，只返回实际读取的字节
+            var resultBuffer = totalRead == 0 ? [] : buffer[..totalRead];
+
+            return (resultBuffer, totalRead, isTruncated);
         }
-
-        // 拷贝并释放解压流
-        await using (decompressor)
+        finally
         {
-            await decompressor.CopyToAsync(output, cancellationToken);
+            // 空检查
+            if (decompressor is not null)
+            {
+                // 确保解压流被正确释放
+                await decompressor.DisposeAsync();
+            }
         }
-
-        return output.ToArray();
     }
 
     /// <summary>
