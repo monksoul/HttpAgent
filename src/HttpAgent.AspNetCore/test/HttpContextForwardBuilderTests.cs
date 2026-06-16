@@ -790,6 +790,68 @@ public class HttpContextForwardBuilderTests
     }
 
     [Fact]
+    public async Task CopyBodyAsync_UrlEncodedFormData_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        builder.Services.AddHttpClient();
+        await using var app = builder.Build();
+
+        app.Use(async (ctx, next) =>
+        {
+            ctx.Request.EnableBuffering();
+            ctx.Request.Body.Position = 0;
+            await next.Invoke();
+        });
+
+        app.MapPost("/test", async context =>
+        {
+            var httpMethod = Helpers.ParseHttpMethod(context.Request.Method);
+            var requestUri = new Uri($"http://localhost:{port}");
+            var httpContextForwardBuilder = new HttpContextForwardBuilder(context, httpMethod, requestUri);
+            var httpRequestBuilder = HttpRequestBuilder.Create(httpMethod, requestUri);
+
+            httpContextForwardBuilder.CopyHeaders(httpRequestBuilder);
+
+            Assert.NotNull(httpRequestBuilder.Headers);
+            Assert.Equal(3, httpRequestBuilder.Headers.Count);
+            Assert.Equal("X-Original-URL", httpRequestBuilder.Headers.ElementAt(0).Key);
+            Assert.Equal($"http://localhost:{port}/test", httpRequestBuilder.Headers.ElementAt(0).Value.First());
+            Assert.Equal("Content-Type", httpRequestBuilder.Headers.ElementAt(1).Key);
+            Assert.Equal("application/x-www-form-urlencoded", httpRequestBuilder.Headers.ElementAt(1).Value.First());
+            Assert.Equal("Content-Length", httpRequestBuilder.Headers.ElementAt(2).Key);
+            Assert.Equal(context.Request.ContentLength?.ToString(),
+                httpRequestBuilder.Headers.ElementAt(2).Value.First());
+
+            await httpContextForwardBuilder.CopyBodyAsync(httpRequestBuilder);
+
+            Assert.NotNull(httpRequestBuilder.RawContent);
+            Assert.True(httpRequestBuilder.RawContent is StreamContent);
+            Assert.Equal("application/x-www-form-urlencoded", httpRequestBuilder.ContentType);
+
+            var content = await ((StreamContent)httpRequestBuilder.RawContent).ReadAsStringAsync();
+            Assert.Equal("Id=1&Name=Furion", content);
+
+            await context.Response.WriteAsync("Hello World!");
+        });
+
+        await app.StartAsync();
+
+        var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
+        var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post,
+            new Uri($"http://localhost:{port}/test"));
+
+        var formData = new Dictionary<string, string> { { "Id", "1" }, { "Name", "Furion" } };
+        httpRequestMessage.Content = new FormUrlEncodedContent(formData);
+
+        var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
+        httpResponseMessage.EnsureSuccessStatusCode();
+
+        await app.StopAsync();
+    }
+
+    [Fact]
     public async Task BuildAsync_NotContent_ReturnOK()
     {
         var port = NetworkUtility.FindAvailableTcpPort();
