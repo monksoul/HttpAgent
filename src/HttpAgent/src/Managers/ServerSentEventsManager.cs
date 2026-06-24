@@ -104,10 +104,10 @@ internal sealed class ServerSentEventsManager
             }
 
             // 获取 HTTP 响应体中的内容流
-            using var contentStream = httpResponseMessage.Content.ReadAsStream(cancellationToken);
+            using var stream = httpResponseMessage.Content.ReadAsStream(cancellationToken);
 
             // 初始化 StreamReader 实例
-            using var streamReader = new StreamReader(contentStream, Encoding.UTF8);
+            using var streamReader = new StreamReader(stream, Encoding.UTF8);
 
             // 声明 ServerSentEventsData 变量
             ServerSentEventsData? serverSentEventsData = null;
@@ -210,17 +210,17 @@ internal sealed class ServerSentEventsManager
             }
 
             // 获取 HTTP 响应体中的内容流
-            await using var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync(cancellationToken);
+            await using var stream = await httpResponseMessage.Content.ReadAsStreamAsync(cancellationToken);
 
             // 初始化 StreamReader 实例
-            using var streamReader = new StreamReader(contentStream, Encoding.UTF8);
+            using var streamReader = new StreamReader(stream, Encoding.UTF8);
 
             // 声明 ServerSentEventsData 变量
             ServerSentEventsData? serverSentEventsData = null;
 
             // 循环读取数据直到取消请求或读取完毕
-            while (!cancellationToken.IsCancellationRequested &&
-                   await streamReader.ReadLineAsync(cancellationToken) is { } line)
+            while (!cancellationToken.IsCancellationRequested && await streamReader.ReadLineAsync(cancellationToken) is
+                       { } line)
             {
                 // 尝试解析事件消息行文本
                 if (!TryParseEventLine(line, ref serverSentEventsData))

@@ -11,6 +11,12 @@ public class HttpRemoteController : ControllerBase
     }
 
     [HttpPost]
+    public Task<List<YourRemoteModel>> AddModels(int query1, string query2, YourRemoteModel model)
+    {
+        return Task.FromResult(new List<YourRemoteModel> { model });
+    }
+
+    [HttpPost]
     public Task<YourRemoteFormResult> AddForm(int id, [FromForm] YourRemoteFormModel model)
     {
         var fileInfo = model.File?.FileName;

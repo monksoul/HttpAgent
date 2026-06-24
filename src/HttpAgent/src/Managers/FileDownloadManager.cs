@@ -532,12 +532,12 @@ internal sealed class FileDownloadManager
         var bytesReceived = 0L;
 
         // 获取 HTTP 响应体中的内容流
-        await using var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync(cancellationToken);
+        await using var stream = await httpResponseMessage.Content.ReadAsStreamAsync(cancellationToken);
 
         // 循环读取数据直到取消请求或分块完成
         int numBytesRead;
         while (!cancellationToken.IsCancellationRequested &&
-               (numBytesRead = await contentStream.ReadAsync(buffer, cancellationToken)) > 0)
+               (numBytesRead = await stream.ReadAsync(buffer, cancellationToken)) > 0)
         {
             // 使用异步锁等待
             await fileWriteLock.WaitAsync(cancellationToken);
@@ -618,12 +618,11 @@ internal sealed class FileDownloadManager
         var bytesReceived = 0L;
 
         // 获取 HTTP 响应体中的内容流
-        using var contentStream = httpResponseMessage.Content.ReadAsStream(cancellationToken);
+        using var stream = httpResponseMessage.Content.ReadAsStream(cancellationToken);
 
         // 循环读取数据直到取消请求或分块完成
         int numBytesRead;
-        while (!cancellationToken.IsCancellationRequested &&
-               (numBytesRead = contentStream.Read(buffer, 0, buffer.Length)) > 0)
+        while (!cancellationToken.IsCancellationRequested && (numBytesRead = stream.Read(buffer, 0, buffer.Length)) > 0)
         {
             // 使用同步锁
             lock (fileWriteLock)
@@ -678,10 +677,10 @@ internal sealed class FileDownloadManager
         var bytesReceived = 0L;
 
         // 获取 HTTP 响应体中的内容流
-        await using var rawContentStream = await httpResponseMessage.Content.ReadAsStreamAsync(cancellationToken);
+        await using var stream = await httpResponseMessage.Content.ReadAsStreamAsync(cancellationToken);
 
         // 尝试解压内容流，解决部分内容流被压缩的情况
-        await using var contentStream = WrapDecompressionStream(rawContentStream, httpResponseMessage);
+        await using var contentStream = WrapDecompressionStream(stream, httpResponseMessage);
 
         // 循环读取数据直到取消请求或读取完毕
         int numBytesRead;
@@ -743,10 +742,10 @@ internal sealed class FileDownloadManager
         var bytesReceived = 0L;
 
         // 获取 HTTP 响应体中的内容流
-        using var rawContentStream = httpResponseMessage.Content.ReadAsStream(cancellationToken);
+        using var stream = httpResponseMessage.Content.ReadAsStream(cancellationToken);
 
         // 尝试解压内容流，解决部分内容流被压缩的情况
-        using var contentStream = WrapDecompressionStream(rawContentStream, httpResponseMessage);
+        using var contentStream = WrapDecompressionStream(stream, httpResponseMessage);
 
         // 循环读取数据直到取消请求或读取完毕
         int numBytesRead;

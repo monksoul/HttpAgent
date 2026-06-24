@@ -12,6 +12,11 @@ internal sealed class HttpContentConverterFactory : IHttpContentConverterFactory
     /// </summary>
     internal readonly Dictionary<Type, IHttpContentConverter> _converters;
 
+    /// <summary>
+    ///     泛型 <see cref="IHttpContentConverter" /> 工厂字典集合
+    /// </summary>
+    internal readonly Dictionary<Type, Func<Type[], IHttpContentConverter>> _genericConverters;
+
     /// <inheritdoc cref="IHttpRemoteLogger" />
     internal readonly IHttpRemoteLogger _logger;
 
@@ -39,6 +44,15 @@ internal sealed class HttpContentConverterFactory : IHttpContentConverterFactory
             [typeof(ByteArrayContentConverter)] = new ByteArrayContentConverter(),
             [typeof(StreamContentConverter)] = new StreamContentConverter(),
             [typeof(VoidContentConverter)] = new VoidContentConverter()
+        };
+
+        // 初始化泛型响应内容转换器
+        // TODO: 未来考虑开放注册
+        _genericConverters = new Dictionary<Type, Func<Type[], IHttpContentConverter>>
+        {
+            [typeof(IAsyncEnumerable<>)] = typeArgs =>
+                (IHttpContentConverter)Activator.CreateInstance(
+                    typeof(AsyncEnumerableContentConverter<>).MakeGenericType(typeArgs[0]))!
         };
 
         // 添加自定义 IHttpContentConverter 数组
@@ -179,9 +193,19 @@ internal sealed class HttpContentConverterFactory : IHttpContentConverterFactory
             // 查找可以处理目标类型的响应内容转换器
             var typeConverter = unionConverters.Values.OfType<IHttpContentConverter<TResult>>().LastOrDefault();
 
-            // 如果未找到，则调用 IObjectContentConverterFactory 实例的 GetConverter<TResult> 返回
-            targetConverter = typeConverter ?? ServiceProvider.GetRequiredService<IObjectContentConverterFactory>()
-                .GetConverter<TResult>(httpResponseMessage);
+            // 空检查
+            if (typeConverter is not null)
+            {
+                targetConverter = typeConverter;
+            }
+            else
+            {
+                // 尝试解析泛型 IHttpContentConverter<TResult> 内容转换器
+                targetConverter = TryResolveGenericConverter(typeof(TResult)) as IHttpContentConverter<TResult> ??
+                                  // 如果未找到，则调用 IObjectContentConverterFactory 实例的 GetConverter<TResult> 返回
+                                  ServiceProvider.GetRequiredService<IObjectContentConverterFactory>()
+                                      .GetConverter<TResult>(httpResponseMessage);
+            }
         }
 
         // 设置服务提供器
@@ -223,14 +247,25 @@ internal sealed class HttpContentConverterFactory : IHttpContentConverterFactory
         }
         else
         {
-            // 查找可以处理目标类型的响应内容转换器
-            var typeConverter = unionConverters.Values
-                .OfType(typeof(IHttpContentConverter<>).MakeGenericType(resultType)).Cast<IHttpContentConverter>()
-                .LastOrDefault();
+            // 初始化 IHttpContentConverter<TResult> 类型
+            var exactType = typeof(IHttpContentConverter<>).MakeGenericType(resultType);
 
-            // 如果未找到，则调用 IObjectContentConverterFactory 实例的 GetConverter 返回
-            targetConverter = typeConverter ?? ServiceProvider.GetRequiredService<IObjectContentConverterFactory>()
-                .GetConverter(resultType, httpResponseMessage);
+            // 查找可以处理目标类型的响应内容转换器
+            var typeConverter = unionConverters.Values.Where(exactType.IsInstanceOfType).LastOrDefault();
+
+            // 空检查
+            if (typeConverter is not null)
+            {
+                targetConverter = typeConverter;
+            }
+            else
+            {
+                // 尝试解析泛型 IHttpContentConverter<TResult> 泛型内容转换器
+                targetConverter = TryResolveGenericConverter(resultType) ??
+                                  // 如果未找到，则调用 IObjectContentConverterFactory 实例的 GetConverter 返回
+                                  ServiceProvider.GetRequiredService<IObjectContentConverterFactory>()
+                                      .GetConverter(resultType, httpResponseMessage);
+            }
         }
 
         // 设置服务提供器
@@ -255,4 +290,29 @@ internal sealed class HttpContentConverterFactory : IHttpContentConverterFactory
             "Failed to convert HTTP response to type {ResultType}. Status: {StatusCode} {StatusDescription}, URI: {RequestUri}",
             resultType.FullName!, (int)httpResponseMessage.StatusCode, httpResponseMessage.StatusCode.ToString(),
             httpResponseMessage.RequestMessage?.RequestUri?.ToString() ?? "unknown");
+
+    /// <summary>
+    ///     尝试解析泛型 <see cref="IHttpContentConverter{TResult}" />
+    /// </summary>
+    /// <remarks>TODO: 未来可以考虑缓存反射的结果</remarks>
+    /// <param name="resultType">转换的目标类型</param>
+    /// <returns>
+    ///     <see cref="IHttpContentConverter" />
+    /// </returns>
+    internal IHttpContentConverter? TryResolveGenericConverter(Type resultType)
+    {
+        // 检查类型是否是泛型类型
+        if (!resultType.IsGenericType)
+        {
+            return null;
+        }
+
+        // 获取泛型定义类型
+        var genericTypeDefinition = resultType.GetGenericTypeDefinition();
+
+        // 查找是否注册了泛型内容转换器
+        return !_genericConverters.TryGetValue(genericTypeDefinition, out var genericConverterFactory)
+            ? null
+            : genericConverterFactory(resultType.GetGenericArguments());
+    }
 }

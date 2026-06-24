@@ -120,6 +120,20 @@ public class GetStartController(
                 .SetContent(new { id = 1, name = "furion" }, "application/json;charset=utf-8",
                     Encoding.UTF8)); // 设置请求内容
 
+        var content6 = await httpRemoteService.PostAsAsync<IAsyncEnumerable<YourRemoteModel>>(
+            "https://localhost:7044/HttpRemote/AddModels",
+            HttpCompletionOption.ResponseHeadersRead,
+            builder => builder
+                .WithQueryParameters(new { query1 = 1, query2 = "furion" }) // 设置查询参数
+                .SetJsonContent(new { id = 1, name = "furion" }));
+
+        await foreach (var item in content6!)
+        {
+            Console.WriteLine(item.Id);
+            Console.WriteLine(item.Name);
+            break;
+        }
+
         return content;
     }
 

@@ -28,6 +28,9 @@ public class HttpContentConverterFactoryTests
                 typeof(StreamContentConverter), typeof(VoidContentConverter)
             ],
             httpContentConverterFactory1._converters.Select(u => u.Key));
+        Assert.NotNull(httpContentConverterFactory1._genericConverters);
+        Assert.Single(httpContentConverterFactory1._genericConverters);
+        Assert.Equal(typeof(IAsyncEnumerable<>), httpContentConverterFactory1._genericConverters.Keys.First());
 
         var httpContentConverterFactory2 =
             new HttpContentConverterFactory(serviceProvider, logger, [new CustomStringContentConverter()]);
@@ -83,6 +86,8 @@ public class HttpContentConverterFactoryTests
             httpContentConverterFactory.GetConverter<int>(httpResponseMessage).GetType());
         Assert.Equal(typeof(ObjectContentConverter<ObjectModel>),
             httpContentConverterFactory.GetConverter<ObjectModel>(httpResponseMessage).GetType());
+        Assert.Equal(typeof(AsyncEnumerableContentConverter<ObjectModel>),
+            httpContentConverterFactory.GetConverter<IAsyncEnumerable<ObjectModel>>(httpResponseMessage).GetType());
 
         var httpRequestMessage = new HttpRequestMessage();
         httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPER_KEY, "TRUE");
@@ -241,6 +246,9 @@ public class HttpContentConverterFactoryTests
             httpContentConverterFactory.GetConverter(typeof(int), httpResponseMessage).GetType());
         Assert.Equal(typeof(ObjectContentConverter),
             httpContentConverterFactory.GetConverter(typeof(ObjectModel), httpResponseMessage).GetType());
+        Assert.Equal(typeof(AsyncEnumerableContentConverter<ObjectModel>),
+            httpContentConverterFactory.GetConverter(typeof(IAsyncEnumerable<ObjectModel>), httpResponseMessage)
+                .GetType());
 
         var httpRequestMessage = new HttpRequestMessage();
         httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPER_KEY, "TRUE");
@@ -391,5 +399,25 @@ public class HttpContentConverterFactoryTests
 
         httpContentConverterFactory.LogContentConversionError(typeof(string), httpResponseMessage,
             new Exception("出错了"));
+    }
+
+    [Fact]
+    public void TryResolveGenericConverter_Invalid_Parameters()
+    {
+        var services = new ServiceCollection();
+        services.AddLogging();
+        var isLoggingRegistered = services.Any(u => u.ServiceType == typeof(ILoggerProvider));
+        services.TryAddSingleton<IHttpRemoteLogger>(provider =>
+            ActivatorUtilities.CreateInstance<HttpRemoteLogger>(provider, isLoggingRegistered));
+        services.TryAddSingleton<IObjectContentConverterFactory, ObjectContentConverterFactory>();
+        using var serviceProvider = services.BuildServiceProvider();
+        var logger = serviceProvider.GetRequiredService<IHttpRemoteLogger>();
+        var httpContentConverterFactory = new HttpContentConverterFactory(serviceProvider, logger, null);
+
+        Assert.Null(httpContentConverterFactory.TryResolveGenericConverter(typeof(ObjectModel)));
+
+        var genericConverter =
+            httpContentConverterFactory.TryResolveGenericConverter(typeof(IAsyncEnumerable<ObjectModel>));
+        Assert.NotNull(genericConverter);
     }
 }
