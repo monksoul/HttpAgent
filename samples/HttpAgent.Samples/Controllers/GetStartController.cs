@@ -127,7 +127,14 @@ public class GetStartController(
                 .WithQueryParameters(new { query1 = 1, query2 = "furion" }) // 设置查询参数
                 .SetJsonContent(new { id = 1, name = "furion" }));
 
-        await foreach (var item in content6!)
+        // await foreach (var item in content6!)
+        // {
+        //     Console.WriteLine(item.Id);
+        //     Console.WriteLine(item.Name);
+        //     break;
+        // }
+
+        foreach (var item in content6!.ToBlockingEnumerable())
         {
             Console.WriteLine(item.Id);
             Console.WriteLine(item.Name);
