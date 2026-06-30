@@ -18,7 +18,7 @@ public class MultipartAttribute : Attribute
     }
 
     /// <summary>
-    ///     <inheritdoc cref="BodyAttribute" />
+    ///     <inheritdoc cref="MultipartAttribute" />
     /// </summary>
     /// <param name="name">表单名称</param>
     public MultipartAttribute(string name) => Name = name;

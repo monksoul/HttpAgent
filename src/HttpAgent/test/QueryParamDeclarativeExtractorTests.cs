@@ -4,14 +4,14 @@
 
 namespace HttpAgent.Tests;
 
-public class QueryDeclarativeExtractorTests
+public class QueryParamDeclarativeExtractorTests
 {
     [Fact]
     public void New_ReturnOK()
     {
-        Assert.True(typeof(IHttpDeclarativeExtractor).IsAssignableFrom(typeof(QueryDeclarativeExtractor)));
+        Assert.True(typeof(IHttpDeclarativeExtractor).IsAssignableFrom(typeof(QueryParamDeclarativeExtractor)));
 
-        var extractor = new QueryDeclarativeExtractor();
+        var extractor = new QueryParamDeclarativeExtractor();
         Assert.NotNull(extractor);
     }
 
@@ -22,7 +22,7 @@ public class QueryDeclarativeExtractorTests
         var context1 = new HttpDeclarativeExtractorContext(method1, [],
             new HttpDeclarativeMethodMetadata(method1, typeof(IQueryDeclarativeTest)));
         var httpRequestBuilder1 = HttpRequestBuilder.Get("http://localhost");
-        new QueryDeclarativeExtractor().Extract(httpRequestBuilder1, context1);
+        new QueryParamDeclarativeExtractor().Extract(httpRequestBuilder1, context1);
 
         Assert.NotNull(httpRequestBuilder1.QueryParameters);
         Assert.Equal(2, httpRequestBuilder1.QueryParameters.Count);
@@ -37,7 +37,7 @@ public class QueryDeclarativeExtractorTests
         var context2 = new HttpDeclarativeExtractorContext(method2, [],
             new HttpDeclarativeMethodMetadata(method2, typeof(IQueryDeclarativeTest)));
         var httpRequestBuilder2 = HttpRequestBuilder.Get("http://localhost");
-        new QueryDeclarativeExtractor().Extract(httpRequestBuilder2, context2);
+        new QueryParamDeclarativeExtractor().Extract(httpRequestBuilder2, context2);
 
         Assert.NotNull(httpRequestBuilder2.QueryParameters);
         Assert.Equal(3, httpRequestBuilder2.QueryParameters.Count);
@@ -49,7 +49,7 @@ public class QueryDeclarativeExtractorTests
         var context3 = new HttpDeclarativeExtractorContext(method3, [],
             new HttpDeclarativeMethodMetadata(method3, typeof(IQueryDeclarativeTest)));
         var httpRequestBuilder3 = HttpRequestBuilder.Get("http://localhost");
-        new QueryDeclarativeExtractor().Extract(httpRequestBuilder3, context3);
+        new QueryParamDeclarativeExtractor().Extract(httpRequestBuilder3, context3);
 
         Assert.NotNull(httpRequestBuilder3.QueryParameters);
         Assert.Equal(3, httpRequestBuilder3.QueryParameters.Count);
@@ -61,7 +61,7 @@ public class QueryDeclarativeExtractorTests
         var context4 = new HttpDeclarativeExtractorContext(method4, [1, "furion", 31, "广东省", CancellationToken.None],
             new HttpDeclarativeMethodMetadata(method4, typeof(IQueryDeclarativeTest)));
         var httpRequestBuilder4 = HttpRequestBuilder.Get("http://localhost");
-        new QueryDeclarativeExtractor().Extract(httpRequestBuilder4, context4);
+        new QueryParamDeclarativeExtractor().Extract(httpRequestBuilder4, context4);
 
         Assert.NotNull(httpRequestBuilder4.QueryParameters);
         Assert.Equal(8, httpRequestBuilder4.QueryParameters.Count);
@@ -77,7 +77,7 @@ public class QueryDeclarativeExtractorTests
         var context5 = new HttpDeclarativeExtractorContext(method4, [1, "furion", null, "广东省", CancellationToken.None],
             new HttpDeclarativeMethodMetadata(method4, typeof(IQueryDeclarativeTest)));
         var httpRequestBuilder5 = HttpRequestBuilder.Get("http://localhost");
-        new QueryDeclarativeExtractor().Extract(httpRequestBuilder5, context5);
+        new QueryParamDeclarativeExtractor().Extract(httpRequestBuilder5, context5);
 
         Assert.NotNull(httpRequestBuilder5.QueryParameters);
         Assert.Equal(8, httpRequestBuilder5.QueryParameters.Count);
@@ -94,7 +94,7 @@ public class QueryDeclarativeExtractorTests
         var context6 = new HttpDeclarativeExtractorContext(method5, [new { id = 10, name = "furion" }],
             new HttpDeclarativeMethodMetadata(method5, typeof(IQueryDeclarativeTest)));
         var httpRequestBuilder6 = HttpRequestBuilder.Get("http://localhost");
-        new QueryDeclarativeExtractor().Extract(httpRequestBuilder6, context6);
+        new QueryParamDeclarativeExtractor().Extract(httpRequestBuilder6, context6);
 
         Assert.NotNull(httpRequestBuilder6.QueryParameters);
         Assert.Equal(4, httpRequestBuilder6.QueryParameters.Count);
@@ -106,7 +106,7 @@ public class QueryDeclarativeExtractorTests
             new HttpDeclarativeExtractorContext(method6, [null, "abc"],
                 new HttpDeclarativeMethodMetadata(method6, typeof(IQueryDeclarativeTest)));
         var httpRequestBuilder7 = HttpRequestBuilder.Get("http://localhost");
-        new QueryDeclarativeExtractor().Extract(httpRequestBuilder7, context7);
+        new QueryParamDeclarativeExtractor().Extract(httpRequestBuilder7, context7);
 
         Assert.NotNull(httpRequestBuilder7.QueryParameters);
         Assert.Equal(3, httpRequestBuilder7.QueryParameters.Count);
@@ -115,32 +115,33 @@ public class QueryDeclarativeExtractorTests
     }
 }
 
-[Query("query1", "value1")]
-[Query("query2", "value2")]
-[Query("query3")]
+[QueryParam("query1", "value1")]
+[QueryParam("query2", "value2")]
+[QueryParam("query3")]
 public interface IQueryDeclarativeTest : IHttpDeclarative
 {
     [Get("http://localhost:5000")]
-    [Query("query4")]
+    [QueryParam("query4")]
     Task Test1();
 
     [Get("http://localhost:5000")]
-    [Query("query3", "value3")]
+    [QueryParam("query3", "value3")]
     Task Test2();
 
     [Get("http://localhost:5000")]
-    [Query("query2", "value21")]
-    [Query("query4", "value4")]
+    [QueryParam("query2", "value21")]
+    [QueryParam("query4", "value4")]
     Task Test3();
 
     [Get("http://localhost:5000")]
-    [Query("query3", "value3")]
-    Task Test4([Query] int id, [Query] [Query(AliasAs = "myName")] string name, [Query(Value = 30)] int? age,
-        [Query("address")] string abc, [Query] CancellationToken cancellationToken);
+    [QueryParam("query3", "value3")]
+    Task Test4([QueryParam] int id, [QueryParam] [QueryParam(AliasAs = "myName")] string name,
+        [QueryParam(Value = 30)] int? age,
+        [QueryParam("address")] string abc, [QueryParam] CancellationToken cancellationToken);
 
     [Get("http://localhost:5000")]
-    Task Test5([Query(Prefix = "user")] object obj);
+    Task Test5([QueryParam(Prefix = "user")] object obj);
 
     [Get("http://localhost:5000")]
-    Task Test6([Query(IgnoreNullValues = true)] string str1, [Query] string str2);
+    Task Test6([QueryParam(IgnoreNullValues = true)] string str1, [QueryParam] string str2);
 }

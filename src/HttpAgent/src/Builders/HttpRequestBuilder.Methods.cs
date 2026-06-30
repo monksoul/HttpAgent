@@ -2029,6 +2029,7 @@ public sealed partial class HttpRequestBuilder
 
         // 重定向时若请求方法为 GET 或 HEAD，则不应设置请求体内容
         // ReSharper disable once InvertIf
+        // Query 允许携带请求体内容，参考文献：https://www.rfc-editor.org/info/rfc10008
         if (redirectMethod == HttpMethod.Get || redirectMethod == HttpMethod.Head)
         {
             RawContent = null;

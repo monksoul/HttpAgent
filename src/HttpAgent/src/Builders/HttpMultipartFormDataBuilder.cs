@@ -363,6 +363,7 @@ public sealed class HttpMultipartFormDataBuilder
     /// <param name="contentType">内容类型</param>
     /// <param name="contentEncoding">内容编码</param>
     /// <param name="configure">自定义配置委托</param>
+    /// <param name="httpMethod"><see cref="HttpMethod" />，默认值为：<see cref="HttpMethod.Get" /></param>
     /// <returns>
     ///     <see cref="HttpMultipartFormDataBuilder" />
     /// </returns>
@@ -370,7 +371,7 @@ public sealed class HttpMultipartFormDataBuilder
     /// <exception cref="InvalidOperationException"></exception>
     public HttpMultipartFormDataBuilder AddFileFromRemote(string url, string name = "file", string? fileName = null,
         string? contentType = null, Encoding? contentEncoding = null,
-        Action<HttpClient, HttpRequestMessage>? configure = null)
+        Action<HttpClient, HttpRequestMessage>? configure = null, HttpMethod? httpMethod = null)
     {
         // 空检查
         ArgumentException.ThrowIfNullOrWhiteSpace(url);
@@ -380,7 +381,7 @@ public sealed class HttpMultipartFormDataBuilder
         var newFileName = fileName ?? Helpers.GetFileNameFromUri(new Uri(url, UriKind.Absolute));
 
         // 尝试从互联网 URL 地址中加载流
-        var fileStream = Helpers.GetStreamFromRemote(url, configure);
+        var fileStream = Helpers.GetStreamFromRemote(url, configure, httpMethod: httpMethod);
 
         return AddStream(fileStream, name, newFileName, contentType, contentEncoding, true);
     }

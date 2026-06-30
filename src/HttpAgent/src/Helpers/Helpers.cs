@@ -13,18 +13,25 @@ namespace HttpAgent;
 internal static class Helpers
 {
     /// <summary>
+    ///     HTTP QUERY <see cref="HttpMethod"/> 静态实例
+    /// </summary>
+    internal static readonly HttpMethod HttpQuery = ParseHttpMethod("QUERY");
+
+    /// <summary>
     ///     从互联网 URL 地址中加载流
     /// </summary>
     /// <param name="requestUri">互联网 URL 地址</param>
     /// <param name="configure">自定义配置委托</param>
     /// <param name="maxResponseContentBufferSize">响应内容的最大缓存大小。默认值为：<c>100MB</c>。</param>
+    /// <param name="httpMethod"><see cref="HttpMethod" />，默认值为：<see cref="HttpMethod.Get" /></param>
     /// <returns>
     ///     <see cref="Stream" />
     /// </returns>
     /// <exception cref="ArgumentException"></exception>
     /// <exception cref="InvalidOperationException"></exception>
     internal static Stream GetStreamFromRemote(string requestUri,
-        Action<HttpClient, HttpRequestMessage>? configure = null, long maxResponseContentBufferSize = 104857600L)
+        Action<HttpClient, HttpRequestMessage>? configure = null, long maxResponseContentBufferSize = 104857600L,
+        HttpMethod? httpMethod = null)
     {
         // 空检查
         ArgumentException.ThrowIfNullOrWhiteSpace(requestUri);
@@ -50,7 +57,7 @@ internal static class Helpers
         try
         {
             // 初始化 HttpRequestMessage 实例
-            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, requestUri);
+            var httpRequestMessage = new HttpRequestMessage(httpMethod ?? HttpMethod.Get, requestUri);
 
             // 调用自定义配置委托
             configure?.Invoke(httpClient, httpRequestMessage);
@@ -156,6 +163,7 @@ internal static class Helpers
             // 300, 301, 302, 303 使用 GET 请求
             case HttpStatusCode.Ambiguous or HttpStatusCode.Moved or HttpStatusCode.Redirect
                 or HttpStatusCode.RedirectMethod:
+                // Query 同样使用 Get 重定向，参考文献：https://www.rfc-editor.org/info/rfc10008/#appendix-A.5-3
                 httpMethod = HttpMethod.Get;
                 return true;
             // 307, 308 保持原来请求

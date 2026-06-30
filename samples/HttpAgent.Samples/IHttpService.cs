@@ -10,8 +10,8 @@ public interface IHttpService : IHttpDeclarative
     [Profiler]
     // 携带请求数据
     [Post("https://localhost:7044/HttpRemote/AddModel")]
-    [Query("query1", 1)] // 设置查询参数
-    Task<YourRemoteModel> PostData([Query(AliasAs = "query2")] string param,
+    [QueryParam("query1", 1)] // 设置查询参数
+    Task<YourRemoteModel> PostData([QueryParam(AliasAs = "query2")] string param,
         [Body(MediaTypeNames.Application.Json)]
         object data); // 设置查询参数并指定别名和请求内容
 

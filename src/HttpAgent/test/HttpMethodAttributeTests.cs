@@ -157,6 +157,23 @@ public class HttpMethodAttributeTests
     }
 
     [Fact]
+    public void QueryAttribute_ReturnOK()
+    {
+        var attributeUsage = typeof(QueryAttribute).GetCustomAttribute<AttributeUsageAttribute>();
+        Assert.NotNull(attributeUsage);
+        Assert.Equal(AttributeTargets.Method, attributeUsage.ValidOn);
+        Assert.False(attributeUsage.AllowMultiple);
+
+        var attribute = new QueryAttribute();
+        Assert.Equal("QUERY", attribute.HttpMethod.ToString());
+        Assert.Null(attribute.RequestUri);
+
+        var attribute2 = new QueryAttribute("http://localhost");
+        Assert.Equal("QUERY", attribute2.HttpMethod.ToString());
+        Assert.Equal("http://localhost", attribute2.RequestUri);
+    }
+
+    [Fact]
     public void TraceAttribute_ReturnOK()
     {
         var attributeUsage = typeof(TraceAttribute).GetCustomAttribute<AttributeUsageAttribute>();

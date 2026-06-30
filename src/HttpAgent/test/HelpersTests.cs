@@ -7,6 +7,15 @@ namespace HttpAgent.Tests;
 public class HelpersTests
 {
     [Fact]
+    public void HttpQuery_ReturnOK()
+    {
+        Assert.Equal("QUERY", HttpAgent.Helpers.HttpQuery.ToString());
+
+        var method = HttpAgent.Helpers.HttpQuery;
+        Assert.Same(method, HttpAgent.Helpers.HttpQuery);
+    }
+
+    [Fact]
     public void GetStreamFromRemote_Invalid_Parameters()
     {
         Assert.Throws<ArgumentNullException>(() => HttpAgent.Helpers.GetStreamFromRemote(null!));

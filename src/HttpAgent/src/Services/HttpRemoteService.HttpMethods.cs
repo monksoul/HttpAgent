@@ -960,4 +960,131 @@ internal sealed partial class HttpRemoteService
     public Task<byte[]?> PatchAsByteArrayAsync(string? requestUri, HttpCompletionOption completionOption,
         Action<HttpRequestBuilder>? configure = null, CancellationToken cancellationToken = default) =>
         PatchAsAsync<byte[]>(requestUri, completionOption, configure, cancellationToken);
+
+    /// <inheritdoc />
+    public HttpResponseMessage? Query(string? requestUri, Action<HttpRequestBuilder>? configure = null,
+        CancellationToken cancellationToken = default) => Query(requestUri, HttpCompletionOption.ResponseContentRead,
+        configure, cancellationToken);
+
+    /// <inheritdoc />
+    public HttpResponseMessage? Query(string? requestUri, HttpCompletionOption completionOption,
+        Action<HttpRequestBuilder>? configure = null, CancellationToken cancellationToken = default) => Send(
+        HttpRequestBuilder.Create(Helpers.HttpQuery, requestUri, configure), completionOption,
+        cancellationToken);
+
+    /// <inheritdoc />
+    public Task<HttpResponseMessage?> QueryAsync(string? requestUri, Action<HttpRequestBuilder>? configure = null,
+        CancellationToken cancellationToken = default) => QueryAsync(requestUri,
+        HttpCompletionOption.ResponseContentRead,
+        configure, cancellationToken);
+
+    /// <inheritdoc />
+    public Task<HttpResponseMessage?> QueryAsync(string? requestUri, HttpCompletionOption completionOption,
+        Action<HttpRequestBuilder>? configure = null, CancellationToken cancellationToken = default) => SendAsync(
+        HttpRequestBuilder.Create(Helpers.HttpQuery, requestUri, configure), completionOption,
+        cancellationToken);
+
+    /// <inheritdoc />
+    public TResult? QueryAs<TResult>(string? requestUri, Action<HttpRequestBuilder>? configure = null,
+        CancellationToken cancellationToken = default) => QueryAs<TResult>(requestUri,
+        HttpCompletionOption.ResponseContentRead, configure, cancellationToken);
+
+    /// <inheritdoc />
+    public TResult? QueryAs<TResult>(string? requestUri, HttpCompletionOption completionOption,
+        Action<HttpRequestBuilder>? configure = null, CancellationToken cancellationToken = default) => SendAs<TResult>(
+        HttpRequestBuilder.Create(Helpers.HttpQuery, requestUri, configure), completionOption,
+        cancellationToken);
+
+    /// <inheritdoc />
+    public Task<TResult?> QueryAsAsync<TResult>(string? requestUri, Action<HttpRequestBuilder>? configure = null,
+        CancellationToken cancellationToken = default) => QueryAsAsync<TResult>(requestUri,
+        HttpCompletionOption.ResponseContentRead, configure, cancellationToken);
+
+    /// <inheritdoc />
+    public Task<TResult?> QueryAsAsync<TResult>(string? requestUri, HttpCompletionOption completionOption,
+        Action<HttpRequestBuilder>? configure = null, CancellationToken cancellationToken = default) =>
+        SendAsAsync<TResult>(HttpRequestBuilder.Create(Helpers.HttpQuery, requestUri, configure),
+            completionOption,
+            cancellationToken);
+
+    /// <inheritdoc />
+    public HttpRemoteResult<TResult>? Query<TResult>(string? requestUri, Action<HttpRequestBuilder>? configure = null,
+        CancellationToken cancellationToken = default) => Query<TResult>(requestUri,
+        HttpCompletionOption.ResponseContentRead, configure, cancellationToken);
+
+    /// <inheritdoc />
+    public HttpRemoteResult<TResult>? Query<TResult>(string? requestUri, HttpCompletionOption completionOption,
+        Action<HttpRequestBuilder>? configure = null, CancellationToken cancellationToken = default) => Send<TResult>(
+        HttpRequestBuilder.Create(Helpers.HttpQuery, requestUri, configure), completionOption,
+        cancellationToken);
+
+    /// <inheritdoc />
+    public Task<HttpRemoteResult<TResult>?> QueryAsync<TResult>(string? requestUri,
+        Action<HttpRequestBuilder>? configure = null, CancellationToken cancellationToken = default) =>
+        QueryAsync<TResult>(requestUri, HttpCompletionOption.ResponseContentRead, configure, cancellationToken);
+
+    /// <inheritdoc />
+    public Task<HttpRemoteResult<TResult>?> QueryAsync<TResult>(string? requestUri,
+        HttpCompletionOption completionOption,
+        Action<HttpRequestBuilder>? configure = null, CancellationToken cancellationToken = default) =>
+        SendAsync<TResult>(HttpRequestBuilder.Create(Helpers.HttpQuery, requestUri, configure),
+            completionOption,
+            cancellationToken);
+
+    /// <inheritdoc />
+    public string? QueryAsString(string? requestUri, Action<HttpRequestBuilder>? configure = null,
+        CancellationToken cancellationToken = default) => QueryAs<string>(requestUri, configure, cancellationToken);
+
+    /// <inheritdoc />
+    public Stream? QueryAsStream(string? requestUri, Action<HttpRequestBuilder>? configure = null,
+        CancellationToken cancellationToken = default) => QueryAs<Stream>(requestUri, configure, cancellationToken);
+
+    /// <inheritdoc />
+    public byte[]? QueryAsByteArray(string? requestUri, Action<HttpRequestBuilder>? configure = null,
+        CancellationToken cancellationToken = default) => QueryAs<byte[]>(requestUri, configure, cancellationToken);
+
+    /// <inheritdoc />
+    public string? QueryAsString(string? requestUri, HttpCompletionOption completionOption,
+        Action<HttpRequestBuilder>? configure = null, CancellationToken cancellationToken = default) =>
+        QueryAs<string>(requestUri, completionOption, configure, cancellationToken);
+
+    /// <inheritdoc />
+    public Stream? QueryAsStream(string? requestUri, HttpCompletionOption completionOption,
+        Action<HttpRequestBuilder>? configure = null, CancellationToken cancellationToken = default) =>
+        QueryAs<Stream>(requestUri, completionOption, configure, cancellationToken);
+
+    /// <inheritdoc />
+    public byte[]? QueryAsByteArray(string? requestUri, HttpCompletionOption completionOption,
+        Action<HttpRequestBuilder>? configure = null, CancellationToken cancellationToken = default) =>
+        QueryAs<byte[]>(requestUri, completionOption, configure, cancellationToken);
+
+    /// <inheritdoc />
+    public Task<string?> QueryAsStringAsync(string? requestUri, Action<HttpRequestBuilder>? configure = null,
+        CancellationToken cancellationToken = default) =>
+        QueryAsAsync<string>(requestUri, configure, cancellationToken);
+
+    /// <inheritdoc />
+    public Task<Stream?> QueryAsStreamAsync(string? requestUri, Action<HttpRequestBuilder>? configure = null,
+        CancellationToken cancellationToken = default) =>
+        QueryAsAsync<Stream>(requestUri, configure, cancellationToken);
+
+    /// <inheritdoc />
+    public Task<byte[]?> QueryAsByteArrayAsync(string? requestUri, Action<HttpRequestBuilder>? configure = null,
+        CancellationToken cancellationToken = default) =>
+        QueryAsAsync<byte[]>(requestUri, configure, cancellationToken);
+
+    /// <inheritdoc />
+    public Task<string?> QueryAsStringAsync(string? requestUri, HttpCompletionOption completionOption,
+        Action<HttpRequestBuilder>? configure = null, CancellationToken cancellationToken = default) =>
+        QueryAsAsync<string>(requestUri, completionOption, configure, cancellationToken);
+
+    /// <inheritdoc />
+    public Task<Stream?> QueryAsStreamAsync(string? requestUri, HttpCompletionOption completionOption,
+        Action<HttpRequestBuilder>? configure = null, CancellationToken cancellationToken = default) =>
+        QueryAsAsync<Stream>(requestUri, completionOption, configure, cancellationToken);
+
+    /// <inheritdoc />
+    public Task<byte[]?> QueryAsByteArrayAsync(string? requestUri, HttpCompletionOption completionOption,
+        Action<HttpRequestBuilder>? configure = null, CancellationToken cancellationToken = default) =>
+        QueryAsAsync<byte[]>(requestUri, completionOption, configure, cancellationToken);
 }

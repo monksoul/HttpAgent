@@ -1557,4 +1557,198 @@ public class HttpRemoteServiceHttpMethodsTests2
         await app.StopAsync();
         await serviceProvider.DisposeAsync();
     }
+
+    [Fact]
+    public async Task QueryAsString_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        await using var app = builder.Build();
+
+        app.MapMethods("/test", ["QUERY"], async () =>
+        {
+            await Task.Delay(50);
+            return "Hello World!";
+        });
+
+        await app.StartAsync();
+
+        // 测试代码
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
+        // ReSharper disable once MethodHasAsyncOverload
+        var str = httpRemoteService.QueryAsString($"http://localhost:{port}/test");
+
+        // ReSharper disable once MethodHasAsyncOverload
+        var str2 = httpRemoteService.QueryAsString($"http://localhost:{port}/test",
+            HttpCompletionOption.ResponseContentRead);
+
+        Assert.Equal("Hello World!", str);
+        Assert.Equal("Hello World!", str2);
+
+        await app.StopAsync();
+        await serviceProvider.DisposeAsync();
+    }
+
+    [Fact]
+    public async Task QueryAsStream_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        await using var app = builder.Build();
+
+        app.MapMethods("/test", ["QUERY"], async () =>
+        {
+            await Task.Delay(50);
+            return "Hello World!";
+        });
+
+        await app.StartAsync();
+
+        // 测试代码
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
+        // ReSharper disable once MethodHasAsyncOverload
+        await using var stream = httpRemoteService.QueryAsStream($"http://localhost:{port}/test");
+        using var streamReader = new StreamReader(stream!);
+
+        // ReSharper disable once MethodHasAsyncOverload
+        await using var stream2 = httpRemoteService.QueryAsStream($"http://localhost:{port}/test",
+            HttpCompletionOption.ResponseContentRead);
+        using var streamReader2 = new StreamReader(stream2!);
+
+        Assert.Equal("Hello World!", await streamReader.ReadToEndAsync());
+        Assert.Equal("Hello World!", await streamReader2.ReadToEndAsync());
+
+        await app.StopAsync();
+        await serviceProvider.DisposeAsync();
+    }
+
+    [Fact]
+    public async Task QueryAsByteArray_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        await using var app = builder.Build();
+
+        app.MapMethods("/test", ["QUERY"], async () =>
+        {
+            await Task.Delay(50);
+            return "Hello World!";
+        });
+
+        await app.StartAsync();
+
+        // 测试代码
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
+        // ReSharper disable once MethodHasAsyncOverload
+        var bytes = httpRemoteService.QueryAsByteArray($"http://localhost:{port}/test");
+
+        // ReSharper disable once MethodHasAsyncOverload
+        var bytes2 = httpRemoteService.QueryAsByteArray($"http://localhost:{port}/test",
+            HttpCompletionOption.ResponseContentRead);
+
+        Assert.Equal("Hello World!", Encoding.UTF8.GetString(bytes!));
+        Assert.Equal("Hello World!", Encoding.UTF8.GetString(bytes2!));
+
+        await app.StopAsync();
+        await serviceProvider.DisposeAsync();
+    }
+
+    [Fact]
+    public async Task QueryAsStringAsync_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        await using var app = builder.Build();
+
+        app.MapMethods("/test", ["QUERY"], async () =>
+        {
+            await Task.Delay(50);
+            return "Hello World!";
+        });
+
+        await app.StartAsync();
+
+        // 测试代码
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
+        var str = await httpRemoteService.QueryAsStringAsync($"http://localhost:{port}/test");
+        var str2 = await httpRemoteService.QueryAsStringAsync($"http://localhost:{port}/test",
+            HttpCompletionOption.ResponseContentRead);
+
+        Assert.Equal("Hello World!", str);
+        Assert.Equal("Hello World!", str2);
+
+        await app.StopAsync();
+        await serviceProvider.DisposeAsync();
+    }
+
+    [Fact]
+    public async Task QueryAsStreamAsync_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        await using var app = builder.Build();
+
+        app.MapMethods("/test", ["QUERY"], async () =>
+        {
+            await Task.Delay(50);
+            return "Hello World!";
+        });
+
+        await app.StartAsync();
+
+        // 测试代码
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
+        await using var stream = await httpRemoteService.QueryAsStreamAsync($"http://localhost:{port}/test");
+        using var streamReader = new StreamReader(stream!);
+
+        await using var stream2 = await httpRemoteService.QueryAsStreamAsync($"http://localhost:{port}/test",
+            HttpCompletionOption.ResponseContentRead);
+        using var streamReader2 = new StreamReader(stream2!);
+
+        Assert.Equal("Hello World!", await streamReader.ReadToEndAsync());
+        Assert.Equal("Hello World!", await streamReader2.ReadToEndAsync());
+
+        await app.StopAsync();
+        await serviceProvider.DisposeAsync();
+    }
+
+    [Fact]
+    public async Task QueryAsByteArrayAsync_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        await using var app = builder.Build();
+
+        app.MapMethods("/test", ["QUERY"], async () =>
+        {
+            await Task.Delay(50);
+            return "Hello World!";
+        });
+
+        await app.StartAsync();
+
+        // 测试代码
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
+        var bytes = await httpRemoteService.QueryAsByteArrayAsync($"http://localhost:{port}/test");
+        var bytes2 = await httpRemoteService.QueryAsByteArrayAsync($"http://localhost:{port}/test",
+            HttpCompletionOption.ResponseContentRead);
+
+        Assert.Equal("Hello World!", Encoding.UTF8.GetString(bytes!));
+        Assert.Equal("Hello World!", Encoding.UTF8.GetString(bytes2!));
+
+        await app.StopAsync();
+        await serviceProvider.DisposeAsync();
+    }
 }

@@ -5,22 +5,22 @@
 namespace HttpAgent;
 
 /// <summary>
-///     HTTP 声明式 <see cref="QueryAttribute" /> 特性提取器
+///     HTTP 声明式 <see cref="QueryParamAttribute" /> 特性提取器
 /// </summary>
-internal sealed class QueryDeclarativeExtractor : IHttpDeclarativeExtractor
+internal sealed class QueryParamDeclarativeExtractor : IHttpDeclarativeExtractor
 {
     /// <inheritdoc />
     public void Extract(HttpRequestBuilder httpRequestBuilder, HttpDeclarativeExtractorContext context)
     {
         /* 情况一：当特性作用于方法或接口时 */
 
-        // 获取 QueryAttribute 特性集合
-        var queryAttributes = context.GetMethodDefinedCustomAttributes<QueryAttribute>(true, false)?.ToArray();
+        // 获取 QueryParamAttribute 特性集合
+        var queryAttributes = context.GetMethodDefinedCustomAttributes<QueryParamAttribute>(true, false)?.ToArray();
 
         // 空检查
         if (queryAttributes is { Length: > 0 })
         {
-            // 遍历所有 [Query] 特性并添加到 HttpRequestBuilder 中
+            // 遍历所有 [QueryParam] 特性并添加到 HttpRequestBuilder 中
             foreach (var queryAttribute in queryAttributes)
             {
                 // 获取查询参数键
@@ -45,8 +45,8 @@ internal sealed class QueryDeclarativeExtractor : IHttpDeclarativeExtractor
 
         /* 情况二：当特性作用于参数时 */
 
-        // 查找所有贴有 [Query] 特性的参数集合
-        var queryParameters = context.UnFrozenParameters.Where(u => u.Key.IsDefined(typeof(QueryAttribute), true))
+        // 查找所有贴有 [QueryParam] 特性的参数集合
+        var queryParameters = context.UnFrozenParameters.Where(u => u.Key.IsDefined(typeof(QueryParamAttribute), true))
             .ToArray();
 
         // 空检查
@@ -55,16 +55,16 @@ internal sealed class QueryDeclarativeExtractor : IHttpDeclarativeExtractor
             return;
         }
 
-        // 遍历所有贴有 [Query] 特性的参数
+        // 遍历所有贴有 [QueryParam] 特性的参数
         foreach (var (parameter, value) in queryParameters)
         {
-            // 获取 QueryAttribute 特性集合
-            var parameterQueryAttributes = parameter.GetCustomAttributes<QueryAttribute>(true);
+            // 获取 QueryParamAttribute 特性集合
+            var parameterQueryAttributes = parameter.GetCustomAttributes<QueryParamAttribute>(true);
 
             // 获取参数名
             var parameterName = AliasAsUtility.GetParameterName(parameter, out var aliasAsDefined);
 
-            // 遍历所有 [Query] 特性并添加到 HttpRequestBuilder 中
+            // 遍历所有 [QueryParam] 特性并添加到 HttpRequestBuilder 中
             foreach (var queryAttribute in parameterQueryAttributes)
             {
                 // 检查参数是否贴了 [AliasAs] 特性

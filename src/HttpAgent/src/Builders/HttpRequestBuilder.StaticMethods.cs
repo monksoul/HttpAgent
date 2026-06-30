@@ -186,6 +186,28 @@ public sealed partial class HttpRequestBuilder
         Create(HttpMethod.Patch, requestUri, configure);
 
     /// <summary>
+    ///     创建 <c>QUERY</c> 请求的 <see cref="HttpRequestBuilder" /> 构建器
+    /// </summary>
+    /// <param name="requestUri">请求地址</param>
+    /// <param name="configure">自定义配置委托</param>
+    /// <returns>
+    ///     <see cref="HttpRequestBuilder" />
+    /// </returns>
+    public static HttpRequestBuilder Query(string? requestUri, Action<HttpRequestBuilder>? configure = null) =>
+        Create(Helpers.HttpQuery, requestUri, configure);
+
+    /// <summary>
+    ///     创建 <c>QUERY</c> 请求的 <see cref="HttpRequestBuilder" /> 构建器
+    /// </summary>
+    /// <param name="requestUri">请求地址</param>
+    /// <param name="configure">自定义配置委托</param>
+    /// <returns>
+    ///     <see cref="HttpRequestBuilder" />
+    /// </returns>
+    public static HttpRequestBuilder Query(Uri? requestUri, Action<HttpRequestBuilder>? configure = null) =>
+        Create(Helpers.HttpQuery, requestUri, configure);
+
+    /// <summary>
     ///     创建 <see cref="HttpRequestBuilder" /> 构建器
     /// </summary>
     /// <param name="httpMethod">请求方式</param>

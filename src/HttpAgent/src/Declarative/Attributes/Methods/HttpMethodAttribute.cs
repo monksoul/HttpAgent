@@ -37,10 +37,10 @@ public class HttpMethodAttribute : Attribute
     /// <summary>
     ///     请求方式
     /// </summary>
-    public HttpMethod HttpMethod { get; set; }
+    public HttpMethod HttpMethod { get; }
 
     /// <summary>
     ///     请求地址
     /// </summary>
-    public string? RequestUri { get; set; }
+    public string? RequestUri { get; }
 }

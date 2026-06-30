@@ -167,6 +167,26 @@ public class HttpRequestBuilderStaticMethodsTests
     }
 
     [Fact]
+    public void Query_ReturnOK()
+    {
+        var httpRequestBuilder1 = HttpRequestBuilder.Query((string)null!);
+        Assert.Equal("QUERY", httpRequestBuilder1.HttpMethod?.ToString());
+        Assert.Null(httpRequestBuilder1.RequestUri);
+
+        var httpRequestBuilder2 = HttpRequestBuilder.Query("http://localhost");
+        Assert.Equal("QUERY", httpRequestBuilder2.HttpMethod?.ToString());
+        Assert.Equal("http://localhost/", httpRequestBuilder2.RequestUri?.ToString());
+
+        var httpRequestBuilder3 = HttpRequestBuilder.Query((Uri)null!);
+        Assert.Equal("QUERY", httpRequestBuilder3.HttpMethod?.ToString());
+        Assert.Null(httpRequestBuilder3.RequestUri);
+
+        var httpRequestBuilder4 = HttpRequestBuilder.Query(new Uri("http://localhost"));
+        Assert.Equal("QUERY", httpRequestBuilder4.HttpMethod?.ToString());
+        Assert.Equal("http://localhost/", httpRequestBuilder4.RequestUri?.ToString());
+    }
+
+    [Fact]
     public void Create_Invalid_Parameters()
     {
         Assert.Throws<ArgumentNullException>(() =>

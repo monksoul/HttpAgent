@@ -10,25 +10,25 @@ namespace HttpAgent;
 /// <remarks>支持多次指定。</remarks>
 [AttributeUsage(AttributeTargets.Method | AttributeTargets.Interface | AttributeTargets.Parameter,
     AllowMultiple = true)]
-public sealed class QueryAttribute : Attribute
+public sealed class QueryParamAttribute : Attribute
 {
     /// <summary>
-    ///     <inheritdoc cref="QueryAttribute" />
+    ///     <inheritdoc cref="QueryParamAttribute" />
     /// </summary>
     /// <remarks>特性作用于参数时有效。</remarks>
-    public QueryAttribute()
+    public QueryParamAttribute()
     {
     }
 
     /// <summary>
-    ///     <inheritdoc cref="QueryAttribute" />
+    ///     <inheritdoc cref="QueryParamAttribute" />
     /// </summary>
     /// <remarks>
     ///     <para>当特性作用于方法或接口时，则表示移除指定查询参数操作。</para>
     ///     <para>当特性作用于参数时，则表示添加查询参数，同时设置查询参数键为 <c>name</c> 的值。</para>
     /// </remarks>
     /// <param name="name">查询参数键</param>
-    public QueryAttribute(string name)
+    public QueryParamAttribute(string name)
     {
         // 空检查
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
@@ -37,11 +37,11 @@ public sealed class QueryAttribute : Attribute
     }
 
     /// <summary>
-    ///     <inheritdoc cref="QueryAttribute" />
+    ///     <inheritdoc cref="QueryParamAttribute" />
     /// </summary>
     /// <param name="name">查询参数键</param>
     /// <param name="value">查询参数的值</param>
-    public QueryAttribute(string name, object? value)
+    public QueryParamAttribute(string name, object? value)
         : this(name) =>
         Value = value;
 

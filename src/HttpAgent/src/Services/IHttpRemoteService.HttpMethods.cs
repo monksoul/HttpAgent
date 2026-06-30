@@ -3054,4 +3054,385 @@ public partial interface IHttpRemoteService
     /// </returns>
     Task<byte[]?> PatchAsByteArrayAsync(string? requestUri, HttpCompletionOption completionOption,
         Action<HttpRequestBuilder>? configure = null, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     发送 HTTP QUERY 远程请求
+    /// </summary>
+    /// <param name="requestUri">请求地址</param>
+    /// <param name="configure">自定义配置委托</param>
+    /// <param name="cancellationToken">
+    ///     <see cref="CancellationToken" />
+    /// </param>
+    /// <returns>
+    ///     <see cref="HttpResponseMessage" />
+    /// </returns>
+    HttpResponseMessage? Query(string? requestUri, Action<HttpRequestBuilder>? configure = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     发送 HTTP QUERY 远程请求
+    /// </summary>
+    /// <param name="requestUri">请求地址</param>
+    /// <param name="completionOption">
+    ///     <see cref="HttpCompletionOption" />
+    /// </param>
+    /// <param name="configure">自定义配置委托</param>
+    /// <param name="cancellationToken">
+    ///     <see cref="CancellationToken" />
+    /// </param>
+    /// <returns>
+    ///     <see cref="HttpResponseMessage" />
+    /// </returns>
+    HttpResponseMessage? Query(string? requestUri, HttpCompletionOption completionOption,
+        Action<HttpRequestBuilder>? configure = null, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     发送 HTTP QUERY 远程请求
+    /// </summary>
+    /// <param name="requestUri">请求地址</param>
+    /// <param name="configure">自定义配置委托</param>
+    /// <param name="cancellationToken">
+    ///     <see cref="CancellationToken" />
+    /// </param>
+    /// <returns>
+    ///     <see cref="HttpResponseMessage" />
+    /// </returns>
+    Task<HttpResponseMessage?> QueryAsync(string? requestUri, Action<HttpRequestBuilder>? configure = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     发送 HTTP QUERY 远程请求
+    /// </summary>
+    /// <param name="requestUri">请求地址</param>
+    /// <param name="completionOption">
+    ///     <see cref="HttpCompletionOption" />
+    /// </param>
+    /// <param name="configure">自定义配置委托</param>
+    /// <param name="cancellationToken">
+    ///     <see cref="CancellationToken" />
+    /// </param>
+    /// <returns>
+    ///     <see cref="HttpResponseMessage" />
+    /// </returns>
+    Task<HttpResponseMessage?> QueryAsync(string? requestUri, HttpCompletionOption completionOption,
+        Action<HttpRequestBuilder>? configure = null, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     发送 HTTP QUERY 远程请求
+    /// </summary>
+    /// <param name="requestUri">请求地址</param>
+    /// <param name="configure">自定义配置委托</param>
+    /// <param name="cancellationToken">
+    ///     <see cref="CancellationToken" />
+    /// </param>
+    /// <typeparam name="TResult">转换的目标类型</typeparam>
+    /// <returns>
+    ///     <see cref="HttpRemoteResult{TResult}" />
+    /// </returns>
+    TResult? QueryAs<TResult>(string? requestUri, Action<HttpRequestBuilder>? configure = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     发送 HTTP QUERY 远程请求
+    /// </summary>
+    /// <param name="requestUri">请求地址</param>
+    /// <param name="completionOption">
+    ///     <see cref="HttpCompletionOption" />
+    /// </param>
+    /// <param name="configure">自定义配置委托</param>
+    /// <param name="cancellationToken">
+    ///     <see cref="CancellationToken" />
+    /// </param>
+    /// <typeparam name="TResult">转换的目标类型</typeparam>
+    /// <returns>
+    ///     <see cref="HttpRemoteResult{TResult}" />
+    /// </returns>
+    TResult? QueryAs<TResult>(string? requestUri, HttpCompletionOption completionOption,
+        Action<HttpRequestBuilder>? configure = null, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     发送 HTTP QUERY 远程请求
+    /// </summary>
+    /// <param name="requestUri">请求地址</param>
+    /// <param name="configure">自定义配置委托</param>
+    /// <param name="cancellationToken">
+    ///     <see cref="CancellationToken" />
+    /// </param>
+    /// <typeparam name="TResult">转换的目标类型</typeparam>
+    /// <returns>
+    ///     <see cref="HttpRemoteResult{TResult}" />
+    /// </returns>
+    Task<TResult?> QueryAsAsync<TResult>(string? requestUri, Action<HttpRequestBuilder>? configure = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     发送 HTTP QUERY 远程请求
+    /// </summary>
+    /// <param name="requestUri">请求地址</param>
+    /// <param name="completionOption">
+    ///     <see cref="HttpCompletionOption" />
+    /// </param>
+    /// <param name="configure">自定义配置委托</param>
+    /// <param name="cancellationToken">
+    ///     <see cref="CancellationToken" />
+    /// </param>
+    /// <typeparam name="TResult">转换的目标类型</typeparam>
+    /// <returns>
+    ///     <see cref="HttpRemoteResult{TResult}" />
+    /// </returns>
+    Task<TResult?> QueryAsAsync<TResult>(string? requestUri, HttpCompletionOption completionOption,
+        Action<HttpRequestBuilder>? configure = null, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     发送 HTTP QUERY 远程请求
+    /// </summary>
+    /// <param name="requestUri">请求地址</param>
+    /// <param name="configure">自定义配置委托</param>
+    /// <param name="cancellationToken">
+    ///     <see cref="CancellationToken" />
+    /// </param>
+    /// <typeparam name="TResult">转换的目标类型</typeparam>
+    /// <returns>
+    ///     <see cref="HttpRemoteResult{TResult}" />
+    /// </returns>
+    HttpRemoteResult<TResult>? Query<TResult>(string? requestUri, Action<HttpRequestBuilder>? configure = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     发送 HTTP QUERY 远程请求
+    /// </summary>
+    /// <param name="requestUri">请求地址</param>
+    /// <param name="completionOption">
+    ///     <see cref="HttpCompletionOption" />
+    /// </param>
+    /// <param name="configure">自定义配置委托</param>
+    /// <param name="cancellationToken">
+    ///     <see cref="CancellationToken" />
+    /// </param>
+    /// <typeparam name="TResult">转换的目标类型</typeparam>
+    /// <returns>
+    ///     <see cref="HttpRemoteResult{TResult}" />
+    /// </returns>
+    HttpRemoteResult<TResult>? Query<TResult>(string? requestUri, HttpCompletionOption completionOption,
+        Action<HttpRequestBuilder>? configure = null, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     发送 HTTP QUERY 远程请求
+    /// </summary>
+    /// <param name="requestUri">请求地址</param>
+    /// <param name="configure">自定义配置委托</param>
+    /// <param name="cancellationToken">
+    ///     <see cref="CancellationToken" />
+    /// </param>
+    /// <typeparam name="TResult">转换的目标类型</typeparam>
+    /// <returns>
+    ///     <see cref="HttpRemoteResult{TResult}" />
+    /// </returns>
+    Task<HttpRemoteResult<TResult>?> QueryAsync<TResult>(string? requestUri,
+        Action<HttpRequestBuilder>? configure = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     发送 HTTP QUERY 远程请求
+    /// </summary>
+    /// <param name="requestUri">请求地址</param>
+    /// <param name="completionOption">
+    ///     <see cref="HttpCompletionOption" />
+    /// </param>
+    /// <param name="configure">自定义配置委托</param>
+    /// <param name="cancellationToken">
+    ///     <see cref="CancellationToken" />
+    /// </param>
+    /// <typeparam name="TResult">转换的目标类型</typeparam>
+    /// <returns>
+    ///     <see cref="HttpRemoteResult{TResult}" />
+    /// </returns>
+    Task<HttpRemoteResult<TResult>?> QueryAsync<TResult>(string? requestUri, HttpCompletionOption completionOption,
+        Action<HttpRequestBuilder>? configure = null, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     发送 HTTP QUERY 远程请求
+    /// </summary>
+    /// <param name="requestUri">请求地址</param>
+    /// <param name="configure">自定义配置委托</param>
+    /// <param name="cancellationToken">
+    ///     <see cref="CancellationToken" />
+    /// </param>
+    /// <returns>
+    ///     <see cref="string" />
+    /// </returns>
+    string? QueryAsString(string? requestUri, Action<HttpRequestBuilder>? configure = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     发送 HTTP QUERY 远程请求
+    /// </summary>
+    /// <param name="requestUri">请求地址</param>
+    /// <param name="configure">自定义配置委托</param>
+    /// <param name="cancellationToken">
+    ///     <see cref="CancellationToken" />
+    /// </param>
+    /// <returns>
+    ///     <see cref="Stream" />
+    /// </returns>
+    Stream? QueryAsStream(string? requestUri, Action<HttpRequestBuilder>? configure = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     发送 HTTP QUERY 远程请求
+    /// </summary>
+    /// <param name="requestUri">请求地址</param>
+    /// <param name="configure">自定义配置委托</param>
+    /// <param name="cancellationToken">
+    ///     <see cref="CancellationToken" />
+    /// </param>
+    /// <returns>
+    ///     <c>byte[]</c>
+    /// </returns>
+    byte[]? QueryAsByteArray(string? requestUri, Action<HttpRequestBuilder>? configure = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     发送 HTTP QUERY 远程请求
+    /// </summary>
+    /// <param name="requestUri">请求地址</param>
+    /// <param name="completionOption">
+    ///     <see cref="HttpCompletionOption" />
+    /// </param>
+    /// <param name="configure">自定义配置委托</param>
+    /// <param name="cancellationToken">
+    ///     <see cref="CancellationToken" />
+    /// </param>
+    /// <returns>
+    ///     <see cref="string" />
+    /// </returns>
+    string? QueryAsString(string? requestUri, HttpCompletionOption completionOption,
+        Action<HttpRequestBuilder>? configure = null, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     发送 HTTP QUERY 远程请求
+    /// </summary>
+    /// <param name="requestUri">请求地址</param>
+    /// <param name="completionOption">
+    ///     <see cref="HttpCompletionOption" />
+    /// </param>
+    /// <param name="configure">自定义配置委托</param>
+    /// <param name="cancellationToken">
+    ///     <see cref="CancellationToken" />
+    /// </param>
+    /// <returns>
+    ///     <see cref="Stream" />
+    /// </returns>
+    Stream? QueryAsStream(string? requestUri, HttpCompletionOption completionOption,
+        Action<HttpRequestBuilder>? configure = null, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     发送 HTTP QUERY 远程请求
+    /// </summary>
+    /// <param name="requestUri">请求地址</param>
+    /// <param name="completionOption">
+    ///     <see cref="HttpCompletionOption" />
+    /// </param>
+    /// <param name="configure">自定义配置委托</param>
+    /// <param name="cancellationToken">
+    ///     <see cref="CancellationToken" />
+    /// </param>
+    /// <returns>
+    ///     <c>byte[]</c>
+    /// </returns>
+    byte[]? QueryAsByteArray(string? requestUri, HttpCompletionOption completionOption,
+        Action<HttpRequestBuilder>? configure = null, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     发送 HTTP QUERY 远程请求
+    /// </summary>
+    /// <param name="requestUri">请求地址</param>
+    /// <param name="configure">自定义配置委托</param>
+    /// <param name="cancellationToken">
+    ///     <see cref="CancellationToken" />
+    /// </param>
+    /// <returns>
+    ///     <see cref="string" />
+    /// </returns>
+    Task<string?> QueryAsStringAsync(string? requestUri, Action<HttpRequestBuilder>? configure = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     发送 HTTP QUERY 远程请求
+    /// </summary>
+    /// <param name="requestUri">请求地址</param>
+    /// <param name="configure">自定义配置委托</param>
+    /// <param name="cancellationToken">
+    ///     <see cref="CancellationToken" />
+    /// </param>
+    /// <returns>
+    ///     <see cref="Stream" />
+    /// </returns>
+    Task<Stream?> QueryAsStreamAsync(string? requestUri, Action<HttpRequestBuilder>? configure = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     发送 HTTP QUERY 远程请求
+    /// </summary>
+    /// <param name="requestUri">请求地址</param>
+    /// <param name="configure">自定义配置委托</param>
+    /// <param name="cancellationToken">
+    ///     <see cref="CancellationToken" />
+    /// </param>
+    /// <returns>
+    ///     <c>byte[]</c>
+    /// </returns>
+    Task<byte[]?> QueryAsByteArrayAsync(string? requestUri, Action<HttpRequestBuilder>? configure = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     发送 HTTP QUERY 远程请求
+    /// </summary>
+    /// <param name="requestUri">请求地址</param>
+    /// <param name="completionOption">
+    ///     <see cref="HttpCompletionOption" />
+    /// </param>
+    /// <param name="configure">自定义配置委托</param>
+    /// <param name="cancellationToken">
+    ///     <see cref="CancellationToken" />
+    /// </param>
+    /// <returns>
+    ///     <see cref="string" />
+    /// </returns>
+    Task<string?> QueryAsStringAsync(string? requestUri, HttpCompletionOption completionOption,
+        Action<HttpRequestBuilder>? configure = null, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     发送 HTTP QUERY 远程请求
+    /// </summary>
+    /// <param name="requestUri">请求地址</param>
+    /// <param name="completionOption">
+    ///     <see cref="HttpCompletionOption" />
+    /// </param>
+    /// <param name="configure">自定义配置委托</param>
+    /// <param name="cancellationToken">
+    ///     <see cref="CancellationToken" />
+    /// </param>
+    /// <returns>
+    ///     <see cref="Stream" />
+    /// </returns>
+    Task<Stream?> QueryAsStreamAsync(string? requestUri, HttpCompletionOption completionOption,
+        Action<HttpRequestBuilder>? configure = null, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     发送 HTTP QUERY 远程请求
+    /// </summary>
+    /// <param name="requestUri">请求地址</param>
+    /// <param name="completionOption">
+    ///     <see cref="HttpCompletionOption" />
+    /// </param>
+    /// <param name="configure">自定义配置委托</param>
+    /// <param name="cancellationToken">
+    ///     <see cref="CancellationToken" />
+    /// </param>
+    /// <returns>
+    ///     <c>byte[]</c>
+    /// </returns>
+    Task<byte[]?> QueryAsByteArrayAsync(string? requestUri, HttpCompletionOption completionOption,
+        Action<HttpRequestBuilder>? configure = null, CancellationToken cancellationToken = default);
 }

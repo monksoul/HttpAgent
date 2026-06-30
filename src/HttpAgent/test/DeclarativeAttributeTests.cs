@@ -401,27 +401,27 @@ public class DeclarativeAttributeTests
     }
 
     [Fact]
-    public void QueryAttribute_Invalid_Parameters()
+    public void QueryParamAttribute_Invalid_Parameters()
     {
-        Assert.Throws<ArgumentNullException>(() => new QueryAttribute(null!));
-        Assert.Throws<ArgumentException>(() => new QueryAttribute(string.Empty));
-        Assert.Throws<ArgumentException>(() => new QueryAttribute(" "));
+        Assert.Throws<ArgumentNullException>(() => new QueryParamAttribute(null!));
+        Assert.Throws<ArgumentException>(() => new QueryParamAttribute(string.Empty));
+        Assert.Throws<ArgumentException>(() => new QueryParamAttribute(" "));
 
-        Assert.Throws<ArgumentNullException>(() => new QueryAttribute(null!, null));
-        Assert.Throws<ArgumentException>(() => new QueryAttribute(string.Empty, null));
-        Assert.Throws<ArgumentException>(() => new QueryAttribute(" ", null));
+        Assert.Throws<ArgumentNullException>(() => new QueryParamAttribute(null!, null));
+        Assert.Throws<ArgumentException>(() => new QueryParamAttribute(string.Empty, null));
+        Assert.Throws<ArgumentException>(() => new QueryParamAttribute(" ", null));
     }
 
     [Fact]
-    public void QueryAttribute_ReturnOK()
+    public void QueryParamAttribute_ReturnOK()
     {
-        var attributeUsage = typeof(QueryAttribute).GetCustomAttribute<AttributeUsageAttribute>();
+        var attributeUsage = typeof(QueryParamAttribute).GetCustomAttribute<AttributeUsageAttribute>();
         Assert.NotNull(attributeUsage);
         Assert.Equal(AttributeTargets.Method | AttributeTargets.Interface | AttributeTargets.Parameter,
             attributeUsage.ValidOn);
         Assert.True(attributeUsage.AllowMultiple);
 
-        var attribute = new QueryAttribute();
+        var attribute = new QueryParamAttribute();
         Assert.Null(attribute.Name);
         Assert.Null(attribute.Value);
         Assert.Null(attribute.AliasAs);
@@ -430,13 +430,13 @@ public class DeclarativeAttributeTests
         Assert.False(attribute.Replace);
         Assert.False(attribute.IgnoreNullValues);
 
-        var attribute2 = new QueryAttribute("name");
+        var attribute2 = new QueryParamAttribute("name");
         Assert.Equal("name", attribute2.Name);
         Assert.Null(attribute2.Value);
         Assert.Null(attribute2.AliasAs);
         Assert.False(attribute2.HasSetValue);
 
-        var attribute3 = new QueryAttribute("name", null);
+        var attribute3 = new QueryParamAttribute("name", null);
         Assert.Equal("name", attribute3.Name);
         Assert.Null(attribute3.Value);
         Assert.Null(attribute3.AliasAs);

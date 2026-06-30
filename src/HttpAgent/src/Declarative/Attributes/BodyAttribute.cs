@@ -24,7 +24,7 @@ public class BodyAttribute : Attribute
     public BodyAttribute(string contentType) => ContentType = contentType;
 
     /// <summary>
-    ///     <inheritdoc cref="QueryAttribute" />
+    ///     <inheritdoc cref="BodyAttribute" />
     /// </summary>
     /// <param name="contentType">内容类型</param>
     /// <param name="contentEncoding">内容编码</param>

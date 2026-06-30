@@ -388,6 +388,26 @@
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
         </member>
+        <member name="M:HttpAgent.HttpBuilder.Query(System.String,System.Action{HttpAgent.HttpRequestBuilder})">
+            <summary>
+                创建 <c>QUERY</c> 请求的 <see cref="T:HttpAgent.HttpRequestBuilder" /> 构建器
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.Query(System.Uri,System.Action{HttpAgent.HttpRequestBuilder})">
+            <summary>
+                创建 <c>QUERY</c> 请求的 <see cref="T:HttpAgent.HttpRequestBuilder" /> 构建器
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
         <member name="M:HttpAgent.HttpBuilder.Create(System.Net.Http.HttpMethod,System.Uri)">
             <summary>
                 创建 <see cref="T:HttpAgent.HttpRequestBuilder" /> 构建器
@@ -1579,7 +1599,7 @@
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpMultipartFormDataBuilder.AddFileFromRemote(System.String,System.String,System.String,System.String,System.Text.Encoding,System.Action{System.Net.Http.HttpClient,System.Net.Http.HttpRequestMessage})">
+        <member name="M:HttpAgent.HttpMultipartFormDataBuilder.AddFileFromRemote(System.String,System.String,System.String,System.String,System.Text.Encoding,System.Action{System.Net.Http.HttpClient,System.Net.Http.HttpRequestMessage},System.Net.Http.HttpMethod)">
             <summary>
                 从互联网 URL 中添加文件
             </summary>
@@ -1590,6 +1610,7 @@
             <param name="contentType">内容类型</param>
             <param name="contentEncoding">内容编码</param>
             <param name="configure">自定义配置委托</param>
+            <param name="httpMethod"><see cref="T:System.Net.Http.HttpMethod" />，默认值为：<see cref="P:System.Net.Http.HttpMethod.Get" /></param>
             <returns>
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
@@ -3761,6 +3782,26 @@
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
         </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.Query(System.String,System.Action{HttpAgent.HttpRequestBuilder})">
+            <summary>
+                创建 <c>QUERY</c> 请求的 <see cref="T:HttpAgent.HttpRequestBuilder" /> 构建器
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.Query(System.Uri,System.Action{HttpAgent.HttpRequestBuilder})">
+            <summary>
+                创建 <c>QUERY</c> 请求的 <see cref="T:HttpAgent.HttpRequestBuilder" /> 构建器
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
         <member name="M:HttpAgent.HttpRequestBuilder.Create(System.Net.Http.HttpMethod,System.Uri)">
             <summary>
                 创建 <see cref="T:HttpAgent.HttpRequestBuilder" /> 构建器
@@ -4864,7 +4905,7 @@
         <member name="M:HttpAgent.Core.Converters.Json.FlexibleDateTimeConverter.Regex">
             <remarks>
             Pattern:<br/>
-            <code>^/Date\(([+-]*\d+)\)/$</code><br/>
+            <code>^/Date\\(([+-]*\\d+)\\)/$</code><br/>
             Options:<br/>
             <code>RegexOptions.CultureInvariant</code><br/>
             Explanation:<br/>
@@ -4872,7 +4913,7 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Match the string "/Date(".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [+\-] atomically any number of times.<br/>
+                ○ Match a character in the set [+-] atomically any number of times.<br/>
                 ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match the string ")/".<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
@@ -4893,7 +4934,7 @@
         <member name="M:HttpAgent.Core.Converters.Json.FlexibleDateTimeOffsetConverter.Regex">
             <remarks>
             Pattern:<br/>
-            <code>^/Date\(([+-]*\d+)([+-])(\d{2})(\d{2})\)/$</code><br/>
+            <code>^/Date\\(([+-]*\\d+)([+-])(\\d{2})(\\d{2})\\)/$</code><br/>
             Options:<br/>
             <code>RegexOptions.CultureInvariant</code><br/>
             Explanation:<br/>
@@ -4901,10 +4942,10 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Match the string "/Date(".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [+\-] atomically any number of times.<br/>
+                ○ Match a character in the set [+-] atomically any number of times.<br/>
                 ○ Match a Unicode digit atomically at least once.<br/>
             ○ 2nd capture group.<br/>
-                ○ Match a character in the set [+\-].<br/>
+                ○ Match a character in the set [+-].<br/>
             ○ 3rd capture group.<br/>
                 ○ Match a Unicode digit exactly 2 times.<br/>
             ○ 4th capture group.<br/>
@@ -5476,7 +5517,7 @@
         <member name="M:HttpAgent.Core.Extensions.StringExtensions.PlaceholderRegex">
             <remarks>
             Pattern:<br/>
-            <code>\{\s*(\w+\s*(\.\s*\w+\s*)*)\s*\}</code><br/>
+            <code>\\{\\s*(\\w+\\s*(\\.\\s*\\w+\\s*)*)\\s*\\}</code><br/>
             Explanation:<br/>
             <code>
             ○ Match '{'.<br/>
@@ -5498,19 +5539,19 @@
         <member name="M:HttpAgent.Core.Extensions.StringExtensions.ConfigurationKeyRegex">
             <remarks>
             Pattern:<br/>
-            <code>\[\[\s*([\w\-:]+)((?:\s*\|\s*[\w\-:]+)*)\s*(?:\|\|\s*([^\]]*))?\s*\]\]</code><br/>
+            <code>\\[\\[\\s*([\\w\\-:]+)((?:\\s*\\|\\s*[\\w\\-:]+)*)\\s*(?:\\|\\|\\s*([^\\]]*))?\\s*\\]\\]</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "[[".<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [\-:\w] greedily at least once.<br/>
+                ○ Match a character in the set [-:\w] greedily at least once.<br/>
             ○ 2nd capture group.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match a whitespace character atomically any number of times.<br/>
                     ○ Match '|'.<br/>
                     ○ Match a whitespace character greedily any number of times.<br/>
-                    ○ Match a character in the set [\-:\w] greedily at least once.<br/>
+                    ○ Match a character in the set [-:\w] greedily at least once.<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ Optional (greedy).<br/>
                 ○ Match the string "||".<br/>
@@ -5533,32 +5574,32 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Loop greedily at least once.<br/>
                 ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [\-.0-9A-Z_a-z~].<br/>
+                    ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
                     ○ Match a sequence of expressions.<br/>
                         ○ Match '%'.<br/>
-                        ○ Match a hexadecimal digit exactly 2 times.<br/>
+                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
             ○ Match '='.<br/>
             ○ Loop greedily any number of times.<br/>
                 ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [+\-.0-9A-Z_a-z~].<br/>
+                    ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
                     ○ Match a sequence of expressions.<br/>
                         ○ Match '%'.<br/>
-                        ○ Match a hexadecimal digit exactly 2 times.<br/>
+                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
             ○ Loop greedily any number of times.<br/>
                 ○ Match '&amp;'.<br/>
                 ○ Loop greedily at least once.<br/>
                     ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [\-.0-9A-Z_a-z~].<br/>
+                        ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
                         ○ Match a sequence of expressions.<br/>
                             ○ Match '%'.<br/>
-                            ○ Match a hexadecimal digit exactly 2 times.<br/>
+                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
                 ○ Match '='.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [+\-.0-9A-Z_a-z~].<br/>
+                        ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
                         ○ Match a sequence of expressions.<br/>
                             ○ Match '%'.<br/>
-                            ○ Match a hexadecimal digit exactly 2 times.<br/>
+                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
             </remarks>
@@ -6167,13 +6208,13 @@
         </member>
         <member name="M:HttpAgent.RawStringBodyAttribute.#ctor(System.String)">
             <summary>
-                <inheritdoc cref="T:HttpAgent.BodyAttribute" />
+                <inheritdoc cref="T:HttpAgent.RawStringBodyAttribute" />
             </summary>
             <param name="contentType">内容类型</param>
         </member>
         <member name="M:HttpAgent.RawStringBodyAttribute.#ctor(System.String,System.String)">
             <summary>
-                <inheritdoc cref="T:HttpAgent.QueryAttribute" />
+                <inheritdoc cref="T:HttpAgent.RawStringBodyAttribute" />
             </summary>
             <param name="contentType">内容类型</param>
             <param name="contentEncoding">内容编码</param>
@@ -6228,7 +6269,7 @@
         </member>
         <member name="M:HttpAgent.BodyAttribute.#ctor(System.String,System.String)">
             <summary>
-                <inheritdoc cref="T:HttpAgent.QueryAttribute" />
+                <inheritdoc cref="T:HttpAgent.BodyAttribute" />
             </summary>
             <param name="contentType">内容类型</param>
             <param name="contentEncoding">内容编码</param>
@@ -6609,6 +6650,18 @@
             </summary>
             <param name="requestUri">请求地址</param>
         </member>
+        <member name="T:HttpAgent.QueryAttribute">
+            <summary>
+                HTTP 声明式 QUERY 请求方式特性
+            </summary>
+            <remarks>参考文献：https://www.rfc-editor.org/info/rfc10008/</remarks>
+        </member>
+        <member name="M:HttpAgent.QueryAttribute.#ctor(System.String)">
+            <summary>
+                <inheritdoc cref="T:HttpAgent.QueryAttribute" />
+            </summary>
+            <param name="requestUri">请求地址</param>
+        </member>
         <member name="T:HttpAgent.TraceAttribute">
             <summary>
                 HTTP 声明式 TRACE 请求方式特性
@@ -6632,7 +6685,7 @@
         </member>
         <member name="M:HttpAgent.MultipartAttribute.#ctor(System.String)">
             <summary>
-                <inheritdoc cref="T:HttpAgent.BodyAttribute" />
+                <inheritdoc cref="T:HttpAgent.MultipartAttribute" />
             </summary>
             <param name="name">表单名称</param>
         </member>
@@ -6875,21 +6928,21 @@
                 </para>
             </remarks>
         </member>
-        <member name="T:HttpAgent.QueryAttribute">
+        <member name="T:HttpAgent.QueryParamAttribute">
             <summary>
                 HTTP 声明式查询参数特性
             </summary>
             <remarks>支持多次指定。</remarks>
         </member>
-        <member name="M:HttpAgent.QueryAttribute.#ctor">
+        <member name="M:HttpAgent.QueryParamAttribute.#ctor">
             <summary>
-                <inheritdoc cref="T:HttpAgent.QueryAttribute" />
+                <inheritdoc cref="T:HttpAgent.QueryParamAttribute" />
             </summary>
             <remarks>特性作用于参数时有效。</remarks>
         </member>
-        <member name="M:HttpAgent.QueryAttribute.#ctor(System.String)">
+        <member name="M:HttpAgent.QueryParamAttribute.#ctor(System.String)">
             <summary>
-                <inheritdoc cref="T:HttpAgent.QueryAttribute" />
+                <inheritdoc cref="T:HttpAgent.QueryParamAttribute" />
             </summary>
             <remarks>
                 <para>当特性作用于方法或接口时，则表示移除指定查询参数操作。</para>
@@ -6897,52 +6950,52 @@
             </remarks>
             <param name="name">查询参数键</param>
         </member>
-        <member name="M:HttpAgent.QueryAttribute.#ctor(System.String,System.Object)">
+        <member name="M:HttpAgent.QueryParamAttribute.#ctor(System.String,System.Object)">
             <summary>
-                <inheritdoc cref="T:HttpAgent.QueryAttribute" />
+                <inheritdoc cref="T:HttpAgent.QueryParamAttribute" />
             </summary>
             <param name="name">查询参数键</param>
             <param name="value">查询参数的值</param>
         </member>
-        <member name="P:HttpAgent.QueryAttribute.Name">
+        <member name="P:HttpAgent.QueryParamAttribute.Name">
             <summary>
                 查询参数键
             </summary>
-            <remarks>该属性优先级低于 <see cref="P:HttpAgent.QueryAttribute.AliasAs" /> 属性设置的值。</remarks>
+            <remarks>该属性优先级低于 <see cref="P:HttpAgent.QueryParamAttribute.AliasAs" /> 属性设置的值。</remarks>
         </member>
-        <member name="P:HttpAgent.QueryAttribute.Value">
+        <member name="P:HttpAgent.QueryParamAttribute.Value">
             <summary>
                 查询参数的值
             </summary>
             <remarks>当特性作用于参数时，表示默认值。</remarks>
         </member>
-        <member name="P:HttpAgent.QueryAttribute.AliasAs">
+        <member name="P:HttpAgent.QueryParamAttribute.AliasAs">
             <summary>
                 别名
             </summary>
             <remarks>
                 <para>特性用于参数时有效。</para>
-                <para>该属性优先级高于 <see cref="P:HttpAgent.QueryAttribute.Name" /> 属性设置的值。</para>
+                <para>该属性优先级高于 <see cref="P:HttpAgent.QueryParamAttribute.Name" /> 属性设置的值。</para>
             </remarks>
         </member>
-        <member name="P:HttpAgent.QueryAttribute.Prefix">
+        <member name="P:HttpAgent.QueryParamAttribute.Prefix">
             <summary>
                 参数前缀
             </summary>
             <remarks>作用于对象类型时有效。</remarks>
         </member>
-        <member name="P:HttpAgent.QueryAttribute.Replace">
+        <member name="P:HttpAgent.QueryParamAttribute.Replace">
             <summary>
                 是否替换已存在的查询参数。默认值为 <c>false</c>
             </summary>
         </member>
-        <member name="P:HttpAgent.QueryAttribute.IgnoreNullValues">
+        <member name="P:HttpAgent.QueryParamAttribute.IgnoreNullValues">
             <summary>
                 是否忽略空值
             </summary>
             <remarks>设置为 <c>true</c> 之后，当参数值为 <c>null</c> 时将被忽略。默认值为 <c>false</c>。</remarks>
         </member>
-        <member name="P:HttpAgent.QueryAttribute.HasSetValue">
+        <member name="P:HttpAgent.QueryParamAttribute.HasSetValue">
             <summary>
                 是否设置了值
             </summary>
@@ -7439,12 +7492,12 @@
         <member name="M:HttpAgent.PropertyDeclarativeExtractor.Extract(HttpAgent.HttpRequestBuilder,HttpAgent.HttpDeclarativeExtractorContext)">
             <inheritdoc />
         </member>
-        <member name="T:HttpAgent.QueryDeclarativeExtractor">
+        <member name="T:HttpAgent.QueryParamDeclarativeExtractor">
             <summary>
-                HTTP 声明式 <see cref="T:HttpAgent.QueryAttribute" /> 特性提取器
+                HTTP 声明式 <see cref="T:HttpAgent.QueryParamAttribute" /> 特性提取器
             </summary>
         </member>
-        <member name="M:HttpAgent.QueryDeclarativeExtractor.Extract(HttpAgent.HttpRequestBuilder,HttpAgent.HttpDeclarativeExtractorContext)">
+        <member name="M:HttpAgent.QueryParamDeclarativeExtractor.Extract(HttpAgent.HttpRequestBuilder,HttpAgent.HttpDeclarativeExtractorContext)">
             <inheritdoc />
         </member>
         <member name="T:HttpAgent.RefererDeclarativeExtractor">
@@ -8114,12 +8167,12 @@
         <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.UnicodeEscapeRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\u([0-9a-fA-F]{4})</code><br/>
+            <code>\\\\u([0-9a-fA-F]{4})</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "\\u".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a hexadecimal digit exactly 4 times.<br/>
+                ○ Match a character in the set [0-9A-Fa-f] exactly 4 times.<br/>
             </code>
             </remarks>
         </member>
@@ -8581,13 +8634,19 @@
                 HTTP 远程请求模块帮助类
             </summary>
         </member>
-        <member name="M:HttpAgent.Helpers.GetStreamFromRemote(System.String,System.Action{System.Net.Http.HttpClient,System.Net.Http.HttpRequestMessage},System.Int64)">
+        <member name="F:HttpAgent.Helpers.HttpQuery">
+            <summary>
+                HTTP QUERY <see cref="T:System.Net.Http.HttpMethod"/> 静态实例
+            </summary>
+        </member>
+        <member name="M:HttpAgent.Helpers.GetStreamFromRemote(System.String,System.Action{System.Net.Http.HttpClient,System.Net.Http.HttpRequestMessage},System.Int64,System.Net.Http.HttpMethod)">
             <summary>
                 从互联网 URL 地址中加载流
             </summary>
             <param name="requestUri">互联网 URL 地址</param>
             <param name="configure">自定义配置委托</param>
             <param name="maxResponseContentBufferSize">响应内容的最大缓存大小。默认值为：<c>100MB</c>。</param>
+            <param name="httpMethod"><see cref="T:System.Net.Http.HttpMethod" />，默认值为：<see cref="P:System.Net.Http.HttpMethod.Get" /></param>
             <returns>
                 <see cref="T:System.IO.Stream" />
             </returns>
@@ -11535,12 +11594,12 @@
         <member name="M:HttpAgent.HttpRemoteService.StatusCodeRangeRegex">
             <remarks>
             Pattern:<br/>
-            <code>^\d+[-~]\d+$</code><br/>
+            <code>^\\d+[-~]\\d+$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
-            ○ Match a character in the set [\-~].<br/>
+            ○ Match a character in the set [-~].<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
@@ -11549,7 +11608,7 @@
         <member name="M:HttpAgent.HttpRemoteService.StatusCodeCompareRegex">
             <remarks>
             Pattern:<br/>
-            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\d+)$</code><br/>
+            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\\d+)$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
@@ -12211,6 +12270,78 @@
             <inheritdoc />
         </member>
         <member name="M:HttpAgent.HttpRemoteService.PatchAsByteArrayAsync(System.String,System.Net.Http.HttpCompletionOption,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.HttpRemoteService.Query(System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.HttpRemoteService.Query(System.String,System.Net.Http.HttpCompletionOption,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.HttpRemoteService.QueryAsync(System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.HttpRemoteService.QueryAsync(System.String,System.Net.Http.HttpCompletionOption,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.HttpRemoteService.QueryAs``1(System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.HttpRemoteService.QueryAs``1(System.String,System.Net.Http.HttpCompletionOption,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.HttpRemoteService.QueryAsAsync``1(System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.HttpRemoteService.QueryAsAsync``1(System.String,System.Net.Http.HttpCompletionOption,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.HttpRemoteService.Query``1(System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.HttpRemoteService.Query``1(System.String,System.Net.Http.HttpCompletionOption,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.HttpRemoteService.QueryAsync``1(System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.HttpRemoteService.QueryAsync``1(System.String,System.Net.Http.HttpCompletionOption,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.HttpRemoteService.QueryAsString(System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.HttpRemoteService.QueryAsStream(System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.HttpRemoteService.QueryAsByteArray(System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.HttpRemoteService.QueryAsString(System.String,System.Net.Http.HttpCompletionOption,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.HttpRemoteService.QueryAsStream(System.String,System.Net.Http.HttpCompletionOption,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.HttpRemoteService.QueryAsByteArray(System.String,System.Net.Http.HttpCompletionOption,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.HttpRemoteService.QueryAsStringAsync(System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.HttpRemoteService.QueryAsStreamAsync(System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.HttpRemoteService.QueryAsByteArrayAsync(System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.HttpRemoteService.QueryAsStringAsync(System.String,System.Net.Http.HttpCompletionOption,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.HttpRemoteService.QueryAsStreamAsync(System.String,System.Net.Http.HttpCompletionOption,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.HttpRemoteService.QueryAsByteArrayAsync(System.String,System.Net.Http.HttpCompletionOption,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="T:HttpAgent.IHttpRemoteService">
@@ -15867,6 +15998,362 @@
                 <c>byte[]</c>
             </returns>
         </member>
+        <member name="M:HttpAgent.IHttpRemoteService.Query(System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <summary>
+                发送 HTTP QUERY 远程请求
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="configure">自定义配置委托</param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns>
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.IHttpRemoteService.Query(System.String,System.Net.Http.HttpCompletionOption,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <summary>
+                发送 HTTP QUERY 远程请求
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="completionOption">
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
+            </param>
+            <param name="configure">自定义配置委托</param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns>
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.IHttpRemoteService.QueryAsync(System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <summary>
+                发送 HTTP QUERY 远程请求
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="configure">自定义配置委托</param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns>
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.IHttpRemoteService.QueryAsync(System.String,System.Net.Http.HttpCompletionOption,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <summary>
+                发送 HTTP QUERY 远程请求
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="completionOption">
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
+            </param>
+            <param name="configure">自定义配置委托</param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns>
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.IHttpRemoteService.QueryAs``1(System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <summary>
+                发送 HTTP QUERY 远程请求
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="configure">自定义配置委托</param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <typeparam name="TResult">转换的目标类型</typeparam>
+            <returns>
+                <see cref="T:HttpAgent.HttpRemoteResult`1" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.IHttpRemoteService.QueryAs``1(System.String,System.Net.Http.HttpCompletionOption,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <summary>
+                发送 HTTP QUERY 远程请求
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="completionOption">
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
+            </param>
+            <param name="configure">自定义配置委托</param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <typeparam name="TResult">转换的目标类型</typeparam>
+            <returns>
+                <see cref="T:HttpAgent.HttpRemoteResult`1" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.IHttpRemoteService.QueryAsAsync``1(System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <summary>
+                发送 HTTP QUERY 远程请求
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="configure">自定义配置委托</param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <typeparam name="TResult">转换的目标类型</typeparam>
+            <returns>
+                <see cref="T:HttpAgent.HttpRemoteResult`1" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.IHttpRemoteService.QueryAsAsync``1(System.String,System.Net.Http.HttpCompletionOption,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <summary>
+                发送 HTTP QUERY 远程请求
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="completionOption">
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
+            </param>
+            <param name="configure">自定义配置委托</param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <typeparam name="TResult">转换的目标类型</typeparam>
+            <returns>
+                <see cref="T:HttpAgent.HttpRemoteResult`1" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.IHttpRemoteService.Query``1(System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <summary>
+                发送 HTTP QUERY 远程请求
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="configure">自定义配置委托</param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <typeparam name="TResult">转换的目标类型</typeparam>
+            <returns>
+                <see cref="T:HttpAgent.HttpRemoteResult`1" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.IHttpRemoteService.Query``1(System.String,System.Net.Http.HttpCompletionOption,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <summary>
+                发送 HTTP QUERY 远程请求
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="completionOption">
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
+            </param>
+            <param name="configure">自定义配置委托</param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <typeparam name="TResult">转换的目标类型</typeparam>
+            <returns>
+                <see cref="T:HttpAgent.HttpRemoteResult`1" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.IHttpRemoteService.QueryAsync``1(System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <summary>
+                发送 HTTP QUERY 远程请求
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="configure">自定义配置委托</param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <typeparam name="TResult">转换的目标类型</typeparam>
+            <returns>
+                <see cref="T:HttpAgent.HttpRemoteResult`1" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.IHttpRemoteService.QueryAsync``1(System.String,System.Net.Http.HttpCompletionOption,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <summary>
+                发送 HTTP QUERY 远程请求
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="completionOption">
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
+            </param>
+            <param name="configure">自定义配置委托</param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <typeparam name="TResult">转换的目标类型</typeparam>
+            <returns>
+                <see cref="T:HttpAgent.HttpRemoteResult`1" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.IHttpRemoteService.QueryAsString(System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <summary>
+                发送 HTTP QUERY 远程请求
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="configure">自定义配置委托</param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns>
+                <see cref="T:System.String" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.IHttpRemoteService.QueryAsStream(System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <summary>
+                发送 HTTP QUERY 远程请求
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="configure">自定义配置委托</param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns>
+                <see cref="T:System.IO.Stream" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.IHttpRemoteService.QueryAsByteArray(System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <summary>
+                发送 HTTP QUERY 远程请求
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="configure">自定义配置委托</param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns>
+                <c>byte[]</c>
+            </returns>
+        </member>
+        <member name="M:HttpAgent.IHttpRemoteService.QueryAsString(System.String,System.Net.Http.HttpCompletionOption,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <summary>
+                发送 HTTP QUERY 远程请求
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="completionOption">
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
+            </param>
+            <param name="configure">自定义配置委托</param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns>
+                <see cref="T:System.String" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.IHttpRemoteService.QueryAsStream(System.String,System.Net.Http.HttpCompletionOption,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <summary>
+                发送 HTTP QUERY 远程请求
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="completionOption">
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
+            </param>
+            <param name="configure">自定义配置委托</param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns>
+                <see cref="T:System.IO.Stream" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.IHttpRemoteService.QueryAsByteArray(System.String,System.Net.Http.HttpCompletionOption,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <summary>
+                发送 HTTP QUERY 远程请求
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="completionOption">
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
+            </param>
+            <param name="configure">自定义配置委托</param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns>
+                <c>byte[]</c>
+            </returns>
+        </member>
+        <member name="M:HttpAgent.IHttpRemoteService.QueryAsStringAsync(System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <summary>
+                发送 HTTP QUERY 远程请求
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="configure">自定义配置委托</param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns>
+                <see cref="T:System.String" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.IHttpRemoteService.QueryAsStreamAsync(System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <summary>
+                发送 HTTP QUERY 远程请求
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="configure">自定义配置委托</param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns>
+                <see cref="T:System.IO.Stream" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.IHttpRemoteService.QueryAsByteArrayAsync(System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <summary>
+                发送 HTTP QUERY 远程请求
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="configure">自定义配置委托</param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns>
+                <c>byte[]</c>
+            </returns>
+        </member>
+        <member name="M:HttpAgent.IHttpRemoteService.QueryAsStringAsync(System.String,System.Net.Http.HttpCompletionOption,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <summary>
+                发送 HTTP QUERY 远程请求
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="completionOption">
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
+            </param>
+            <param name="configure">自定义配置委托</param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns>
+                <see cref="T:System.String" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.IHttpRemoteService.QueryAsStreamAsync(System.String,System.Net.Http.HttpCompletionOption,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <summary>
+                发送 HTTP QUERY 远程请求
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="completionOption">
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
+            </param>
+            <param name="configure">自定义配置委托</param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns>
+                <see cref="T:System.IO.Stream" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.IHttpRemoteService.QueryAsByteArrayAsync(System.String,System.Net.Http.HttpCompletionOption,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <summary>
+                发送 HTTP QUERY 远程请求
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="completionOption">
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
+            </param>
+            <param name="configure">自定义配置委托</param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns>
+                <c>byte[]</c>
+            </returns>
+        </member>
         <member name="T:HttpAgent.HttpRemoteUtility">
             <summary>
                 提供 HTTP 远程请求实用方法
@@ -16780,18 +17267,6 @@
         <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32,System.Int32,System.Int32)">
             <summary>Pushes 3 values onto the backtracking stack.</summary>
         </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.WordCategoriesMask">
-            <summary>Provides a mask of Unicode categories that combine to form [\w].</summary>
-        </member>
-        <member name="P:System.Text.RegularExpressions.Generated.Utilities.WordCharBitmap">
-            <summary>Gets a bitmap for whether each character 0 through 127 is in [\w]</summary>
-        </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_1F52B1A4D2E82B6FEDE25EC8C55F85BB36775196837076691C96925040F90D32">
-            <summary>Supports searching for the string "\\u".</summary>
-        </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_EBC667BDABA1472FA863B5B39B31251EF2B4C95DD643BDECF694CB1CE7BDC178">
-            <summary>Supports searching for the string "[[".</summary>
-        </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions">
             <summary>
                 HTTP 远程请求模块 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" /> 扩展类
@@ -16815,6 +17290,31 @@
             </summary>
             <param name="services">
                 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
+            </param>
+            <param name="httpRemoteBuilder">
+                <see cref="T:HttpAgent.HttpRemoteBuilder" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
+            </returns>
+        </member>
+    </members>
+</doc>
+         添加 HTTP 远程请求服务
+            </summary>
+            <param name="services">
+                <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
+            </param>
+            <param name="httpRemoteBuilder">
+                <see cref="T:HttpAgent.HttpRemoteBuilder" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
+            </returns>
+        </member>
+    </members>
+</doc>
+tensions.DependencyInjection.IServiceCollection" />
             </param>
             <param name="httpRemoteBuilder">
                 <see cref="T:HttpAgent.HttpRemoteBuilder" />

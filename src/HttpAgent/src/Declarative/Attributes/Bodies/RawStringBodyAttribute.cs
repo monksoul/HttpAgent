@@ -11,7 +11,7 @@ namespace HttpAgent;
 public sealed class RawStringBodyAttribute : BodyAttribute
 {
     /// <summary>
-    ///     <inheritdoc cref="BodyAttribute" />
+    ///     <inheritdoc cref="RawStringBodyAttribute" />
     /// </summary>
     /// <param name="contentType">内容类型</param>
     public RawStringBodyAttribute(string contentType)
@@ -19,7 +19,7 @@ public sealed class RawStringBodyAttribute : BodyAttribute
         RawString = true;
 
     /// <summary>
-    ///     <inheritdoc cref="QueryAttribute" />
+    ///     <inheritdoc cref="RawStringBodyAttribute" />
     /// </summary>
     /// <param name="contentType">内容类型</param>
     /// <param name="contentEncoding">内容编码</param>

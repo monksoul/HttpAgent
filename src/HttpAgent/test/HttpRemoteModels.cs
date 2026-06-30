@@ -299,7 +299,7 @@ public interface IHttpDeclarativeTest : IHttpDeclarative
     Task<string> Method1();
 
     [Get("https://furion.net/?name={name}")]
-    Task<string> Method2([Query] int id, string name);
+    Task<string> Method2([QueryParam] int id, string name);
 
     [Get("https://furion.net/")]
     Task<string> Frozen(int id, string name, Action<HttpRequestBuilder> builder,

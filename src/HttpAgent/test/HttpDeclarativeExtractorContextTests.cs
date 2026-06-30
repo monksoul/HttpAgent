@@ -112,7 +112,7 @@ public class HttpDeclarativeExtractorContextTests
         Assert.NotNull(attributes);
         Assert.Equal(2, attributes.Length);
 
-        var attributes2 = context1.GetMethodDefinedCustomAttributes<QueryAttribute>(true, false);
+        var attributes2 = context1.GetMethodDefinedCustomAttributes<QueryParamAttribute>(true, false);
         Assert.Null(attributes2);
     }
 
