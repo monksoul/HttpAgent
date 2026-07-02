@@ -59,7 +59,7 @@ public class Helpers
         var httpRemoteService = new HttpRemoteService(serviceProvider, logger, httpClientFactory,
             httpContentProcessorFactory,
             new HttpContentConverterFactory(serviceProvider, logger,
-                [new ClayContentConverter(), new DynamicContentConverter()]), options);
+                [new ClayContentConverter(), new DynamicContentConverter()], null), options);
 
         return (httpRemoteService, serviceProvider);
     }

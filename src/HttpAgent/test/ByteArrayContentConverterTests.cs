@@ -12,6 +12,7 @@ public class ByteArrayContentConverterTests
         var converter = new ByteArrayContentConverter();
         Assert.NotNull(converter);
         Assert.True(typeof(IHttpContentConverter<byte[]>).IsAssignableFrom(typeof(ByteArrayContentConverter)));
+        Assert.False(converter.KeepsResponseAlive);
     }
 
     [Fact]

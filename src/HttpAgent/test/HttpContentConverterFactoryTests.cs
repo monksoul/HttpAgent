@@ -17,7 +17,7 @@ public class HttpContentConverterFactoryTests
 
         using var serviceProvider = services.BuildServiceProvider();
         var logger = serviceProvider.GetRequiredService<IHttpRemoteLogger>();
-        var httpContentConverterFactory1 = new HttpContentConverterFactory(serviceProvider, logger, null);
+        var httpContentConverterFactory1 = new HttpContentConverterFactory(serviceProvider, logger, null, null);
         Assert.NotNull(httpContentConverterFactory1.ServiceProvider);
         Assert.NotNull(httpContentConverterFactory1._logger);
         Assert.NotNull(httpContentConverterFactory1._converters);
@@ -31,9 +31,11 @@ public class HttpContentConverterFactoryTests
         Assert.NotNull(httpContentConverterFactory1._genericConverters);
         Assert.Single(httpContentConverterFactory1._genericConverters);
         Assert.Equal(typeof(IAsyncEnumerable<>), httpContentConverterFactory1._genericConverters.Keys.First());
+        Assert.NotNull(httpContentConverterFactory1._genericConverters[typeof(IAsyncEnumerable<>)].First()
+            .Invoke([typeof(ObjectModel)]));
 
         var httpContentConverterFactory2 =
-            new HttpContentConverterFactory(serviceProvider, logger, [new CustomStringContentConverter()]);
+            new HttpContentConverterFactory(serviceProvider, logger, [new CustomStringContentConverter()], null);
         Assert.NotNull(httpContentConverterFactory2._converters);
         Assert.Equal(6, httpContentConverterFactory2._converters.Count);
         Assert.Equal(
@@ -46,7 +48,7 @@ public class HttpContentConverterFactoryTests
 
         var httpContentConverterFactory3 =
             new HttpContentConverterFactory(serviceProvider, logger,
-                [new StringContentConverter(), new ByteArrayContentConverter()]);
+                [new StringContentConverter(), new ByteArrayContentConverter()], null);
         Assert.NotNull(httpContentConverterFactory3._converters);
         Assert.Equal(5, httpContentConverterFactory3._converters.Count);
         Assert.Equal(
@@ -55,6 +57,27 @@ public class HttpContentConverterFactoryTests
                 typeof(StreamContentConverter), typeof(VoidContentConverter)
             ],
             httpContentConverterFactory3._converters.Select(u => u.Key));
+
+        var httpContentConverterFactory4 =
+            new HttpContentConverterFactory(serviceProvider, logger, [new CustomStringContentConverter()], [
+                new GenericHttpContentConverter(typeof(IAsyncEnumerable<>), typeArgs =>
+                    (IHttpContentConverter)Activator.CreateInstance(
+                        typeof(CustomAsyncEnumerableContentConverter<>).MakeGenericType(typeArgs[0]))!)
+            ]);
+        Assert.NotNull(httpContentConverterFactory4._genericConverters);
+        Assert.Single(httpContentConverterFactory4._genericConverters);
+        Assert.Equal(2, httpContentConverterFactory4._genericConverters[typeof(IAsyncEnumerable<>)].Count);
+
+        var httpContentConverterFactory5 =
+            new HttpContentConverterFactory(serviceProvider, logger, [new CustomStringContentConverter()], [
+                new GenericHttpContentConverter(typeof(IEnumerable<>), typeArgs =>
+                    (IHttpContentConverter)Activator.CreateInstance(
+                        typeof(CustomAsyncEnumerableContentConverter<>).MakeGenericType(typeArgs[0]))!)
+            ]);
+        Assert.NotNull(httpContentConverterFactory5._genericConverters);
+        Assert.Equal(2, httpContentConverterFactory5._genericConverters.Count);
+        Assert.Single(httpContentConverterFactory5._genericConverters[typeof(IAsyncEnumerable<>)]);
+        Assert.Single(httpContentConverterFactory5._genericConverters[typeof(IEnumerable<>)]);
     }
 
     [Fact]
@@ -68,7 +91,7 @@ public class HttpContentConverterFactoryTests
         services.TryAddSingleton<IObjectContentConverterFactory, ObjectContentConverterFactory>();
         using var serviceProvider = services.BuildServiceProvider();
         var logger = serviceProvider.GetRequiredService<IHttpRemoteLogger>();
-        var httpContentConverterFactory = new HttpContentConverterFactory(serviceProvider, logger, null);
+        var httpContentConverterFactory = new HttpContentConverterFactory(serviceProvider, logger, null, null);
         var httpResponseMessage = new HttpResponseMessage();
         httpResponseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
@@ -138,7 +161,7 @@ public class HttpContentConverterFactoryTests
         using var serviceProvider = services.BuildServiceProvider();
         var logger = serviceProvider.GetRequiredService<IHttpRemoteLogger>();
         var httpContentConverterFactory =
-            new HttpContentConverterFactory(serviceProvider, logger, [new CustomByteArrayContentConverter()]);
+            new HttpContentConverterFactory(serviceProvider, logger, [new CustomByteArrayContentConverter()], null);
         var httpResponseMessage = new HttpResponseMessage();
         httpResponseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
@@ -164,7 +187,7 @@ public class HttpContentConverterFactoryTests
         using var serviceProvider = services.BuildServiceProvider();
         var logger = serviceProvider.GetRequiredService<IHttpRemoteLogger>();
         var httpContentConverterFactory =
-            new HttpContentConverterFactory(serviceProvider, logger, null);
+            new HttpContentConverterFactory(serviceProvider, logger, null, null);
 
         var result = httpContentConverterFactory.Read<string>(httpResponseMessage);
         Assert.Equal("furion", result);
@@ -188,7 +211,7 @@ public class HttpContentConverterFactoryTests
         await using var serviceProvider = services.BuildServiceProvider();
         var logger = serviceProvider.GetRequiredService<IHttpRemoteLogger>();
         var httpContentConverterFactory =
-            new HttpContentConverterFactory(serviceProvider, logger, null);
+            new HttpContentConverterFactory(serviceProvider, logger, null, null);
 
         var result = await httpContentConverterFactory.ReadAsync<string>(httpResponseMessage);
         Assert.Equal("furion", result);
@@ -212,7 +235,7 @@ public class HttpContentConverterFactoryTests
         await using var serviceProvider = services.BuildServiceProvider();
         var logger = serviceProvider.GetRequiredService<IHttpRemoteLogger>();
         var httpContentConverterFactory =
-            new HttpContentConverterFactory(serviceProvider, logger, null);
+            new HttpContentConverterFactory(serviceProvider, logger, null, null);
 
         using var cancellationTokenSource = new CancellationTokenSource();
 
@@ -232,7 +255,7 @@ public class HttpContentConverterFactoryTests
         services.TryAddSingleton<IObjectContentConverterFactory, ObjectContentConverterFactory>();
         using var serviceProvider = services.BuildServiceProvider();
         var logger = serviceProvider.GetRequiredService<IHttpRemoteLogger>();
-        var httpContentConverterFactory = new HttpContentConverterFactory(serviceProvider, logger, null);
+        var httpContentConverterFactory = new HttpContentConverterFactory(serviceProvider, logger, null, null);
         var httpResponseMessage = new HttpResponseMessage();
         httpResponseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
@@ -297,7 +320,7 @@ public class HttpContentConverterFactoryTests
         using var serviceProvider = services.BuildServiceProvider();
         var logger = serviceProvider.GetRequiredService<IHttpRemoteLogger>();
         var httpContentConverterFactory =
-            new HttpContentConverterFactory(serviceProvider, logger, [new CustomByteArrayContentConverter()]);
+            new HttpContentConverterFactory(serviceProvider, logger, [new CustomByteArrayContentConverter()], null);
         var httpResponseMessage = new HttpResponseMessage();
         httpResponseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
@@ -323,7 +346,7 @@ public class HttpContentConverterFactoryTests
         using var serviceProvider = services.BuildServiceProvider();
         var logger = serviceProvider.GetRequiredService<IHttpRemoteLogger>();
         var httpContentConverterFactory =
-            new HttpContentConverterFactory(serviceProvider, logger, null);
+            new HttpContentConverterFactory(serviceProvider, logger, null, null);
 
         var result = httpContentConverterFactory.Read(typeof(string), httpResponseMessage);
         Assert.Equal("furion", result);
@@ -347,7 +370,7 @@ public class HttpContentConverterFactoryTests
         await using var serviceProvider = services.BuildServiceProvider();
         var logger = serviceProvider.GetRequiredService<IHttpRemoteLogger>();
         var httpContentConverterFactory =
-            new HttpContentConverterFactory(serviceProvider, logger, null);
+            new HttpContentConverterFactory(serviceProvider, logger, null, null);
 
         var result = await httpContentConverterFactory.ReadAsync(typeof(string), httpResponseMessage);
         Assert.Equal("furion", result);
@@ -371,7 +394,7 @@ public class HttpContentConverterFactoryTests
         await using var serviceProvider = services.BuildServiceProvider();
         var logger = serviceProvider.GetRequiredService<IHttpRemoteLogger>();
         var httpContentConverterFactory =
-            new HttpContentConverterFactory(serviceProvider, logger, null);
+            new HttpContentConverterFactory(serviceProvider, logger, null, null);
 
         using var cancellationTokenSource = new CancellationTokenSource();
 
@@ -395,14 +418,14 @@ public class HttpContentConverterFactoryTests
         using var serviceProvider = services.BuildServiceProvider();
         var logger = serviceProvider.GetRequiredService<IHttpRemoteLogger>();
         var httpContentConverterFactory =
-            new HttpContentConverterFactory(serviceProvider, logger, null);
+            new HttpContentConverterFactory(serviceProvider, logger, null, null);
 
         httpContentConverterFactory.LogContentConversionError(typeof(string), httpResponseMessage,
             new Exception("出错了"));
     }
 
     [Fact]
-    public void TryResolveGenericConverter_Invalid_Parameters()
+    public void TryResolveGenericConverter_ReturnOK()
     {
         var services = new ServiceCollection();
         services.AddLogging();
@@ -412,12 +435,25 @@ public class HttpContentConverterFactoryTests
         services.TryAddSingleton<IObjectContentConverterFactory, ObjectContentConverterFactory>();
         using var serviceProvider = services.BuildServiceProvider();
         var logger = serviceProvider.GetRequiredService<IHttpRemoteLogger>();
-        var httpContentConverterFactory = new HttpContentConverterFactory(serviceProvider, logger, null);
+        var httpContentConverterFactory = new HttpContentConverterFactory(serviceProvider, logger, null, null);
 
         Assert.Null(httpContentConverterFactory.TryResolveGenericConverter(typeof(ObjectModel)));
 
         var genericConverter =
             httpContentConverterFactory.TryResolveGenericConverter(typeof(IAsyncEnumerable<ObjectModel>));
         Assert.NotNull(genericConverter);
+
+        var httpContentConverterFactory2 = new HttpContentConverterFactory(serviceProvider, logger, null, [
+            new GenericHttpContentConverter(typeof(IAsyncEnumerable<>), typeArgs =>
+                (IHttpContentConverter)Activator.CreateInstance(
+                    typeof(CustomAsyncEnumerableContentConverter<>).MakeGenericType(typeArgs[0]))!)
+        ]);
+
+        Assert.Null(httpContentConverterFactory2.TryResolveGenericConverter(typeof(ObjectModel)));
+
+        var genericConverter2 =
+            httpContentConverterFactory2.TryResolveGenericConverter(typeof(IAsyncEnumerable<ObjectModel>));
+        Assert.NotNull(genericConverter2);
+        Assert.True(genericConverter2 is CustomAsyncEnumerableContentConverter<ObjectModel>);
     }
 }

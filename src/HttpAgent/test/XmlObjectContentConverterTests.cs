@@ -13,6 +13,7 @@ public class XmlObjectContentConverterTests
         Assert.NotNull(converter);
         Assert.True(typeof(IHttpContentConverter<string>).IsAssignableFrom(typeof(XmlObjectContentConverter<string>)));
         Assert.True(typeof(XmlObjectContentConverter).IsAssignableFrom(typeof(XmlObjectContentConverter<string>)));
+        Assert.False(converter.KeepsResponseAlive);
     }
 
     [Fact]

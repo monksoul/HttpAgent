@@ -35,20 +35,20 @@ public class JsonResponseWrapperTests
         var wrapper = new JsonResponseWrapper(typeof(ApiResult<>), nameof(ApiResult<>.Data));
         Assert.Equal(typeof(ApiResult<>), wrapper.GenericType);
         Assert.Equal("Data", wrapper.PropertyName);
-        Assert.NotNull(wrapper._getterCache);
-        Assert.Empty(wrapper._getterCache);
     }
 
     [Fact]
     public void GetResultValue_Invalid_Parameters()
     {
         var wrapper = new JsonResponseWrapper(typeof(ApiResult<>), nameof(ApiResult<>.Data));
-        var exception = Assert.Throws<ArgumentException>(() => wrapper.GetResultValue(new object()));
+        var exception =
+            Assert.Throws<ArgumentException>(() => wrapper.GetResultValue(new object(), new HttpResponseMessage()));
         Assert.Equal(
             "The instance type 'System.Object' is not a constructed generic type of 'HttpAgent.Tests.JsonResponseWrapperTests+ApiResult`1[T]'. (Parameter 'instance')",
             exception.Message);
 
-        var exception2 = Assert.Throws<ArgumentException>(() => wrapper.GetResultValue(new ApiResult<string, int>()));
+        var exception2 = Assert.Throws<ArgumentException>(() =>
+            wrapper.GetResultValue(new ApiResult<string, int>(), new HttpResponseMessage()));
         Assert.Equal(
             "The instance type 'HttpAgent.Tests.JsonResponseWrapperTests+ApiResult`2[System.String,System.Int32]' is not a constructed generic type of 'HttpAgent.Tests.JsonResponseWrapperTests+ApiResult`1[T]'. (Parameter 'instance')",
             exception2.Message);
@@ -58,41 +58,43 @@ public class JsonResponseWrapperTests
     public void GetResultValue_ReturnOK()
     {
         var wrapper = new JsonResponseWrapper(typeof(ApiResult<>), nameof(ApiResult<>.Data));
-        Assert.Null(wrapper.GetResultValue(null));
+        Assert.Null(wrapper.GetResultValue(null, new HttpResponseMessage()));
 
         var apiResult = new ApiResult<JsonModel> { Success = true, Data = new JsonModel { Id = 1, Name = "Furion" } };
-        var jsonModel = wrapper.GetResultValue(apiResult) as JsonModel;
+        var jsonModel = wrapper.GetResultValue(apiResult, new HttpResponseMessage()) as JsonModel;
 
-        Assert.Single(wrapper._getterCache);
         Assert.NotNull(jsonModel);
         Assert.Equal(1, jsonModel.Id);
         Assert.Equal("Furion", jsonModel.Name);
     }
 
     [Fact]
-    public void BuildGetter_Invalid_Parameters()
+    public void GetResultValue_WithResultHandler_ReturnOK()
     {
-        var wrapper = new JsonResponseWrapper(typeof(ApiResult<>), "Data1");
+        var wrapper = new JsonResponseWrapper(typeof(ApiResult<>), nameof(ApiResult<>.Data))
+        {
+            ResultHandler = context =>
+            {
+                if (context.Instance is { } instance)
+                {
+                    Assert.True(context.GetPropertyValue<bool>(nameof(ApiResult<>.Success)));
+                }
 
-        var exception =
-            Assert.Throws<InvalidOperationException>(() => wrapper.BuildGetter(typeof(ApiResult<JsonModel>)));
-        Assert.Equal(
-            "Property 'Data1' not found on type 'HttpAgent.Tests.JsonResponseWrapperTests+ApiResult`1[HttpAgent.Tests.JsonResponseWrapperTests+JsonModel]'.",
-            exception.Message);
-    }
-
-    [Fact]
-    public void BuildGetter_ReturnOK()
-    {
-        var wrapper = new JsonResponseWrapper(typeof(ApiResult<>), nameof(ApiResult<>.Data));
-        var func = wrapper.BuildGetter(typeof(ApiResult<JsonModel>));
+                context.ResponseMessage.EnsureSuccessStatusCode();
+                return context.Result;
+            }
+        };
+        Assert.Null(wrapper.GetResultValue(null, new HttpResponseMessage()));
 
         var apiResult = new ApiResult<JsonModel> { Success = true, Data = new JsonModel { Id = 1, Name = "Furion" } };
-        var jsonModel = func(apiResult) as JsonModel;
+        var jsonModel = wrapper.GetResultValue(apiResult, new HttpResponseMessage()) as JsonModel;
 
         Assert.NotNull(jsonModel);
         Assert.Equal(1, jsonModel.Id);
         Assert.Equal("Furion", jsonModel.Name);
+
+        Assert.Throws<HttpRequestException>(() =>
+            wrapper.GetResultValue(apiResult, new HttpResponseMessage(HttpStatusCode.InternalServerError)));
     }
 
     public class ApiResult<T>

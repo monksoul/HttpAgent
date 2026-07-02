@@ -13,6 +13,7 @@ public class HttpResponseMessageConverterTests
         Assert.NotNull(converter);
         Assert.True(
             typeof(IHttpContentConverter<HttpResponseMessage>).IsAssignableFrom(typeof(HttpResponseMessageConverter)));
+        Assert.True(converter.KeepsResponseAlive);
     }
 
     [Fact]

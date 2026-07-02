@@ -9,7 +9,7 @@ public class JsonSerializationContextTests
     [Fact]
     public void New_ReturnOK()
     {
-        var context = new JsonSerializationContext(typeof(object), new JsonSerializerOptions(), u => u);
+        var context = new JsonSerializationContext(typeof(object), new JsonSerializerOptions(), (u, _) => u);
         Assert.Equal(typeof(object), context.ResultType);
         Assert.NotNull(context.JsonSerializerOptions);
         Assert.NotNull(context.GetResultValue);

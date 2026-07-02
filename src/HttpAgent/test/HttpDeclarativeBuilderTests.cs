@@ -7,6 +7,12 @@ namespace HttpAgent.Tests;
 [Collection("FileDownloadManagerTests")]
 public class HttpDeclarativeBuilderTests
 {
+    public HttpDeclarativeBuilderTests()
+    {
+        HttpDeclarativeBuilder._cachedExtractors = null;
+        HttpDeclarativeBuilder._hasLoadedExtractors = 0;
+    }
+
     [Fact]
     public void New_Invalid_Parameters()
     {

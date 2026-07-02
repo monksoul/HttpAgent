@@ -12,6 +12,7 @@ public class StringContentConverterTests
         var converter = new StringContentConverter();
         Assert.NotNull(converter);
         Assert.True(typeof(IHttpContentConverter<string>).IsAssignableFrom(typeof(StringContentConverter)));
+        Assert.False(converter.KeepsResponseAlive);
     }
 
     [Fact]

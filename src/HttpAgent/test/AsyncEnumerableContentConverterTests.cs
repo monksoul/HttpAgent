@@ -14,6 +14,7 @@ public class AsyncEnumerableContentConverterTests
         Assert.True(
             typeof(IHttpContentConverter<IAsyncEnumerable<ObjectModel>>).IsAssignableFrom(
                 typeof(AsyncEnumerableContentConverter<ObjectModel>)));
+        Assert.False(converter.KeepsResponseAlive);
     }
 
     [Fact]

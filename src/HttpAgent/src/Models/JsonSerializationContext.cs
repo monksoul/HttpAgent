@@ -15,4 +15,4 @@ namespace HttpAgent;
 public sealed record JsonSerializationContext(
     Type ResultType,
     JsonSerializerOptions JsonSerializerOptions,
-    Func<object?, object?> GetResultValue);
+    Func<object?, HttpResponseMessage, object?> GetResultValue);

@@ -13,7 +13,7 @@ namespace HttpAgent;
 internal static class Helpers
 {
     /// <summary>
-    ///     HTTP QUERY <see cref="HttpMethod"/> 静态实例
+    ///     HTTP QUERY <see cref="HttpMethod" /> 静态实例
     /// </summary>
     internal static readonly HttpMethod HttpQuery = ParseHttpMethod("QUERY");
 

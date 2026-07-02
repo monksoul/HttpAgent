@@ -14,6 +14,7 @@ public class VoidContentConverterTests
         Assert.True(
             typeof(IHttpContentConverter<VoidContent>).IsAssignableFrom(
                 typeof(VoidContentConverter)));
+        Assert.False(converter.KeepsResponseAlive);
     }
 
     [Fact]

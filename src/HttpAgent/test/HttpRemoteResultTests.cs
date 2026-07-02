@@ -217,4 +217,22 @@ public class HttpRemoteResultTests
         Assert.True(isSuccess2);
         Assert.Equal(HttpStatusCode.OK, statusCode);
     }
+
+    [Fact]
+    public async Task Dispose_ReturnOK()
+    {
+        var httpResponseMessage = new HttpResponseMessage { StatusCode = HttpStatusCode.OK };
+        var stringContent = new StringContent("furion", Encoding.UTF8,
+            new MediaTypeHeaderValue("application/json") { CharSet = "utf-8" });
+        httpResponseMessage.Content = stringContent;
+        var httpRemoteResult = new HttpRemoteResult<string>(httpResponseMessage)
+        {
+            RequestDuration = 200, Result = await httpResponseMessage.Content.ReadAsStringAsync()
+        };
+
+        httpRemoteResult.Dispose();
+
+        await Assert.ThrowsAsync<ObjectDisposedException>(async () =>
+            await httpRemoteResult.ResponseMessage.Content.ReadAsStreamAsync());
+    }
 }

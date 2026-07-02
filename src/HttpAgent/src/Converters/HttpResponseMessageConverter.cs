@@ -10,6 +10,9 @@ namespace HttpAgent;
 public class HttpResponseMessageConverter : HttpContentConverterBase<HttpResponseMessage>
 {
     /// <inheritdoc />
+    public override bool KeepsResponseAlive => true;
+
+    /// <inheritdoc />
     public override HttpResponseMessage? Read(HttpResponseMessage httpResponseMessage,
         CancellationToken cancellationToken = default) =>
         httpResponseMessage;

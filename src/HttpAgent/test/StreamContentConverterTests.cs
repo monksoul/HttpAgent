@@ -12,6 +12,7 @@ public class StreamContentConverterTests
         var converter = new StreamContentConverter();
         Assert.NotNull(converter);
         Assert.True(typeof(IHttpContentConverter<Stream>).IsAssignableFrom(typeof(StreamContentConverter)));
+        Assert.True(converter.KeepsResponseAlive);
     }
 
     [Fact]

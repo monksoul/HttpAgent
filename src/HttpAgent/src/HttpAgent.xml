@@ -1823,6 +1823,11 @@
                 HTTP 远程请求构建器
             </summary>
         </member>
+        <member name="F:HttpAgent.HttpRemoteBuilder._genericHttpContentConverterProviders">
+            <summary>
+                <see cref="T:HttpAgent.GenericHttpContentConverter" /> 集合
+            </summary>
+        </member>
         <member name="F:HttpAgent.HttpRemoteBuilder._httpContentConverterProviders">
             <summary>
                 <see cref="T:HttpAgent.IHttpContentConverter" /> 集合
@@ -1864,6 +1869,16 @@
             </summary>
             <remarks>支持多次调用。</remarks>
             <param name="configure"><see cref="T:HttpAgent.IHttpContentConverter" /> 实例提供器</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRemoteBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRemoteBuilder.AddGenericHttpContentConverters(System.Func{System.Collections.Generic.IEnumerable{HttpAgent.GenericHttpContentConverter}})">
+            <summary>
+                添加 <see cref="T:HttpAgent.GenericHttpContentConverter" /> 响应内容转换器
+            </summary>
+            <remarks>支持多次调用。</remarks>
+            <param name="configure"><see cref="T:HttpAgent.GenericHttpContentConverter" /> 实例提供器</param>
             <returns>
                 <see cref="T:HttpAgent.HttpRemoteBuilder" />
             </returns>
@@ -4703,11 +4718,34 @@
         <member name="M:HttpAgent.ByteArrayContentConverter.ReadAsync(System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
+        <member name="T:HttpAgent.GenericHttpContentConverter">
+            <summary>
+                泛型 <see cref="T:HttpAgent.IHttpContentConverter" /> 响应内容转换器
+            </summary>
+            <param name="GenericType">转换的目标类型的泛型类型</param>
+            <param name="Factory">泛型 <see cref="T:HttpAgent.IHttpContentConverter" /> 工厂委托</param>
+        </member>
+        <member name="M:HttpAgent.GenericHttpContentConverter.#ctor(System.Type,System.Func{System.Type[],HttpAgent.IHttpContentConverter})">
+            <summary>
+                泛型 <see cref="T:HttpAgent.IHttpContentConverter" /> 响应内容转换器
+            </summary>
+            <param name="GenericType">转换的目标类型的泛型类型</param>
+            <param name="Factory">泛型 <see cref="T:HttpAgent.IHttpContentConverter" /> 工厂委托</param>
+        </member>
+        <member name="P:HttpAgent.GenericHttpContentConverter.GenericType">
+            <summary>转换的目标类型的泛型类型</summary>
+        </member>
+        <member name="P:HttpAgent.GenericHttpContentConverter.Factory">
+            <summary>泛型 <see cref="T:HttpAgent.IHttpContentConverter" /> 工厂委托</summary>
+        </member>
         <member name="T:HttpAgent.HttpContentConverterBase`1">
             <summary>
                 <see cref="T:HttpAgent.IHttpContentConverter`1" /> 内容处理器基类
             </summary>
             <typeparam name="TResult">转换的目标类型</typeparam>
+        </member>
+        <member name="P:HttpAgent.HttpContentConverterBase`1.KeepsResponseAlive">
+            <inheritdoc />
         </member>
         <member name="P:HttpAgent.HttpContentConverterBase`1.ServiceProvider">
             <inheritdoc />
@@ -4732,6 +4770,9 @@
                 <see cref="T:System.Net.Http.HttpResponseMessage" /> 内容转换器
             </summary>
         </member>
+        <member name="P:HttpAgent.HttpResponseMessageConverter.KeepsResponseAlive">
+            <inheritdoc />
+        </member>
         <member name="M:HttpAgent.HttpResponseMessageConverter.Read(System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
@@ -4742,6 +4783,12 @@
             <summary>
                 <see cref="T:System.Net.Http.HttpResponseMessage" /> 响应内容转换器默认实现接口
             </summary>
+        </member>
+        <member name="P:HttpAgent.IHttpContentConverter.KeepsResponseAlive">
+            <summary>
+                是否保持 <see cref="T:System.Net.Http.HttpResponseMessage" /> 存活
+            </summary>
+            TODO: 待实现
         </member>
         <member name="P:HttpAgent.IHttpContentConverter.ServiceProvider">
             <summary>
@@ -4818,6 +4865,9 @@
             </summary>
             <remarks>默认作为 JSON 对象内容转换器。</remarks>
         </member>
+        <member name="P:HttpAgent.ObjectContentConverter.KeepsResponseAlive">
+            <inheritdoc />
+        </member>
         <member name="P:HttpAgent.ObjectContentConverter.ServiceProvider">
             <inheritdoc />
         </member>
@@ -4841,6 +4891,9 @@
             <summary>
                 流内容转换器
             </summary>
+        </member>
+        <member name="P:HttpAgent.StreamContentConverter.KeepsResponseAlive">
+            <inheritdoc />
         </member>
         <member name="M:HttpAgent.StreamContentConverter.Read(System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
             <inheritdoc />
@@ -4874,6 +4927,9 @@
             <summary>
                 XML 对象内容转换器
             </summary>
+        </member>
+        <member name="P:HttpAgent.XmlObjectContentConverter.KeepsResponseAlive">
+            <inheritdoc />
         </member>
         <member name="P:HttpAgent.XmlObjectContentConverter.ServiceProvider">
             <inheritdoc />
@@ -4918,7 +4974,7 @@
         <member name="M:HttpAgent.Core.Converters.Json.FlexibleDateTimeConverter.Regex">
             <remarks>
             Pattern:<br/>
-            <code>^/Date\\(([+-]*\\d+)\\)/$</code><br/>
+            <code>^/Date\(([+-]*\d+)\)/$</code><br/>
             Options:<br/>
             <code>RegexOptions.CultureInvariant</code><br/>
             Explanation:<br/>
@@ -4926,7 +4982,7 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Match the string "/Date(".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [+-] atomically any number of times.<br/>
+                ○ Match a character in the set [+\-] atomically any number of times.<br/>
                 ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match the string ")/".<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
@@ -4947,7 +5003,7 @@
         <member name="M:HttpAgent.Core.Converters.Json.FlexibleDateTimeOffsetConverter.Regex">
             <remarks>
             Pattern:<br/>
-            <code>^/Date\\(([+-]*\\d+)([+-])(\\d{2})(\\d{2})\\)/$</code><br/>
+            <code>^/Date\(([+-]*\d+)([+-])(\d{2})(\d{2})\)/$</code><br/>
             Options:<br/>
             <code>RegexOptions.CultureInvariant</code><br/>
             Explanation:<br/>
@@ -4955,10 +5011,10 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Match the string "/Date(".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [+-] atomically any number of times.<br/>
+                ○ Match a character in the set [+\-] atomically any number of times.<br/>
                 ○ Match a Unicode digit atomically at least once.<br/>
             ○ 2nd capture group.<br/>
-                ○ Match a character in the set [+-].<br/>
+                ○ Match a character in the set [+\-].<br/>
             ○ 3rd capture group.<br/>
                 ○ Match a Unicode digit exactly 2 times.<br/>
             ○ 4th capture group.<br/>
@@ -5530,7 +5586,7 @@
         <member name="M:HttpAgent.Core.Extensions.StringExtensions.PlaceholderRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\{\\s*(\\w+\\s*(\\.\\s*\\w+\\s*)*)\\s*\\}</code><br/>
+            <code>\{\s*(\w+\s*(\.\s*\w+\s*)*)\s*\}</code><br/>
             Explanation:<br/>
             <code>
             ○ Match '{'.<br/>
@@ -5552,19 +5608,19 @@
         <member name="M:HttpAgent.Core.Extensions.StringExtensions.ConfigurationKeyRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\[\\[\\s*([\\w\\-:]+)((?:\\s*\\|\\s*[\\w\\-:]+)*)\\s*(?:\\|\\|\\s*([^\\]]*))?\\s*\\]\\]</code><br/>
+            <code>\[\[\s*([\w\-:]+)((?:\s*\|\s*[\w\-:]+)*)\s*(?:\|\|\s*([^\]]*))?\s*\]\]</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "[[".<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [-:\w] greedily at least once.<br/>
+                ○ Match a character in the set [\-:\w] greedily at least once.<br/>
             ○ 2nd capture group.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match a whitespace character atomically any number of times.<br/>
                     ○ Match '|'.<br/>
                     ○ Match a whitespace character greedily any number of times.<br/>
-                    ○ Match a character in the set [-:\w] greedily at least once.<br/>
+                    ○ Match a character in the set [\-:\w] greedily at least once.<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ Optional (greedy).<br/>
                 ○ Match the string "||".<br/>
@@ -5587,32 +5643,32 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Loop greedily at least once.<br/>
                 ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
+                    ○ Match a character in the set [\-.0-9A-Z_a-z~].<br/>
                     ○ Match a sequence of expressions.<br/>
                         ○ Match '%'.<br/>
-                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
+                        ○ Match a hexadecimal digit exactly 2 times.<br/>
             ○ Match '='.<br/>
             ○ Loop greedily any number of times.<br/>
                 ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
+                    ○ Match a character in the set [+\-.0-9A-Z_a-z~].<br/>
                     ○ Match a sequence of expressions.<br/>
                         ○ Match '%'.<br/>
-                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
+                        ○ Match a hexadecimal digit exactly 2 times.<br/>
             ○ Loop greedily any number of times.<br/>
                 ○ Match '&amp;'.<br/>
                 ○ Loop greedily at least once.<br/>
                     ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
+                        ○ Match a character in the set [\-.0-9A-Z_a-z~].<br/>
                         ○ Match a sequence of expressions.<br/>
                             ○ Match '%'.<br/>
-                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
+                            ○ Match a hexadecimal digit exactly 2 times.<br/>
                 ○ Match '='.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
+                        ○ Match a character in the set [+\-.0-9A-Z_a-z~].<br/>
                         ○ Match a sequence of expressions.<br/>
                             ○ Match '%'.<br/>
-                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
+                            ○ Match a hexadecimal digit exactly 2 times.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
             </remarks>
@@ -8192,12 +8248,12 @@
         <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.UnicodeEscapeRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\\\u([0-9a-fA-F]{4})</code><br/>
+            <code>\\u([0-9a-fA-F]{4})</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "\\u".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [0-9A-Fa-f] exactly 4 times.<br/>
+                ○ Match a hexadecimal digit exactly 4 times.<br/>
             </code>
             </remarks>
         </member>
@@ -8211,13 +8267,13 @@
         </member>
         <member name="F:HttpAgent.HttpContentConverterFactory._genericConverters">
             <summary>
-                泛型 <see cref="T:HttpAgent.IHttpContentConverter" /> 工厂字典集合
+                泛型 <see cref="T:HttpAgent.IHttpContentConverter" /> 工厂委托字典集合
             </summary>
         </member>
         <member name="F:HttpAgent.HttpContentConverterFactory._logger">
             <inheritdoc cref="T:HttpAgent.IHttpRemoteLogger" />
         </member>
-        <member name="M:HttpAgent.HttpContentConverterFactory.#ctor(System.IServiceProvider,HttpAgent.IHttpRemoteLogger,HttpAgent.IHttpContentConverter[])">
+        <member name="M:HttpAgent.HttpContentConverterFactory.#ctor(System.IServiceProvider,HttpAgent.IHttpRemoteLogger,HttpAgent.IHttpContentConverter[],HttpAgent.GenericHttpContentConverter[])">
             <summary>
                 <inheritdoc cref="T:HttpAgent.HttpContentConverterFactory" />
             </summary>
@@ -8228,6 +8284,7 @@
                 <see cref="T:HttpAgent.IHttpRemoteLogger" />
             </param>
             <param name="converters"><see cref="T:HttpAgent.IHttpContentConverter`1" /> 数组</param>
+            <param name="genericConverters"><see cref="T:HttpAgent.GenericHttpContentConverter" /> 数组</param>
         </member>
         <member name="P:HttpAgent.HttpContentConverterFactory.ServiceProvider">
             <inheritdoc />
@@ -8284,7 +8341,7 @@
         </member>
         <member name="M:HttpAgent.HttpContentConverterFactory.TryResolveGenericConverter(System.Type)">
             <summary>
-                尝试解析泛型 <see cref="T:HttpAgent.IHttpContentConverter`1" />
+                尝试解析泛型 <see cref="T:HttpAgent.IHttpContentConverter`1" /> 实例
             </summary>
             <remarks>TODO: 未来可以考虑缓存反射的结果</remarks>
             <param name="resultType">转换的目标类型</param>
@@ -8661,7 +8718,7 @@
         </member>
         <member name="F:HttpAgent.Helpers.HttpQuery">
             <summary>
-                HTTP QUERY <see cref="T:System.Net.Http.HttpMethod"/> 静态实例
+                HTTP QUERY <see cref="T:System.Net.Http.HttpMethod" /> 静态实例
             </summary>
         </member>
         <member name="M:HttpAgent.Helpers.GetStreamFromRemote(System.String,System.Action{System.Net.Http.HttpClient,System.Net.Http.HttpRequestMessage},System.Int64,System.Net.Http.HttpMethod)">
@@ -10100,6 +10157,9 @@
                 <see cref="T:System.Net.Http.HttpClient" /> 实例的配置名称
             </summary>
         </member>
+        <member name="M:HttpAgent.HttpRemoteResult`1.Dispose">
+            <inheritdoc />
+        </member>
         <member name="M:HttpAgent.HttpRemoteResult`1.Deconstruct(`0@,System.Net.Http.HttpResponseMessage@)">
             <summary>
                 解构函数
@@ -10170,14 +10230,72 @@
         <member name="M:HttpAgent.HttpRemoteResult`1.ToString">
             <inheritdoc />
         </member>
+        <member name="T:HttpAgent.JsonResponseWrapperContext">
+            <summary>
+                JSON 响应反序列化包装器上下文
+            </summary>
+            <param name="Instance">
+                包装类型的具体实例（例如 <![CDATA[ApiResult<T>]]> 的实例）
+            </param>
+            <param name="Result">目标结果</param>
+            <param name="ResponseMessage">
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </param>
+        </member>
+        <member name="M:HttpAgent.JsonResponseWrapperContext.#ctor(System.Object,System.Object,System.Net.Http.HttpResponseMessage)">
+            <summary>
+                JSON 响应反序列化包装器上下文
+            </summary>
+            <param name="Instance">
+                包装类型的具体实例（例如 <![CDATA[ApiResult<T>]]> 的实例）
+            </param>
+            <param name="Result">目标结果</param>
+            <param name="ResponseMessage">
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </param>
+        </member>
+        <member name="P:HttpAgent.JsonResponseWrapperContext.Instance">
+            <summary>
+                包装类型的具体实例（例如 <![CDATA[ApiResult<T>]]> 的实例）
+            </summary>
+        </member>
+        <member name="P:HttpAgent.JsonResponseWrapperContext.Result">
+            <summary>目标结果</summary>
+        </member>
+        <member name="P:HttpAgent.JsonResponseWrapperContext.ResponseMessage">
+            <summary>
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </summary>
+        </member>
+        <member name="F:HttpAgent.JsonResponseWrapperContext._getterCache">
+            <summary>
+                包装类型属性值访问器缓存字典
+            </summary>
+        </member>
+        <member name="M:HttpAgent.JsonResponseWrapperContext.GetPropertyValue``1(System.String)">
+            <summary>
+                获取 <see cref="P:HttpAgent.JsonResponseWrapperContext.Instance" /> 指定属性值
+            </summary>
+            <param name="propertyName">属性名称</param>
+            <typeparam name="T">属性类型</typeparam>
+            <returns>
+                <typeparamref name="T" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.JsonResponseWrapperContext.BuildPropertyGetter(System.Type,System.String)">
+            <summary>
+                为指定的具体泛型类型动态构建属性值访问器
+            </summary>
+            <param name="concreteType">包装类型的具体类型</param>
+            <param name="propertyName">属性名称</param>
+            <returns>
+                <see cref="T:System.Func`2" />
+            </returns>
+            <exception cref="T:System.InvalidOperationException"></exception>
+        </member>
         <member name="T:HttpAgent.JsonResponseWrapper">
             <summary>
                 JSON 响应反序列化包装器
-            </summary>
-        </member>
-        <member name="F:HttpAgent.JsonResponseWrapper._getterCache">
-            <summary>
-                目标结果属性值访问器缓存字典
             </summary>
         </member>
         <member name="M:HttpAgent.JsonResponseWrapper.#ctor(System.Type,System.String)">
@@ -10198,29 +10316,25 @@
                 目标结果属性名
             </summary>
         </member>
-        <member name="M:HttpAgent.JsonResponseWrapper.GetResultValue(System.Object)">
+        <member name="P:HttpAgent.JsonResponseWrapper.ResultHandler">
+            <summary>
+                目标结果处理器
+            </summary>
+        </member>
+        <member name="M:HttpAgent.JsonResponseWrapper.GetResultValue(System.Object,System.Net.Http.HttpResponseMessage)">
             <summary>
                 获取目标结果值
             </summary>
             <param name="instance">
                 包装类型的具体实例（例如 <![CDATA[ApiResult<T>]]> 的实例）
             </param>
+            <param name="httpResponseMessage">
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </param>
             <returns>
                 <see cref="T:System.Object" />
             </returns>
             <exception cref="T:System.ArgumentException"></exception>
-        </member>
-        <member name="M:HttpAgent.JsonResponseWrapper.BuildGetter(System.Type)">
-            <summary>
-                为指定的具体泛型类型动态构建属性值访问器
-            </summary>
-            <param name="concreteType">
-                已构造的泛型类型（例如 <![CDATA[ApiResult<string>]]>）
-            </param>
-            <returns>
-                <see cref="T:System.Func`2" />
-            </returns>
-            <exception cref="T:System.InvalidOperationException"></exception>
         </member>
         <member name="T:HttpAgent.JsonSerializationContext">
             <summary>
@@ -10232,7 +10346,7 @@
             </param>
             <param name="GetResultValue">获取目标类型值的委托</param>
         </member>
-        <member name="M:HttpAgent.JsonSerializationContext.#ctor(System.Type,System.Text.Json.JsonSerializerOptions,System.Func{System.Object,System.Object})">
+        <member name="M:HttpAgent.JsonSerializationContext.#ctor(System.Type,System.Text.Json.JsonSerializerOptions,System.Func{System.Object,System.Net.Http.HttpResponseMessage,System.Object})">
             <summary>
                 JSON 序列化上下文
             </summary>
@@ -11624,12 +11738,12 @@
         <member name="M:HttpAgent.HttpRemoteService.StatusCodeRangeRegex">
             <remarks>
             Pattern:<br/>
-            <code>^\\d+[-~]\\d+$</code><br/>
+            <code>^\d+[-~]\d+$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
-            ○ Match a character in the set [-~].<br/>
+            ○ Match a character in the set [\-~].<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
@@ -11638,7 +11752,7 @@
         <member name="M:HttpAgent.HttpRemoteService.StatusCodeCompareRegex">
             <remarks>
             Pattern:<br/>
-            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\\d+)$</code><br/>
+            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\d+)$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
@@ -17297,6 +17411,12 @@
         <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32,System.Int32,System.Int32)">
             <summary>Pushes 3 values onto the backtracking stack.</summary>
         </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.WordCategoriesMask">
+            <summary>Provides a mask of Unicode categories that combine to form [\w].</summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.Generated.Utilities.WordCharBitmap">
+            <summary>Gets a bitmap for whether each character 0 through 127 is in [\w]</summary>
+        </member>
         <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_1F52B1A4D2E82B6FEDE25EC8C55F85BB36775196837076691C96925040F90D32">
             <summary>Supports searching for the string "\\u".</summary>
         </member>
@@ -17336,14 +17456,6 @@
         </member>
     </members>
 </doc>
-tensions.DependencyInjection.IServiceCollection" />
-            </param>
-            <param name="httpRemoteBuilder">
-                <see cref="T:HttpAgent.HttpRemoteBuilder" />
-            </param>
-            <returns>
-                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
-            </returns>
-        </member>
+      </member>
     </members>
 </doc>

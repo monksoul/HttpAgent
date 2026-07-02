@@ -25,7 +25,7 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
         var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
 
         var httpContentProcessorFactory = new HttpContentProcessorFactory(serviceProvider, null);
-        var httpContentConverterFactory = new HttpContentConverterFactory(serviceProvider, logger, null);
+        var httpContentConverterFactory = new HttpContentConverterFactory(serviceProvider, logger, null, null);
 
         Assert.Throws<ArgumentNullException>(() => new HttpRemoteService(null!, null!, null!, null!, null!, null!));
         Assert.Throws<ArgumentNullException>(() =>
@@ -1050,7 +1050,7 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
             HttpCompletionOption.ResponseContentRead, null, (httpClient, httpRequestMessage, option, token) =>
                 httpClient.Send(httpRequestMessage, option, token));
 
-        Assert.Equal(0, i);
+        Assert.Equal(1, i);
 
         await app.StopAsync();
         await serviceProvider.DisposeAsync();

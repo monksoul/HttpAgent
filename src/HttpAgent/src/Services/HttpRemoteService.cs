@@ -129,6 +129,7 @@ internal sealed partial class HttpRemoteService : IHttpRemoteService
         if (!typeof(HttpRemoteResult<>).IsDefinitionEqual(resultType))
         {
             // 将 HttpResponseMessage 转换为 TResult 实例
+            // TODO: 这里需要根据 IHttpContentConverter.KeepsResponseAlive 来决定是否释放 httpResponseMessage
             return _httpContentConverterFactory.Read<TResult>(httpResponseMessage,
                 httpRequestBuilder.HttpContentConverterProviders?.SelectMany(u => u.Invoke()).ToArray(),
                 cancellationToken);
@@ -193,6 +194,7 @@ internal sealed partial class HttpRemoteService : IHttpRemoteService
         if (!typeof(HttpRemoteResult<>).IsDefinitionEqual(resultType))
         {
             // 将 HttpResponseMessage 转换为 TResult 实例
+            // TODO: 这里需要根据 IHttpContentConverter.KeepsResponseAlive 来决定是否释放 httpResponseMessage
             return await _httpContentConverterFactory.ReadAsync<TResult>(httpResponseMessage,
                 httpRequestBuilder.HttpContentConverterProviders?.SelectMany(u => u.Invoke()).ToArray(),
                 cancellationToken);
@@ -257,6 +259,7 @@ internal sealed partial class HttpRemoteService : IHttpRemoteService
         if (!typeof(HttpRemoteResult<>).IsDefinitionEqual(resultType))
         {
             // 将 HttpResponseMessage 转换为 resultType 类型实例
+            // TODO: 这里需要根据 IHttpContentConverter.KeepsResponseAlive 来决定是否释放 httpResponseMessage
             return _httpContentConverterFactory.Read(resultType, httpResponseMessage,
                 httpRequestBuilder.HttpContentConverterProviders?.SelectMany(u => u.Invoke()).ToArray(),
                 cancellationToken);
@@ -290,6 +293,7 @@ internal sealed partial class HttpRemoteService : IHttpRemoteService
         if (!typeof(HttpRemoteResult<>).IsDefinitionEqual(resultType))
         {
             // 将 HttpResponseMessage 转换为 resultType 类型实例
+            // TODO: 这里需要根据 IHttpContentConverter.KeepsResponseAlive 来决定是否释放 httpResponseMessage
             return await _httpContentConverterFactory.ReadAsync(resultType, httpResponseMessage,
                 httpRequestBuilder.HttpContentConverterProviders?.SelectMany(u => u.Invoke()).ToArray(),
                 cancellationToken);
@@ -824,17 +828,9 @@ internal sealed partial class HttpRemoteService : IHttpRemoteService
     ///     <see cref="CancellationToken" />
     /// </param>
     internal static void InvokeStatusCodeHandlers(HttpRequestBuilder httpRequestBuilder,
-        HttpResponseMessage httpResponseMessage, CancellationToken cancellationToken = default)
-    {
-        // 空检查
-        ArgumentNullException.ThrowIfNull(httpRequestBuilder);
-        ArgumentNullException.ThrowIfNull(httpResponseMessage);
-
-        // 后台线程中启动异步任务
-        Task.Run(
-            async () => await InvokeStatusCodeHandlersAsync(httpRequestBuilder, httpResponseMessage, cancellationToken),
-            cancellationToken);
-    }
+        HttpResponseMessage httpResponseMessage, CancellationToken cancellationToken = default) =>
+        AsyncUtility.RunSync(() =>
+            InvokeStatusCodeHandlersAsync(httpRequestBuilder, httpResponseMessage, cancellationToken));
 
     /// <summary>
     ///     调用状态码处理程序

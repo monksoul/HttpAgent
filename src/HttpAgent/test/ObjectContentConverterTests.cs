@@ -13,6 +13,7 @@ public class ObjectContentConverterTests
         Assert.NotNull(converter);
         Assert.True(typeof(IHttpContentConverter<string>).IsAssignableFrom(typeof(ObjectContentConverter<string>)));
         Assert.True(typeof(ObjectContentConverter).IsAssignableFrom(typeof(ObjectContentConverter<string>)));
+        Assert.False(converter.KeepsResponseAlive);
     }
 
     [Fact]

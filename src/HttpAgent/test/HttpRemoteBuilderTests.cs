@@ -11,6 +11,7 @@ public class HttpRemoteBuilderTests
     {
         var builder = new HttpRemoteBuilder();
 
+        Assert.Null(builder._genericHttpContentConverterProviders);
         Assert.Null(builder._httpContentConverterProviders);
         Assert.Null(builder._httpContentProcessorProviders);
         Assert.Null(builder._httpDeclarativeExtractors);
@@ -77,6 +78,40 @@ public class HttpRemoteBuilderTests
         builder2.AddHttpContentConverters(() => [new StringContentConverter()]);
         Assert.NotNull(builder2._httpContentConverterProviders);
         Assert.Equal(2, builder2._httpContentConverterProviders.Count);
+    }
+
+    [Fact]
+    public void AddGenericHttpContentConverters_Invalid_Parameters()
+    {
+        var builder = new HttpRemoteBuilder();
+
+        Assert.Throws<ArgumentNullException>(() => { builder.AddGenericHttpContentConverters(null!); });
+    }
+
+    [Fact]
+    public void AddGenericHttpContentConverters_ReturnOK()
+    {
+        var builder = new HttpRemoteBuilder();
+
+        builder.AddGenericHttpContentConverters(() => []);
+        Assert.NotNull(builder._genericHttpContentConverterProviders);
+
+        var genericHttpContentConverter = new GenericHttpContentConverter(typeof(IAsyncEnumerable<>), typeArgs =>
+            (IHttpContentConverter)Activator.CreateInstance(
+                typeof(AsyncEnumerableContentConverter<>).MakeGenericType(typeArgs[0]))!);
+
+        builder.AddGenericHttpContentConverters(() => [genericHttpContentConverter]);
+        Assert.NotNull(builder._genericHttpContentConverterProviders);
+
+        // 运行时将抛异常
+        builder.AddGenericHttpContentConverters(() => [null!, genericHttpContentConverter]);
+        Assert.NotNull(builder._genericHttpContentConverterProviders);
+
+        var builder2 = new HttpRemoteBuilder();
+        builder2.AddGenericHttpContentConverters(() => [genericHttpContentConverter]);
+        builder2.AddGenericHttpContentConverters(() => [genericHttpContentConverter]);
+        Assert.NotNull(builder2._genericHttpContentConverterProviders);
+        Assert.Equal(2, builder2._genericHttpContentConverterProviders.Count);
     }
 
     [Fact]

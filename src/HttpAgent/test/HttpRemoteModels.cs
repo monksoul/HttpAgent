@@ -51,7 +51,7 @@ public class CustomObjectContentConverter : ObjectContentConverter
             jsonSerializationContext.ResultType, jsonSerializationContext.JsonSerializerOptions, cancellationToken));
 
         // 获取转换的目标类型值
-        return jsonSerializationContext.GetResultValue(deserializedValue);
+        return jsonSerializationContext.GetResultValue(deserializedValue, httpResponseMessage);
     }
 
     /// <inheritdoc />
@@ -67,7 +67,7 @@ public class CustomObjectContentConverter : ObjectContentConverter
             jsonSerializationContext.JsonSerializerOptions, cancellationToken);
 
         // 获取转换的目标类型值
-        return jsonSerializationContext.GetResultValue(deserializedValue);
+        return jsonSerializationContext.GetResultValue(deserializedValue, httpResponseMessage);
     }
 }
 
@@ -338,4 +338,15 @@ public class MultipartFileModel
     public MultipartFile? File { get; set; }
 
     public FileInfo File2 { get; set; }
+}
+
+public class CustomAsyncEnumerableContentConverter<T> : HttpContentConverterBase<IAsyncEnumerable<T?>>
+{
+    /// <inheritdoc />
+    public override IAsyncEnumerable<T?>? Read(HttpResponseMessage httpResponseMessage,
+        CancellationToken cancellationToken = default) => throw new NotImplementedException();
+
+    /// <inheritdoc />
+    public override Task<IAsyncEnumerable<T?>?> ReadAsync(HttpResponseMessage httpResponseMessage,
+        CancellationToken cancellationToken = default) => throw new NotImplementedException();
 }

@@ -11,6 +11,9 @@ namespace HttpAgent;
 public class ObjectContentConverter : IHttpContentConverter
 {
     /// <inheritdoc />
+    public virtual bool KeepsResponseAlive => false;
+
+    /// <inheritdoc />
     public IServiceProvider? ServiceProvider { get; set; }
 
     /// <inheritdoc />
@@ -35,7 +38,7 @@ public class ObjectContentConverter : IHttpContentConverter
                 jsonSerializationContext.JsonSerializerOptions, cancellationToken);
 
         // 获取转换的目标类型值
-        return jsonSerializationContext.GetResultValue(deserializedValue);
+        return jsonSerializationContext.GetResultValue(deserializedValue, httpResponseMessage);
     }
 }
 
