@@ -6,6 +6,7 @@ global using HttpAgent.Core.Extensions;
 global using HttpAgent.Core.Utilities;
 global using HttpAgent.Extensions;
 global using Microsoft.AspNetCore.Builder;
+global using Microsoft.AspNetCore.Components.Forms;
 global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.AspNetCore.Mvc.Controllers;

@@ -386,6 +386,13 @@ public class HttpRequestBuilderMethodsTests
         Assert.True(httpRequestBuilder.RawContent is MultipartContent);
         Assert.Equal("multipart/form-data", httpRequestBuilder.ContentType);
         Assert.Equal(Encoding.Unicode, httpRequestBuilder.ContentEncoding);
+
+        httpRequestBuilder.SetContent(new MemoryStream());
+        Assert.Null(httpRequestBuilder.Disposables);
+
+        httpRequestBuilder.SetContent(new MemoryStream(), disposeStreamOnRequestCompletion: true);
+        Assert.NotNull(httpRequestBuilder.Disposables);
+        Assert.Single(httpRequestBuilder.Disposables);
     }
 
     [Fact]
@@ -2236,5 +2243,26 @@ public class HttpRequestBuilderMethodsTests
 
         httpRequestBuilder.UriBuilderConfigure.Invoke(null!);
         Assert.Equal(2, i);
+    }
+
+    [Fact]
+    public void MergeHeaders_Invalid_Parameters() =>
+        Assert.Throws<ArgumentNullException>(() => HttpRequestBuilder.MergeHeaders(null, null!, false, false));
+
+    [Fact]
+    public void MergeHeaders_ReturnOK()
+    {
+        Assert.Null(HttpRequestBuilder.MergeHeaders(null, new Dictionary<string, object?>(), false, false));
+        Assert.Empty(HttpRequestBuilder.MergeHeaders(new Dictionary<string, List<string?>>(),
+            new Dictionary<string, object?>(), false, false)!);
+
+        var headers = new Dictionary<string, List<string?>> { ["one"] = ["1"], ["two"] = ["2"] };
+
+        var concatHeaders = HttpRequestBuilder.MergeHeaders(headers,
+            new Dictionary<string, object?> { ["one"] = 2, ["three"] = 3 }, false, false);
+
+        Assert.NotNull(concatHeaders);
+        Assert.Equal(["one", "two", "three"], concatHeaders.Keys);
+        Assert.Equal(["1", "2"], concatHeaders["one"]);
     }
 }

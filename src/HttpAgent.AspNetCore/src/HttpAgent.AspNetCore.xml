@@ -1673,9 +1673,50 @@
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </param>
             <param name="formFiles">
-                <see cref="T:Microsoft.AspNetCore.Http.IFormFileCollection" />
+                <see cref="T:Microsoft.AspNetCore.Http.IFormFile" /> 集合
             </param>
             <param name="name">表单名称</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpMultipartFormDataBuilderExtensions.AddFile(HttpAgent.HttpMultipartFormDataBuilder,Microsoft.AspNetCore.Components.Forms.IBrowserFile,System.String,System.String,System.String,System.Text.Encoding,System.Int64,System.Threading.CancellationToken)">
+            <summary>
+                添加文件
+            </summary>
+            <param name="httpMultipartFormDataBuilder">
+                <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
+            </param>
+            <param name="browserFile">
+                <see cref="T:Microsoft.AspNetCore.Components.Forms.IBrowserFile" />
+            </param>
+            <param name="name">表单名称</param>
+            <param name="fileName">文件的名称</param>
+            <param name="contentType">内容类型</param>
+            <param name="contentEncoding">内容编码</param>
+            <param name="maxAllowedSize">流可以提供的最大字节数，默认值为：<c>500KB</c></param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpMultipartFormDataBuilderExtensions.AddFiles(HttpAgent.HttpMultipartFormDataBuilder,System.Collections.Generic.IEnumerable{Microsoft.AspNetCore.Components.Forms.IBrowserFile},System.String,System.Int64,System.Threading.CancellationToken)">
+            <summary>
+                添加多个文件
+            </summary>
+            <param name="httpMultipartFormDataBuilder">
+                <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
+            </param>
+            <param name="browserFiles">
+                <see cref="T:Microsoft.AspNetCore.Components.Forms.IBrowserFile" /> 集合
+            </param>
+            <param name="name">表单名称</param>
+            <param name="maxAllowedSize">流可以提供的最大字节数，默认值为：<c>500KB</c></param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
             <returns>
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>

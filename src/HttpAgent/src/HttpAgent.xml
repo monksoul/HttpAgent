@@ -1771,7 +1771,7 @@
             <summary>
                 设置是否移除默认的多部分内容的 <c>Content-Type</c>
             </summary>
-            <param name="omit">如果为 <c>true</c> 则移除，默认为 <c>false</c></param>
+            <param name="omit">如果为 <c>true</c> 则移除，默认值为：<c>true</c></param>
             <returns>
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
@@ -2285,13 +2285,14 @@
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpRequestBuilder.SetContent(System.Object,System.String,System.Text.Encoding)">
+        <member name="M:HttpAgent.HttpRequestBuilder.SetContent(System.Object,System.String,System.Text.Encoding,System.Boolean)">
             <summary>
                 设置请求内容
             </summary>
             <param name="rawContent">原始请求内容</param>
             <param name="contentType">内容类型</param>
             <param name="contentEncoding">内容编码</param>
+            <param name="disposeStreamOnRequestCompletion">是否在请求结束后自动释放流。默认值为：<c>false</c></param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
@@ -2301,7 +2302,7 @@
                 设置多部分表单内容，请求类型为 <c>multipart/form-data</c>
             </summary>
             <remarks>
-                该操作将强制覆盖 <see cref="M:HttpAgent.HttpRequestBuilder.SetContent(System.Object,System.String,System.Text.Encoding)" />、<see cref="M:HttpAgent.HttpRequestBuilder.SetContentEncoding(System.Text.Encoding)" /> 和
+                该操作将强制覆盖 <see cref="M:HttpAgent.HttpRequestBuilder.SetContent(System.Object,System.String,System.Text.Encoding,System.Boolean)" />、<see cref="M:HttpAgent.HttpRequestBuilder.SetContentEncoding(System.Text.Encoding)" /> 和
                 <see cref="M:HttpAgent.HttpRequestBuilder.SetContentType(System.String)" /> 设置的内容。
             </remarks>
             <param name="configure">自定义配置委托</param>
@@ -2314,7 +2315,7 @@
                 设置多部分表单内容，请求类型为 <c>multipart/form-data</c>
             </summary>
             <remarks>
-                该操作将强制覆盖 <see cref="M:HttpAgent.HttpRequestBuilder.SetContent(System.Object,System.String,System.Text.Encoding)" />、<see cref="M:HttpAgent.HttpRequestBuilder.SetContentEncoding(System.Text.Encoding)" /> 和
+                该操作将强制覆盖 <see cref="M:HttpAgent.HttpRequestBuilder.SetContent(System.Object,System.String,System.Text.Encoding,System.Boolean)" />、<see cref="M:HttpAgent.HttpRequestBuilder.SetContentEncoding(System.Text.Encoding)" /> 和
                 <see cref="M:HttpAgent.HttpRequestBuilder.SetContentType(System.String)" /> 设置的内容。
             </remarks>
             <param name="configure">自定义配置委托</param>
@@ -2328,7 +2329,7 @@
                 设置多部分表单内容，请求类型为 <c>multipart/form-data</c>
             </summary>
             <remarks>
-                该操作将强制覆盖 <see cref="M:HttpAgent.HttpRequestBuilder.SetContent(System.Object,System.String,System.Text.Encoding)" />、<see cref="M:HttpAgent.HttpRequestBuilder.SetContentEncoding(System.Text.Encoding)" /> 和
+                该操作将强制覆盖 <see cref="M:HttpAgent.HttpRequestBuilder.SetContent(System.Object,System.String,System.Text.Encoding,System.Boolean)" />、<see cref="M:HttpAgent.HttpRequestBuilder.SetContentEncoding(System.Text.Encoding)" /> 和
                 <see cref="M:HttpAgent.HttpRequestBuilder.SetContentType(System.String)" /> 设置的内容。
             </remarks>
             <param name="httpMultipartFormDataBuilder">
@@ -3164,7 +3165,7 @@
             <summary>
                 设置是否移除默认的内容的 <c>Content-Type</c>
             </summary>
-            <param name="omit">如果为 <c>true</c> 则移除，默认为 <c>false</c></param>
+            <param name="omit">如果为 <c>true</c> 则移除，默认值为：<c>false</c></param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
@@ -3273,6 +3274,18 @@
             <param name="configure">自定义配置委托</param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.MergeHeaders(System.Collections.Generic.IDictionary{System.String,System.Collections.Generic.List{System.String}},System.Collections.Generic.IDictionary{System.String,System.Object},System.Boolean,System.Boolean)">
+            <summary>
+                将一组标头合并到现有标头字典中
+            </summary>
+            <param name="existing">当前标头字典</param>
+            <param name="newHeaders">待合并的新标头字典</param>
+            <param name="escape">是否转义字符串</param>
+            <param name="replace">是否替换已存在的请求标头</param>
+            <returns>
+                <see cref="T:System.Collections.Generic.IDictionary`2" />
             </returns>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.ReleaseDisposables">
@@ -5141,7 +5154,7 @@
             <remarks>其中键是由值通过给定的选择器函数生成的。</remarks>
             <param name="dictionary">
                 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />
-            </param>
+               </param>
             <param name="values">
                 <see cref="T:System.Collections.Generic.IEnumerable`1" />
             </param>
@@ -5545,13 +5558,13 @@
             ○ Match the string "[[".<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [-:\w] greedily at least once.<br/>
+                ○ Match a character in the set [\-:\w] greedily at least once.<br/>
             ○ 2nd capture group.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match a whitespace character atomically any number of times.<br/>
                     ○ Match '|'.<br/>
                     ○ Match a whitespace character greedily any number of times.<br/>
-                    ○ Match a character in the set [-:\w] greedily at least once.<br/>
+                    ○ Match a character in the set [\-:\w] greedily at least once.<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ Optional (greedy).<br/>
                 ○ Match the string "||".<br/>
@@ -5574,32 +5587,32 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Loop greedily at least once.<br/>
                 ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
+                    ○ Match a character in the set [\-.0-9A-Z_a-z~].<br/>
                     ○ Match a sequence of expressions.<br/>
                         ○ Match '%'.<br/>
-                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
+                        ○ Match a hexadecimal digit exactly 2 times.<br/>
             ○ Match '='.<br/>
             ○ Loop greedily any number of times.<br/>
                 ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
+                    ○ Match a character in the set [+\-.0-9A-Z_a-z~].<br/>
                     ○ Match a sequence of expressions.<br/>
                         ○ Match '%'.<br/>
-                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
+                        ○ Match a hexadecimal digit exactly 2 times.<br/>
             ○ Loop greedily any number of times.<br/>
                 ○ Match '&amp;'.<br/>
                 ○ Loop greedily at least once.<br/>
                     ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
+                        ○ Match a character in the set [\-.0-9A-Z_a-z~].<br/>
                         ○ Match a sequence of expressions.<br/>
                             ○ Match '%'.<br/>
-                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
+                            ○ Match a hexadecimal digit exactly 2 times.<br/>
                 ○ Match '='.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
+                        ○ Match a character in the set [+\-.0-9A-Z_a-z~].<br/>
                         ○ Match a sequence of expressions.<br/>
                             ○ Match '%'.<br/>
-                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
+                            ○ Match a hexadecimal digit exactly 2 times.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
             </remarks>
@@ -6422,7 +6435,7 @@
                 <inheritdoc cref="T:HttpAgent.HeaderAttribute" />
             </summary>
             <remarks>
-                <para>当特性作用于方法或接口时，则表示移除指定请求标头操作。</para>
+                <para>当特性作用于方法或接口时，若配置字符串不含冒号（:），则表示移除指定请求标头；若含冒号，则以第一个冒号为分隔，左侧为键，右侧为值。</para>
                 <para>当特性作用于参数时，则表示添加请求标头，同时设置请求标头键为 <c>name</c> 的值。</para>
             </remarks>
             <param name="name">请求标头键</param>
@@ -7298,6 +7311,18 @@
         <member name="M:HttpAgent.HeaderDeclarativeExtractor.Extract(HttpAgent.HttpRequestBuilder,HttpAgent.HttpDeclarativeExtractorContext)">
             <inheritdoc />
         </member>
+        <member name="M:HttpAgent.HeaderDeclarativeExtractor.TrySplitHeader(System.String,System.String@,System.String@)">
+            <summary>
+                尝试将字符串按第一个冒号拆分为键值对
+            </summary>
+            <remarks>如果输入非空且至少包含一个冒号，返回 <c>true</c>，否则返回 <c>false</c>。</remarks>
+            <param name="input">待拆分的字符串</param>
+            <param name="key">输出拆分后的键</param>
+            <param name="value">输出拆分后的值</param>
+            <returns>
+                <see cref="T:System.Boolean" />
+            </returns>
+        </member>
         <member name="T:HttpAgent.HttpClientNameDeclarativeExtractor">
             <summary>
                 HTTP 声明式 <see cref="T:HttpAgent.HttpClientNameAttribute" /> 特性提取器
@@ -8172,7 +8197,7 @@
             <code>
             ○ Match the string "\\u".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [0-9A-Fa-f] exactly 4 times.<br/>
+                ○ Match a hexadecimal digit exactly 4 times.<br/>
             </code>
             </remarks>
         </member>
@@ -9160,6 +9185,7 @@
                 开始上传
             </summary>
             <param name="cancellationToken">
+                <see cref="T:System.Threadi="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
             <returns>
@@ -10291,9 +10317,7 @@
             </param>
             <param name="name">表单名称</param>
             <param name="fileName">文件的名称</param>
-            <param name="contentType">内容类型</param>
-            <param name="contentEncoding">内容编码</param>
-            <returns>
+            <param name="contentTypeurns>
                 <see cref="T:HttpAgent.MultipartFile" />
             </returns>
         </member>
@@ -11366,6 +11390,8 @@
         </member>
         <member name="M:HttpAgent.HttpRemoteService.SendAsByteArrayAsync(HttpAgent.HttpRequestBuilder,System.Threading.CancellationToken)">
             <inheritdoc />
+ayAsync(HttpAgent.HttpRequestBuilder,System.Threading.CancellationToken)">
+            <inheritdoc />
         </member>
         <member name="M:HttpAgent.HttpRemoteService.SendAsByteArrayAsync(HttpAgent.HttpRequestBuilder,System.Net.Http.HttpCompletionOption,System.Threading.CancellationToken)">
             <inheritdoc />
@@ -11422,10 +11448,7 @@
         </member>
         <member name="M:HttpAgent.HttpRemoteService.HandlePreSendRequest(HttpAgent.HttpRequestBuilder,HttpAgent.IHttpRequestEventHandler,System.Net.Http.HttpRequestMessage)">
             <summary>
-                处理发送 HTTP 请求之前
-            </summary>
-            <param name="httpRequestBuilder">
-                <see cref="T:HttpAgent.HttpRequestBuilder" />
+                处理发送 HTTP 请求="T:HttpAgent.HttpRequestBuilder" />
             </param>
             <param name="requestEventHandler">
                 <see cref="T:HttpAgent.IHttpRequestEventHandler" />
@@ -11594,12 +11617,12 @@
         <member name="M:HttpAgent.HttpRemoteService.StatusCodeRangeRegex">
             <remarks>
             Pattern:<br/>
-            <code>^\\d+[-~]\\d+$</code><br/>
+            <code>^\d+[-~]\d+$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
-            ○ Match a character in the set [-~].<br/>
+            ○ Match a character in the set [\-~].<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
@@ -11608,7 +11631,7 @@
         <member name="M:HttpAgent.HttpRemoteService.StatusCodeCompareRegex">
             <remarks>
             Pattern:<br/>
-            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\\d+)$</code><br/>
+            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\d+)$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
@@ -12135,6 +12158,8 @@
             <inheritdoc />
         </member>
         <member name="M:HttpAgent.HttpRemoteService.TraceAsync(System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            <inheritdoc />
+    tion{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="M:HttpAgent.HttpRemoteService.TraceAsync(System.String,System.Net.Http.HttpCompletionOption,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
@@ -17267,6 +17292,12 @@
         <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32,System.Int32,System.Int32)">
             <summary>Pushes 3 values onto the backtracking stack.</summary>
         </member>
+        <member name="T:Microsoft.Extensions.DependencyInjection.HttpRemoteSeindexOfString_1F52B1A4D2E82B6FEDE25EC8C55F85BB36775196837076691C96925040F90D32">
+            <summary>Supports searching for the string "\\u".</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_EBC667BDABA1472FA863B5B39B31251EF2B4C95DD643BDECF694CB1CE7BDC178">
+            <summary>Supports searching for the string "[[".</summary>
+        </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions">
             <summary>
                 HTTP 远程请求模块 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" /> 扩展类
@@ -17287,20 +17318,6 @@
         <member name="M:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions.AddHttpRemote(Microsoft.Extensions.DependencyInjection.IServiceCollection,HttpAgent.HttpRemoteBuilder)">
             <summary>
                 添加 HTTP 远程请求服务
-            </summary>
-            <param name="services">
-                <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
-            </param>
-            <param name="httpRemoteBuilder">
-                <see cref="T:HttpAgent.HttpRemoteBuilder" />
-            </param>
-            <returns>
-                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
-            </returns>
-        </member>
-    </members>
-</doc>
-         添加 HTTP 远程请求服务
             </summary>
             <param name="services">
                 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />

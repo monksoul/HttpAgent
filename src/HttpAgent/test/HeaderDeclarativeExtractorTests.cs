@@ -102,6 +102,36 @@ public class HeaderDeclarativeExtractorTests
         Assert.Equal(4, httpRequestBuilder6.Headers.Count);
         Assert.Equal("10", httpRequestBuilder6.Headers["id"].First());
         Assert.Equal("furion", httpRequestBuilder6.Headers["name"].First());
+
+        var method6 = typeof(IHeaderDeclarativeTest).GetMethod(nameof(IHeaderDeclarativeTest.Test6))!;
+        var context7 = new HttpDeclarativeExtractorContext(method6, [],
+            new HttpDeclarativeMethodMetadata(method6, typeof(IHeaderDeclarativeTest)));
+        var httpRequestBuilder7 = HttpRequestBuilder.Get("http://localhost");
+        new HeaderDeclarativeExtractor().Extract(httpRequestBuilder7, context7);
+
+        Assert.NotNull(httpRequestBuilder7.Headers);
+        Assert.Equal(3, httpRequestBuilder7.Headers.Count);
+        Assert.Equal("application/json", httpRequestBuilder7.Headers["Content-Type"].First());
+    }
+
+    [Fact]
+    public void TrySplitHeader_ReturnOK()
+    {
+        Assert.False(HeaderDeclarativeExtractor.TrySplitHeader(null!, out _, out _));
+        Assert.False(HeaderDeclarativeExtractor.TrySplitHeader(string.Empty, out _, out _));
+        Assert.False(HeaderDeclarativeExtractor.TrySplitHeader(" ", out _, out _));
+        Assert.False(HeaderDeclarativeExtractor.TrySplitHeader("Content-Type", out _, out _));
+
+        Assert.True(HeaderDeclarativeExtractor.TrySplitHeader("Content-Type:", out var key1, out var value1));
+        Assert.Equal("Content-Type", key1);
+        Assert.NotNull(value1);
+        Assert.Empty(value1);
+
+        Assert.True(HeaderDeclarativeExtractor.TrySplitHeader("Content-Type: application/json", out var key2,
+            out var value2));
+        Assert.Equal("Content-Type", key2);
+        Assert.NotNull(value2);
+        Assert.Equal("application/json", value2);
     }
 }
 
@@ -130,4 +160,8 @@ public interface IHeaderDeclarativeTest : IHttpDeclarative
 
     [Post("http://localhost:5000")]
     Task Test5([Header] object obj);
+
+    [Post("http://localhost:5000")]
+    [Header("Content-Type: application/json")]
+    Task Test6();
 }
