@@ -2,41 +2,46 @@
 // 
 // 此源代码遵循位于源代码树根目录中的 LICENSE 文件的许可证。
 
-namespace HttpAgent.Tests;
+namespace HttpAgent.AspNetCore.Tests;
 
-public class FileInfoContentProcessorTests
+public class FormFileContentProcessorTests
 {
     [Fact]
     public void New_ReturnOK()
     {
-        var processor = new FileInfoContentProcessor();
+        var processor = new FormFileContentProcessor();
         Assert.NotNull(processor);
-        Assert.True(typeof(IHttpContentProcessor).IsAssignableFrom(typeof(FileInfoContentProcessor)));
+        Assert.True(typeof(IHttpContentProcessor).IsAssignableFrom(typeof(FormFileContentProcessor)));
     }
 
     [Fact]
     public void CanProcess_ReturnOK()
     {
-        var processor = new FileInfoContentProcessor();
+        var processor = new FormFileContentProcessor();
         using var stream = new MemoryStream();
 
         Assert.False(processor.CanProcess(new HttpContentProcessorContext(null, "application/octet-stream")));
         Assert.False(processor.CanProcess(new HttpContentProcessorContext(stream, "Application/Octet-stream")));
-        Assert.True(processor.CanProcess(
-            new HttpContentProcessorContext(new FileInfo(Path.Combine(AppContext.BaseDirectory, "test.txt")),
-                "text/plain")));
+
+        var fileInfo = new FileInfo(Path.Combine(AppContext.BaseDirectory, "test.txt"));
+        using var fileStream = fileInfo.OpenRead();
+        var formFile = new FormFile(fileStream, 0, fileInfo.Length, "file", "test.txt");
+
+        Assert.True(processor.CanProcess(new HttpContentProcessorContext(formFile, "text/plain")));
     }
 
     [Fact]
     public void Process_ReturnOK()
     {
-        var processor = new FileInfoContentProcessor();
+        var processor = new FormFileContentProcessor();
 
         var streamContent1 = processor.Process(new HttpContentProcessorContext(null, "application/octet-stream"));
         Assert.Null(streamContent1);
 
         var fileInfo = new FileInfo(Path.Combine(AppContext.BaseDirectory, "test.txt"));
-        var processorContext = new HttpContentProcessorContext(fileInfo, "text/plain");
+        using var fileStream = fileInfo.OpenRead();
+        var formFile = new FormFile(fileStream, 0, fileInfo.Length, "file", "test.txt");
+        var processorContext = new HttpContentProcessorContext(formFile, "text/plain");
 
         var streamContent2 = processor.Process(processorContext);
         Assert.NotNull(streamContent2);
@@ -49,7 +54,7 @@ public class FileInfoContentProcessorTests
         Assert.NotNull(processorContext.CompletionDisposable);
 
         var streamContent3 =
-            processor.Process(new HttpContentProcessorContext(fileInfo, "application/octet-stream", Encoding.UTF32));
+            processor.Process(new HttpContentProcessorContext(formFile, "application/octet-stream", Encoding.UTF32));
         Assert.NotNull(streamContent3);
         Assert.NotNull(streamContent3.ReadAsStream());
         Assert.Equal("application/octet-stream", streamContent3.Headers.ContentType?.MediaType);
@@ -67,7 +72,7 @@ public class FileInfoContentProcessorTests
         Assert.Null(streamContent4.Headers.ContentType?.CharSet);
 
         var streamContent5 =
-            processor.Process(new HttpContentProcessorContext(fileInfo, "text/plain") { AsFormItem = true });
+            processor.Process(new HttpContentProcessorContext(formFile, "text/plain") { AsFormItem = true });
         Assert.NotNull(streamContent5);
         Assert.NotNull(streamContent5.ReadAsStream());
         Assert.Equal("text/plain", streamContent5.Headers.ContentType?.MediaType);

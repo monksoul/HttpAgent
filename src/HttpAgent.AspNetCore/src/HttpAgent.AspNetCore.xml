@@ -1911,5 +1911,16 @@
                 用于在转发响应之前执行自定义操作
             </summary>
         </member>
+        <member name="T:HttpAgent.FormFileContentProcessor">
+            <summary>
+                <see cref="T:Microsoft.AspNetCore.Http.IFormFile" /> 内容处理器
+            </summary>
+        </member>
+        <member name="M:HttpAgent.FormFileContentProcessor.CanProcess(HttpAgent.HttpContentProcessorContext)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.FormFileContentProcessor.Process(HttpAgent.HttpContentProcessorContext)">
+            <inheritdoc />
+        </member>
     </members>
 </doc>

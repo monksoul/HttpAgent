@@ -5154,7 +5154,7 @@
             <remarks>其中键是由值通过给定的选择器函数生成的。</remarks>
             <param name="dictionary">
                 <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />
-               </param>
+            </param>
             <param name="values">
                 <see cref="T:System.Collections.Generic.IEnumerable`1" />
             </param>
@@ -5558,13 +5558,13 @@
             ○ Match the string "[[".<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [\-:\w] greedily at least once.<br/>
+                ○ Match a character in the set [-:\w] greedily at least once.<br/>
             ○ 2nd capture group.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match a whitespace character atomically any number of times.<br/>
                     ○ Match '|'.<br/>
                     ○ Match a whitespace character greedily any number of times.<br/>
-                    ○ Match a character in the set [\-:\w] greedily at least once.<br/>
+                    ○ Match a character in the set [-:\w] greedily at least once.<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ Optional (greedy).<br/>
                 ○ Match the string "||".<br/>
@@ -5587,32 +5587,32 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Loop greedily at least once.<br/>
                 ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [\-.0-9A-Z_a-z~].<br/>
+                    ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
                     ○ Match a sequence of expressions.<br/>
                         ○ Match '%'.<br/>
-                        ○ Match a hexadecimal digit exactly 2 times.<br/>
+                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
             ○ Match '='.<br/>
             ○ Loop greedily any number of times.<br/>
                 ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [+\-.0-9A-Z_a-z~].<br/>
+                    ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
                     ○ Match a sequence of expressions.<br/>
                         ○ Match '%'.<br/>
-                        ○ Match a hexadecimal digit exactly 2 times.<br/>
+                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
             ○ Loop greedily any number of times.<br/>
                 ○ Match '&amp;'.<br/>
                 ○ Loop greedily at least once.<br/>
                     ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [\-.0-9A-Z_a-z~].<br/>
+                        ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
                         ○ Match a sequence of expressions.<br/>
                             ○ Match '%'.<br/>
-                            ○ Match a hexadecimal digit exactly 2 times.<br/>
+                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
                 ○ Match '='.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [+\-.0-9A-Z_a-z~].<br/>
+                        ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
                         ○ Match a sequence of expressions.<br/>
                             ○ Match '%'.<br/>
-                            ○ Match a hexadecimal digit exactly 2 times.<br/>
+                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
             </remarks>
@@ -8197,7 +8197,7 @@
             <code>
             ○ Match the string "\\u".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a hexadecimal digit exactly 4 times.<br/>
+                ○ Match a character in the set [0-9A-Fa-f] exactly 4 times.<br/>
             </code>
             </remarks>
         </member>
@@ -9185,7 +9185,6 @@
                 开始上传
             </summary>
             <param name="cancellationToken">
-                <see cref="T:System.Threadi="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
             <returns>
@@ -10317,7 +10316,9 @@
             </param>
             <param name="name">表单名称</param>
             <param name="fileName">文件的名称</param>
-            <param name="contentTypeurns>
+            <param name="contentType">内容类型</param>
+            <param name="contentEncoding">内容编码</param>
+            <returns>
                 <see cref="T:HttpAgent.MultipartFile" />
             </returns>
         </member>
@@ -11120,6 +11121,11 @@
             </summary>
             <remarks>默认值为：<c>false</c>。</remarks>
         </member>
+        <member name="P:HttpAgent.HttpContentProcessorContext.CompletionDisposable">
+            <summary>
+                设置需要在请求结束后自动释放的流
+            </summary>
+        </member>
         <member name="T:HttpAgent.IHttpContentProcessor">
             <summary>
                 <see cref="T:System.Net.Http.HttpContent" /> 请求内容处理器
@@ -11390,8 +11396,6 @@
         </member>
         <member name="M:HttpAgent.HttpRemoteService.SendAsByteArrayAsync(HttpAgent.HttpRequestBuilder,System.Threading.CancellationToken)">
             <inheritdoc />
-ayAsync(HttpAgent.HttpRequestBuilder,System.Threading.CancellationToken)">
-            <inheritdoc />
         </member>
         <member name="M:HttpAgent.HttpRemoteService.SendAsByteArrayAsync(HttpAgent.HttpRequestBuilder,System.Net.Http.HttpCompletionOption,System.Threading.CancellationToken)">
             <inheritdoc />
@@ -11448,7 +11452,10 @@ ayAsync(HttpAgent.HttpRequestBuilder,System.Threading.CancellationToken)">
         </member>
         <member name="M:HttpAgent.HttpRemoteService.HandlePreSendRequest(HttpAgent.HttpRequestBuilder,HttpAgent.IHttpRequestEventHandler,System.Net.Http.HttpRequestMessage)">
             <summary>
-                处理发送 HTTP 请求="T:HttpAgent.HttpRequestBuilder" />
+                处理发送 HTTP 请求之前
+            </summary>
+            <param name="httpRequestBuilder">
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
             </param>
             <param name="requestEventHandler">
                 <see cref="T:HttpAgent.IHttpRequestEventHandler" />
@@ -11617,12 +11624,12 @@ ayAsync(HttpAgent.HttpRequestBuilder,System.Threading.CancellationToken)">
         <member name="M:HttpAgent.HttpRemoteService.StatusCodeRangeRegex">
             <remarks>
             Pattern:<br/>
-            <code>^\d+[-~]\d+$</code><br/>
+            <code>^\\d+[-~]\\d+$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
-            ○ Match a character in the set [\-~].<br/>
+            ○ Match a character in the set [-~].<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
@@ -11631,7 +11638,7 @@ ayAsync(HttpAgent.HttpRequestBuilder,System.Threading.CancellationToken)">
         <member name="M:HttpAgent.HttpRemoteService.StatusCodeCompareRegex">
             <remarks>
             Pattern:<br/>
-            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\d+)$</code><br/>
+            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\\d+)$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
@@ -12158,8 +12165,6 @@ ayAsync(HttpAgent.HttpRequestBuilder,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="M:HttpAgent.HttpRemoteService.TraceAsync(System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
-            <inheritdoc />
-    tion{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="M:HttpAgent.HttpRemoteService.TraceAsync(System.String,System.Net.Http.HttpCompletionOption,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
@@ -17292,7 +17297,7 @@ ayAsync(HttpAgent.HttpRequestBuilder,System.Threading.CancellationToken)">
         <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32,System.Int32,System.Int32)">
             <summary>Pushes 3 values onto the backtracking stack.</summary>
         </member>
-        <member name="T:Microsoft.Extensions.DependencyInjection.HttpRemoteSeindexOfString_1F52B1A4D2E82B6FEDE25EC8C55F85BB36775196837076691C96925040F90D32">
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_1F52B1A4D2E82B6FEDE25EC8C55F85BB36775196837076691C96925040F90D32">
             <summary>Supports searching for the string "\\u".</summary>
         </member>
         <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_EBC667BDABA1472FA863B5B39B31251EF2B4C95DD643BDECF694CB1CE7BDC178">
