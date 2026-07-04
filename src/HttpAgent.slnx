@@ -1,9 +1,11 @@
 ﻿<Solution>
-    <Project Path="..\samples\HttpAgent.AspNetCore.Samples\HttpAgent.AspNetCore.Samples.csproj" Type="Classic C#"/>
-    <Project Path="..\samples\HttpAgent.Console.Samples\HttpAgent.Console.Samples.csproj" Type="Classic C#"/>
-    <Project Path="..\samples\HttpAgent.Samples\HttpAgent.Samples.csproj" Type="Classic C#"/>
-    <Project Path="HttpAgent.AspNetCore\src\HttpAgent.AspNetCore.csproj" Type="Classic C#"/>
-    <Project Path="HttpAgent.AspNetCore\test\HttpAgent.AspNetCore.Tests.csproj" Type="Classic C#"/>
-    <Project Path="HttpAgent\src\HttpAgent.csproj" Type="Classic C#"/>
-    <Project Path="HttpAgent\test\HttpAgent.Tests.csproj" Type="Classic C#"/>
+    <Project Path="../samples/HttpAgent.BlazorWebAssembly.Samples/HttpAgent.BlazorWebAssembly.Samples.csproj"
+             Id="d47570af-c868-4011-85b7-486b65a9d35b"/>
+    <Project Path="..\samples\HttpAgent.AspNetCore.Samples\HttpAgent.AspNetCore.Samples.csproj"/>
+    <Project Path="..\samples\HttpAgent.Console.Samples\HttpAgent.Console.Samples.csproj"/>
+    <Project Path="..\samples\HttpAgent.Samples\HttpAgent.Samples.csproj"/>
+    <Project Path="HttpAgent.AspNetCore\src\HttpAgent.AspNetCore.csproj"/>
+    <Project Path="HttpAgent.AspNetCore\test\HttpAgent.AspNetCore.Tests.csproj"/>
+    <Project Path="HttpAgent\src\HttpAgent.csproj"/>
+    <Project Path="HttpAgent\test\HttpAgent.Tests.csproj"/>
 </Solution>

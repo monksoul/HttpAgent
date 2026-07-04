@@ -3134,6 +3134,7 @@
             <summary>
                 设置请求基地址
             </summary>
+            <remarks>可充当前缀使用。</remarks>
             <param name="baseAddress">基地址</param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
@@ -6217,6 +6218,7 @@
             <summary>
                 <inheritdoc cref="T:HttpAgent.BaseAddressAttribute" />
             </summary>
+            <remarks>可充当前缀使用。</remarks>
             <param name="baseAddress">请求基地址</param>
         </member>
         <member name="P:HttpAgent.BaseAddressAttribute.BaseAddress">
@@ -8801,6 +8803,25 @@
             <param name="contentDisposition">
                 <see cref="T:System.Net.Http.Headers.ContentDispositionHeaderValue" />
             </param>
+            <returns>
+                <see cref="T:System.String" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Helpers.JoinNonEmptyLines(System.String[])">
+            <summary>
+                将传入的字符串数组中所有非空白字符串用换行符（\r\n）拼接成一个字符串
+            </summary>
+            <param name="lines">字符串数组</param>
+            <returns>
+                <see cref="T:System.String" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Helpers.CombineUrl(System.String,System.String)">
+            <summary>
+                组合基地址和请求地址
+            </summary>
+            <param name="baseUrl">基地址</param>
+            <param name="requestUrl">请求地址</param>
             <returns>
                 <see cref="T:System.String" />
             </returns>

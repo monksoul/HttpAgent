@@ -188,4 +188,27 @@ public class HelpersTests
         Assert.Equal("长风.safetensors",
             HttpAgent.Helpers.ExtractFileNameFromContentDisposition(contentDisposition));
     }
+
+    [Fact]
+    public void JoinNonEmptyLines_ReturnOK()
+    {
+        Assert.Empty(HttpAgent.Helpers.JoinNonEmptyLines());
+        Assert.Empty(HttpAgent.Helpers.JoinNonEmptyLines(null));
+        Assert.Empty(HttpAgent.Helpers.JoinNonEmptyLines(string.Empty));
+        Assert.Empty(HttpAgent.Helpers.JoinNonEmptyLines("  "));
+        Assert.Equal("Hello\r\nWorld", HttpAgent.Helpers.JoinNonEmptyLines("Hello", "World"));
+        Assert.Equal("Hello\r\nWorld", HttpAgent.Helpers.JoinNonEmptyLines("Hello", null, "World"));
+    }
+
+    [Fact]
+    public void CombineUrl_ReturnOK()
+    {
+        Assert.Empty(HttpAgent.Helpers.CombineUrl(null, null));
+        Assert.Equal("/furion", HttpAgent.Helpers.CombineUrl("/furion", null));
+        Assert.Equal("http://localhost/api", HttpAgent.Helpers.CombineUrl(null, "http://localhost/api"));
+        Assert.Equal("http://localhost/api", HttpAgent.Helpers.CombineUrl("/furion", "http://localhost/api"));
+
+        Assert.Equal("/furion/api", HttpAgent.Helpers.CombineUrl("/furion", "/api"));
+        Assert.Equal("http://localhost/furion/api", HttpAgent.Helpers.CombineUrl("http://localhost/furion", "/api"));
+    }
 }
