@@ -154,13 +154,13 @@ public class HttpRemoteBuilderTests
         var exception = Assert.Throws<ArgumentException>(() =>
             builder.AddHttpDeclarative(typeof(INonHttpTest)));
         Assert.Equal(
-            $"The type `{typeof(INonHttpTest)}` must be a non-generic interface that implements `{typeof(IHttpDeclarative)}`. (Parameter 'declarativeType')",
+            $"The type `{typeof(INonHttpTest)}` must be a closed or non-generic interface that implements `{typeof(IHttpDeclarative)}`. (Parameter 'declarativeType')",
             exception.Message);
 
         Assert.Throws<ArgumentException>(() =>
             builder.AddHttpDeclarative(typeof(HttpTest)));
         Assert.Throws<ArgumentException>(() =>
-            builder.AddHttpDeclarative(typeof(IHttpTestBase<string>)));
+            builder.AddHttpDeclarative(typeof(IHttpTestBase<>)));
     }
 
     [Fact]
@@ -176,6 +176,10 @@ public class HttpRemoteBuilderTests
         builder.AddHttpDeclarative<IHttpTest>();
         Assert.Single(builder._httpDeclarativeTypes);
         Assert.Equal(typeof(IHttpTest), builder._httpDeclarativeTypes.First());
+
+        builder.AddHttpDeclarative<IHttpTestBase<string>>();
+        Assert.Equal(2, builder._httpDeclarativeTypes.Count);
+        Assert.Equal(typeof(IHttpTestBase<string>), builder._httpDeclarativeTypes.Last());
     }
 
     [Fact]

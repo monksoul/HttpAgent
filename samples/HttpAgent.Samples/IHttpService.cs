@@ -41,4 +41,13 @@ public interface IHttpChildService : INormalService, IHttpService
 {
     [Get("https://baiqian.com/")]
     Task<string> GetBaiqian();
+
+    [Get("https://furion.net/")]
+    Task<T> GetContent<T>();
+}
+
+public interface IHttpInService<in T> : IHttpDeclarative
+{
+    [Get("https://furion.net?t={input}")]
+    Task<string> GetContent(T input);
 }

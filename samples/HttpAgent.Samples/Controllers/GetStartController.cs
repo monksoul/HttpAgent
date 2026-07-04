@@ -224,11 +224,15 @@ public class GetStartController(
     }
 
     [HttpGet]
-    public async Task Declarative2(IHttpChildService childService)
+    public async Task Declarative2([FromServices] IHttpChildService childService,
+        [FromServices] IHttpInService<string> inService)
     {
         var content1 = await childService.GetWebSiteContent();
         var content2 = await childService.GetBaiqian();
         var content3 = await childService.GetBaidu();
+
+        var content4 = await childService.GetContent<string>();
+        var content5 = await inService.GetContent("furion");
     }
 
     /// <summary>
