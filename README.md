@@ -9,7 +9,7 @@ consumption and high test coverage.
 
 ![HttpAgent.drawio](https://gitee.com/dotnetchina/HttpAgent/raw/master/drawio/HttpAgent.drawio.jpg "HttpAgent.drawio.jpg")
 
-[**View High-Definition Architecture Diagram**](https://diagram-viewer.giteeusercontent.com?repo=dotnetchina/HttpAgent&ref=master&file=drawio/HttpAgent.drawio)
+[**View High-Definition Architecture Diagram**](https://gitee.com/dotnetchina/HttpAgent/blob/master/drawio/HttpAgent.drawio)
 
 ## Features
 

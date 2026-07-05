@@ -7,7 +7,7 @@ HttpAgent 是一个高性能、灵活且易用的开源库，提供了全面的 
 
 ![HttpAgent.drawio](https://gitee.com/dotnetchina/HttpAgent/raw/master/drawio/HttpAgent.drawio.jpg "HttpAgent.drawio.jpg")
 
-[**查看高清架构图**](https://diagram-viewer.giteeusercontent.com?repo=dotnetchina/HttpAgent&ref=master&file=drawio/HttpAgent.drawio)
+[**查看高清架构图**](https://gitee.com/dotnetchina/HttpAgent/blob/master/drawio/HttpAgent.drawio)
 
 ## 特性
 
