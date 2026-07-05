@@ -538,7 +538,7 @@ public class HttpRequestBuilderTests
         httpRequestBuilder.SetContent(new { id = 10, name = "Furion" });
         httpRequestBuilder.BuildAndSetContent(httpRequestMessage, httpContentProcessorFactory,
             httpRemoteOptions);
-        Assert.Equal("text/plain", httpRequestBuilder.ContentType);
+        Assert.Equal("application/json", httpRequestBuilder.ContentType);
         Assert.NotNull(httpRequestBuilder.RawContent);
         Assert.NotNull(httpRequestMessage.Content);
         Assert.Equal(typeof(StringContent), httpRequestMessage.Content.GetType());
@@ -549,7 +549,7 @@ public class HttpRequestBuilderTests
         });
         httpRequestBuilder.BuildAndSetContent(httpRequestMessage, httpContentProcessorFactory,
             httpRemoteOptions);
-        Assert.Equal("text/plain", httpRequestBuilder.ContentType);
+        Assert.Equal("application/json", httpRequestBuilder.ContentType);
         Assert.NotNull(httpRequestBuilder.RawContent);
         Assert.NotNull(httpRequestMessage.Content);
         Assert.Equal(typeof(StringContent), httpRequestMessage.Content.GetType());
@@ -627,7 +627,7 @@ public class HttpRequestBuilderTests
         var httpRequestBuilder2 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
         httpRequestBuilder2.SetContent(new { });
         httpRequestBuilder2.SetDefaultContentType(MediaTypeNames.Text.Plain);
-        Assert.Equal(MediaTypeNames.Text.Plain, httpRequestBuilder2.ContentType);
+        Assert.Equal(MediaTypeNames.Application.Json, httpRequestBuilder2.ContentType);
 
         var httpRequestBuilder3 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
         httpRequestBuilder3.SetContent(Array.Empty<byte>());
@@ -662,7 +662,7 @@ public class HttpRequestBuilderTests
         var httpRequestBuilder9 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
         httpRequestBuilder9.SetContent(new MultipartContent());
         httpRequestBuilder9.SetDefaultContentType(MediaTypeNames.Text.Plain);
-        Assert.Equal(MediaTypeNames.Multipart.FormData, httpRequestBuilder9.ContentType);
+        Assert.Equal("multipart/mixed", httpRequestBuilder9.ContentType);
 
         var httpRequestBuilder10 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
         httpRequestBuilder10.SetContent(new StringContent(""));
@@ -672,7 +672,7 @@ public class HttpRequestBuilderTests
         var httpRequestBuilder11 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
         httpRequestBuilder11.SetContent(new StringContent(""));
         httpRequestBuilder11.SetDefaultContentType(MediaTypeNames.Application.Json);
-        Assert.Equal(MediaTypeNames.Application.Json, httpRequestBuilder11.ContentType);
+        Assert.Equal(MediaTypeNames.Text.Plain, httpRequestBuilder11.ContentType);
 
         var httpRequestBuilder12 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
         httpRequestBuilder12.SetContent(JsonContent.Create(new { }));
@@ -745,7 +745,7 @@ public class HttpRequestBuilderTests
         Assert.Equal("id=10; name=furion", httpRequestMessage.Headers.GetValues("Cookie").First());
         Assert.NotNull(httpRequestMessage.Content);
         Assert.Equal(typeof(StringContent), httpRequestMessage.Content.GetType());
-        Assert.Equal("text/plain", httpRequestMessage.Content.Headers.ContentType!.MediaType);
+        Assert.Equal("application/json", httpRequestMessage.Content.Headers.ContentType!.MediaType);
         Assert.Null(httpRequestMessage.Content.Headers.ContentType!.CharSet);
         Assert.Single(httpRequestMessage.Options);
         Assert.True(httpRequestMessage.Options.TryGetValue(
@@ -778,7 +778,7 @@ public class HttpRequestBuilderTests
         Assert.Equal("id=10; name=furion", httpRequestMessage.Headers.GetValues("Cookie").First());
         Assert.NotNull(httpRequestMessage.Content);
         Assert.Equal(typeof(StringContent), httpRequestMessage.Content.GetType());
-        Assert.Equal("text/plain", httpRequestMessage.Content.Headers.ContentType!.MediaType);
+        Assert.Equal("application/json", httpRequestMessage.Content.Headers.ContentType!.MediaType);
         Assert.Null(httpRequestMessage.Content.Headers.ContentType!.CharSet);
     }
 

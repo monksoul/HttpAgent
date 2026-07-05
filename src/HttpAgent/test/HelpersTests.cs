@@ -33,10 +33,8 @@ public class HelpersTests
         using var stream = HttpAgent.Helpers.GetStreamFromRemote("https://furion.net");
         Assert.NotNull(stream);
 
-        using var stream2 = HttpAgent.Helpers.GetStreamFromRemote("https://furion.net", (client, request) =>
-        {
-            request.Headers.TryAddWithoutValidation("framework", "Furion");
-        });
+        using var stream2 = HttpAgent.Helpers.GetStreamFromRemote("https://furion.net",
+            (client, request) => { request.Headers.TryAddWithoutValidation("framework", "Furion"); });
         Assert.NotNull(stream2);
     }
 
@@ -130,7 +128,13 @@ public class HelpersTests
         Assert.Equal(MediaTypeNames.Text.Plain,
             HttpAgent.Helpers.GetContentTypeOrDefault(null, MediaTypeNames.Text.Plain));
         Assert.Equal(MediaTypeNames.Text.Plain,
+            HttpAgent.Helpers.GetContentTypeOrDefault("Furion", MediaTypeNames.Text.Plain));
+        Assert.Equal(MediaTypeNames.Application.Json,
             HttpAgent.Helpers.GetContentTypeOrDefault(new { }, MediaTypeNames.Text.Plain));
+        Assert.Equal(MediaTypeNames.Application.Json,
+            HttpAgent.Helpers.GetContentTypeOrDefault(new ObjectModel { }, MediaTypeNames.Text.Plain));
+        Assert.Equal(MediaTypeNames.Application.Json,
+            HttpAgent.Helpers.GetContentTypeOrDefault(new List<ObjectModel>(), MediaTypeNames.Text.Plain));
         Assert.Equal(MediaTypeNames.Application.Octet,
             HttpAgent.Helpers.GetContentTypeOrDefault(Array.Empty<byte>(), MediaTypeNames.Text.Plain));
 
@@ -144,11 +148,11 @@ public class HelpersTests
             HttpAgent.Helpers.GetContentTypeOrDefault(new StreamContent(stream), MediaTypeNames.Text.Plain));
         Assert.Equal(MediaTypeNames.Application.FormUrlEncoded,
             HttpAgent.Helpers.GetContentTypeOrDefault(new FormUrlEncodedContent([]), MediaTypeNames.Text.Plain));
-        Assert.Equal(MediaTypeNames.Multipart.FormData,
+        Assert.Equal("multipart/mixed",
             HttpAgent.Helpers.GetContentTypeOrDefault(new MultipartContent(), MediaTypeNames.Text.Plain));
         Assert.Equal(MediaTypeNames.Text.Plain,
             HttpAgent.Helpers.GetContentTypeOrDefault(new StringContent(""), MediaTypeNames.Text.Plain));
-        Assert.Equal(MediaTypeNames.Application.Json,
+        Assert.Equal(MediaTypeNames.Text.Plain,
             HttpAgent.Helpers.GetContentTypeOrDefault(new StringContent(""), MediaTypeNames.Application.Json));
         Assert.Equal(MediaTypeNames.Application.Json,
             HttpAgent.Helpers.GetContentTypeOrDefault(JsonContent.Create(new { }), MediaTypeNames.Application.Json));
@@ -165,6 +169,22 @@ public class HelpersTests
         Assert.Equal(MediaTypeNames.Text.Plain,
             HttpAgent.Helpers.GetContentTypeOrDefault(new FileInfo(Path.Combine(AppContext.BaseDirectory, "test.txt")),
                 MediaTypeNames.Application.Octet));
+
+        Assert.Equal(MediaTypeNames.Text.Plain,
+            HttpAgent.Helpers.GetContentTypeOrDefault(JsonNode.Parse("1"), MediaTypeNames.Text.Plain));
+        Assert.Equal(MediaTypeNames.Text.Plain,
+            HttpAgent.Helpers.GetContentTypeOrDefault(JsonNode.Parse("true"), MediaTypeNames.Text.Plain));
+        Assert.Equal(MediaTypeNames.Text.Plain,
+            HttpAgent.Helpers.GetContentTypeOrDefault(JsonNode.Parse("\"furion\""), MediaTypeNames.Text.Plain));
+
+#if NET10_0_OR_GREATER
+        Assert.Equal(MediaTypeNames.Text.Plain,
+            HttpAgent.Helpers.GetContentTypeOrDefault(JsonElement.Parse("1"), MediaTypeNames.Text.Plain));
+        Assert.Equal(MediaTypeNames.Text.Plain,
+            HttpAgent.Helpers.GetContentTypeOrDefault(JsonElement.Parse("true"), MediaTypeNames.Text.Plain));
+        Assert.Equal(MediaTypeNames.Text.Plain,
+            HttpAgent.Helpers.GetContentTypeOrDefault(JsonElement.Parse("\"furion\""), MediaTypeNames.Text.Plain));
+#endif
     }
 
     [Fact]
