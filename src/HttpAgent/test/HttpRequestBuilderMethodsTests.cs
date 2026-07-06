@@ -10,20 +10,11 @@ public class HttpRequestBuilderMethodsTests
     public void SetTraceIdentifier_Invalid_Parameters()
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-            httpRequestBuilder.SetTraceIdentifier(null!);
-        });
+        Assert.Throws<ArgumentNullException>(() => { httpRequestBuilder.SetTraceIdentifier(null!); });
 
-        Assert.Throws<ArgumentException>(() =>
-        {
-            httpRequestBuilder.SetTraceIdentifier(string.Empty);
-        });
+        Assert.Throws<ArgumentException>(() => { httpRequestBuilder.SetTraceIdentifier(string.Empty); });
 
-        Assert.Throws<ArgumentException>(() =>
-        {
-            httpRequestBuilder.SetTraceIdentifier(" ");
-        });
+        Assert.Throws<ArgumentException>(() => { httpRequestBuilder.SetTraceIdentifier(" "); });
     }
 
     [Fact]
@@ -42,25 +33,13 @@ public class HttpRequestBuilderMethodsTests
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
 
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-            httpRequestBuilder.SetContentType(null!);
-        });
+        Assert.Throws<ArgumentNullException>(() => { httpRequestBuilder.SetContentType(null!); });
 
-        Assert.Throws<ArgumentException>(() =>
-        {
-            httpRequestBuilder.SetContentType(string.Empty);
-        });
+        Assert.Throws<ArgumentException>(() => { httpRequestBuilder.SetContentType(string.Empty); });
 
-        Assert.Throws<ArgumentException>(() =>
-        {
-            httpRequestBuilder.SetContentType(" ");
-        });
+        Assert.Throws<ArgumentException>(() => { httpRequestBuilder.SetContentType(" "); });
 
-        Assert.Throws<FormatException>(() =>
-        {
-            httpRequestBuilder.SetContentType("unknown");
-        });
+        Assert.Throws<FormatException>(() => { httpRequestBuilder.SetContentType("unknown"); });
     }
 
     [Fact]
@@ -85,30 +64,15 @@ public class HttpRequestBuilderMethodsTests
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
 
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-            httpRequestBuilder.SetContentEncoding((Encoding)null!);
-        });
+        Assert.Throws<ArgumentNullException>(() => { httpRequestBuilder.SetContentEncoding((Encoding)null!); });
 
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-            httpRequestBuilder.SetContentEncoding((string)null!);
-        });
+        Assert.Throws<ArgumentNullException>(() => { httpRequestBuilder.SetContentEncoding((string)null!); });
 
-        Assert.Throws<ArgumentException>(() =>
-        {
-            httpRequestBuilder.SetContentEncoding(string.Empty);
-        });
+        Assert.Throws<ArgumentException>(() => { httpRequestBuilder.SetContentEncoding(string.Empty); });
 
-        Assert.Throws<ArgumentException>(() =>
-        {
-            httpRequestBuilder.SetContentEncoding(" ");
-        });
+        Assert.Throws<ArgumentException>(() => { httpRequestBuilder.SetContentEncoding(" "); });
 
-        Assert.Throws<ArgumentException>(() =>
-        {
-            httpRequestBuilder.SetContentEncoding("gbk");
-        });
+        Assert.Throws<ArgumentException>(() => { httpRequestBuilder.SetContentEncoding("gbk"); });
     }
 
     [Fact]
@@ -344,10 +308,7 @@ public class HttpRequestBuilderMethodsTests
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
 
-        Assert.Throws<FormatException>(() =>
-        {
-            httpRequestBuilder.SetContent(null, "unknown");
-        });
+        Assert.Throws<FormatException>(() => { httpRequestBuilder.SetContent(null, "unknown"); });
 
         var exception =
             Assert.Throws<NotSupportedException>(() =>
@@ -396,6 +357,30 @@ public class HttpRequestBuilderMethodsTests
     }
 
     [Fact]
+    public void RemoveContent_ReturnOK()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        httpRequestBuilder.RemoveContent();
+
+        Assert.Null(httpRequestBuilder.ContentType);
+        Assert.Null(httpRequestBuilder.ContentEncoding);
+        Assert.Null(httpRequestBuilder.RawContent);
+        Assert.Null(httpRequestBuilder.MultipartFormDataBuilder);
+        Assert.False(httpRequestBuilder.OmitContentType);
+        Assert.Null(httpRequestBuilder.Disposables);
+
+        httpRequestBuilder.SetContent(new MemoryStream(), MediaTypeNames.Application.Octet, Encoding.UTF8, true);
+        httpRequestBuilder.RemoveContent();
+        Assert.Null(httpRequestBuilder.ContentType);
+        Assert.Null(httpRequestBuilder.ContentEncoding);
+        Assert.Null(httpRequestBuilder.RawContent);
+        Assert.Null(httpRequestBuilder.MultipartFormDataBuilder);
+        Assert.False(httpRequestBuilder.OmitContentType);
+        Assert.NotNull(httpRequestBuilder.Disposables);
+        Assert.Empty(httpRequestBuilder.Disposables);
+    }
+
+    [Fact]
     public void SetMultipartContent_Invalid_Parameters()
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
@@ -416,10 +401,7 @@ public class HttpRequestBuilderMethodsTests
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
 
-        httpRequestBuilder.SetMultipartContent(builder =>
-        {
-            builder.AddFormItem(new { }, "name");
-        });
+        httpRequestBuilder.SetMultipartContent(builder => { builder.AddFormItem(new { }, "name"); });
         Assert.NotNull(httpRequestBuilder.MultipartFormDataBuilder);
         Assert.True(httpRequestBuilder.MultipartFormDataBuilder.OmitContentType);
 
@@ -430,10 +412,7 @@ public class HttpRequestBuilderMethodsTests
         Assert.True(httpRequestBuilder2.MultipartFormDataBuilder.OmitContentType);
 
         var httpRequestBuilder3 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
-        httpRequestBuilder3.SetMultipartContent(builder =>
-        {
-            builder.AddFormItem(new { }, "name");
-        }, false);
+        httpRequestBuilder3.SetMultipartContent(builder => { builder.AddFormItem(new { }, "name"); }, false);
         Assert.NotNull(httpRequestBuilder3.MultipartFormDataBuilder);
         Assert.False(httpRequestBuilder3.MultipartFormDataBuilder.OmitContentType);
     }
@@ -480,15 +459,9 @@ public class HttpRequestBuilderMethodsTests
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
 
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-            httpRequestBuilder.WithHeaders(null!);
-        });
+        Assert.Throws<ArgumentNullException>(() => { httpRequestBuilder.WithHeaders(null!); });
 
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-            httpRequestBuilder.WithHeaders((object)null!);
-        });
+        Assert.Throws<ArgumentNullException>(() => { httpRequestBuilder.WithHeaders((object)null!); });
     }
 
     [Fact]
@@ -579,20 +552,11 @@ public class HttpRequestBuilderMethodsTests
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
 
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-            httpRequestBuilder.SetFragment(null!);
-        });
+        Assert.Throws<ArgumentNullException>(() => { httpRequestBuilder.SetFragment(null!); });
 
-        Assert.Throws<ArgumentException>(() =>
-        {
-            httpRequestBuilder.SetFragment(string.Empty);
-        });
+        Assert.Throws<ArgumentException>(() => { httpRequestBuilder.SetFragment(string.Empty); });
 
-        Assert.Throws<ArgumentException>(() =>
-        {
-            httpRequestBuilder.SetFragment(" ");
-        });
+        Assert.Throws<ArgumentException>(() => { httpRequestBuilder.SetFragment(" "); });
     }
 
     [Fact]
@@ -612,10 +576,7 @@ public class HttpRequestBuilderMethodsTests
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
 
-        var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
-        {
-            httpRequestBuilder.SetTimeout(-2);
-        });
+        var exception = Assert.Throws<ArgumentOutOfRangeException>(() => { httpRequestBuilder.SetTimeout(-2); });
 
         Assert.Equal(
             "Timeout value must be greater than or equal to -1. Use -1 for infinite timeout, 0 for immediate cancellation. (Parameter 'timeoutMilliseconds')",
@@ -800,15 +761,9 @@ public class HttpRequestBuilderMethodsTests
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
 
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-            httpRequestBuilder.WithQueryParameters(null!);
-        });
+        Assert.Throws<ArgumentNullException>(() => { httpRequestBuilder.WithQueryParameters(null!); });
 
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-            httpRequestBuilder.WithQueryParameters((object)null!);
-        });
+        Assert.Throws<ArgumentNullException>(() => { httpRequestBuilder.WithQueryParameters((object)null!); });
     }
 
     [Fact]
@@ -954,15 +909,9 @@ public class HttpRequestBuilderMethodsTests
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
 
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-            httpRequestBuilder.WithPathParameters(null!);
-        });
+        Assert.Throws<ArgumentNullException>(() => { httpRequestBuilder.WithPathParameters(null!); });
 
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-            httpRequestBuilder.WithPathParameters((object)null!);
-        });
+        Assert.Throws<ArgumentNullException>(() => { httpRequestBuilder.WithPathParameters((object)null!); });
     }
 
     [Fact]
@@ -1086,15 +1035,9 @@ public class HttpRequestBuilderMethodsTests
             httpRequestBuilder.WithCookies((IDictionary<string, object?>?)null!);
         });
 
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-            httpRequestBuilder.WithCookies((object)null!);
-        });
+        Assert.Throws<ArgumentNullException>(() => { httpRequestBuilder.WithCookies((object)null!); });
 
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-            httpRequestBuilder.WithCookies((string?)null!);
-        });
+        Assert.Throws<ArgumentNullException>(() => { httpRequestBuilder.WithCookies((string?)null!); });
     }
 
     [Fact]
@@ -1230,10 +1173,7 @@ public class HttpRequestBuilderMethodsTests
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
 
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-            httpRequestBuilder.SetHttpClientProvider(null!);
-        });
+        Assert.Throws<ArgumentNullException>(() => { httpRequestBuilder.SetHttpClientProvider(null!); });
     }
 
     [Fact]
@@ -1257,10 +1197,7 @@ public class HttpRequestBuilderMethodsTests
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
 
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-            httpRequestBuilder.AddHttpContentProcessors(null!);
-        });
+        Assert.Throws<ArgumentNullException>(() => { httpRequestBuilder.AddHttpContentProcessors(null!); });
     }
 
     [Fact]
@@ -1290,10 +1227,7 @@ public class HttpRequestBuilderMethodsTests
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
 
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-            httpRequestBuilder.AddHttpContentConverters(null!);
-        });
+        Assert.Throws<ArgumentNullException>(() => { httpRequestBuilder.AddHttpContentConverters(null!); });
     }
 
     [Fact]
@@ -1324,10 +1258,7 @@ public class HttpRequestBuilderMethodsTests
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
 
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-            httpRequestBuilder.SetOnPreSetContent(null!);
-        });
+        Assert.Throws<ArgumentNullException>(() => { httpRequestBuilder.SetOnPreSetContent(null!); });
     }
 
     [Fact]
@@ -1345,13 +1276,7 @@ public class HttpRequestBuilderMethodsTests
         var i = 0;
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
 
-        httpRequestBuilder.SetOnPreSetContent(_ =>
-        {
-            i++;
-        }).SetOnPreSetContent(_ =>
-        {
-            i++;
-        });
+        httpRequestBuilder.SetOnPreSetContent(_ => { i++; }).SetOnPreSetContent(_ => { i++; });
         Assert.NotNull(httpRequestBuilder.OnPreSetContent);
 
         httpRequestBuilder.OnPreSetContent.Invoke(null!);
@@ -1363,10 +1288,7 @@ public class HttpRequestBuilderMethodsTests
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
 
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-            httpRequestBuilder.SetOnPreSendRequest(null!);
-        });
+        Assert.Throws<ArgumentNullException>(() => { httpRequestBuilder.SetOnPreSendRequest(null!); });
     }
 
     [Fact]
@@ -1383,10 +1305,7 @@ public class HttpRequestBuilderMethodsTests
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
 
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-            httpRequestBuilder.SetOnPostReceiveResponse(null!);
-        });
+        Assert.Throws<ArgumentNullException>(() => { httpRequestBuilder.SetOnPostReceiveResponse(null!); });
     }
 
     [Fact]
@@ -1403,10 +1322,7 @@ public class HttpRequestBuilderMethodsTests
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
 
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-            httpRequestBuilder.SetOnRequestFailed(null!);
-        });
+        Assert.Throws<ArgumentNullException>(() => { httpRequestBuilder.SetOnRequestFailed(null!); });
     }
 
     [Fact]
@@ -1733,6 +1649,23 @@ public class HttpRequestBuilderMethodsTests
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
 
         httpRequestBuilder.AddDisposable(File.OpenRead(Path.Combine(AppContext.BaseDirectory, "test.txt")));
+        Assert.NotNull(httpRequestBuilder.Disposables);
+        Assert.Single(httpRequestBuilder.Disposables);
+    }
+
+    [Fact]
+    public void AddDisposables_Invalid_Parameters()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        Assert.Throws<ArgumentNullException>(() => httpRequestBuilder.AddDisposables(null!));
+    }
+
+    [Fact]
+    public void AddDisposables_ReturnOK()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+
+        httpRequestBuilder.AddDisposables(File.OpenRead(Path.Combine(AppContext.BaseDirectory, "test.txt")));
         Assert.NotNull(httpRequestBuilder.Disposables);
         Assert.Single(httpRequestBuilder.Disposables);
     }
@@ -2232,13 +2165,7 @@ public class HttpRequestBuilderMethodsTests
         var i = 0;
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
 
-        httpRequestBuilder.SetUriBuilder(uriBuilder =>
-        {
-            i++;
-        }).SetUriBuilder(uriBuilder =>
-        {
-            i++;
-        });
+        httpRequestBuilder.SetUriBuilder(uriBuilder => { i++; }).SetUriBuilder(uriBuilder => { i++; });
         Assert.NotNull(httpRequestBuilder.UriBuilderConfigure);
 
         httpRequestBuilder.UriBuilderConfigure.Invoke(null!);

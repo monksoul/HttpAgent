@@ -15,6 +15,15 @@ public class HttpContentProcessorContextTests
         Assert.Equal("utf-8", context.Encoding?.WebName);
         Assert.Null(context.HttpClientName);
         Assert.False(context.AsFormItem);
-        Assert.Null(context.CompletionDisposable);
+        Assert.Null(context.CompletionDisposables);
+    }
+
+    [Fact]
+    public void Composite_ReturnOK()
+    {
+        var context = new HttpContentProcessorContext("furion", "text/plain", Encoding.UTF8);
+        var compositeHttpContent = context.Composite(new StringContent(""));
+        Assert.NotNull(compositeHttpContent);
+        Assert.Single(compositeHttpContent.Contents);
     }
 }

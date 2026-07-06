@@ -1418,6 +1418,9 @@
                 <see cref="T:HttpAgent.MultipartFormDataItem" /> 集合
             </summary>
         </member>
+        <member name="F:HttpAgent.HttpMultipartFormDataBuilder._onPreAddContent">
+            <inheritdoc cref="P:HttpAgent.HttpMultipartFormDataBuilder.OnPreAddContent" />
+        </member>
         <member name="F:HttpAgent.HttpMultipartFormDataBuilder.FormItemsSorter">
             <summary>
                 多部分表单内容项排序委托
@@ -1431,9 +1434,6 @@
             <summary>
                 用于处理在添加 <see cref="T:System.Net.Http.HttpContent" /> 表单项内容前，对表单名称进行自定义转换的转换器
             </summary>
-        </member>
-        <member name="F:HttpAgent.HttpMultipartFormDataBuilder._onPreAddContent">
-            <inheritdoc cref="P:HttpAgent.HttpMultipartFormDataBuilder.OnPreAddContent" />
         </member>
         <member name="M:HttpAgent.HttpMultipartFormDataBuilder.#ctor(HttpAgent.HttpRequestBuilder)">
             <summary>
@@ -1807,6 +1807,19 @@
                 <see cref="T:System.Net.Http.HttpContent" />
             </returns>
         </member>
+        <member name="M:HttpAgent.HttpMultipartFormDataBuilder.TrySetContentDisposition(HttpAgent.MultipartFormDataItem,System.Net.Http.HttpContent,System.String,System.String)">
+            <summary>
+                尝试设置请求内容的 <c>Content-Disposition</c> 标头
+            </summary>
+            <param name="multipartFormDataItem">
+                <see cref="T:HttpAgent.MultipartFormDataItem" />
+            </param>
+            <param name="httpContent">
+                <see cref="T:System.Net.Http.HttpContent" />
+            </param>
+            <param name="name">表单名称</param>
+            <param name="contentType">内容类型</param>
+        </member>
         <member name="M:HttpAgent.HttpMultipartFormDataBuilder.ParseContentType(System.String,System.Text.Encoding,System.Text.Encoding@)">
             <summary>
                 解析内容类型字符串
@@ -1976,6 +1989,15 @@
             <summary>
                 构建模块服务
             </summary>
+            <param name="services">
+                <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
+            </param>
+        </member>
+        <member name="M:HttpAgent.HttpRemoteBuilder.RegisterContentProviders(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+                注册内容提供器
+            </summary>
+            <remarks>处理重复注册远程请求服务时不能合并多个提供器问题。</remarks>
             <param name="services">
                 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
             </param>
@@ -2310,6 +2332,18 @@
             <param name="contentType">内容类型</param>
             <param name="contentEncoding">内容编码</param>
             <param name="disposeStreamOnRequestCompletion">是否在请求结束后自动释放流。默认值为：<c>false</c></param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.RemoveContent">
+            <summary>
+                清除请求内容
+            </summary>
+            <remarks>
+                如果 <see cref="P:HttpAgent.HttpRequestBuilder.RawContent" /> 实现了 <see cref="T:System.IDisposable" />，并且此前已通过 <see cref="M:HttpAgent.HttpRequestBuilder.AddDisposable(System.IDisposable)" />
+                将其添加到可释放对象列表中，则该方法会将其从列表中移除。
+            </remarks>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
@@ -2887,6 +2921,18 @@
             <remarks>支持多次调用。</remarks>
             <param name="disposable">
                 <see cref="T:System.IDisposable" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.AddDisposables(System.Collections.Generic.IEnumerable{System.IDisposable})">
+            <summary>
+                批量添加请求结束时需要释放的对象
+            </summary>
+            <remarks>支持多次调用。</remarks>
+            <param name="disposables">
+                <see cref="T:System.IDisposable" /> 集合
             </param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
@@ -4985,7 +5031,7 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Match the string "/Date(".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [+\-] atomically any number of times.<br/>
+                ○ Match a character in the set [+-] atomically any number of times.<br/>
                 ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match the string ")/".<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
@@ -5014,10 +5060,10 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Match the string "/Date(".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [+\-] atomically any number of times.<br/>
+                ○ Match a character in the set [+-] atomically any number of times.<br/>
                 ○ Match a Unicode digit atomically at least once.<br/>
             ○ 2nd capture group.<br/>
-                ○ Match a character in the set [+\-].<br/>
+                ○ Match a character in the set [+-].<br/>
             ○ 3rd capture group.<br/>
                 ○ Match a Unicode digit exactly 2 times.<br/>
             ○ 4th capture group.<br/>
@@ -5617,13 +5663,13 @@
             ○ Match the string "[[".<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [\-:\w] greedily at least once.<br/>
+                ○ Match a character in the set [-:\w] greedily at least once.<br/>
             ○ 2nd capture group.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match a whitespace character atomically any number of times.<br/>
                     ○ Match '|'.<br/>
                     ○ Match a whitespace character greedily any number of times.<br/>
-                    ○ Match a character in the set [\-:\w] greedily at least once.<br/>
+                    ○ Match a character in the set [-:\w] greedily at least once.<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ Optional (greedy).<br/>
                 ○ Match the string "||".<br/>
@@ -5646,32 +5692,32 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Loop greedily at least once.<br/>
                 ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [\-.0-9A-Z_a-z~].<br/>
+                    ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
                     ○ Match a sequence of expressions.<br/>
                         ○ Match '%'.<br/>
-                        ○ Match a hexadecimal digit exactly 2 times.<br/>
+                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
             ○ Match '='.<br/>
             ○ Loop greedily any number of times.<br/>
                 ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [+\-.0-9A-Z_a-z~].<br/>
+                    ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
                     ○ Match a sequence of expressions.<br/>
                         ○ Match '%'.<br/>
-                        ○ Match a hexadecimal digit exactly 2 times.<br/>
+                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
             ○ Loop greedily any number of times.<br/>
                 ○ Match '&amp;'.<br/>
                 ○ Loop greedily at least once.<br/>
                     ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [\-.0-9A-Z_a-z~].<br/>
+                        ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
                         ○ Match a sequence of expressions.<br/>
                             ○ Match '%'.<br/>
-                            ○ Match a hexadecimal digit exactly 2 times.<br/>
+                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
                 ○ Match '='.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [+\-.0-9A-Z_a-z~].<br/>
+                        ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
                         ○ Match a sequence of expressions.<br/>
                             ○ Match '%'.<br/>
-                            ○ Match a hexadecimal digit exactly 2 times.<br/>
+                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
             </remarks>
@@ -8257,7 +8303,7 @@
             <code>
             ○ Match the string "\\u".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a hexadecimal digit exactly 4 times.<br/>
+                ○ Match a character in the set [0-9A-Fa-f] exactly 4 times.<br/>
             </code>
             </remarks>
         </member>
@@ -8277,7 +8323,7 @@
         <member name="F:HttpAgent.HttpContentConverterFactory._logger">
             <inheritdoc cref="T:HttpAgent.IHttpRemoteLogger" />
         </member>
-        <member name="M:HttpAgent.HttpContentConverterFactory.#ctor(System.IServiceProvider,HttpAgent.IHttpRemoteLogger,HttpAgent.IHttpContentConverter[],HttpAgent.GenericHttpContentConverter[])">
+        <member name="M:HttpAgent.HttpContentConverterFactory.#ctor(System.IServiceProvider,HttpAgent.IHttpRemoteLogger,System.Collections.Generic.IEnumerable{HttpAgent.IHttpContentConverter},System.Collections.Generic.IEnumerable{HttpAgent.GenericHttpContentConverter})">
             <summary>
                 <inheritdoc cref="T:HttpAgent.HttpContentConverterFactory" />
             </summary>
@@ -8287,8 +8333,8 @@
             <param name="logger">
                 <see cref="T:HttpAgent.IHttpRemoteLogger" />
             </param>
-            <param name="converters"><see cref="T:HttpAgent.IHttpContentConverter`1" /> 数组</param>
-            <param name="genericConverters"><see cref="T:HttpAgent.GenericHttpContentConverter" /> 数组</param>
+            <param name="converters"><see cref="T:HttpAgent.IHttpContentConverter`1" /> 集合</param>
+            <param name="genericConverters"><see cref="T:HttpAgent.GenericHttpContentConverter" /> 集合</param>
         </member>
         <member name="P:HttpAgent.HttpContentConverterFactory.ServiceProvider">
             <inheritdoc />
@@ -8361,14 +8407,14 @@
                 <see cref="T:HttpAgent.IHttpContentProcessor" /> 字典集合
             </summary>
         </member>
-        <member name="M:HttpAgent.HttpContentProcessorFactory.#ctor(System.IServiceProvider,HttpAgent.IHttpContentProcessor[])">
+        <member name="M:HttpAgent.HttpContentProcessorFactory.#ctor(System.IServiceProvider,System.Collections.Generic.IEnumerable{HttpAgent.IHttpContentProcessor})">
             <summary>
                 <inheritdoc cref="T:HttpAgent.HttpContentProcessorFactory" />
             </summary>
             <param name="serviceProvider">
                 <see cref="T:System.IServiceProvider" />
             </param>
-            <param name="processors"><see cref="T:HttpAgent.IHttpContentProcessor" /> 数组</param>
+            <param name="processors"><see cref="T:HttpAgent.IHttpContentProcessor" /> 集合</param>
         </member>
         <member name="P:HttpAgent.HttpContentProcessorFactory.ServiceProvider">
             <inheritdoc />
@@ -9643,6 +9689,61 @@
             <returns>
                 <see cref="T:HttpAgent.StressTestHarnessResult" />
             </returns>
+        </member>
+        <member name="T:HttpAgent.CompositeHttpContent">
+            <summary>
+                复合 <see cref="T:System.Net.Http.HttpContent" />
+            </summary>
+            <remarks>内部包含多个 <see cref="T:System.Net.Http.HttpContent" />，该类型本身不产生网络数据，仅作为容器使用，框架在发送前会自动展开其内容。</remarks>
+        </member>
+        <member name="F:HttpAgent.CompositeHttpContent._contents">
+            <summary>
+                <see cref="T:System.Net.Http.HttpContent" /> 集合
+            </summary>
+        </member>
+        <member name="M:HttpAgent.CompositeHttpContent.#ctor">
+            <summary>
+                <inheritdoc cref="T:HttpAgent.CompositeHttpContent" />
+            </summary>
+        </member>
+        <member name="M:HttpAgent.CompositeHttpContent.#ctor(System.Collections.Generic.IEnumerable{System.Net.Http.HttpContent})">
+            <summary>
+                <inheritdoc cref="T:HttpAgent.CompositeHttpContent" />
+            </summary>
+            <param name="contents"><see cref="T:System.Net.Http.HttpContent" /> 集合</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="P:HttpAgent.CompositeHttpContent.Contents">
+            <summary>
+                <see cref="T:System.Net.Http.HttpContent" /> 集合
+            </summary>
+        </member>
+        <member name="M:HttpAgent.CompositeHttpContent.Add(System.Net.Http.HttpContent)">
+            <summary>
+                添加单个 <see cref="T:System.Net.Http.HttpContent" />
+            </summary>
+            <param name="content">
+                <see cref="T:System.Net.Http.HttpContent" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.CompositeHttpContent" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.CompositeHttpContent.AddRange(System.Collections.Generic.IEnumerable{System.Net.Http.HttpContent})">
+            <summary>
+                批量添加 <see cref="T:System.Net.Http.HttpContent" />
+            </summary>
+            <param name="contents"><see cref="T:System.Net.Http.HttpContent" /> 集合</param>
+            <returns>
+                <see cref="T:HttpAgent.CompositeHttpContent" />
+            </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:HttpAgent.CompositeHttpContent.SerializeToStreamAsync(System.IO.Stream,System.Net.TransportContext)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.CompositeHttpContent.TryComputeLength(System.Int64@)">
+            <inheritdoc />
         </member>
         <member name="T:HttpAgent.DigestCredentials">
             <summary>
@@ -11258,10 +11359,20 @@
             </summary>
             <remarks>默认值为：<c>false</c>。</remarks>
         </member>
-        <member name="P:HttpAgent.HttpContentProcessorContext.CompletionDisposable">
+        <member name="P:HttpAgent.HttpContentProcessorContext.CompletionDisposables">
             <summary>
-                设置需要在请求结束后自动释放的流
+                设置需要在请求结束后自动释放的流集合
             </summary>
+        </member>
+        <member name="M:HttpAgent.HttpContentProcessorContext.Composite(System.Collections.Generic.IEnumerable{System.Net.Http.HttpContent})">
+            <summary>
+                创建一个复合 <see cref="T:System.Net.Http.HttpContent" />
+            </summary>
+            <remarks>用于返回多个 <see cref="T:System.Net.Http.HttpContent" />。</remarks>
+            <param name="contents"><see cref="T:System.Net.Http.HttpContent" /> 集合</param>
+            <returns>
+                <see cref="T:HttpAgent.CompositeHttpContent" />
+            </returns>
         </member>
         <member name="T:HttpAgent.IHttpContentProcessor">
             <summary>
@@ -11289,6 +11400,7 @@
             <summary>
                 将原始请求内容转换为 <see cref="T:System.Net.Http.HttpContent" /> 实例
             </summary>
+            <remarks>若需要返回多个 <see cref="T:System.Net.Http.HttpContent" />，可通过创建 <see cref="T:HttpAgent.CompositeHttpContent" /> 实例返回。</remarks>
             <param name="context">
                 <see cref="T:HttpAgent.HttpContentProcessorContext" />
             </param>
@@ -11766,7 +11878,7 @@
             <code>
             ○ Match if at the beginning of the string.<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
-            ○ Match a character in the set [\-~].<br/>
+            ○ Match a character in the set [-~].<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
@@ -16666,6 +16778,23 @@
                 <see cref="T:System.IO.Stream" />
             </returns>
         </member>
+        <member name="M:HttpAgent.HttpRemoteUtility.GetLocalIPv4">
+            <summary>
+                获取本机第一个活跃的非回环 IPv4 地址
+            </summary>
+            <remarks>如果遍历所有本机网络接口后仍无可用地址，则返回安全回退值 <c>127.0.0.1</c>。</remarks>
+            <returns>
+                <see cref="T:System.String" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRemoteUtility.GetLocalMacAddress">
+            <summary>
+                获取本机第一个活跃的非回环网卡的 MAC 地址
+            </summary>
+            <returns>
+                <see cref="T:System.String" />
+            </returns>
+        </member>
         <member name="M:HttpAgent.HttpRemoteUtility.ResolveHttpClientOptions(System.Net.Http.HttpResponseMessage,System.IServiceProvider)">
             <summary>
                 根据 HTTP 响应消息和服务提供器，解析出 <see cref="T:System.Net.Http.HttpClient" /> 客户端配置选项
@@ -17434,12 +17563,6 @@
         <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32,System.Int32,System.Int32)">
             <summary>Pushes 3 values onto the backtracking stack.</summary>
         </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.WordCategoriesMask">
-            <summary>Provides a mask of Unicode categories that combine to form [\w].</summary>
-        </member>
-        <member name="P:System.Text.RegularExpressions.Generated.Utilities.WordCharBitmap">
-            <summary>Gets a bitmap for whether each character 0 through 127 is in [\w]</summary>
-        </member>
         <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_1F52B1A4D2E82B6FEDE25EC8C55F85BB36775196837076691C96925040F90D32">
             <summary>Supports searching for the string "\\u".</summary>
         </member>
@@ -17477,5 +17600,19 @@
                 <see cref="T:HttpAgent.IHttpRemoteBuilder" />
             </returns>
         </member>
+    </members>
+</doc>
+ection" />
+            </param>
+            <param name="httpRemoteBuilder">
+                <see cref="T:HttpAgent.HttpRemoteBuilder" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
+            </returns>
+        </member>
+    </members>
+</doc>
+      </member>
     </members>
 </doc>

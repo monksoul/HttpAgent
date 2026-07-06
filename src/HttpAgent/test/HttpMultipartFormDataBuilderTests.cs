@@ -1136,6 +1136,24 @@ public class HttpMultipartFormDataBuilderTests
         var multipartFormDataContent6 = builder.Build(httpRemoteOptions, httpContentProcessorFactory, null);
         Assert.NotNull(multipartFormDataContent6);
         Assert.True(multipartFormDataContent6.First() is ByteArrayContent);
+
+        builder.SetFormNameTransformer(name => name);
+        var compositeHttpContent = new CompositeHttpContent(
+            new StringContent("", new MediaTypeHeaderValue("text/plain")),
+            new StringContent("", new MediaTypeHeaderValue("text/plain")));
+        compositeHttpContent.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
+        builder.Add(compositeHttpContent, "cmps");
+        var multipartFormDataContent7 = builder.Build(httpRemoteOptions, httpContentProcessorFactory, null);
+        Assert.NotNull(multipartFormDataContent7);
+        Assert.True(multipartFormDataContent7.Last() is StringContent);
+        Assert.Equal(6, multipartFormDataContent7.Count());
+#if NET10_0_OR_GREATER
+        Assert.Equal("cmps", multipartFormDataContent7.Last().Headers.ContentDisposition?.Name);
+        Assert.Equal("cmps", multipartFormDataContent7.ElementAt(4).Headers.ContentDisposition?.Name);
+#else
+        Assert.Equal("\"cmps\"", multipartFormDataContent7.Last().Headers.ContentDisposition?.Name);
+        Assert.Equal("\"cmps\"", multipartFormDataContent7.ElementAt(4).Headers.ContentDisposition?.Name);
+#endif
     }
 
     [Fact]
@@ -1290,6 +1308,35 @@ public class HttpMultipartFormDataBuilderTests
         Assert.NotNull(httpContent9);
         Assert.Equal("form-data; name=\"newtest\"; filename=\"text.txt\"",
             httpContent9.Headers.ContentDisposition?.ToString());
+    }
+
+    [Fact]
+    public void TrySetContentDisposition_ReturnOK()
+    {
+        HttpContent? httpContent1 = null;
+        HttpMultipartFormDataBuilder.TrySetContentDisposition(
+            new MultipartFormDataItem("test") { ContentType = "text/plain", RawContent = httpContent1 }, httpContent1,
+            "test", "text/plain");
+        Assert.Null(httpContent1);
+
+        var httpContent2 = new StringContent("test");
+        HttpMultipartFormDataBuilder.TrySetContentDisposition(
+            new MultipartFormDataItem("test")
+            {
+                ContentType = "text/plain", RawContent = httpContent2, FileName = "text.txt"
+            }, httpContent2, "test", "text/plain");
+        Assert.Equal("form-data; name=\"test\"; filename=\"text.txt\"",
+            httpContent2.Headers.ContentDisposition?.ToString());
+
+        var httpContent3 = new StringContent("""{"id":1}""");
+        httpContent3.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data") { Name = "set" };
+        HttpMultipartFormDataBuilder.TrySetContentDisposition(
+            new MultipartFormDataItem("set")
+            {
+                ContentType = "application/json", RawContent = httpContent3, FileName = "set.txt"
+            }, httpContent3, "test", "text/plain");
+        Assert.Equal("form-data; name=set",
+            httpContent3.Headers.ContentDisposition?.ToString());
     }
 
     [Fact]

@@ -417,4 +417,26 @@ public class HttpRemoteBuilderTests
         Assert.NotNull(remoteOptions.HttpDeclarativeExtractors);
         Assert.Single(remoteOptions.HttpDeclarativeExtractors);
     }
+
+    [Fact]
+    public void RegisterContentProviders_ReturnOK()
+    {
+        var services = new ServiceCollection();
+        var builder = new HttpRemoteBuilder();
+
+        builder.RegisterContentProviders(services);
+        Assert.Empty(services);
+
+        builder.AddHttpContentProcessors(() => [new CustomStringContentProcessor()])
+            .AddHttpContentConverters(() => [new CustomStringContentConverter()])
+            .AddGenericHttpContentConverters(() =>
+            [
+                new GenericHttpContentConverter(typeof(IAsyncEnumerable<>), typeArgs =>
+                    (IHttpContentConverter)Activator.CreateInstance(
+                        typeof(AsyncEnumerableContentConverter<>).MakeGenericType(typeArgs[0]))!)
+            ]);
+
+        builder.RegisterContentProviders(services);
+        Assert.Equal(3, services.Count);
+    }
 }

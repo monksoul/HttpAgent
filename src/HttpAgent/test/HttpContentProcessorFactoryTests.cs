@@ -10,7 +10,7 @@ public class HttpContentProcessorFactoryTests
     public void New_ReturnOK()
     {
         using var serviceProvider = new ServiceCollection().BuildServiceProvider();
-        var httpContentProcessorFactory1 = new HttpContentProcessorFactory(serviceProvider, null);
+        var httpContentProcessorFactory1 = new HttpContentProcessorFactory(serviceProvider, null!);
         Assert.NotNull(httpContentProcessorFactory1.ServiceProvider);
         Assert.NotNull(httpContentProcessorFactory1._processors);
         Assert.Equal(8, httpContentProcessorFactory1._processors.Count);
@@ -57,7 +57,7 @@ public class HttpContentProcessorFactoryTests
     {
         var services = new ServiceCollection();
         using var serviceProvider = services.BuildServiceProvider();
-        var httpContentProcessorFactory1 = new HttpContentProcessorFactory(serviceProvider, null);
+        var httpContentProcessorFactory1 = new HttpContentProcessorFactory(serviceProvider, null!);
 
         var exception = Assert.Throws<InvalidOperationException>(() =>
         {
@@ -87,7 +87,7 @@ public class HttpContentProcessorFactoryTests
     {
         var services = new ServiceCollection();
         using var serviceProvider = services.BuildServiceProvider();
-        var httpContentProcessorFactory1 = new HttpContentProcessorFactory(serviceProvider, null);
+        var httpContentProcessorFactory1 = new HttpContentProcessorFactory(serviceProvider, null!);
 
         var processor1 = httpContentProcessorFactory1.GetProcessor(new HttpContentProcessorContext(null, contentType));
         Assert.Equal(type, processor1.GetType());
@@ -98,7 +98,7 @@ public class HttpContentProcessorFactoryTests
     {
         var services = new ServiceCollection();
         using var serviceProvider = services.BuildServiceProvider();
-        var httpContentProcessorFactory1 = new HttpContentProcessorFactory(serviceProvider, null);
+        var httpContentProcessorFactory1 = new HttpContentProcessorFactory(serviceProvider, null!);
 
         var processor1 =
             httpContentProcessorFactory1.GetProcessor(new HttpContentProcessorContext(new StringContent(""),
@@ -178,7 +178,7 @@ public class HttpContentProcessorFactoryTests
     {
         var services = new ServiceCollection();
         using var serviceProvider = services.BuildServiceProvider();
-        var httpContentProcessorFactory1 = new HttpContentProcessorFactory(serviceProvider, null);
+        var httpContentProcessorFactory1 = new HttpContentProcessorFactory(serviceProvider, null!);
 
         var httpContent1 = httpContentProcessorFactory1.Build(new HttpContentProcessorContext("", "application/json"));
         Assert.NotNull(httpContent1);

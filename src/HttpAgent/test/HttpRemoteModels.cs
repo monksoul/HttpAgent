@@ -337,7 +337,7 @@ public class MultipartFileModel
     public Guid Id { get; set; }
     public MultipartFile? File { get; set; }
 
-    public FileInfo File2 { get; set; }
+    public FileInfo File2 { get; set; } = null!;
 }
 
 public class CustomAsyncEnumerableContentConverter<T> : HttpContentConverterBase<IAsyncEnumerable<T?>>

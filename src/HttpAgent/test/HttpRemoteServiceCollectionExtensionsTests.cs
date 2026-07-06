@@ -11,10 +11,7 @@ public class HttpRemoteServiceCollectionExtensionsTests
     {
         var services = new ServiceCollection();
 
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-            services.AddHttpRemote((HttpRemoteBuilder)null!);
-        });
+        Assert.Throws<ArgumentNullException>(() => { services.AddHttpRemote((HttpRemoteBuilder)null!); });
     }
 
     [Fact]
@@ -43,10 +40,7 @@ public class HttpRemoteServiceCollectionExtensionsTests
     public void AddHttpRemote_Action_ReturnOK()
     {
         var services = new ServiceCollection();
-        services.Configure<HttpRemoteOptions>(options =>
-        {
-            options.DefaultContentType = "application/json";
-        });
+        services.Configure<HttpRemoteOptions>(options => { options.DefaultContentType = "application/json"; });
 
         services.AddHttpRemote();
 
@@ -58,25 +52,25 @@ public class HttpRemoteServiceCollectionExtensionsTests
     public void AddHttpRemote_Duplicate_ReturnOK()
     {
         var services = new ServiceCollection();
-        services.AddHttpRemote(s => s.AddHttpDeclarative<IHttpTest>());
-        services.AddHttpRemote(s => s.AddHttpDeclarative<IHttpTest>());
-        services.AddHttpRemote(s => s.AddHttpDeclarative<IHttpTest>());
+        services.AddHttpRemote(s =>
+            s.AddHttpDeclarative<IHttpTest>().AddHttpContentProcessors(() => [new CustomStringContentProcessor()]));
+        services.AddHttpRemote(s =>
+            s.AddHttpDeclarative<IHttpTest>().AddHttpContentProcessors(() => [new CustomStringContentProcessor()]));
+        services.AddHttpRemote(s =>
+            s.AddHttpDeclarative<IHttpTest>().AddHttpContentProcessors(() => [new CustomStringContentProcessor()]));
 
         Assert.Contains(services, u => u.ServiceType == typeof(IHttpClientFactory));
         Assert.Contains(services, u => u.ServiceType == typeof(IHttpContentProcessorFactory));
         Assert.Contains(services, u => u.ServiceType == typeof(IHttpContentConverterFactory));
         Assert.Contains(services, u => u.ServiceType == typeof(IHttpRemoteService));
         Assert.Contains(services, u => u.ServiceType == typeof(IHttpTest));
-        Assert.Equal(35, services.Count);
+        Assert.Equal(38, services.Count);
     }
 
     [Fact]
     public void AddHttpRemote_WithConfigureOptions_ReturnOK()
     {
         var services = new ServiceCollection();
-        services.AddHttpRemote().ConfigureOptions(options =>
-        {
-            options.DefaultContentType = "application/json";
-        });
+        services.AddHttpRemote().ConfigureOptions(options => { options.DefaultContentType = "application/json"; });
     }
 }

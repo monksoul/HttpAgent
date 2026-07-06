@@ -132,7 +132,7 @@ public class HelpersTests
         Assert.Equal(MediaTypeNames.Application.Json,
             HttpAgent.Helpers.GetContentTypeOrDefault(new { }, MediaTypeNames.Text.Plain));
         Assert.Equal(MediaTypeNames.Application.Json,
-            HttpAgent.Helpers.GetContentTypeOrDefault(new ObjectModel { }, MediaTypeNames.Text.Plain));
+            HttpAgent.Helpers.GetContentTypeOrDefault(new ObjectModel(), MediaTypeNames.Text.Plain));
         Assert.Equal(MediaTypeNames.Application.Json,
             HttpAgent.Helpers.GetContentTypeOrDefault(new List<ObjectModel>(), MediaTypeNames.Text.Plain));
         Assert.Equal(MediaTypeNames.Application.Octet,
@@ -230,5 +230,26 @@ public class HelpersTests
 
         Assert.Equal("/furion/api", HttpAgent.Helpers.CombineUrl("/furion", "/api"));
         Assert.Equal("http://localhost/furion/api", HttpAgent.Helpers.CombineUrl("http://localhost/furion", "/api"));
+    }
+
+    [Fact]
+    public void GetLocalIPv4_ReturnOK()
+    {
+        var ipv4 = HttpRemoteUtility.GetLocalIPv4();
+
+        Assert.NotEqual("127.0.0.1", ipv4);
+        Assert.NotEqual("::1", ipv4);
+        Assert.NotEqual("localhost", ipv4);
+
+        Assert.StartsWith("192.168", ipv4);
+    }
+
+    [Fact]
+    public void GetLocalMacAddress_ReturnOK()
+    {
+        var macAddress = HttpRemoteUtility.GetLocalMacAddress();
+
+        Assert.NotEmpty(macAddress);
+        Assert.Contains('-', macAddress);
     }
 }

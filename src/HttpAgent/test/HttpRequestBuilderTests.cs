@@ -517,6 +517,35 @@ public class HttpRequestBuilderTests
     }
 
     [Fact]
+    public void BuildAndSetContent_Invalid_Parameters()
+    {
+        var services = new ServiceCollection();
+        services.AddOptions<HttpRemoteOptions>();
+        using var serviceProvider = services.BuildServiceProvider();
+        var httpRemoteOptions = new HttpRemoteOptions();
+
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        var finalRequestUri = httpRequestBuilder.BuildFinalRequestUri(null, new HttpRemoteOptions());
+        var httpRequestMessage = new HttpRequestMessage(httpRequestBuilder.HttpMethod!, finalRequestUri);
+        var httpContentProcessorFactory = new HttpContentProcessorFactory(serviceProvider, []);
+
+        httpRequestBuilder.BuildAndSetContent(httpRequestMessage, httpContentProcessorFactory,
+            httpRemoteOptions);
+
+        var compositeHttpContent = new CompositeHttpContent(
+            new StringContent("", new MediaTypeHeaderValue("text/plain")),
+            new StringContent("", new MediaTypeHeaderValue("text/plain")));
+        compositeHttpContent.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
+        httpRequestBuilder.SetContent(compositeHttpContent);
+        var exception = Assert.Throws<InvalidOperationException>(() => httpRequestBuilder.BuildAndSetContent(
+            httpRequestMessage,
+            httpContentProcessorFactory,
+            httpRemoteOptions));
+
+        Assert.Equal("Multiple content items are not allowed as top-level request content.", exception.Message);
+    }
+
+    [Fact]
     public void BuildAndSetContent_ReturnOK()
     {
         var services = new ServiceCollection();
@@ -565,6 +594,18 @@ public class HttpRequestBuilderTests
         Assert.NotNull(httpRequestBuilder.RawContent);
         Assert.NotNull(httpRequestMessage.Content);
         Assert.Equal(typeof(MultipartFormDataContent), httpRequestMessage.Content.GetType());
+
+        var compositeHttpContent =
+            new CompositeHttpContent(new StringContent("furion", new MediaTypeHeaderValue("text/plain")));
+        compositeHttpContent.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
+        httpRequestBuilder.RemoveContent();
+        httpRequestBuilder.SetContent(compositeHttpContent, "text/plain");
+        httpRequestBuilder.BuildAndSetContent(httpRequestMessage, httpContentProcessorFactory,
+            httpRemoteOptions);
+        Assert.Equal("text/plain", httpRequestBuilder.ContentType);
+        Assert.NotNull(httpRequestBuilder.RawContent);
+        Assert.NotNull(httpRequestMessage.Content);
+        Assert.Equal(typeof(StringContent), httpRequestMessage.Content.GetType());
     }
 
     [Fact]

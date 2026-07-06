@@ -24,8 +24,8 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
         var logger = serviceProvider.GetRequiredService<IHttpRemoteLogger>();
         var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
 
-        var httpContentProcessorFactory = new HttpContentProcessorFactory(serviceProvider, null);
-        var httpContentConverterFactory = new HttpContentConverterFactory(serviceProvider, logger, null, null);
+        var httpContentProcessorFactory = new HttpContentProcessorFactory(serviceProvider, null!);
+        var httpContentConverterFactory = new HttpContentConverterFactory(serviceProvider, logger, null!, null!);
 
         Assert.Throws<ArgumentNullException>(() => new HttpRemoteService(null!, null!, null!, null!, null!, null!));
         Assert.Throws<ArgumentNullException>(() =>

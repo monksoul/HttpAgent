@@ -27,7 +27,7 @@ public class AsyncEnumerableContentConverterTests
         var converter = new AsyncEnumerableContentConverter<ObjectModel>();
         var asyncEnumerable = converter.Read(typeof(IAsyncEnumerable<ObjectModel>), httpResponseMessage);
         Assert.NotNull(asyncEnumerable);
-        await foreach (var item in asyncEnumerable as IAsyncEnumerable<ObjectModel>)
+        await foreach (var item in (asyncEnumerable as IAsyncEnumerable<ObjectModel>)!)
         {
             Assert.Equal(10, item?.Id);
             Assert.Equal("furion", item?.Name);
@@ -41,7 +41,7 @@ public class AsyncEnumerableContentConverterTests
         var converter2 = new AsyncEnumerableContentConverter<ObjectModel>();
         var asyncEnumerable2 = converter2.Read(typeof(IAsyncEnumerable<ObjectModel>), httpResponseMessage2);
         Assert.NotNull(asyncEnumerable2);
-        await foreach (var item in asyncEnumerable2 as IAsyncEnumerable<ObjectModel>)
+        await foreach (var item in (asyncEnumerable2 as IAsyncEnumerable<ObjectModel>)!)
         {
             Assert.Equal(10, item?.Id);
             Assert.Equal("furion", item?.Name);
@@ -59,7 +59,7 @@ public class AsyncEnumerableContentConverterTests
         var converter = new AsyncEnumerableContentConverter<ObjectModel>();
         var asyncEnumerable = await converter.ReadAsync(typeof(IAsyncEnumerable<ObjectModel>), httpResponseMessage);
         Assert.NotNull(asyncEnumerable);
-        await foreach (var item in asyncEnumerable as IAsyncEnumerable<ObjectModel>)
+        await foreach (var item in (asyncEnumerable as IAsyncEnumerable<ObjectModel>)!)
         {
             Assert.Equal(10, item?.Id);
             Assert.Equal("furion", item?.Name);
@@ -73,7 +73,7 @@ public class AsyncEnumerableContentConverterTests
         var converter2 = new AsyncEnumerableContentConverter<ObjectModel>();
         var asyncEnumerable2 = await converter2.ReadAsync(typeof(IAsyncEnumerable<ObjectModel>), httpResponseMessage2);
         Assert.NotNull(asyncEnumerable2);
-        await foreach (var item in asyncEnumerable2 as IAsyncEnumerable<ObjectModel>)
+        await foreach (var item in (asyncEnumerable2 as IAsyncEnumerable<ObjectModel>)!)
         {
             Assert.Equal(10, item?.Id);
             Assert.Equal("furion", item?.Name);

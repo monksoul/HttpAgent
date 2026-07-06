@@ -51,7 +51,7 @@ public class FormFileContentProcessorTests
         Assert.NotNull(streamContent2.Headers.ContentDisposition);
         Assert.Equal("test.txt", streamContent2.Headers.ContentDisposition.FileName);
         Assert.Equal("attachment", streamContent2.Headers.ContentDisposition.DispositionType);
-        Assert.NotNull(processorContext.CompletionDisposable);
+        Assert.NotNull(processorContext.CompletionDisposables);
 
         var streamContent3 =
             processor.Process(new HttpContentProcessorContext(formFile, "application/octet-stream", Encoding.UTF32));
