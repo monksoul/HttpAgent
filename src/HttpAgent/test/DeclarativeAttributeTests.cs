@@ -20,6 +20,7 @@ public class DeclarativeAttributeTests
         Assert.False(attribute.UseStringContent);
         Assert.True(attribute.UseUrlEncode);
         Assert.False(attribute.RawString);
+        Assert.False(attribute.DisposeStreamOnRequestCompletion);
 
         var attribute2 = new BodyAttribute("application/json");
         Assert.Equal("application/json", attribute2.ContentType);
