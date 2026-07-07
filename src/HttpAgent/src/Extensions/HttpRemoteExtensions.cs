@@ -285,7 +285,7 @@ public static partial class HttpRemoteExtensions
 #if NET8_0
             await httpContent.LoadIntoBufferAsync(maxAllowedSize);
 #else
-        await httpContent.LoadIntoBufferAsync(maxAllowedSize, cancellationToken);
+            await httpContent.LoadIntoBufferAsync(maxAllowedSize, cancellationToken);
 #endif
         }
         catch

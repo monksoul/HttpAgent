@@ -29,6 +29,7 @@ public class FileTransferProgressTests
         Assert.Equal("furion.index.html", fileTransferProgress.FileName);
 
         Assert.Equal(double.Epsilon, FileTransferProgress._epsilon);
+        Assert.Equal(0, fileTransferProgress._lastDisplayLength);
         Assert.Equal(0, fileTransferProgress.Transferred);
         Assert.Equal(0, fileTransferProgress.PercentageComplete);
         Assert.Equal(0, fileTransferProgress.TransferRate);
@@ -72,7 +73,7 @@ public class FileTransferProgressTests
         fileTransferProgress.UpdateProgress(500000, TimeSpan.FromMilliseconds(200));
 
         Assert.Equal(
-            @"Transferred 0.48MB of 0.95MB (50.00% complete), Speed: 2.38MB/s, Time: 0.20s, ETA: 0.20s, File: furion.index.html, Path: C:\Workspaces\furion.index.html.",
+            @"Transferred 0.48MB of 0.95MB (50.00% complete), Speed: 2.38MB/s, Time: 0.20s, ETA: 0.20s. File: furion.index.html, Path: C:\Workspaces\furion.index.html.",
             fileTransferProgress.ToSummaryString());
     }
 
@@ -84,7 +85,7 @@ public class FileTransferProgressTests
         fileTransferProgress.UpdateProgress(500000, TimeSpan.FromMilliseconds(200));
 
         Assert.Equal(
-            @"Transferred 0.48MB of 0.95MB (50.00% complete), Speed: 2.38MB/s, Time: 0.20s, ETA: 0.20s, File: furion.index.html, Path: C:\Workspaces\furion.index.html.",
+            @"Transferred 0.48MB of 0.95MB (50.00% complete), Speed: 2.38MB/s, Time: 0.20s, ETA: 0.20s. File: furion.index.html, Path: C:\Workspaces\furion.index.html.",
             await fileTransferProgress.ToSummaryStringAsync());
     }
 
@@ -154,4 +155,19 @@ public class FileTransferProgressTests
 
         await fileTransferProgress.UpdateConsoleProgressAsync();
     }
+
+    [Fact]
+    public void FallbackWrite_ReturnOK()
+    {
+        var fileTransferProgress =
+            new FileTransferProgress(@"C:\Workspaces\furion.index.html", 1000L);
+
+        fileTransferProgress.FallbackWrite("更新进度", false);
+    }
+
+    [Fact]
+    public void GetDisplayLength_ReturnOK() => Assert.True(FileTransferProgress.GetDisplayLength("更新进度") > 0);
+
+    [Fact]
+    public void StripAnsi_ReturnOK() => Assert.Equal("Done!", FileTransferProgress.StripAnsi("\e[32mDone!\e[0m"));
 }
