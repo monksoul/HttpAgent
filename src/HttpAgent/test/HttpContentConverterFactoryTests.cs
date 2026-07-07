@@ -19,7 +19,9 @@ public class HttpContentConverterFactoryTests
         var logger = serviceProvider.GetRequiredService<IHttpRemoteLogger>();
         var httpContentConverterFactory1 = new HttpContentConverterFactory(serviceProvider, logger, null!, null!);
         Assert.NotNull(httpContentConverterFactory1.ServiceProvider);
+        Assert.Null(httpContentConverterFactory1.CurrentConverter);
         Assert.NotNull(httpContentConverterFactory1._logger);
+        Assert.NotNull(httpContentConverterFactory1._currentConverter);
         Assert.NotNull(httpContentConverterFactory1._converters);
         Assert.Equal(5, httpContentConverterFactory1._converters.Count);
         Assert.Equal(
@@ -97,10 +99,16 @@ public class HttpContentConverterFactoryTests
 
         Assert.Equal(typeof(HttpResponseMessageConverter),
             httpContentConverterFactory.GetConverter<HttpResponseMessage>(httpResponseMessage).GetType());
+        Assert.True(httpContentConverterFactory.CurrentConverter is HttpResponseMessageConverter);
+
         Assert.Equal(typeof(StringContentConverter),
             httpContentConverterFactory.GetConverter<string>(httpResponseMessage).GetType());
+        Assert.True(httpContentConverterFactory.CurrentConverter is StringContentConverter);
+
         Assert.Equal(typeof(ByteArrayContentConverter),
             httpContentConverterFactory.GetConverter<byte[]>(httpResponseMessage).GetType());
+        Assert.True(httpContentConverterFactory.CurrentConverter is ByteArrayContentConverter);
+
         Assert.Equal(typeof(StreamContentConverter),
             httpContentConverterFactory.GetConverter<Stream>(httpResponseMessage).GetType());
         Assert.Equal(typeof(VoidContentConverter),
@@ -148,6 +156,7 @@ public class HttpContentConverterFactoryTests
 
         Assert.Equal(typeof(CustomObjectContentConverter<ObjectModel>),
             httpContentConverterFactory!.GetConverter<ObjectModel>(httpResponseMessage).GetType());
+        Assert.True(httpContentConverterFactory.CurrentConverter is CustomObjectContentConverter<ObjectModel>);
     }
 
     [Fact]
