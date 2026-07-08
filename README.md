@@ -42,7 +42,7 @@ consumption and high test coverage.
   ensure low resource consumption and high performance.
 - **Architecture Design**: Flexible architecture design that is easy to use and extend.
 - **Cross-Platform Independence**: Supports cross-platform operation without external dependencies.
-- **Broad Application Type Support**: Supports any application type, including but not limited to Console, Web, WebAssembly, WinForms, WPF, MAUI.
+- **Application Type Support**: Supports any application type, including but not limited to Console, Web, WebAssembly, WinForms, WPF, MAUI.
 - **High-Quality Code Assurance**: Adheres to high-standard coding practices, with unit and integration test coverage as
   high as `98%`.
 - **`.NET 8+` Compatibility**: Can be deployed and used in environments running `.NET 8` and higher versions.
