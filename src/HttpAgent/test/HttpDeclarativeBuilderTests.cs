@@ -128,7 +128,7 @@ public class HttpDeclarativeBuilderTests
         Assert.NotEmpty(HttpDeclarativeBuilder._cachedExtractors);
 
         Assert.Equal(
-            $"System.Threading.Tasks.Task<System.String> Method1() | {method.DeclaringType.ToFriendlyString()}",
+            "[36m[3mSystem.Threading.Tasks.Task<System.String> Method1() | HttpAgent.Tests.IHttpDeclarativeTest[0m",
             httpRequestBuilder.Properties["__DECLARATIVE_METHOD__"]);
     }
 

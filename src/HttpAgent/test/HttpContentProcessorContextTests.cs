@@ -16,6 +16,7 @@ public class HttpContentProcessorContextTests
         Assert.Null(context.HttpClientName);
         Assert.False(context.AsFormItem);
         Assert.Null(context.CompletionDisposables);
+        Assert.Null(context.FileName);
     }
 
     [Fact]

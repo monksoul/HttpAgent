@@ -18,6 +18,11 @@ internal sealed class HttpContentConverterFactory : IHttpContentConverterFactory
     internal readonly AsyncLocal<IHttpContentConverter?> _currentConverter = new();
 
     /// <summary>
+    ///     泛型 <see cref="IHttpContentConverter" /> 响应内容转换器字典缓存
+    /// </summary>
+    internal readonly ConcurrentDictionary<Type, IHttpContentConverter?> _genericConverterCache = new();
+
+    /// <summary>
     ///     泛型 <see cref="IHttpContentConverter" /> 工厂委托字典集合
     /// </summary>
     internal readonly Dictionary<Type, List<Func<Type[], IHttpContentConverter>>> _genericConverters;
@@ -323,7 +328,6 @@ internal sealed class HttpContentConverterFactory : IHttpContentConverterFactory
     /// <summary>
     ///     尝试解析泛型 <see cref="IHttpContentConverter{TResult}" /> 实例
     /// </summary>
-    /// <remarks>TODO: 未来可以考虑缓存反射的结果</remarks>
     /// <param name="resultType">转换的目标类型</param>
     /// <returns>
     ///     <see cref="IHttpContentConverter" />
@@ -336,12 +340,16 @@ internal sealed class HttpContentConverterFactory : IHttpContentConverterFactory
             return null;
         }
 
-        // 获取泛型定义类型
-        var genericTypeDefinition = resultType.GetGenericTypeDefinition();
+        // 查找泛型 IHttpContentConverter 响应内容转换器字典缓存是否存在该类型
+        return _genericConverterCache.GetOrAdd(resultType, type =>
+        {
+            // 获取泛型定义类型
+            var genericTypeDefinition = type.GetGenericTypeDefinition();
 
-        // 查找是否注册了泛型内容转换器工厂委托
-        return !_genericConverters.TryGetValue(genericTypeDefinition, out var factories)
-            ? null
-            : factories.LastOrDefault()?.Invoke(resultType.GetGenericArguments());
+            // 查找是否注册了泛型内容转换器工厂委托
+            return !_genericConverters.TryGetValue(genericTypeDefinition, out var factories)
+                ? null
+                : factories.LastOrDefault()?.Invoke(type.GetGenericArguments());
+        });
     }
 }

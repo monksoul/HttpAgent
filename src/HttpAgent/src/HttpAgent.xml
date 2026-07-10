@@ -80,7 +80,9 @@
             </summary>
             <param name="name">标头名</param>
             <param name="expectedValue">期望值</param>
-            <returns></returns>
+            <returns>
+                <see cref="T:HttpAgent.HttpAssertionBuilder" />
+            </returns>
         </member>
         <member name="M:HttpAgent.HttpAssertionBuilder.HeaderContains(System.String,System.String)">
             <summary>
@@ -88,7 +90,9 @@
             </summary>
             <param name="name">标头名</param>
             <param name="expectedValue">期望值</param>
-            <returns></returns>
+            <returns>
+                <see cref="T:HttpAgent.HttpAssertionBuilder" />
+            </returns>
         </member>
         <member name="M:HttpAgent.HttpAssertionBuilder.DurationUnder(System.Double)">
             <summary>
@@ -1672,7 +1676,7 @@
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpMultipartFormDataBuilder.AddFile(System.IO.FileInfo,System.String)">
+        <member name="M:HttpAgent.HttpMultipartFormDataBuilder.AddFile(System.IO.FileInfo,System.String,System.String,System.String,System.Text.Encoding)">
             <summary>
                 添加文件
             </summary>
@@ -1680,6 +1684,9 @@
                 <see cref="T:System.IO.FileInfo" />
             </param>
             <param name="name">表单名称</param>
+            <param name="fileName">文件的名称</param>
+            <param name="contentType">内容类型</param>
+            <param name="contentEncoding">内容编码</param>
             <returns>
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
@@ -5022,7 +5029,7 @@
         <member name="M:HttpAgent.Core.Converters.Json.FlexibleDateTimeConverter.Regex">
             <remarks>
             Pattern:<br/>
-            <code>^/Date\(([+-]*\d+)\)/$</code><br/>
+            <code>^/Date\\(([+-]*\\d+)\\)/$</code><br/>
             Options:<br/>
             <code>RegexOptions.CultureInvariant</code><br/>
             Explanation:<br/>
@@ -5030,7 +5037,7 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Match the string "/Date(".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [+\-] atomically any number of times.<br/>
+                ○ Match a character in the set [+-] atomically any number of times.<br/>
                 ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match the string ")/".<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
@@ -5051,7 +5058,7 @@
         <member name="M:HttpAgent.Core.Converters.Json.FlexibleDateTimeOffsetConverter.Regex">
             <remarks>
             Pattern:<br/>
-            <code>^/Date\(([+-]*\d+)([+-])(\d{2})(\d{2})\)/$</code><br/>
+            <code>^/Date\\(([+-]*\\d+)([+-])(\\d{2})(\\d{2})\\)/$</code><br/>
             Options:<br/>
             <code>RegexOptions.CultureInvariant</code><br/>
             Explanation:<br/>
@@ -5059,10 +5066,10 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Match the string "/Date(".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [+\-] atomically any number of times.<br/>
+                ○ Match a character in the set [+-] atomically any number of times.<br/>
                 ○ Match a Unicode digit atomically at least once.<br/>
             ○ 2nd capture group.<br/>
-                ○ Match a character in the set [+\-].<br/>
+                ○ Match a character in the set [+-].<br/>
             ○ 3rd capture group.<br/>
                 ○ Match a Unicode digit exactly 2 times.<br/>
             ○ 4th capture group.<br/>
@@ -5422,12 +5429,16 @@
                 <see cref="T:System.Boolean" />
             </returns>
         </member>
-        <member name="M:HttpAgent.Core.Extensions.ObjectExtensions.ObjectToDictionary(System.Object)">
+        <member name="M:HttpAgent.Core.Extensions.ObjectExtensions.ObjectToDictionary(System.Object,System.Boolean)">
             <summary>
                 将对象转换为 <see cref="T:System.Collections.Generic.IDictionary`2" /> 类型对象
             </summary>
             <param name="obj">
                 <see cref="T:System.Object" />
+            </param>
+            <param name="returnPropertyInfo">
+                当无法通过已知类型转换而回退到反射读取公开属性时，如果为 <c>true</c> 则字典的值将保存 <see cref="T:System.Reflection.PropertyInfo" />
+                对象，否则保存属性的实际值。默认值为 <c>false</c>
             </param>
             <returns>
                 <see cref="T:System.Collections.Generic.IDictionary`2" />
@@ -5634,7 +5645,7 @@
         <member name="M:HttpAgent.Core.Extensions.StringExtensions.PlaceholderRegex">
             <remarks>
             Pattern:<br/>
-            <code>\{\s*(\w+\s*(\.\s*\w+\s*)*)\s*\}</code><br/>
+            <code>\\{\\s*(\\w+\\s*(\\.\\s*\\w+\\s*)*)\\s*\\}</code><br/>
             Explanation:<br/>
             <code>
             ○ Match '{'.<br/>
@@ -5656,19 +5667,19 @@
         <member name="M:HttpAgent.Core.Extensions.StringExtensions.ConfigurationKeyRegex">
             <remarks>
             Pattern:<br/>
-            <code>\[\[\s*([\w\-:]+)((?:\s*\|\s*[\w\-:]+)*)\s*(?:\|\|\s*([^\]]*))?\s*\]\]</code><br/>
+            <code>\\[\\[\\s*([\\w\\-:]+)((?:\\s*\\|\\s*[\\w\\-:]+)*)\\s*(?:\\|\\|\\s*([^\\]]*))?\\s*\\]\\]</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "[[".<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [\-:\w] greedily at least once.<br/>
+                ○ Match a character in the set [-:\w] greedily at least once.<br/>
             ○ 2nd capture group.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match a whitespace character atomically any number of times.<br/>
                     ○ Match '|'.<br/>
                     ○ Match a whitespace character greedily any number of times.<br/>
-                    ○ Match a character in the set [\-:\w] greedily at least once.<br/>
+                    ○ Match a character in the set [-:\w] greedily at least once.<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ Optional (greedy).<br/>
                 ○ Match the string "||".<br/>
@@ -5691,32 +5702,32 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Loop greedily at least once.<br/>
                 ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [\-.0-9A-Z_a-z~].<br/>
+                    ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
                     ○ Match a sequence of expressions.<br/>
                         ○ Match '%'.<br/>
-                        ○ Match a hexadecimal digit exactly 2 times.<br/>
+                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
             ○ Match '='.<br/>
             ○ Loop greedily any number of times.<br/>
                 ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [+\-.0-9A-Z_a-z~].<br/>
+                    ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
                     ○ Match a sequence of expressions.<br/>
                         ○ Match '%'.<br/>
-                        ○ Match a hexadecimal digit exactly 2 times.<br/>
+                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
             ○ Loop greedily any number of times.<br/>
                 ○ Match '&amp;'.<br/>
                 ○ Loop greedily at least once.<br/>
                     ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [\-.0-9A-Z_a-z~].<br/>
+                        ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
                         ○ Match a sequence of expressions.<br/>
                             ○ Match '%'.<br/>
-                            ○ Match a hexadecimal digit exactly 2 times.<br/>
+                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
                 ○ Match '='.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [+\-.0-9A-Z_a-z~].<br/>
+                        ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
                         ○ Match a sequence of expressions.<br/>
                             ○ Match '%'.<br/>
-                            ○ Match a hexadecimal digit exactly 2 times.<br/>
+                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
             </remarks>
@@ -6146,12 +6157,13 @@
                 提供字符串实用方法
             </summary>
         </member>
-        <member name="M:HttpAgent.Core.Utilities.StringUtility.FormatKeyValuesSummary(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.Collections.Generic.IEnumerable{System.String}}},System.String)">
+        <member name="M:HttpAgent.Core.Utilities.StringUtility.FormatKeyValuesSummary(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.Collections.Generic.IEnumerable{System.String}}},System.String,System.Boolean)">
             <summary>
                 格式化键值集合摘要
             </summary>
             <param name="keyValues">键值集合</param>
             <param name="summary">摘要</param>
+            <param name="skipEmptyValues">是否跳过值为空的项，默认值为：<c>false</c></param>
             <returns>
                 <see cref="T:System.String" />
             </returns>
@@ -8303,12 +8315,12 @@
         <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.UnicodeEscapeRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\u([0-9a-fA-F]{4})</code><br/>
+            <code>\\\\u([0-9a-fA-F]{4})</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "\\u".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a hexadecimal digit exactly 4 times.<br/>
+                ○ Match a character in the set [0-9A-Fa-f] exactly 4 times.<br/>
             </code>
             </remarks>
         </member>
@@ -8323,6 +8335,11 @@
         <member name="F:HttpAgent.HttpContentConverterFactory._currentConverter">
             <summary>
                 用于在当前异步上下文中传递最近一次使用的 <see cref="T:HttpAgent.IHttpContentConverter" />
+            </summary>
+        </member>
+        <member name="F:HttpAgent.HttpContentConverterFactory._genericConverterCache">
+            <summary>
+                泛型 <see cref="T:HttpAgent.IHttpContentConverter" /> 响应内容转换器字典缓存
             </summary>
         </member>
         <member name="F:HttpAgent.HttpContentConverterFactory._genericConverters">
@@ -8406,7 +8423,6 @@
             <summary>
                 尝试解析泛型 <see cref="T:HttpAgent.IHttpContentConverter`1" /> 实例
             </summary>
-            <remarks>TODO: 未来可以考虑缓存反射的结果</remarks>
             <param name="resultType">转换的目标类型</param>
             <returns>
                 <see cref="T:HttpAgent.IHttpContentConverter" />
@@ -10028,12 +10044,12 @@
         <member name="M:HttpAgent.FileTransferProgress.AnsiRegex">
             <remarks>
             Pattern:<br/>
-            <code>\e\[[\d;]*[a-zA-Z]</code><br/>
+            <code>\\e\\[[\\d;]*[a-zA-Z]</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "\u001b[".<br/>
             ○ Match a character in the set [;\d] atomically any number of times.<br/>
-            ○ Match an ASCII letter.<br/>
+            ○ Match a character in the set [A-Za-z].<br/>
             </code>
             </remarks>
         </member>
@@ -11040,6 +11056,11 @@
                 P90 响应时间（毫秒）
             </summary>
         </member>
+        <member name="P:HttpAgent.StressTestHarnessResult.Percentile95ResponseTime">
+            <summary>
+                P95 响应时间（毫秒）
+            </summary>
+        </member>
         <member name="P:HttpAgent.StressTestHarnessResult.Percentile99ResponseTime">
             <summary>
                 P99 响应时间（毫秒）
@@ -11224,8 +11245,10 @@
             <summary>
                 指定 JSON 响应反序列化包装器
             </summary>
-            <remarks>使用时需明确调用 <see cref="M:HttpAgent.HttpRequestBuilder.UseJsonResponseWrapper" />。</remarks>
-            TODO: 未来可以考虑不同的 HTTP 状态码使用不同的包装器
+            <remarks>
+                <para>使用时需明确调用 <see cref="M:HttpAgent.HttpRequestBuilder.UseJsonResponseWrapper" />。</para>
+                <para>若还需对响应做额外校验或转换，可通过 <see cref="P:HttpAgent.JsonResponseWrapper.ResultHandler" /> 实现。</para>
+            </remarks>
         </member>
         <member name="P:HttpAgent.HttpClientOptions.UseJsonResponseWrapper">
             <summary>
@@ -11418,6 +11441,11 @@
                 表示是否作为表单的一项
             </summary>
             <remarks>默认值为：<c>false</c>。</remarks>
+        </member>
+        <member name="P:HttpAgent.HttpContentProcessorContext.FileName">
+            <summary>
+                文件的名称
+            </summary>
         </member>
         <member name="P:HttpAgent.HttpContentProcessorContext.CompletionDisposables">
             <summary>
@@ -11933,12 +11961,12 @@
         <member name="M:HttpAgent.HttpRemoteService.StatusCodeRangeRegex">
             <remarks>
             Pattern:<br/>
-            <code>^\d+[-~]\d+$</code><br/>
+            <code>^\\d+[-~]\\d+$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
-            ○ Match a character in the set [\-~].<br/>
+            ○ Match a character in the set [-~].<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
@@ -11947,7 +11975,7 @@
         <member name="M:HttpAgent.HttpRemoteService.StatusCodeCompareRegex">
             <remarks>
             Pattern:<br/>
-            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\d+)$</code><br/>
+            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\\d+)$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
@@ -17655,21 +17683,6 @@
         <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32,System.Int32,System.Int32)">
             <summary>Pushes 3 values onto the backtracking stack.</summary>
         </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.WordCategoriesMask">
-            <summary>Provides a mask of Unicode categories that combine to form [\w].</summary>
-        </member>
-        <member name="P:System.Text.RegularExpressions.Generated.Utilities.WordCharBitmap">
-            <summary>Gets a bitmap for whether each character 0 through 127 is in [\w]</summary>
-        </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_1F52B1A4D2E82B6FEDE25EC8C55F85BB36775196837076691C96925040F90D32">
-            <summary>Supports searching for the string "\\u".</summary>
-        </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_4A5B154448624742176A7AE18EDA0762C946CBB1B19F68418DD573D0A698E642">
-            <summary>Supports searching for the string "\u001b[".</summary>
-        </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_EBC667BDABA1472FA863B5B39B31251EF2B4C95DD643BDECF694CB1CE7BDC178">
-            <summary>Supports searching for the string "[[".</summary>
-        </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions">
             <summary>
                 HTTP 远程请求模块 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" /> 扩展类
@@ -17693,6 +17706,34 @@
             </summary>
             <param name="services">
                 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
+            </param>
+            <param name="httpRemoteBuilder">
+                <see cref="T:HttpAgent.HttpRemoteBuilder" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
+            </returns>
+        </member>
+    </members>
+</doc>
+     </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions.AddHttpRemote(Microsoft.Extensions.DependencyInjection.IServiceCollection,HttpAgent.HttpRemoteBuilder)">
+            <summary>
+                添加 HTTP 远程请求服务
+            </summary>
+            <param name="services">
+                <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
+            </param>
+            <param name="httpRemoteBuilder">
+                <see cref="T:HttpAgent.HttpRemoteBuilder" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
+            </returns>
+        </member>
+    </members>
+</doc>
+ncyInjection.IServiceCollection" />
             </param>
             <param name="httpRemoteBuilder">
                 <see cref="T:HttpAgent.HttpRemoteBuilder" />

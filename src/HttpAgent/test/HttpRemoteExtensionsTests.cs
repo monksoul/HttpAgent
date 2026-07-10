@@ -143,11 +143,11 @@ public class HttpRemoteExtensionsTests
         httpResponseMessage.Content.Headers.TryAddWithoutValidation("Content-Type", "application/json");
 
         Assert.Equal(
-            "[36m[1mGeneral:[0m \r\n  Request URL:      http://localhost\r\n  HTTP Method:      GET\r\n  Status Code:      [32m[1m200 OK[0m\r\n  HTTP Version:     1.1\r\n  HTTP Content:     \r\n[36m[1mResponse Headers:[0m \r\n  Accept:              application/json\r\n  Accept-Encoding:     gzip, deflate\r\n  Content-Type:        application/json",
+            "[36m[1mGeneral:[0m \r\n  Request URL:        http://localhost\r\n  Request Method:     GET\r\n  Status Code:        [32m[1m200 OK[0m\r\n  HTTP Version:       1.1\r\n[36m[1mResponse Headers:[0m \r\n  Accept:              application/json\r\n  Accept-Encoding:     gzip, deflate\r\n  Content-Type:        application/json",
             httpResponseMessage.ProfilerGeneralAndHeaders());
 
         Assert.Equal(
-            "[36m[1mGeneral:[0m \r\n  Request URL:          http://localhost\r\n  HTTP Method:          GET\r\n  Status Code:          [32m[1m200 OK[0m\r\n  HTTP Version:         1.1\r\n  HTTP Content:         \r\n  Request Duration:     200ms\r\n[36m[1mResponse Headers:[0m \r\n  Accept:              application/json\r\n  Accept-Encoding:     gzip, deflate\r\n  Content-Type:        application/json",
+            "[36m[1mGeneral:[0m \r\n  Request URL:          http://localhost\r\n  Request Method:       GET\r\n  Status Code:          [32m[1m200 OK[0m\r\n  HTTP Version:         1.1\r\n  Request Duration:     200ms\r\n[36m[1mResponse Headers:[0m \r\n  Accept:              application/json\r\n  Accept-Encoding:     gzip, deflate\r\n  Content-Type:        application/json",
             httpResponseMessage.ProfilerGeneralAndHeaders(generalCustomKeyValues:
                 [new KeyValuePair<string, IEnumerable<string>>("Request Duration", ["200ms"])]));
     }

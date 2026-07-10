@@ -35,6 +35,8 @@ public class HttpContentConverterFactoryTests
         Assert.Equal(typeof(IAsyncEnumerable<>), httpContentConverterFactory1._genericConverters.Keys.First());
         Assert.NotNull(httpContentConverterFactory1._genericConverters[typeof(IAsyncEnumerable<>)].First()
             .Invoke([typeof(ObjectModel)]));
+        Assert.NotNull(httpContentConverterFactory1._genericConverterCache);
+        Assert.Empty(httpContentConverterFactory1._genericConverterCache);
 
         var httpContentConverterFactory2 =
             new HttpContentConverterFactory(serviceProvider, logger, [new CustomStringContentConverter()], null!);
@@ -447,10 +449,12 @@ public class HttpContentConverterFactoryTests
         var httpContentConverterFactory = new HttpContentConverterFactory(serviceProvider, logger, null!, null!);
 
         Assert.Null(httpContentConverterFactory.TryResolveGenericConverter(typeof(ObjectModel)));
+        Assert.Empty(httpContentConverterFactory._genericConverterCache);
 
         var genericConverter =
             httpContentConverterFactory.TryResolveGenericConverter(typeof(IAsyncEnumerable<ObjectModel>));
         Assert.NotNull(genericConverter);
+        Assert.Single(httpContentConverterFactory._genericConverterCache);
 
         var httpContentConverterFactory2 = new HttpContentConverterFactory(serviceProvider, logger, null!, [
             new GenericHttpContentConverter(typeof(IAsyncEnumerable<>), typeArgs =>
@@ -459,6 +463,7 @@ public class HttpContentConverterFactoryTests
         ]);
 
         Assert.Null(httpContentConverterFactory2.TryResolveGenericConverter(typeof(ObjectModel)));
+        Assert.Single(httpContentConverterFactory._genericConverterCache);
 
         var genericConverter2 =
             httpContentConverterFactory2.TryResolveGenericConverter(typeof(IAsyncEnumerable<ObjectModel>));
