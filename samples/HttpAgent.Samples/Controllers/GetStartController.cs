@@ -854,7 +854,7 @@ public class GetStartController(
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    public async Task DownloadThreaded()
+    public async Task DownloadThreaded(CancellationToken cancellationToken)
     {
         // 打印下载进度
         var fileTransferResult = await httpRemoteService.DownloadFileAsync(
@@ -862,6 +862,6 @@ public class GetStartController(
             , @"C:\Workspaces\"
             , progress => progress.UpdateConsoleProgressAsync()
             , FileExistsBehavior.Overwrite,
-            builder => builder.SetBufferSize(1024 * 1024).SetMaxThreads(4).Profiler(false));
+            builder => builder.SetBufferSize(1024 * 1024).SetMaxThreads(4).Profiler(false), cancellationToken);
     }
 }

@@ -40,5 +40,20 @@ public class HttpRemoteOptionsTests
 
         Assert.NotNull(httpRemoteOptions.JsonSerializerOptions);
         Assert.NotEqual(HttpRemoteOptions.JsonSerializerOptionsDefault, httpRemoteOptions.JsonSerializerOptions);
+
+        Assert.NotNull(httpRemoteOptions.PipelineHandlerTypes);
+        Assert.Equal(10, httpRemoteOptions.PipelineHandlerTypes.Count);
+        Assert.Equal([
+            typeof(ResponseAssertionPipelineHandler),
+            typeof(ResponseProfilerPipelineHandler),
+            typeof(RequestEventPipelineHandler),
+            typeof(TimeoutPipelineHandler),
+            typeof(AutoRedirectPipelineHandler),
+            typeof(StatusCodePipelineHandler),
+            typeof(ContentLengthValidationPipelineHandler),
+            typeof(RequestBuilderPipelineHandler),
+            typeof(RequestProfilerPipelineHandler),
+            typeof(SendCorePipelineHandler)
+        ], httpRemoteOptions.PipelineHandlerTypes);
     }
 }

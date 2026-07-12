@@ -1422,9 +1422,6 @@
                 <see cref="T:HttpAgent.MultipartFormDataItem" /> 集合
             </summary>
         </member>
-        <member name="F:HttpAgent.HttpMultipartFormDataBuilder._onPreAddContent">
-            <inheritdoc cref="P:HttpAgent.HttpMultipartFormDataBuilder.OnPreAddContent" />
-        </member>
         <member name="F:HttpAgent.HttpMultipartFormDataBuilder.FormItemsSorter">
             <summary>
                 多部分表单内容项排序委托
@@ -1438,6 +1435,9 @@
             <summary>
                 用于处理在添加 <see cref="T:System.Net.Http.HttpContent" /> 表单项内容前，对表单名称进行自定义转换的转换器
             </summary>
+        </member>
+        <member name="F:HttpAgent.HttpMultipartFormDataBuilder._onPreAddContent">
+            <inheritdoc cref="P:HttpAgent.HttpMultipartFormDataBuilder.OnPreAddContent" />
         </member>
         <member name="M:HttpAgent.HttpMultipartFormDataBuilder.#ctor(HttpAgent.HttpRequestBuilder)">
             <summary>
@@ -11333,6 +11333,411 @@
             </summary>
             <value>返回多个包含实现 <see cref="T:HttpAgent.IHttpDeclarativeExtractor" /> 集合的集合。</value>
         </member>
+        <member name="P:HttpAgent.HttpRemoteOptions.PipelineHandlerTypes">
+            <summary>
+                自定义 <see cref="T:HttpAgent.IHttpRequestPipelineHandler" /> 类型集合
+            </summary>
+            <remarks>
+                <para>该列表定义了发送 HTTP 请求时执行的处理器及其顺序。</para>
+                <para>顺序从外到内：列表中的第一个类型位于管道最外层（最先执行），最后一个类型位于最内层（最后执行）。</para>
+                <para>TODO: 未来考虑开放拓展</para>
+            </remarks>
+        </member>
+        <member name="T:HttpAgent.AutoRedirectPipelineHandler">
+            <summary>
+                自动重定向管道处理器
+            </summary>
+            <param name="httpContentProcessorFactory">
+                <see cref="T:HttpAgent.IHttpContentProcessorFactory" />
+            </param>
+            <param name="httpRemoteOptions">
+                <see cref="T:HttpAgent.HttpRemoteOptions" />
+            </param>
+        </member>
+        <member name="M:HttpAgent.AutoRedirectPipelineHandler.#ctor(HttpAgent.IHttpContentProcessorFactory,Microsoft.Extensions.Options.IOptions{HttpAgent.HttpRemoteOptions})">
+            <summary>
+                自动重定向管道处理器
+            </summary>
+            <param name="httpContentProcessorFactory">
+                <see cref="T:HttpAgent.IHttpContentProcessorFactory" />
+            </param>
+            <param name="httpRemoteOptions">
+                <see cref="T:HttpAgent.HttpRemoteOptions" />
+            </param>
+        </member>
+        <member name="M:HttpAgent.AutoRedirectPipelineHandler.HandleAsync(HttpAgent.HttpRequestPipelineContext,System.Func{System.Threading.Tasks.Task{System.Net.Http.HttpResponseMessage}})">
+            <inheritdoc />
+        </member>
+        <member name="T:HttpAgent.ContentLengthValidationPipelineHandler">
+            <summary>
+                响应内容长度验证管道处理器
+            </summary>
+        </member>
+        <member name="M:HttpAgent.ContentLengthValidationPipelineHandler.HandleAsync(HttpAgent.HttpRequestPipelineContext,System.Func{System.Threading.Tasks.Task{System.Net.Http.HttpResponseMessage}})">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.ContentLengthValidationPipelineHandler.CheckContentLengthWithinLimit(HttpAgent.HttpRequestBuilder,System.Net.Http.HttpResponseMessage)">
+            <summary>
+                检查 HTTP 响应内容长度是否在设定的最大缓冲区大小限制内
+            </summary>
+            <param name="httpRequestBuilder">
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </param>
+            <param name="httpResponseMessage">
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </param>
+            <exception cref="T:System.Net.Http.HttpRequestException"></exception>
+        </member>
+        <member name="T:HttpAgent.RequestBuilderPipelineHandler">
+            <summary>
+                构建 <see cref="T:System.Net.Http.HttpRequestMessage" /> 管道处理器
+            </summary>
+            <param name="httpContentProcessorFactory">
+                <see cref="T:HttpAgent.IHttpContentProcessorFactory" />
+            </param>
+            <param name="httpRemoteOptions">
+                <see cref="T:HttpAgent.HttpRemoteOptions" />
+            </param>
+        </member>
+        <member name="M:HttpAgent.RequestBuilderPipelineHandler.#ctor(HttpAgent.IHttpContentProcessorFactory,Microsoft.Extensions.Options.IOptions{HttpAgent.HttpRemoteOptions})">
+            <summary>
+                构建 <see cref="T:System.Net.Http.HttpRequestMessage" /> 管道处理器
+            </summary>
+            <param name="httpContentProcessorFactory">
+                <see cref="T:HttpAgent.IHttpContentProcessorFactory" />
+            </param>
+            <param name="httpRemoteOptions">
+                <see cref="T:HttpAgent.HttpRemoteOptions" />
+            </param>
+        </member>
+        <member name="M:HttpAgent.RequestBuilderPipelineHandler.HandleAsync(HttpAgent.HttpRequestPipelineContext,System.Func{System.Threading.Tasks.Task{System.Net.Http.HttpResponseMessage}})">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.RequestBuilderPipelineHandler.HandlePreSendRequest(HttpAgent.HttpRequestBuilder,HttpAgent.IHttpRequestEventHandler,System.Net.Http.HttpRequestMessage)">
+            <summary>
+                处理发送 HTTP 请求之前
+            </summary>
+            <param name="httpRequestBuilder">
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </param>
+            <param name="requestEventHandler">
+                <see cref="T:HttpAgent.IHttpRequestEventHandler" />
+            </param>
+            <param name="httpRequestMessage">
+                <see cref="T:System.Net.Http.HttpRequestMessage" />
+            </param>
+        </member>
+        <member name="T:HttpAgent.RequestEventPipelineHandler">
+            <summary>
+                请求事件管道处理器
+            </summary>
+            <param name="serviceProvider">
+                <see cref="T:System.IServiceProvider" />
+            </param>
+            <param name="logger">
+                <see cref="T:HttpAgent.IHttpRemoteLogger" />
+            </param>
+        </member>
+        <member name="M:HttpAgent.RequestEventPipelineHandler.#ctor(System.IServiceProvider,HttpAgent.IHttpRemoteLogger)">
+            <summary>
+                请求事件管道处理器
+            </summary>
+            <param name="serviceProvider">
+                <see cref="T:System.IServiceProvider" />
+            </param>
+            <param name="logger">
+                <see cref="T:HttpAgent.IHttpRemoteLogger" />
+            </param>
+        </member>
+        <member name="M:HttpAgent.RequestEventPipelineHandler.HandleAsync(HttpAgent.HttpRequestPipelineContext,System.Func{System.Threading.Tasks.Task{System.Net.Http.HttpResponseMessage}})">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.RequestEventPipelineHandler.HandleRequestFailed(HttpAgent.HttpRequestBuilder,HttpAgent.IHttpRequestEventHandler,System.Exception,System.Net.Http.HttpResponseMessage)">
+            <summary>
+                处理发送 HTTP 请求发生异常
+            </summary>
+            <param name="httpRequestBuilder">
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </param>
+            <param name="requestEventHandler">
+                <see cref="T:HttpAgent.IHttpRequestEventHandler" />
+            </param>
+            <param name="e">
+                <see cref="T:System.Exception" />
+            </param>
+            <param name="httpResponseMessage">
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </param>
+        </member>
+        <member name="M:HttpAgent.RequestEventPipelineHandler.HandlePostReceiveResponse(HttpAgent.HttpRequestBuilder,HttpAgent.IHttpRequestEventHandler,System.Net.Http.HttpResponseMessage)">
+            <summary>
+                处理收到 HTTP 响应之后
+            </summary>
+            <param name="httpRequestBuilder">
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </param>
+            <param name="requestEventHandler">
+                <see cref="T:HttpAgent.IHttpRequestEventHandler" />
+            </param>
+            <param name="httpResponseMessage">
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </param>
+        </member>
+        <member name="T:HttpAgent.RequestProfilerPipelineHandler">
+            <summary>
+                请求分析日志管道处理器
+            </summary>
+            <param name="logger">
+                <see cref="T:HttpAgent.IHttpRemoteLogger" />
+            </param>
+            <param name="httpRemoteOptions">
+                <see cref="T:HttpAgent.HttpRemoteOptions" />
+            </param>
+        </member>
+        <member name="M:HttpAgent.RequestProfilerPipelineHandler.#ctor(HttpAgent.IHttpRemoteLogger,Microsoft.Extensions.Options.IOptions{HttpAgent.HttpRemoteOptions})">
+            <summary>
+                请求分析日志管道处理器
+            </summary>
+            <param name="logger">
+                <see cref="T:HttpAgent.IHttpRemoteLogger" />
+            </param>
+            <param name="httpRemoteOptions">
+                <see cref="T:HttpAgent.HttpRemoteOptions" />
+            </param>
+        </member>
+        <member name="M:HttpAgent.RequestProfilerPipelineHandler.HandleAsync(HttpAgent.HttpRequestPipelineContext,System.Func{System.Threading.Tasks.Task{System.Net.Http.HttpResponseMessage}})">
+            <inheritdoc />
+        </member>
+        <member name="T:HttpAgent.ResponseAssertionPipelineHandler">
+            <summary>
+                响应断言管道处理器
+            </summary>
+            <param name="serviceProvider">
+                <see cref="T:System.IServiceProvider" />
+            </param>
+        </member>
+        <member name="M:HttpAgent.ResponseAssertionPipelineHandler.#ctor(System.IServiceProvider)">
+            <summary>
+                响应断言管道处理器
+            </summary>
+            <param name="serviceProvider">
+                <see cref="T:System.IServiceProvider" />
+            </param>
+        </member>
+        <member name="M:HttpAgent.ResponseAssertionPipelineHandler.HandleAsync(HttpAgent.HttpRequestPipelineContext,System.Func{System.Threading.Tasks.Task{System.Net.Http.HttpResponseMessage}})">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.ResponseAssertionPipelineHandler.ExecuteAssertionsAsync(HttpAgent.HttpRequestBuilder,System.Net.Http.HttpResponseMessage,System.Int64,System.IServiceProvider)">
+            <summary>
+                执行断言委托操作
+            </summary>
+            <param name="httpRequestBuilder">
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </param>
+            <param name="httpResponseMessage">
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </param>
+            <param name="requestDuration">请求耗时（毫秒）</param>
+            <param name="serviceProvider">
+                <see cref="T:System.IServiceProvider" />
+            </param>
+        </member>
+        <member name="T:HttpAgent.ResponseProfilerPipelineHandler">
+            <summary>
+                响应分析日志管道处理器
+            </summary>
+            <param name="logger">
+                <see cref="T:HttpAgent.IHttpRemoteLogger" />
+            </param>
+            <param name="httpRemoteOptions">
+                <see cref="T:HttpAgent.HttpRemoteOptions" />
+            </param>
+        </member>
+        <member name="M:HttpAgent.ResponseProfilerPipelineHandler.#ctor(HttpAgent.IHttpRemoteLogger,Microsoft.Extensions.Options.IOptions{HttpAgent.HttpRemoteOptions})">
+            <summary>
+                响应分析日志管道处理器
+            </summary>
+            <param name="logger">
+                <see cref="T:HttpAgent.IHttpRemoteLogger" />
+            </param>
+            <param name="httpRemoteOptions">
+                <see cref="T:HttpAgent.HttpRemoteOptions" />
+            </param>
+        </member>
+        <member name="M:HttpAgent.ResponseProfilerPipelineHandler.HandleAsync(HttpAgent.HttpRequestPipelineContext,System.Func{System.Threading.Tasks.Task{System.Net.Http.HttpResponseMessage}})">
+            <inheritdoc />
+        </member>
+        <member name="T:HttpAgent.SendCorePipelineHandler">
+            <summary>
+                核心 HTTP 发送管道处理器
+            </summary>
+        </member>
+        <member name="M:HttpAgent.SendCorePipelineHandler.HandleAsync(HttpAgent.HttpRequestPipelineContext,System.Func{System.Threading.Tasks.Task{System.Net.Http.HttpResponseMessage}})">
+            <inheritdoc />
+        </member>
+        <member name="T:HttpAgent.StatusCodePipelineHandler">
+            <summary>
+                状态码处理管道处理器
+            </summary>
+        </member>
+        <member name="M:HttpAgent.StatusCodePipelineHandler.HandleAsync(HttpAgent.HttpRequestPipelineContext,System.Func{System.Threading.Tasks.Task{System.Net.Http.HttpResponseMessage}})">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.StatusCodePipelineHandler.InvokeStatusCodeHandlersAsync(HttpAgent.HttpRequestBuilder,System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
+            <summary>
+                调用状态码处理程序
+            </summary>
+            <param name="httpRequestBuilder">
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </param>
+            <param name="httpResponseMessage">
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+        </member>
+        <member name="M:HttpAgent.StatusCodePipelineHandler.IsMatchedStatusCode(System.Object,System.Int32)">
+            <summary>
+                检查状态码代码是否匹配响应状态码
+            </summary>
+            <param name="code">状态码代码</param>
+            <param name="statusCode">响应状态码</param>
+            <returns>
+                <see cref="T:System.Boolean" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.StatusCodePipelineHandler.StatusCodeRangeRegex">
+            <remarks>
+            Pattern:<br/>
+            <code>^\\d+[-~]\\d+$</code><br/>
+            Explanation:<br/>
+            <code>
+            ○ Match if at the beginning of the string.<br/>
+            ○ Match a Unicode digit atomically at least once.<br/>
+            ○ Match a character in the set [-~].<br/>
+            ○ Match a Unicode digit atomically at least once.<br/>
+            ○ Match if at the end of the string or if before an ending newline.<br/>
+            </code>
+            </remarks>
+        </member>
+        <member name="M:HttpAgent.StatusCodePipelineHandler.StatusCodeCompareRegex">
+            <remarks>
+            Pattern:<br/>
+            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\\d+)$</code><br/>
+            Explanation:<br/>
+            <code>
+            ○ Match if at the beginning of the string.<br/>
+            ○ 1st capture group.<br/>
+                ○ Match with 2 alternative expressions.<br/>
+                    ○ Match a sequence of expressions.<br/>
+                        ○ Match a character in the set [&lt;&gt;].<br/>
+                        ○ Match '=' atomically, optionally.<br/>
+                    ○ Match a character in the set [&lt;-&gt;].<br/>
+            ○ 2nd capture group.<br/>
+                ○ Match a Unicode digit atomically at least once.<br/>
+            ○ Match if at the end of the string or if before an ending newline.<br/>
+            </code>
+            </remarks>
+        </member>
+        <member name="T:HttpAgent.TimeoutPipelineHandler">
+            <summary>
+                超时控制管道处理器
+            </summary>
+        </member>
+        <member name="M:HttpAgent.TimeoutPipelineHandler.HandleAsync(HttpAgent.HttpRequestPipelineContext,System.Func{System.Threading.Tasks.Task{System.Net.Http.HttpResponseMessage}})">
+            <inheritdoc />
+        </member>
+        <member name="T:HttpAgent.HttpRequestPipelineContext">
+            <summary>
+                HTTP 请求管道上下文
+            </summary>
+        </member>
+        <member name="M:HttpAgent.HttpRequestPipelineContext.#ctor(HttpAgent.HttpRequestBuilder,System.Net.Http.HttpClient,System.Net.Http.HttpCompletionOption,System.Func{System.Net.Http.HttpClient,System.Net.Http.HttpRequestMessage,System.Net.Http.HttpCompletionOption,System.Threading.CancellationToken,System.Threading.Tasks.Task{System.Net.Http.HttpResponseMessage}},System.Threading.CancellationToken)">
+            <summary>
+                <inheritdoc cref="T:HttpAgent.HttpRequestPipelineContext" />
+            </summary>
+            <param name="originalBuilder">原始的 <see cref="T:HttpAgent.HttpRequestBuilder" /></param>
+            <param name="httpClient">
+                <see cref="P:HttpAgent.HttpRequestPipelineContext.HttpClient" />
+            </param>
+            <param name="completionOption">
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
+            </param>
+            <param name="sendAsync">发送委托</param>
+            <param name="cancellationToken">
+                <see cref="P:HttpAgent.HttpRequestPipelineContext.CancellationToken" />
+            </param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="P:HttpAgent.HttpRequestPipelineContext.OriginalBuilder">
+            <summary>
+                原始的 <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpRequestPipelineContext.Builder">
+            <summary>
+                当前使用的 <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpRequestPipelineContext.HttpClient">
+            <summary>
+                <see cref="P:HttpAgent.HttpRequestPipelineContext.HttpClient" />
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpRequestPipelineContext.CompletionOption">
+            <summary>
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpRequestPipelineContext.CancellationToken">
+            <summary>
+                当前有效的 <see cref="P:HttpAgent.HttpRequestPipelineContext.CancellationToken" />
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpRequestPipelineContext.SendAsync">
+            <summary>
+                发送委托
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpRequestPipelineContext.RequestMessage">
+            <summary>
+                最近一次构建的 <see cref="T:System.Net.Http.HttpRequestMessage" />
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpRequestPipelineContext.ResponseMessage">
+            <summary>
+                最近一次收到的 <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpRequestPipelineContext.RequestDuration">
+            <summary>
+                请求耗时（毫秒）
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpRequestPipelineContext.Items">
+            <summary>
+                共享数据字典
+            </summary>
+        </member>
+        <member name="T:HttpAgent.IHttpRequestPipelineHandler">
+            <summary>
+                HTTP 请求管道处理器接口
+            </summary>
+            <remarks>确保实现该接口的类型是无状态的。</remarks>
+        </member>
+        <member name="M:HttpAgent.IHttpRequestPipelineHandler.HandleAsync(HttpAgent.HttpRequestPipelineContext,System.Func{System.Threading.Tasks.Task{System.Net.Http.HttpResponseMessage}})">
+            <summary>
+                处理管道步骤
+            </summary>
+            <param name="context">
+                <see cref="T:HttpAgent.HttpRequestPipelineContext" />
+            </param>
+            <param name="next">调用下一个处理器的委托</param>
+            <returns>
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </returns>
+        </member>
         <member name="T:HttpAgent.ByteArrayContentProcessor">
             <summary>
                 字节数组内容处理器
@@ -11787,50 +12192,17 @@
             </returns>
             <exception cref="T:System.InvalidOperationException"></exception>
         </member>
-        <member name="M:HttpAgent.HttpRemoteService.HandlePreSendRequest(HttpAgent.HttpRequestBuilder,HttpAgent.IHttpRequestEventHandler,System.Net.Http.HttpRequestMessage)">
+        <member name="M:HttpAgent.HttpRemoteService.ShouldSuppressException(System.Collections.Generic.HashSet{System.Type},System.Exception)">
             <summary>
-                处理发送 HTTP 请求之前
+                检查是否启用异常抑制机制
             </summary>
-            <param name="httpRequestBuilder">
-                <see cref="T:HttpAgent.HttpRequestBuilder" />
-            </param>
-            <param name="requestEventHandler">
-                <see cref="T:HttpAgent.IHttpRequestEventHandler" />
-            </param>
-            <param name="httpRequestMessage">
-                <see cref="T:System.Net.Http.HttpRequestMessage" />
-            </param>
-        </member>
-        <member name="M:HttpAgent.HttpRemoteService.HandlePostReceiveResponse(HttpAgent.HttpRequestBuilder,HttpAgent.IHttpRequestEventHandler,System.Net.Http.HttpResponseMessage)">
-            <summary>
-                处理收到 HTTP 响应之后
-            </summary>
-            <param name="httpRequestBuilder">
-                <see cref="T:HttpAgent.HttpRequestBuilder" />
-            </param>
-            <param name="requestEventHandler">
-                <see cref="T:HttpAgent.IHttpRequestEventHandler" />
-            </param>
-            <param name="httpResponseMessage">
-                <see cref="T:System.Net.Http.HttpResponseMessage" />
-            </param>
-        </member>
-        <member name="M:HttpAgent.HttpRemoteService.HandleRequestFailed(HttpAgent.HttpRequestBuilder,HttpAgent.IHttpRequestEventHandler,System.Exception,System.Net.Http.HttpResponseMessage)">
-            <summary>
-                处理发送 HTTP 请求发生异常
-            </summary>
-            <param name="httpRequestBuilder">
-                <see cref="T:HttpAgent.HttpRequestBuilder" />
-            </param>
-            <param name="requestEventHandler">
-                <see cref="T:HttpAgent.IHttpRequestEventHandler" />
-            </param>
-            <param name="e">
+            <param name="suppressExceptionTypes">受抑制的异常类型列表</param>
+            <param name="exception">
                 <see cref="T:System.Exception" />
             </param>
-            <param name="httpResponseMessage">
-                <see cref="T:System.Net.Http.HttpResponseMessage" />
-            </param>
+            <returns>
+                <see cref="T:System.Boolean" />
+            </returns>
         </member>
         <member name="M:HttpAgent.HttpRemoteService.CreateHttpClientWithDefaults(HttpAgent.HttpRequestBuilder)">
             <summary>
@@ -11866,56 +12238,6 @@
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </param>
         </member>
-        <member name="M:HttpAgent.HttpRemoteService.CheckContentLengthWithinLimit(HttpAgent.HttpRequestBuilder,System.Net.Http.HttpResponseMessage)">
-            <summary>
-                检查 HTTP 响应内容长度是否在设定的最大缓冲区大小限制内
-            </summary>
-            <param name="httpRequestBuilder">
-                <see cref="T:HttpAgent.HttpRequestBuilder" />
-            </param>
-            <param name="httpResponseMessage">
-                <see cref="T:System.Net.Http.HttpResponseMessage" />
-            </param>
-            <exception cref="T:System.Net.Http.HttpRequestException"></exception>
-        </member>
-        <member name="M:HttpAgent.HttpRemoteService.InvokeStatusCodeHandlers(HttpAgent.HttpRequestBuilder,System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
-            <summary>
-                调用状态码处理程序
-            </summary>
-            <param name="httpRequestBuilder">
-                <see cref="T:HttpAgent.HttpRequestBuilder" />
-            </param>
-            <param name="httpResponseMessage">
-                <see cref="T:System.Net.Http.HttpResponseMessage" />
-            </param>
-            <param name="cancellationToken">
-                <see cref="T:System.Threading.CancellationToken" />
-            </param>
-        </member>
-        <member name="M:HttpAgent.HttpRemoteService.InvokeStatusCodeHandlersAsync(HttpAgent.HttpRequestBuilder,System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
-            <summary>
-                调用状态码处理程序
-            </summary>
-            <param name="httpRequestBuilder">
-                <see cref="T:HttpAgent.HttpRequestBuilder" />
-            </param>
-            <param name="httpResponseMessage">
-                <see cref="T:System.Net.Http.HttpResponseMessage" />
-            </param>
-            <param name="cancellationToken">
-                <see cref="T:System.Threading.CancellationToken" />
-            </param>
-        </member>
-        <member name="M:HttpAgent.HttpRemoteService.IsMatchedStatusCode(System.Object,System.Int32)">
-            <summary>
-                检查状态码代码是否匹配响应状态码
-            </summary>
-            <param name="code">状态码代码</param>
-            <param name="statusCode">响应状态码</param>
-            <returns>
-                <see cref="T:System.Boolean" />
-            </returns>
-        </member>
         <member name="M:HttpAgent.HttpRemoteService.DynamicCreateHttpRemoteResult(System.Type,System.Net.Http.HttpResponseMessage,System.Object,System.Int64)">
             <summary>
                 动态创建 <see cref="T:HttpAgent.HttpRemoteResult`1" /> 实例
@@ -11930,66 +12252,6 @@
                 <see cref="T:System.Object" />
             </returns>
             <exception cref="T:System.ArgumentException"></exception>
-        </member>
-        <member name="M:HttpAgent.HttpRemoteService.ShouldSuppressException(System.Collections.Generic.HashSet{System.Type},System.Exception)">
-            <summary>
-                检查是否启用异常抑制机制
-            </summary>
-            <param name="suppressExceptionTypes">受抑制的异常类型列表</param>
-            <param name="exception">
-                <see cref="T:System.Exception" />
-            </param>
-            <returns>
-                <see cref="T:System.Boolean" />
-            </returns>
-        </member>
-        <member name="M:HttpAgent.HttpRemoteService.ExecuteAssertionsAsync(HttpAgent.HttpRequestBuilder,System.Net.Http.HttpResponseMessage,System.Int64,System.IServiceProvider)">
-            <summary>
-                执行断言委托操作
-            </summary>
-            <param name="httpRequestBuilder">
-                <see cref="T:HttpAgent.HttpRequestBuilder" />
-            </param>
-            <param name="httpResponseMessage">
-                <see cref="T:System.Net.Http.HttpResponseMessage" />
-            </param>
-            <param name="requestDuration">请求耗时（毫秒）</param>
-            <param name="serviceProvider">
-                <see cref="T:System.IServiceProvider" />
-            </param>
-        </member>
-        <member name="M:HttpAgent.HttpRemoteService.StatusCodeRangeRegex">
-            <remarks>
-            Pattern:<br/>
-            <code>^\\d+[-~]\\d+$</code><br/>
-            Explanation:<br/>
-            <code>
-            ○ Match if at the beginning of the string.<br/>
-            ○ Match a Unicode digit atomically at least once.<br/>
-            ○ Match a character in the set [-~].<br/>
-            ○ Match a Unicode digit atomically at least once.<br/>
-            ○ Match if at the end of the string or if before an ending newline.<br/>
-            </code>
-            </remarks>
-        </member>
-        <member name="M:HttpAgent.HttpRemoteService.StatusCodeCompareRegex">
-            <remarks>
-            Pattern:<br/>
-            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\\d+)$</code><br/>
-            Explanation:<br/>
-            <code>
-            ○ Match if at the beginning of the string.<br/>
-            ○ 1st capture group.<br/>
-                ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a sequence of expressions.<br/>
-                        ○ Match a character in the set [&lt;&gt;].<br/>
-                        ○ Match '=' atomically, optionally.<br/>
-                    ○ Match a character in the set [&lt;-&gt;].<br/>
-            ○ 2nd capture group.<br/>
-                ○ Match a Unicode digit atomically at least once.<br/>
-            ○ Match if at the end of the string or if before an ending newline.<br/>
-            </code>
-            </remarks>
         </member>
         <member name="M:HttpAgent.HttpRemoteService.DownloadFile(System.String,System.String,System.Func{HttpAgent.FileTransferProgress,System.Threading.Tasks.Task},HttpAgent.FileExistsBehavior,System.Action{HttpAgent.HttpFileDownloadBuilder},System.Threading.CancellationToken)">
             <inheritdoc />
@@ -17683,6 +17945,15 @@
         <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32,System.Int32,System.Int32)">
             <summary>Pushes 3 values onto the backtracking stack.</summary>
         </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_1F52B1A4D2E82B6FEDE25EC8C55F85BB36775196837076691C96925040F90D32">
+            <summary>Supports searching for the string "\\u".</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_4A5B154448624742176A7AE18EDA0762C946CBB1B19F68418DD573D0A698E642">
+            <summary>Supports searching for the string "\u001b[".</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_EBC667BDABA1472FA863B5B39B31251EF2B4C95DD643BDECF694CB1CE7BDC178">
+            <summary>Supports searching for the string "[[".</summary>
+        </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions">
             <summary>
                 HTTP 远程请求模块 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" /> 扩展类
@@ -17716,14 +17987,7 @@
         </member>
     </members>
 </doc>
-     </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions.AddHttpRemote(Microsoft.Extensions.DependencyInjection.IServiceCollection,HttpAgent.HttpRemoteBuilder)">
-            <summary>
-                添加 HTTP 远程请求服务
-            </summary>
-            <param name="services">
-                <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
-            </param>
+     </param>
             <param name="httpRemoteBuilder">
                 <see cref="T:HttpAgent.HttpRemoteBuilder" />
             </param>
@@ -17733,14 +17997,7 @@
         </member>
     </members>
 </doc>
-ncyInjection.IServiceCollection" />
-            </param>
-            <param name="httpRemoteBuilder">
-                <see cref="T:HttpAgent.HttpRemoteBuilder" />
-            </param>
-            <returns>
-                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
-            </returns>
+
         </member>
     </members>
 </doc>

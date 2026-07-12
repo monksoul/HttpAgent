@@ -30,6 +30,25 @@ public class Helpers
         services.TryAddSingleton<IHttpRemoteLogger>(provider =>
             ActivatorUtilities.CreateInstance<HttpRemoteLogger>(provider, isLoggingRegistered));
 
+        services.AddSingleton<IHttpContentConverter>(new ClayContentConverter());
+        services.AddSingleton<IHttpContentConverter>(new DynamicContentConverter());
+
+        services.TryAddSingleton<IHttpContentProcessorFactory, HttpContentProcessorFactory>();
+        services.TryAddSingleton<IHttpContentConverterFactory, HttpContentConverterFactory>();
+
+        services.TryAddSingleton<IObjectContentConverterFactory, ObjectContentConverterFactory>();
+
+        services.TryAddSingleton<ResponseAssertionPipelineHandler>();
+        services.TryAddSingleton<ResponseProfilerPipelineHandler>();
+        services.TryAddSingleton<RequestEventPipelineHandler>();
+        services.TryAddSingleton<TimeoutPipelineHandler>();
+        services.TryAddSingleton<AutoRedirectPipelineHandler>();
+        services.TryAddSingleton<StatusCodePipelineHandler>();
+        services.TryAddSingleton<ContentLengthValidationPipelineHandler>();
+        services.TryAddSingleton<RequestBuilderPipelineHandler>();
+        services.TryAddSingleton<RequestProfilerPipelineHandler>();
+        services.TryAddSingleton<SendCorePipelineHandler>();
+
         if (requestEventHandler is not null)
         {
             services.AddTransient(sp => requestEventHandler);
@@ -55,11 +74,9 @@ public class Helpers
         var logger = serviceProvider.GetRequiredService<IHttpRemoteLogger>();
         var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
 
-        var httpContentProcessorFactory = new HttpContentProcessorFactory(serviceProvider, null!);
         var httpRemoteService = new HttpRemoteService(serviceProvider, logger, httpClientFactory,
-            httpContentProcessorFactory,
-            new HttpContentConverterFactory(serviceProvider, logger,
-                [new ClayContentConverter(), new DynamicContentConverter()], null!), options);
+            serviceProvider.GetRequiredService<IHttpContentProcessorFactory>(),
+            serviceProvider.GetRequiredService<IHttpContentConverterFactory>(), options);
 
         return (httpRemoteService, serviceProvider);
     }
