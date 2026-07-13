@@ -761,7 +761,7 @@ public class HttpRequestBuilderTests
         using var serviceProvider = services.BuildServiceProvider();
         var httpRemoteOptions = new HttpRemoteOptions
         {
-            Configuration = configuration, HttpRequestBuilderConfigurer = new HttpRequestBuilderConfigurer()
+            Configuration = configuration, HttpRequestBuilderConfigurator = new HttpRequestBuilderConfigurator()
         };
 
         var httpRequestMessage =
@@ -783,6 +783,7 @@ public class HttpRequestBuilderTests
         Assert.Equal("http://localhost/10/furion/Furion/10?id=10&name=furion",
             httpRequestMessage.RequestUri.ToString());
         Assert.Equal(3, httpRequestMessage.Headers.Count());
+        Assert.Equal("form_furion", httpRequestMessage.Headers.GetValues("global").FirstOrDefault());
         Assert.Equal("id=10; name=furion", httpRequestMessage.Headers.GetValues("Cookie").First());
         Assert.NotNull(httpRequestMessage.Content);
         Assert.Equal(typeof(StringContent), httpRequestMessage.Content.GetType());
@@ -842,7 +843,7 @@ public class HttpRequestBuilderTests
         Assert.False(httpRequestMessage.Headers.ConnectionClose);
     }
 
-    public class HttpRequestBuilderConfigurer : IHttpRequestBuilderConfigurer
+    public class HttpRequestBuilderConfigurator : IHttpRequestBuilderConfigurator
     {
         /// <inheritdoc />
         public void Configure(HttpRequestBuilder httpRequestBuilder) =>

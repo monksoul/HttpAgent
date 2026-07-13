@@ -572,73 +572,6 @@ public class HttpRequestBuilderMethodsTests
     }
 
     [Fact]
-    public void SetTimeout_Invalid_Parameters()
-    {
-        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
-
-        var exception = Assert.Throws<ArgumentOutOfRangeException>(() => { httpRequestBuilder.SetTimeout(-2); });
-
-        Assert.Equal(
-            "Timeout value must be greater than or equal to -1. Use -1 for infinite timeout, 0 for immediate cancellation. (Parameter 'timeoutMilliseconds')",
-            exception.Message);
-
-        Assert.Throws<ArgumentNullException>(() => httpRequestBuilder.SetTimeout(100, null!));
-        Assert.Throws<ArgumentNullException>(() => httpRequestBuilder.SetTimeout(TimeSpan.FromSeconds(10), null!));
-    }
-
-    [Fact]
-    public void SetTimeout_ReturnOK()
-    {
-        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
-        httpRequestBuilder.SetTimeout(TimeSpan.MaxValue);
-        Assert.Equal(TimeSpan.MaxValue, httpRequestBuilder.Timeout);
-        Assert.Null(httpRequestBuilder.TimeoutAction);
-
-        httpRequestBuilder.SetTimeout(1000);
-        Assert.Equal(TimeSpan.FromMilliseconds(1000), httpRequestBuilder.Timeout);
-        Assert.Null(httpRequestBuilder.TimeoutAction);
-
-        httpRequestBuilder.SetTimeout(0);
-        Assert.Equal(TimeSpan.Zero, httpRequestBuilder.Timeout);
-        Assert.Null(httpRequestBuilder.TimeoutAction);
-
-        httpRequestBuilder.SetTimeout(1200, () => { });
-        Assert.Equal(TimeSpan.FromMilliseconds(1200), httpRequestBuilder.Timeout);
-        Assert.NotNull(httpRequestBuilder.TimeoutAction);
-
-        httpRequestBuilder.SetTimeout(1200);
-        Assert.Null(httpRequestBuilder.TimeoutAction);
-
-        httpRequestBuilder.SetTimeout(TimeSpan.FromMilliseconds(1000), () => { });
-        Assert.Equal(TimeSpan.FromMilliseconds(1000), httpRequestBuilder.Timeout);
-        Assert.NotNull(httpRequestBuilder.TimeoutAction);
-
-        httpRequestBuilder.SetTimeout(TimeSpan.FromMilliseconds(1000));
-        Assert.Null(httpRequestBuilder.TimeoutAction);
-
-        httpRequestBuilder.SetTimeout(-1);
-        Assert.Equal(Timeout.InfiniteTimeSpan, httpRequestBuilder.Timeout);
-        Assert.Null(httpRequestBuilder.TimeoutAction);
-
-        httpRequestBuilder.SetTimeout(null);
-        Assert.Null(httpRequestBuilder.Timeout);
-        Assert.Null(httpRequestBuilder.TimeoutAction);
-
-        httpRequestBuilder.SetTimeout(null, () => { });
-        Assert.Null(httpRequestBuilder.Timeout);
-        Assert.Null(httpRequestBuilder.TimeoutAction);
-    }
-
-    [Fact]
-    public void WithoutTimeout_ReturnOK()
-    {
-        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
-        httpRequestBuilder.WithoutTimeout();
-        Assert.Equal(Timeout.InfiniteTimeSpan, httpRequestBuilder.Timeout);
-        Assert.Null(httpRequestBuilder.TimeoutAction);
-    }
-
-    [Fact]
     public void WithPathSegment_ReturnOK()
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
@@ -2170,6 +2103,16 @@ public class HttpRequestBuilderMethodsTests
 
         httpRequestBuilder.UriBuilderConfigure.Invoke(null!);
         Assert.Equal(2, i);
+    }
+
+    [Fact]
+    public void WithoutTokenManagement_ReturnOK()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        Assert.False(httpRequestBuilder.SuppressTokenManagement);
+
+        httpRequestBuilder.WithoutTokenManagement();
+        Assert.True(httpRequestBuilder.SuppressTokenManagement);
     }
 
     [Fact]

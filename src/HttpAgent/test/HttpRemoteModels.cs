@@ -97,6 +97,15 @@ public class CustomObjectContentConverterFactory : IObjectContentConverterFactor
         new CustomObjectContentConverter();
 }
 
+public class NotImplementHttpRequestPipelineHandler;
+
+public class CustomPipelineHandler : IHttpRequestPipelineHandler
+{
+    /// <inheritdoc />
+    public Task<HttpResponseMessage?> HandleAsync(HttpRequestPipelineContext context,
+        Func<Task<HttpResponseMessage?>> next) => throw new NotImplementedException();
+}
+
 public class MultipartModel
 {
     public int Id { get; set; }

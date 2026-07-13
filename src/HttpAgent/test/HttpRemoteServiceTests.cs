@@ -1390,20 +1390,6 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
     }
 
     [Fact]
-    public void ShouldSuppressException_ReturnOK()
-    {
-        Assert.False(HttpRemoteService.ShouldSuppressException(null, null));
-        Assert.False(HttpRemoteService.ShouldSuppressException([], null));
-        Assert.False(HttpRemoteService.ShouldSuppressException([typeof(Exception)], null));
-
-        Assert.True(HttpRemoteService.ShouldSuppressException([typeof(Exception)], new Exception()));
-        Assert.True(HttpRemoteService.ShouldSuppressException([typeof(Exception)], new InvalidCastException()));
-        Assert.True(HttpRemoteService.ShouldSuppressException([typeof(Exception)], new TimeoutException()));
-        Assert.True(HttpRemoteService.ShouldSuppressException([typeof(Exception)], new HttpRequestException()));
-        Assert.False(HttpRemoteService.ShouldSuppressException([typeof(TimeoutException)], new Exception()));
-    }
-
-    [Fact]
     public async Task SendAsync_WithUnixEpoch_ReturnOK()
     {
         var port = NetworkUtility.FindAvailableTcpPort();
@@ -1490,6 +1476,124 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
         Assert.Equal("application/json; charset=utf-8", httpResponseMessage?.Content.Headers.ContentType?.ToString());
 
         await app.StopAsync();
+    }
+
+    [Fact]
+    public async Task SendCoreAsync_WithAccessToken_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        builder.Services.AddHttpClient(string.Empty).ConfigureOptions(options =>
+        {
+            options.HttpAccessTokenProvider = new HttpAccessTokenProvider();
+        });
+        builder.Services.AddHttpRemote();
+        await using var app = builder.Build();
+
+        app.MapGet("/test", async httpContext =>
+        {
+            var accessToken = httpContext.Request.Headers.Authorization.FirstOrDefault();
+            Assert.Equal("accessToken", accessToken);
+            await Task.CompletedTask;
+        });
+
+        await app.StartAsync();
+
+        var httpRemoteService = app.Services.GetRequiredService<IHttpRemoteService>();
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get,
+            new Uri($"http://localhost:{port}/test", UriKind.RelativeOrAbsolute));
+        var httpResponseMessage = await httpRemoteService.SendAsync(httpRequestBuilder);
+
+        Assert.NotNull(httpResponseMessage);
+        Assert.True(httpResponseMessage.IsSuccessStatusCode);
+        Assert.Equal(200, (int)httpResponseMessage.StatusCode);
+
+        await app.StopAsync();
+    }
+
+    [Fact]
+    public async Task SendCoreAsync_WithAccessToken_With401Unauthorized_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        builder.Services.AddHttpClient(string.Empty).ConfigureOptions(options =>
+        {
+            options.HttpAccessTokenProvider = new HttpAccessTokenProvider();
+        });
+        builder.Services.AddHttpRemote();
+        await using var app = builder.Build();
+
+        var i = 0;
+
+        app.MapGet("/test", async httpContext =>
+        {
+            if (i == 0)
+            {
+                httpContext.Response.StatusCode = 401;
+                i++;
+                return;
+            }
+
+            var accessToken = httpContext.Request.Headers.Authorization.FirstOrDefault();
+            Assert.Equal("accessToken", accessToken);
+            await Task.CompletedTask;
+        });
+
+        await app.StartAsync();
+
+        var httpRemoteService = app.Services.GetRequiredService<IHttpRemoteService>();
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get,
+            new Uri($"http://localhost:{port}/test", UriKind.RelativeOrAbsolute));
+        var httpResponseMessage = await httpRemoteService.SendAsync(httpRequestBuilder);
+
+        Assert.NotNull(httpResponseMessage);
+        Assert.True(httpResponseMessage.IsSuccessStatusCode);
+        Assert.Equal(200, (int)httpResponseMessage.StatusCode);
+        Assert.Equal(1, i);
+
+        await app.StopAsync();
+    }
+
+    [Fact]
+    public async Task SendCoreAsync_WithRetry_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        builder.Services.AddHttpClient(string.Empty).ConfigureOptions(options =>
+        {
+            options.HttpAccessTokenProvider = new HttpAccessTokenProvider();
+        });
+        builder.Services.AddHttpRemote();
+        await using var app = builder.Build();
+
+        app.MapGet("/test", () =>
+        {
+            throw new Exception("出错了");
+        });
+
+        await app.StartAsync();
+
+        var i = 0;
+        var httpRemoteService = app.Services.GetRequiredService<IHttpRemoteService>();
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get,
+            new Uri($"http://localhost:{port}/test", UriKind.RelativeOrAbsolute)).SetRetry(3, _ =>
+        {
+            i++;
+        }).EnsureSuccessStatusCode();
+        await Assert.ThrowsAsync<HttpRequestException>(() => httpRemoteService.SendAsync(httpRequestBuilder));
+        Assert.Equal(3, i);
+
+        await app.StopAsync();
+    }
+
+    private sealed class HttpAccessTokenProvider : IHttpAccessTokenProvider
+    {
+        /// <inheritdoc />
+        public Task<HttpAccessToken> GetAccessTokenAsync(CancellationToken cancellationToken) =>
+            Task.FromResult(new HttpAccessToken("accessToken", DateTimeOffset.Now.AddMinutes(10)));
     }
 }
 

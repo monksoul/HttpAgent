@@ -38,7 +38,7 @@ internal sealed class RequestProfilerPipelineHandler(
         var httpRemoteAnalyzer = httpRequestBuilder.ProfilerPredicate is not null ? new HttpRemoteAnalyzer() : null;
 
         // 存入上下文
-        context.Items["ProfilerAnalyzer"] = httpRemoteAnalyzer;
+        context.Items[Constants.PROFILER_ANALYZER_KEY] = httpRemoteAnalyzer;
 
         // 记录请求信息
         await ProfilerDelegatingHandler.LogRequestAsync(logger, httpRemoteOptions.Value, context.RequestMessage,

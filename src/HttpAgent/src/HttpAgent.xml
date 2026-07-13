@@ -4,6 +4,197 @@
         <name>HttpAgent</name>
     </assembly>
     <members>
+        <member name="T:HttpAgent.HttpAccessToken">
+            <summary>
+                Access Token 信息
+            </summary>
+        </member>
+        <member name="M:HttpAgent.HttpAccessToken.#ctor(System.String,System.DateTimeOffset)">
+            <summary>
+                <inheritdoc cref="T:HttpAgent.HttpAccessToken" />
+            </summary>
+            <param name="value">Access Token 值</param>
+            <param name="expiresAt">Access Token 的绝对过期时间</param>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
+        <member name="P:HttpAgent.HttpAccessToken.Value">
+            <summary>
+                Access Token 值
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpAccessToken.ExpiresAt">
+            <summary>
+                Access Token 的绝对过期时间
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpAccessToken.Scheme">
+            <summary>
+                HTTP 认证方案
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpAccessToken.Items">
+            <summary>
+                共享数据字典
+            </summary>
+            <remarks>用于存储与 Access Token 相关的自定义数据。</remarks>
+        </member>
+        <member name="M:HttpAgent.HttpAccessToken.IsExpired">
+            <summary>
+                检查 Access Token 是否过期
+            </summary>
+            <returns>
+                <see cref="T:System.Boolean" />
+            </returns>
+        </member>
+        <member name="T:HttpAgent.HttpAccessTokenContext">
+            <summary>
+                Access Token 请求上下文
+            </summary>
+        </member>
+        <member name="M:HttpAgent.HttpAccessTokenContext.#ctor(System.String,HttpAgent.IHttpAccessTokenProvider)">
+            <summary>
+                <inheritdoc cref="T:HttpAgent.HttpAccessTokenContext" />
+            </summary>
+            <param name="httpClientName"><see cref="T:System.Net.Http.HttpClient" /> 实例的配置名称</param>
+            <param name="httpAccessTokenProvider"><see cref="T:HttpAgent.IHttpAccessTokenProvider" /> 实例</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="P:HttpAgent.HttpAccessTokenContext.HttpClientName">
+            <summary>
+                <see cref="T:System.Net.Http.HttpClient" /> 实例的配置名称
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpAccessTokenContext.HttpAccessTokenProvider">
+            <summary>
+                <see cref="T:HttpAgent.IHttpAccessTokenProvider" /> 实例
+            </summary>
+        </member>
+        <member name="T:HttpAgent.HttpAccessTokenManager">
+            <summary>
+                Access Token 管理器
+            </summary>
+        </member>
+        <member name="F:HttpAgent.HttpAccessTokenManager._httpClientNameCaches">
+            <summary>
+                <see cref="T:System.Net.Http.HttpClient" /> 实例的配置名称的 Access Token 缓存字典
+            </summary>
+        </member>
+        <member name="M:HttpAgent.HttpAccessTokenManager.GetOrRefreshAsync(HttpAgent.HttpAccessTokenContext,System.Threading.CancellationToken)">
+            <summary>
+                获取或刷新指定 <see cref="T:System.Net.Http.HttpClient" /> 实例的配置名称的 Access Token
+            </summary>
+            <param name="context">
+                <see cref="T:HttpAgent.HttpAccessTokenContext" />
+            </param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.HttpAccessToken" />
+            </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:HttpAgent.HttpAccessTokenManager.ForceRefreshAsync(HttpAgent.HttpAccessTokenContext,System.Threading.CancellationToken)">
+            <summary>
+                强制刷新指定 <see cref="T:System.Net.Http.HttpClient" /> 实例的配置名称的 Access Token
+            </summary>
+            <param name="context">
+                <see cref="T:HttpAgent.HttpAccessTokenContext" />
+            </param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.HttpAccessToken" />
+            </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="T:HttpAgent.HttpAccessTokenManager.AccessTokenCache">
+            <summary>
+                Access Token 缓存项
+            </summary>
+        </member>
+        <member name="F:HttpAgent.HttpAccessTokenManager.AccessTokenCache._refreshLock">
+            <summary>
+                <see cref="T:System.Threading.SemaphoreSlim" /> 刷新锁
+            </summary>
+            <remarks>确保同一时间只有一个刷新 Access Token 操作。</remarks>
+        </member>
+        <member name="F:HttpAgent.HttpAccessTokenManager.AccessTokenCache._current">
+            <summary>
+                当前有效的 <see cref="T:HttpAgent.HttpAccessToken" /> 实例
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpAccessTokenManager.AccessTokenCache.Current">
+            <summary>
+                当前有效的 <see cref="T:HttpAgent.HttpAccessToken" /> 实例
+            </summary>
+        </member>
+        <member name="M:HttpAgent.HttpAccessTokenManager.AccessTokenCache.GetOrRefreshAsync(HttpAgent.HttpAccessTokenContext,System.Threading.CancellationToken)">
+            <summary>
+                获取或刷新 Access Token
+            </summary>
+            <param name="context">
+                <see cref="T:HttpAgent.HttpAccessTokenContext" />
+            </param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.HttpAccessToken" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpAccessTokenManager.AccessTokenCache.ForceRefreshAsync(HttpAgent.HttpAccessTokenContext,System.Threading.CancellationToken)">
+            <summary>
+                强制刷新 Access Token
+            </summary>
+            <param name="context">
+                <see cref="T:HttpAgent.HttpAccessTokenContext" />
+            </param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.HttpAccessToken" />
+            </returns>
+        </member>
+        <member name="T:HttpAgent.IHttpAccessTokenConfigurator">
+            <summary>
+                Access Token 配置器接口
+            </summary>
+            <remarks>用于决定 Access Token 的注入位置（Header、Query、Cookie 等）。</remarks>
+        </member>
+        <member name="M:HttpAgent.IHttpAccessTokenConfigurator.Configure(HttpAgent.HttpRequestBuilder,HttpAgent.HttpAccessToken)">
+            <summary>
+                将 Access Token 配置到请求中
+            </summary>
+            <param name="httpRequestBuilder">
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </param>
+            <param name="httpAccessToken">
+                <see cref="T:HttpAgent.HttpAccessToken" />
+            </param>
+        </member>
+        <member name="T:HttpAgent.IHttpAccessTokenProvider">
+            <summary>
+                Access Token 提供器
+            </summary>
+            <remarks>
+                <para>负责获取新的 Access Token 并告知过期时间。</para>
+                <para>实现该接口的类型也可以同时实现 <see cref="T:HttpAgent.IHttpAccessTokenConfigurator" />。</para>
+            </remarks>
+        </member>
+        <member name="M:HttpAgent.IHttpAccessTokenProvider.GetAccessTokenAsync(System.Threading.CancellationToken)">
+            <summary>
+                获取 Access Token
+            </summary>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.HttpAccessToken" />
+            </returns>
+        </member>
         <member name="T:HttpAgent.HttpAssertion">
             <summary>
                 HTTP 远程请求断言委托类
@@ -1238,12 +1429,6 @@
                 请求方式
             </summary>
         </member>
-        <member name="P:HttpAgent.HttpLongPollingBuilder.Timeout">
-            <summary>
-                超时时间
-            </summary>
-            <remarks>可为单次请求设置超时时间。</remarks>
-        </member>
         <member name="P:HttpAgent.HttpLongPollingBuilder.RetryInterval">
             <summary>
                 轮询重试间隔
@@ -1295,24 +1480,6 @@
                 <see cref="T:HttpAgent.HttpLongPollingBuilder" />
             </returns>
             <exception cref="T:System.ArgumentException"></exception>
-        </member>
-        <member name="M:HttpAgent.HttpLongPollingBuilder.SetTimeout(System.TimeSpan)">
-            <summary>
-                设置超时时间
-            </summary>
-            <param name="timeout">超时时间</param>
-            <returns>
-                <see cref="T:HttpAgent.HttpLongPollingBuilder" />
-            </returns>
-        </member>
-        <member name="M:HttpAgent.HttpLongPollingBuilder.SetTimeout(System.Double)">
-            <summary>
-                设置超时时间
-            </summary>
-            <param name="timeoutMilliseconds">超时时间（毫秒）</param>
-            <returns>
-                <see cref="T:HttpAgent.HttpLongPollingBuilder" />
-            </returns>
         </member>
         <member name="M:HttpAgent.HttpLongPollingBuilder.SetOnDataReceived(System.Func{System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken,System.Threading.Tasks.Task})">
             <summary>
@@ -1868,6 +2035,11 @@
                 <see cref="T:HttpAgent.IHttpDeclarative" /> 类型集合
             </summary>
         </member>
+        <member name="F:HttpAgent.HttpRemoteBuilder._httpRequestPipelineHandlerTypes">
+            <summary>
+                <see cref="T:HttpAgent.IHttpRequestPipelineHandler" /> 类型集合
+            </summary>
+        </member>
         <member name="F:HttpAgent.HttpRemoteBuilder._objectContentConverterFactoryType">
             <summary>
                 <see cref="T:HttpAgent.IObjectContentConverterFactory" /> 实现类型
@@ -1992,6 +2164,32 @@
                 <see cref="T:HttpAgent.HttpRemoteBuilder" />
             </returns>
         </member>
+        <member name="M:HttpAgent.HttpRemoteBuilder.AddPipelineHandler``1(System.Int32)">
+            <summary>
+                添加 HTTP 请求管道处理器服务
+            </summary>
+            <typeparam name="THandler">
+                <see cref="T:HttpAgent.IHttpRequestPipelineHandler" />
+            </typeparam>
+            <param name="index">插入位置，默认值为：0（即最前面）</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRemoteBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRemoteBuilder.AddPipelineHandler(System.Type,System.Int32)">
+            <summary>
+                添加 HTTP 请求管道处理器服务
+            </summary>
+            <param name="handlerType">
+                <see cref="T:HttpAgent.IHttpRequestPipelineHandler" />
+            </param>
+            <param name="index">插入位置，默认值为：0（即最前面）</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRemoteBuilder" />
+            </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
         <member name="M:HttpAgent.HttpRemoteBuilder.Build(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
             <summary>
                 构建模块服务
@@ -2017,7 +2215,20 @@
                 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
             </param>
         </member>
+        <member name="M:HttpAgent.HttpRemoteBuilder.EnsureSuppressExceptionHandlerFirst(System.Collections.Generic.IList{System.Type})">
+            <summary>
+                处理管道处理器列表的去重，并确保 <see cref="T:HttpAgent.SuppressExceptionPipelineHandler" /> 管道处理器类型始终位于首位
+            </summary>
+            <param name="handlerTypes">原始 <see cref="T:HttpAgent.IHttpRequestPipelineHandler" /> 类型集合</param>
+            <returns>
+                <see cref="T:System.Collections.Generic.IList`1" />
+            </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
         <member name="T:HttpAgent.HttpRequestBuilder">
+            <summary>
+                <see cref="T:System.Net.Http.HttpRequestMessage" /> 构建器
+            </summary>
             <summary>
                 <see cref="T:System.Net.Http.HttpRequestMessage" /> 构建器
             </summary>
@@ -2449,65 +2660,6 @@
                 设置片段标识符
             </summary>
             <param name="fragment">片段标识符</param>
-            <returns>
-                <see cref="T:HttpAgent.HttpRequestBuilder" />
-            </returns>
-        </member>
-        <member name="M:HttpAgent.HttpRequestBuilder.SetTimeout(System.Nullable{System.TimeSpan})">
-            <summary>
-                设置超时时间
-            </summary>
-            <param name="timeout">超时时间</param>
-            <returns>
-                <see cref="T:HttpAgent.HttpRequestBuilder" />
-            </returns>
-        </member>
-        <member name="M:HttpAgent.HttpRequestBuilder.WithoutTimeout">
-            <summary>
-                设置永不超时
-            </summary>
-            <returns>
-                <see cref="T:HttpAgent.HttpRequestBuilder" />
-            </returns>
-        </member>
-        <member name="M:HttpAgent.HttpRequestBuilder.SetTimeout(System.Double)">
-            <summary>
-                设置超时时间
-            </summary>
-            <remarks>
-                <list type="bullet">
-                    <item>
-                        <description>设置为 <c>-1</c> 表示无超时</description>
-                    </item>
-                    <item>
-                        <description>设置为 <c>0</c> 将立即取消请求</description>
-                    </item>
-                    <item>
-                        <description>负值（除 <c>-1</c> 毫秒外）将引发 <see cref="T:System.ArgumentOutOfRangeException" /></description>
-                    </item>
-                </list>
-            </remarks>
-            <param name="timeoutMilliseconds">超时时间（毫秒）</param>
-            <returns>
-                <see cref="T:HttpAgent.HttpRequestBuilder" />
-            </returns>
-        </member>
-        <member name="M:HttpAgent.HttpRequestBuilder.SetTimeout(System.Nullable{System.TimeSpan},System.Action)">
-            <summary>
-                设置超时时间
-            </summary>
-            <param name="timeout">超时时间</param>
-            <param name="onTimeout">超时发生时要执行的操作</param>
-            <returns>
-                <see cref="T:HttpAgent.HttpRequestBuilder" />
-            </returns>
-        </member>
-        <member name="M:HttpAgent.HttpRequestBuilder.SetTimeout(System.Double,System.Action)">
-            <summary>
-                设置超时时间
-            </summary>
-            <param name="timeoutMilliseconds">超时时间（毫秒）</param>
-            <param name="onTimeout">超时发生时要执行的操作</param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
@@ -3347,6 +3499,14 @@
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
         </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.WithoutTokenManagement">
+            <summary>
+                设置禁用框架的 Access Token 自动管理
+            </summary>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
         <member name="M:HttpAgent.HttpRequestBuilder.MergeHeaders(System.Collections.Generic.IDictionary{System.String,System.Collections.Generic.List{System.String}},System.Collections.Generic.IDictionary{System.String,System.Object},System.Boolean,System.Boolean)">
             <summary>
                 将一组标头合并到现有标头字典中
@@ -3444,12 +3604,6 @@
                 片段标识符
             </summary>
             <remarks>请求地址中的 <c>#</c> 符号后面的部分。</remarks>
-        </member>
-        <member name="P:HttpAgent.HttpRequestBuilder.Timeout">
-            <summary>
-                超时时间
-            </summary>
-            <remarks>可为单次请求设置超时时间。</remarks>
         </member>
         <member name="P:HttpAgent.HttpRequestBuilder.PathSegments">
             <summary>
@@ -3595,6 +3749,16 @@
             </summary>
             <remarks>默认值为：<c>false</c>。</remarks>
         </member>
+        <member name="P:HttpAgent.HttpRequestBuilder.RetryOptions">
+            <summary>
+                HTTP 请求重试选项
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpRequestBuilder.TimeoutOptions">
+            <summary>
+                HTTP 请求超时选项
+            </summary>
+        </member>
         <member name="P:HttpAgent.HttpRequestBuilder.EnsureSuccessStatusCodeEnabled">
             <summary>
                 如果 HTTP 响应的 <c>IsSuccessStatusCode</c> 属性是 <c>false</c>，则引发异常。
@@ -3668,11 +3832,6 @@
             </summary>
             <remarks>当配置了异常抑制类型集合后，框架将抑制（即不抛出）该集合中匹配的异常类型。</remarks>
         </member>
-        <member name="P:HttpAgent.HttpRequestBuilder.TimeoutAction">
-            <summary>
-                超时发生时要执行的操作
-            </summary>
-        </member>
         <member name="P:HttpAgent.HttpRequestBuilder.AssertionsEnabled">
             <summary>
                 是否开启断言功能
@@ -3705,6 +3864,211 @@
             <remarks>
                 配置信息将写入到 <see cref="P:System.Net.Http.HttpRequestMessage.Options" /> 中。默认值为：null。
             </remarks>
+        </member>
+        <member name="P:HttpAgent.HttpRequestBuilder.SuppressTokenManagement">
+            <summary>
+                表示是否跳过框架的 Access Token 自动管理
+            </summary>
+        </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.SetRetryIndefinitely(System.Nullable{System.TimeSpan},System.TimeSpan[])">
+            <summary>
+                设置无限重试，直到成功
+            </summary>
+            <remarks>请务必配合 <see cref="M:HttpAgent.HttpRequestBuilder.SetTimeout(System.Nullable{System.TimeSpan})" /> 等超时方法使用，否则可能导致请求无限阻塞。</remarks>
+            <param name="retryInterval">重试间隔基准时间。默认为 1 秒，如果同时指定了 <paramref name="retryIntervals" /> 则此参数被忽略</param>
+            <param name="retryIntervals">自定义重试间隔数组。如果指定，则循环使用该数组中的时间间隔</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.SetRetry(System.Int32)">
+            <summary>
+                配置请求重试策略
+            </summary>
+            <remarks>请务必配合 <see cref="M:HttpAgent.HttpRequestBuilder.SetTimeout(System.Nullable{System.TimeSpan})" /> 等超时方法使用，否则可能导致请求无限阻塞。</remarks>
+            <param name="maxRetries">最大重试次数。0 表示不重试</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.SetRetry(System.Int32,System.Action{HttpAgent.HttpRetryContext})">
+            <summary>
+                配置请求重试策略
+            </summary>
+            <remarks>请务必配合 <see cref="M:HttpAgent.HttpRequestBuilder.SetTimeout(System.Nullable{System.TimeSpan})" /> 等超时方法使用，否则可能导致请求无限阻塞。</remarks>
+            <param name="maxRetries">最大重试次数。0 表示不重试</param>
+            <param name="onRetry">每次重试前的回调委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.SetRetry(System.Int32,System.TimeSpan)">
+            <summary>
+                配置请求重试策略
+            </summary>
+            <remarks>请务必配合 <see cref="M:HttpAgent.HttpRequestBuilder.SetTimeout(System.Nullable{System.TimeSpan})" /> 等超时方法使用，否则可能导致请求无限阻塞。</remarks>
+            <param name="maxRetries">最大重试次数。0 表示不重试</param>
+            <param name="retryInterval">重试间隔基准时间</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.SetRetry(System.Int32,System.TimeSpan,System.Action{HttpAgent.HttpRetryContext})">
+            <summary>
+                配置请求重试策略
+            </summary>
+            <remarks>请务必配合 <see cref="M:HttpAgent.HttpRequestBuilder.SetTimeout(System.Nullable{System.TimeSpan})" /> 等超时方法使用，否则可能导致请求无限阻塞。</remarks>
+            <param name="maxRetries">最大重试次数。0 表示不重试</param>
+            <param name="retryInterval">重试间隔基准时间</param>
+            <param name="onRetry">每次重试前的回调委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.SetRetry(System.Int32,System.Double)">
+            <summary>
+                配置请求重试策略
+            </summary>
+            <remarks>请务必配合 <see cref="M:HttpAgent.HttpRequestBuilder.SetTimeout(System.Nullable{System.TimeSpan})" /> 等超时方法使用，否则可能导致请求无限阻塞。</remarks>
+            <param name="maxRetries">最大重试次数。0 表示不重试</param>
+            <param name="milliseconds">重试间隔基准时间</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.SetRetry(System.Int32,System.Double,System.Action{HttpAgent.HttpRetryContext})">
+            <summary>
+                配置请求重试策略
+            </summary>
+            <remarks>请务必配合 <see cref="M:HttpAgent.HttpRequestBuilder.SetTimeout(System.Nullable{System.TimeSpan})" /> 等超时方法使用，否则可能导致请求无限阻塞。</remarks>
+            <param name="maxRetries">最大重试次数。0 表示不重试</param>
+            <param name="milliseconds">重试间隔基准时间</param>
+            <param name="onRetry">每次重试前的回调委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.SetRetry(HttpAgent.HttpRetryOptions)">
+            <summary>
+                配置请求重试策略
+            </summary>
+            <remarks>请务必配合 <see cref="M:HttpAgent.HttpRequestBuilder.SetTimeout(System.Nullable{System.TimeSpan})" /> 等超时方法使用，否则可能导致请求无限阻塞。</remarks>
+            <param name="httpRetryOptions">
+                <see cref="T:HttpAgent.HttpRetryOptions" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.SetRetry(System.Action{HttpAgent.HttpRetryOptions})">
+            <summary>
+                配置请求重试策略
+            </summary>
+            <remarks>请务必配合 <see cref="M:HttpAgent.HttpRequestBuilder.SetTimeout(System.Nullable{System.TimeSpan})" /> 等超时方法使用，否则可能导致请求无限阻塞。</remarks>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.WithoutTimeout">
+            <summary>
+                设置永不超时
+            </summary>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.SetTimeout(System.Nullable{System.TimeSpan})">
+            <summary>
+                设置超时时间
+            </summary>
+            <param name="timeout">超时时间</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.SetTimeout(System.Nullable{System.TimeSpan},System.Action)">
+            <summary>
+                设置超时时间
+            </summary>
+            <param name="timeout">超时时间</param>
+            <param name="onTimeout">超时发生时要执行的操作；若 <paramref name="timeout" /> 为 null，那么 <paramref name="onTimeout" /> 将不会被调用</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.SetTimeout(System.Double)">
+            <summary>
+                设置超时时间
+            </summary>
+            <param name="timeout">
+                <para>超时时间（毫秒）</para>
+                <para>
+                    <list type="bullet">
+                        <item>
+                            <description>设置为 <c>-1</c> 表示无超时</description>
+                        </item>
+                        <item>
+                            <description>设置为 <c>0</c> 将立即取消请求</description>
+                        </item>
+                        <item>
+                            <description>负值（除 <c>-1</c> 毫秒外）将引发 <see cref="T:System.ArgumentOutOfRangeException" /></description>
+                        </item>
+                    </list>
+                </para>
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.SetTimeout(System.Double,System.Action)">
+            <summary>
+                设置超时时间
+            </summary>
+            <param name="timeout">
+                <para>超时时间（毫秒）</para>
+                <para>
+                    <list type="bullet">
+                        <item>
+                            <description>设置为 <c>-1</c> 表示无超时</description>
+                        </item>
+                        <item>
+                            <description>设置为 <c>0</c> 将立即取消请求</description>
+                        </item>
+                        <item>
+                            <description>负值（除 <c>-1</c> 毫秒外）将引发 <see cref="T:System.ArgumentOutOfRangeException" /></description>
+                        </item>
+                    </list>
+                </para>
+            </param>
+            <param name="onTimeout">超时发生时要执行的操作</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.SetTimeout(HttpAgent.HttpTimeoutOptions)">
+            <summary>
+                配置请求超时策略
+            </summary>
+            <param name="httpTimeoutOptions">
+                <see cref="T:HttpAgent.HttpTimeoutOptions" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.SetTimeout(System.Action{HttpAgent.HttpTimeoutOptions})">
+            <summary>
+                配置请求超时策略
+            </summary>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.Get(System.String,System.Action{HttpAgent.HttpRequestBuilder})">
             <summary>
@@ -4544,13 +4908,13 @@
         <member name="M:HttpAgent.DefaultHttpRemoteBuilder.ConfigureHttpClientDefaults(System.Action{Microsoft.Extensions.DependencyInjection.IHttpClientBuilder})">
             <inheritdoc />
         </member>
-        <member name="T:HttpAgent.IHttpRequestBuilderConfigurer">
+        <member name="T:HttpAgent.IHttpRequestBuilderConfigurator">
             <summary>
                 <see cref="T:HttpAgent.HttpRequestBuilder" /> 统一配置器
             </summary>
             <remarks>用于在构建 <see cref="T:System.Net.Http.HttpRequestMessage" /> 时调用，可对 <see cref="T:HttpAgent.HttpRequestBuilder" /> 实例进行统一预处理。</remarks>
         </member>
-        <member name="M:HttpAgent.IHttpRequestBuilderConfigurer.Configure(HttpAgent.HttpRequestBuilder)">
+        <member name="M:HttpAgent.IHttpRequestBuilderConfigurator.Configure(HttpAgent.HttpRequestBuilder)">
             <summary>
                 配置
             </summary>
@@ -4658,6 +5022,18 @@
             <summary>
                 <see cref="T:System.Net.Http.HttpResponseMessage" /> 为 null 时输出消息
             </summary>
+        </member>
+        <member name="F:HttpAgent.Constants.PROFILER_ANALYZER_KEY">
+            <summary>
+                请求管道上下文中请求分析工具的键
+            </summary>
+            <remarks>用于在 <see cref="P:HttpAgent.HttpRequestPipelineContext.Items" /> 中存储或获取 <see cref="T:HttpAgent.HttpRemoteAnalyzer" /> 实例。</remarks>
+        </member>
+        <member name="F:HttpAgent.Constants.REQUEST_EVENT_HANDLER_KEY">
+            <summary>
+                请求管道上下文中请求事件处理程序的键
+            </summary>
+            <remarks>用于在 <see cref="P:HttpAgent.HttpRequestPipelineContext.Items" /> 中存储或获取 <see cref="T:HttpAgent.IHttpRequestEventHandler" /> 实例。</remarks>
         </member>
         <member name="T:HttpAgent.FileExistsBehavior">
             <summary>
@@ -5029,7 +5405,7 @@
         <member name="M:HttpAgent.Core.Converters.Json.FlexibleDateTimeConverter.Regex">
             <remarks>
             Pattern:<br/>
-            <code>^/Date\(([+-]*\d+)\)/$</code><br/>
+            <code>^/Date\\(([+-]*\\d+)\\)/$</code><br/>
             Options:<br/>
             <code>RegexOptions.CultureInvariant</code><br/>
             Explanation:<br/>
@@ -5037,7 +5413,7 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Match the string "/Date(".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [+\-] atomically any number of times.<br/>
+                ○ Match a character in the set [+-] atomically any number of times.<br/>
                 ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match the string ")/".<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
@@ -5058,7 +5434,7 @@
         <member name="M:HttpAgent.Core.Converters.Json.FlexibleDateTimeOffsetConverter.Regex">
             <remarks>
             Pattern:<br/>
-            <code>^/Date\(([+-]*\d+)([+-])(\d{2})(\d{2})\)/$</code><br/>
+            <code>^/Date\\(([+-]*\\d+)([+-])(\\d{2})(\\d{2})\\)/$</code><br/>
             Options:<br/>
             <code>RegexOptions.CultureInvariant</code><br/>
             Explanation:<br/>
@@ -5066,10 +5442,10 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Match the string "/Date(".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [+\-] atomically any number of times.<br/>
+                ○ Match a character in the set [+-] atomically any number of times.<br/>
                 ○ Match a Unicode digit atomically at least once.<br/>
             ○ 2nd capture group.<br/>
-                ○ Match a character in the set [+\-].<br/>
+                ○ Match a character in the set [+-].<br/>
             ○ 3rd capture group.<br/>
                 ○ Match a Unicode digit exactly 2 times.<br/>
             ○ 4th capture group.<br/>
@@ -5645,7 +6021,7 @@
         <member name="M:HttpAgent.Core.Extensions.StringExtensions.PlaceholderRegex">
             <remarks>
             Pattern:<br/>
-            <code>\{\s*(\w+\s*(\.\s*\w+\s*)*)\s*\}</code><br/>
+            <code>\\{\\s*(\\w+\\s*(\\.\\s*\\w+\\s*)*)\\s*\\}</code><br/>
             Explanation:<br/>
             <code>
             ○ Match '{'.<br/>
@@ -5667,19 +6043,19 @@
         <member name="M:HttpAgent.Core.Extensions.StringExtensions.ConfigurationKeyRegex">
             <remarks>
             Pattern:<br/>
-            <code>\[\[\s*([\w\-:]+)((?:\s*\|\s*[\w\-:]+)*)\s*(?:\|\|\s*([^\]]*))?\s*\]\]</code><br/>
+            <code>\\[\\[\\s*([\\w\\-:]+)((?:\\s*\\|\\s*[\\w\\-:]+)*)\\s*(?:\\|\\|\\s*([^\\]]*))?\\s*\\]\\]</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "[[".<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [\-:\w] greedily at least once.<br/>
+                ○ Match a character in the set [-:\w] greedily at least once.<br/>
             ○ 2nd capture group.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match a whitespace character atomically any number of times.<br/>
                     ○ Match '|'.<br/>
                     ○ Match a whitespace character greedily any number of times.<br/>
-                    ○ Match a character in the set [\-:\w] greedily at least once.<br/>
+                    ○ Match a character in the set [-:\w] greedily at least once.<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ Optional (greedy).<br/>
                 ○ Match the string "||".<br/>
@@ -5702,32 +6078,32 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Loop greedily at least once.<br/>
                 ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [\-.0-9A-Z_a-z~].<br/>
+                    ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
                     ○ Match a sequence of expressions.<br/>
                         ○ Match '%'.<br/>
-                        ○ Match a hexadecimal digit exactly 2 times.<br/>
+                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
             ○ Match '='.<br/>
             ○ Loop greedily any number of times.<br/>
                 ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [+\-.0-9A-Z_a-z~].<br/>
+                    ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
                     ○ Match a sequence of expressions.<br/>
                         ○ Match '%'.<br/>
-                        ○ Match a hexadecimal digit exactly 2 times.<br/>
+                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
             ○ Loop greedily any number of times.<br/>
                 ○ Match '&amp;'.<br/>
                 ○ Loop greedily at least once.<br/>
                     ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [\-.0-9A-Z_a-z~].<br/>
+                        ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
                         ○ Match a sequence of expressions.<br/>
                             ○ Match '%'.<br/>
-                            ○ Match a hexadecimal digit exactly 2 times.<br/>
+                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
                 ○ Match '='.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [+\-.0-9A-Z_a-z~].<br/>
+                        ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
                         ○ Match a sequence of expressions.<br/>
                             ○ Match '%'.<br/>
-                            ○ Match a hexadecimal digit exactly 2 times.<br/>
+                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
             </remarks>
@@ -7176,6 +7552,79 @@
                 实现 <see cref="T:HttpAgent.IHttpRequestEventHandler" /> 接口的类型
             </summary>
         </member>
+        <member name="T:HttpAgent.RetryAttribute">
+            <summary>
+                HTTP 声明式重试特性
+            </summary>
+        </member>
+        <member name="M:HttpAgent.RetryAttribute.#ctor">
+            <summary>
+                <inheritdoc cref="T:HttpAgent.RetryAttribute" />
+            </summary>
+        </member>
+        <member name="M:HttpAgent.RetryAttribute.#ctor(System.Int32)">
+            <summary>
+                <inheritdoc cref="T:HttpAgent.RetryAttribute" />
+            </summary>
+            <param name="maxRetries">最大重试次数。0 表示不重试</param>
+        </member>
+        <member name="M:HttpAgent.RetryAttribute.#ctor(System.Int32,System.Double)">
+            <summary>
+                <inheritdoc cref="T:HttpAgent.RetryAttribute" />
+            </summary>
+            <param name="maxRetries">最大重试次数。0 表示不重试</param>
+            <param name="retryInterval">重试间隔基准时间（毫秒）</param>
+        </member>
+        <member name="P:HttpAgent.RetryAttribute.MaxRetries">
+            <summary>
+                最大重试次数
+            </summary>
+            <remarks>默认值为 0，表示不重试。如果设置了 <see cref="P:HttpAgent.RetryAttribute.RetryIntervals" />，此值将自动被覆盖为数组长度。</remarks>
+        </member>
+        <member name="P:HttpAgent.RetryAttribute.RetryInterval">
+            <summary>
+                重试间隔基准时间（毫秒）
+            </summary>
+            <remarks>默认值为 1000 毫秒。仅在未设置 <see cref="P:HttpAgent.RetryAttribute.RetryIntervals" /> 时生效。</remarks>
+        </member>
+        <member name="P:HttpAgent.RetryAttribute.UseExponentialBackoff">
+            <summary>
+                是否采用指数退避重试
+            </summary>
+            <remarks>
+                默认值为：<c>false</c>。当设置为 <c>true</c> 时，每次重试间隔 = <see cref="P:HttpAgent.RetryAttribute.RetryInterval" /> * 2^(retry-1)。仅在未设置
+                <see cref="P:HttpAgent.RetryAttribute.RetryIntervals" /> 时生效。
+            </remarks>
+        </member>
+        <member name="P:HttpAgent.RetryAttribute.RetryIntervals">
+            <summary>
+                自定义重试间隔数组（毫秒）
+            </summary>
+            <remarks>
+                如果设置了此属性，则重试次数将等于数组长度，<see cref="P:HttpAgent.RetryAttribute.MaxRetries" /> 和 <see cref="P:HttpAgent.RetryAttribute.UseExponentialBackoff" /> 将被忽略。每次重试将按顺序使用数组中对应索引的间隔时间。
+            </remarks>
+        </member>
+        <member name="P:HttpAgent.RetryAttribute.RetryStatusCodes">
+            <summary>
+                需要重试的 HTTP 状态码集合
+            </summary>
+            <remarks>若为空，则仅重试因异常引发的失败。</remarks>
+        </member>
+        <member name="P:HttpAgent.RetryAttribute.RetryExceptionTypes">
+            <summary>
+                需要重试的异常类型集合
+            </summary>
+            <remarks>若为空，则对所有 <see cref="T:System.Exception" /> 进行重试（受 <see cref="P:HttpAgent.RetryAttribute.MaxRetries" /> 限制）。</remarks>
+        </member>
+        <member name="P:HttpAgent.RetryAttribute.RetryIndefinitely">
+            <summary>
+                是否无限重试，直到成功
+            </summary>
+            <remarks>
+                默认值为：<c>false</c>。当设置为 <c>true</c> 时，<see cref="P:HttpAgent.RetryAttribute.MaxRetries" /> 和 <see cref="P:HttpAgent.RetryAttribute.RetryIntervals" />
+                的长度将被忽略，一直重试直到成功或发生不可重试的异常。
+            </remarks>
+        </member>
         <member name="T:HttpAgent.SimulateBrowserAttribute">
             <summary>
                 HTTP 声明式模拟浏览器环境特性
@@ -7214,6 +7663,11 @@
                 异常抑制类型集合
             </summary>
         </member>
+        <member name="T:HttpAgent.SuppressTokenManagementAttribute">
+            <summary>
+                HTTP 声明式禁用框架的 Access Token 自动管理特性
+            </summary>
+        </member>
         <member name="T:HttpAgent.SuppressValidationAttribute">
             <summary>
                 HTTP 声明式禁用参数数据验证特性
@@ -7229,12 +7683,40 @@
             <summary>
                 <inheritdoc cref="T:HttpAgent.TimeoutAttribute" />
             </summary>
-            <param name="timeoutMilliseconds">超时时间（毫秒）</param>
+            <param name="milliseconds">
+                <para>超时时间（毫秒）</para>
+                <para>
+                    <list type="bullet">
+                        <item>
+                            <description>设置为 <c>-1</c> 表示无超时</description>
+                        </item>
+                        <item>
+                            <description>设置为 <c>0</c> 将立即取消请求</description>
+                        </item>
+                        <item>
+                            <description>负值（除 <c>-1</c> 毫秒外）将引发 <see cref="T:System.ArgumentOutOfRangeException" /></description>
+                        </item>
+                    </list>
+                </para>
+            </param>
         </member>
         <member name="P:HttpAgent.TimeoutAttribute.Timeout">
             <summary>
                 超时时间（毫秒）
             </summary>
+            <remarks>
+                <list type="bullet">
+                    <item>
+                        <description>设置为 <c>-1</c> 表示无超时</description>
+                    </item>
+                    <item>
+                        <description>设置为 <c>0</c> 将立即取消请求</description>
+                    </item>
+                    <item>
+                        <description>负值（除 <c>-1</c> 毫秒外）将引发 <see cref="T:System.ArgumentOutOfRangeException" /></description>
+                    </item>
+                </list>
+            </remarks>
         </member>
         <member name="T:HttpAgent.TraceIdentifierAttribute">
             <summary>
@@ -7664,6 +8146,14 @@
         <member name="M:HttpAgent.RequestEventHandlerDeclarativeExtractor.Extract(HttpAgent.HttpRequestBuilder,HttpAgent.HttpDeclarativeExtractorContext)">
             <inheritdoc />
         </member>
+        <member name="T:HttpAgent.RetryDeclarativeExtractor">
+            <summary>
+                HTTP 声明式 <see cref="T:HttpAgent.RetryAttribute" /> 特性提取器
+            </summary>
+        </member>
+        <member name="M:HttpAgent.RetryDeclarativeExtractor.Extract(HttpAgent.HttpRequestBuilder,HttpAgent.HttpDeclarativeExtractorContext)">
+            <inheritdoc />
+        </member>
         <member name="T:HttpAgent.SimulateBrowserDeclarativeExtractor">
             <summary>
                 HTTP 声明式 <see cref="T:HttpAgent.SimulateBrowserAttribute" /> 特性提取器
@@ -7678,6 +8168,14 @@
             </summary>
         </member>
         <member name="M:HttpAgent.SuppressExceptionsDeclarativeExtractor.Extract(HttpAgent.HttpRequestBuilder,HttpAgent.HttpDeclarativeExtractorContext)">
+            <inheritdoc />
+        </member>
+        <member name="T:HttpAgent.SuppressTokenManagementDeclarativeExtractor">
+            <summary>
+                HTTP 声明式 <see cref="T:HttpAgent.SuppressTokenManagementAttribute" /> 特性提取器
+            </summary>
+        </member>
+        <member name="M:HttpAgent.SuppressTokenManagementDeclarativeExtractor.Extract(HttpAgent.HttpRequestBuilder,HttpAgent.HttpDeclarativeExtractorContext)">
             <inheritdoc />
         </member>
         <member name="T:HttpAgent.TimeoutDeclarativeExtractor">
@@ -8315,12 +8813,12 @@
         <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.UnicodeEscapeRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\u([0-9a-fA-F]{4})</code><br/>
+            <code>\\\\u([0-9a-fA-F]{4})</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "\\u".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a hexadecimal digit exactly 4 times.<br/>
+                ○ Match a character in the set [0-9A-Fa-f] exactly 4 times.<br/>
             </code>
             </remarks>
         </member>
@@ -10044,12 +10542,12 @@
         <member name="M:HttpAgent.FileTransferProgress.AnsiRegex">
             <remarks>
             Pattern:<br/>
-            <code>\e\[[\d;]*[a-zA-Z]</code><br/>
+            <code>\\e\\[[\\d;]*[a-zA-Z]</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "\u001b[".<br/>
             ○ Match a character in the set [;\d] atomically any number of times.<br/>
-            ○ Match an ASCII letter.<br/>
+            ○ Match a character in the set [A-Za-z].<br/>
             </code>
             </remarks>
         </member>
@@ -11235,12 +11733,6 @@
                 JSON 序列化配置
             </summary>
         </member>
-        <member name="P:HttpAgent.HttpClientOptions.IsDefault">
-            <summary>
-                标识选项是否配置为默认值（未配置）
-            </summary>
-            <remarks>用于避免通过 <see cref="T:Microsoft.Extensions.Options.IOptionsSnapshot`1" /> 获取选项时无法确定是否已配置该选项。默认值为：<c>true</c>。</remarks>
-        </member>
         <member name="P:HttpAgent.HttpClientOptions.JsonResponseWrapper">
             <summary>
                 指定 JSON 响应反序列化包装器
@@ -11254,6 +11746,17 @@
             <summary>
                 是否全局启用 JSON 响应反序列化包装器
             </summary>
+        </member>
+        <member name="P:HttpAgent.HttpClientOptions.HttpAccessTokenProvider">
+            <summary>
+                Access Token 提供器配置
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpClientOptions.IsDefault">
+            <summary>
+                标识选项是否配置为默认值（未配置）
+            </summary>
+            <remarks>用于避免通过 <see cref="T:Microsoft.Extensions.Options.IOptionsSnapshot`1" /> 获取选项时无法确定是否已配置该选项。默认值为：<c>true</c>。</remarks>
         </member>
         <member name="T:HttpAgent.HttpRemoteOptions">
             <summary>
@@ -11316,7 +11819,7 @@
                 URL 参数格式化程序
             </summary>
         </member>
-        <member name="P:HttpAgent.HttpRemoteOptions.HttpRequestBuilderConfigurer">
+        <member name="P:HttpAgent.HttpRemoteOptions.HttpRequestBuilderConfigurator">
             <summary>
                 <see cref="T:HttpAgent.HttpRequestBuilder" /> 统一配置器
             </summary>
@@ -11338,9 +11841,8 @@
                 自定义 <see cref="T:HttpAgent.IHttpRequestPipelineHandler" /> 类型集合
             </summary>
             <remarks>
-                <para>该列表定义了发送 HTTP 请求时执行的处理器及其顺序。</para>
+                <para>该列表定义了发送 HTTP 请求时执行的管道处理器及其顺序。</para>
                 <para>顺序从外到内：列表中的第一个类型位于管道最外层（最先执行），最后一个类型位于最内层（最后执行）。</para>
-                <para>TODO: 未来考虑开放拓展</para>
             </remarks>
         </member>
         <member name="T:HttpAgent.AutoRedirectPipelineHandler">
@@ -11567,6 +12069,47 @@
         <member name="M:HttpAgent.ResponseProfilerPipelineHandler.HandleAsync(HttpAgent.HttpRequestPipelineContext,System.Func{System.Threading.Tasks.Task{System.Net.Http.HttpResponseMessage}})">
             <inheritdoc />
         </member>
+        <member name="T:HttpAgent.RetryPipelineHandler">
+            <summary>
+                请求重试管道处理器
+            </summary>
+        </member>
+        <member name="M:HttpAgent.RetryPipelineHandler.HandleAsync(HttpAgent.HttpRequestPipelineContext,System.Func{System.Threading.Tasks.Task{System.Net.Http.HttpResponseMessage}})">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.RetryPipelineHandler.GetRetryDelay(HttpAgent.HttpRetryOptions,System.Int32)">
+            <summary>
+                获取当前重试应该等待的间隔时间
+            </summary>
+            <param name="httpRetryOptions">
+                <see cref="T:HttpAgent.HttpRetryOptions" />
+            </param>
+            <param name="attempt">尝试的次数（从 0 开始）</param>
+            <returns>
+                <see cref="T:System.TimeSpan" />
+            </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:HttpAgent.RetryPipelineHandler.ShouldRetryOnException(System.Collections.Generic.HashSet{System.Type},System.Exception)">
+            <summary>
+                判断异常类型是否应该触发重试
+            </summary>
+            <param name="exceptionTypes">需要重试的异常类型集合</param>
+            <param name="exception">当前异常对象</param>
+            <returns>
+                <see cref="T:System.Boolean" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.RetryPipelineHandler.ShouldRetryOnStatusCode(System.Collections.Generic.HashSet{System.Net.HttpStatusCode},System.Net.HttpStatusCode)">
+            <summary>
+                判断 HTTP 状态码是否应该触发重试
+            </summary>
+            <param name="statusCodes">需要重试的 HTTP 状态码集合</param>
+            <param name="statusCode">当前 HTTP 状态码</param>
+            <returns>
+                <see cref="T:System.Boolean" />
+            </returns>
+        </member>
         <member name="T:HttpAgent.SendCorePipelineHandler">
             <summary>
                 核心 HTTP 发送管道处理器
@@ -11610,12 +12153,12 @@
         <member name="M:HttpAgent.StatusCodePipelineHandler.StatusCodeRangeRegex">
             <remarks>
             Pattern:<br/>
-            <code>^\d+[-~]\d+$</code><br/>
+            <code>^\\d+[-~]\\d+$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
-            ○ Match a character in the set [\-~].<br/>
+            ○ Match a character in the set [-~].<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
@@ -11624,7 +12167,7 @@
         <member name="M:HttpAgent.StatusCodePipelineHandler.StatusCodeCompareRegex">
             <remarks>
             Pattern:<br/>
-            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\d+)$</code><br/>
+            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\\d+)$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
@@ -11640,6 +12183,27 @@
             </code>
             </remarks>
         </member>
+        <member name="T:HttpAgent.SuppressExceptionPipelineHandler">
+            <summary>
+                异常抑制管道处理器
+            </summary>
+            <remarks>确保该处理器位于管道最外层。</remarks>
+        </member>
+        <member name="M:HttpAgent.SuppressExceptionPipelineHandler.HandleAsync(HttpAgent.HttpRequestPipelineContext,System.Func{System.Threading.Tasks.Task{System.Net.Http.HttpResponseMessage}})">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.SuppressExceptionPipelineHandler.ShouldSuppressException(System.Collections.Generic.HashSet{System.Type},System.Exception)">
+            <summary>
+                检查是否启用异常抑制机制
+            </summary>
+            <param name="suppressExceptionTypes">受抑制的异常类型列表</param>
+            <param name="exception">
+                <see cref="T:System.Exception" />
+            </param>
+            <returns>
+                <see cref="T:System.Boolean" />
+            </returns>
+        </member>
         <member name="T:HttpAgent.TimeoutPipelineHandler">
             <summary>
                 超时控制管道处理器
@@ -11647,6 +12211,46 @@
         </member>
         <member name="M:HttpAgent.TimeoutPipelineHandler.HandleAsync(HttpAgent.HttpRequestPipelineContext,System.Func{System.Threading.Tasks.Task{System.Net.Http.HttpResponseMessage}})">
             <inheritdoc />
+        </member>
+        <member name="T:HttpAgent.TokenManagementPipelineHandler">
+            <summary>
+                Access Token 自动管理管道处理器
+            </summary>
+            <param name="serviceProvider">
+                <see cref="T:System.IServiceProvider" />
+            </param>
+            <param name="accessTokenManager">
+                <see cref="T:HttpAgent.HttpAccessTokenManager" />
+            </param>
+        </member>
+        <member name="M:HttpAgent.TokenManagementPipelineHandler.#ctor(System.IServiceProvider,HttpAgent.HttpAccessTokenManager)">
+            <summary>
+                Access Token 自动管理管道处理器
+            </summary>
+            <param name="serviceProvider">
+                <see cref="T:System.IServiceProvider" />
+            </param>
+            <param name="accessTokenManager">
+                <see cref="T:HttpAgent.HttpAccessTokenManager" />
+            </param>
+        </member>
+        <member name="M:HttpAgent.TokenManagementPipelineHandler.HandleAsync(HttpAgent.HttpRequestPipelineContext,System.Func{System.Threading.Tasks.Task{System.Net.Http.HttpResponseMessage}})">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.TokenManagementPipelineHandler.ApplyAccessToken(HttpAgent.HttpRequestBuilder,HttpAgent.IHttpAccessTokenProvider,HttpAgent.HttpAccessToken)">
+            <summary>
+                申请将 Access Token 添加到 <see cref="T:HttpAgent.HttpRequestBuilder" /> 中
+            </summary>
+            <param name="httpRequestBuilder">
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </param>
+            <param name="httpAccessTokenProvider">
+                <see cref="T:HttpAgent.IHttpAccessTokenProvider" />
+            </param>
+            <param name="httpAccessToken">
+                <see cref="T:HttpAgent.HttpAccessToken" />
+            </param>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="T:HttpAgent.HttpRequestPipelineContext">
             <summary>
@@ -12036,6 +12640,307 @@
         <member name="M:HttpAgent.StringContentProcessor.Process(HttpAgent.HttpContentProcessorContext)">
             <inheritdoc />
         </member>
+        <member name="T:HttpAgent.HttpRetryContext">
+            <summary>
+                HTTP 请求重试上下文
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpRetryContext.Attempt">
+            <summary>
+                当前重试次数
+            </summary>
+            <remarks>从 1 开始。</remarks>
+        </member>
+        <member name="P:HttpAgent.HttpRetryContext.Exception">
+            <summary>
+                触发重试的异常
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpRetryContext.StatusCode">
+            <summary>
+                触发重试的 HTTP 状态码
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpRetryContext.MaxRetries">
+            <summary>
+                最大重试次数
+            </summary>
+            <remarks>-1 表示无限</remarks>
+        </member>
+        <member name="P:HttpAgent.HttpRetryContext.IsExceptionRetry">
+            <summary>
+                是否因异常触发
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpRetryContext.IsStatusCodeRetry">
+            <summary>
+                是否因状态码触发
+            </summary>
+        </member>
+        <member name="T:HttpAgent.HttpRetryOptions">
+            <summary>
+                HTTP 请求重试选项
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpRetryOptions.MaxRetries">
+            <summary>
+                最大重试次数
+            </summary>
+            <remarks>默认值为 0，表示不重试。如果设置了 <see cref="P:HttpAgent.HttpRetryOptions.RetryIntervals" />，此值将自动被覆盖为数组长度。</remarks>
+        </member>
+        <member name="P:HttpAgent.HttpRetryOptions.RetryInterval">
+            <summary>
+                重试间隔基准时间
+            </summary>
+            <remarks>默认值为 1 秒。仅在未设置 <see cref="P:HttpAgent.HttpRetryOptions.RetryIntervals" /> 时生效。</remarks>
+        </member>
+        <member name="P:HttpAgent.HttpRetryOptions.UseExponentialBackoff">
+            <summary>
+                是否采用指数退避重试
+            </summary>
+            <remarks>
+                默认值为：<c>false</c>。当设置为 <c>true</c> 时，每次重试间隔 = <see cref="P:HttpAgent.HttpRetryOptions.RetryInterval" /> * 2^(retry-1)。仅在未设置
+                <see cref="P:HttpAgent.HttpRetryOptions.RetryIntervals" /> 时生效。
+            </remarks>
+        </member>
+        <member name="P:HttpAgent.HttpRetryOptions.RetryIntervals">
+            <summary>
+                自定义重试间隔数组
+            </summary>
+            <remarks>
+                如果设置了此属性，则重试次数将等于数组长度，<see cref="P:HttpAgent.HttpRetryOptions.MaxRetries" /> 和 <see cref="P:HttpAgent.HttpRetryOptions.UseExponentialBackoff" /> 将被忽略。每次重试将按顺序使用数组中对应索引的间隔时间。
+            </remarks>
+        </member>
+        <member name="P:HttpAgent.HttpRetryOptions.RetryStatusCodes">
+            <summary>
+                需要重试的 HTTP 状态码集合
+            </summary>
+            <remarks>若为空，则仅重试因异常引发的失败。</remarks>
+        </member>
+        <member name="P:HttpAgent.HttpRetryOptions.RetryExceptionTypes">
+            <summary>
+                需要重试的异常类型集合
+            </summary>
+            <remarks>若为空，则对所有 <see cref="T:System.Exception" /> 进行重试（受 <see cref="P:HttpAgent.HttpRetryOptions.MaxRetries" /> 限制）。</remarks>
+        </member>
+        <member name="P:HttpAgent.HttpRetryOptions.OnRetry">
+            <summary>
+                每次重试前的回调委托
+            </summary>
+            <remarks>可用于记录日志、发送通知等，参数为 <see cref="T:HttpAgent.HttpRetryContext" />。</remarks>
+        </member>
+        <member name="P:HttpAgent.HttpRetryOptions.RetryIndefinitely">
+            <summary>
+                是否无限重试，直到成功
+            </summary>
+            <remarks>
+                默认值为：<c>false</c>。当设置为 <c>true</c> 时，<see cref="P:HttpAgent.HttpRetryOptions.MaxRetries" /> 和 <see cref="P:HttpAgent.HttpRetryOptions.RetryIntervals" />
+                的长度将被忽略，一直重试直到成功或发生不可重试的异常。
+            </remarks>
+        </member>
+        <member name="M:HttpAgent.HttpRetryOptions.SetMaxRetries(System.Int32)">
+            <summary>
+                设置最大重试次数
+            </summary>
+            <param name="maxRetries">最大重试次数</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRetryOptions" />
+            </returns>
+            <exception cref="T:System.ArgumentOutOfRangeException"></exception>
+        </member>
+        <member name="M:HttpAgent.HttpRetryOptions.SetRetryInterval(System.TimeSpan)">
+            <summary>
+                设置重试间隔基准时间
+            </summary>
+            <param name="interval">重试间隔基准时间</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRetryOptions" />
+            </returns>
+            <exception cref="T:System.ArgumentOutOfRangeException"></exception>
+        </member>
+        <member name="M:HttpAgent.HttpRetryOptions.SetRetryInterval(System.Double)">
+            <summary>
+                设置重试间隔基准时间
+            </summary>
+            <param name="milliseconds">重试间隔基准时间（毫秒）</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRetryOptions" />
+            </returns>
+            <exception cref="T:System.ArgumentOutOfRangeException"></exception>
+        </member>
+        <member name="M:HttpAgent.HttpRetryOptions.SetUseExponentialBackoff(System.Boolean)">
+            <summary>
+                设置是否使用指数退避
+            </summary>
+            <param name="use">是否启用</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRetryOptions" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRetryOptions.SetRetryIntervals(System.TimeSpan[])">
+            <summary>
+                设置自定义重试间隔数组
+            </summary>
+            <param name="intervals">间隔时间数组</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRetryOptions" />
+            </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:System.ArgumentOutOfRangeException"></exception>
+        </member>
+        <member name="M:HttpAgent.HttpRetryOptions.SetRetryIntervals(System.Double[])">
+            <summary>
+                设置自定义重试间隔数组
+            </summary>
+            <param name="milliseconds">间隔毫秒数组（毫秒）</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRetryOptions" />
+            </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:System.ArgumentOutOfRangeException"></exception>
+        </member>
+        <member name="M:HttpAgent.HttpRetryOptions.AddRetryStatusCode(System.Net.HttpStatusCode)">
+            <summary>
+                添加一个需要重试的 HTTP 状态码
+            </summary>
+            <param name="statusCode">HTTP 状态码</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRetryOptions" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRetryOptions.AddRetryStatusCode(System.Int32)">
+            <summary>
+                添加一个需要重试的 HTTP 状态码
+            </summary>
+            <param name="statusCode">HTTP 状态码</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRetryOptions" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRetryOptions.AddRetryStatusCodes(System.Collections.Generic.IEnumerable{System.Net.HttpStatusCode})">
+            <summary>
+                添加多个需要重试的 HTTP 状态码
+            </summary>
+            <param name="statusCodes">HTTP 状态码集合</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRetryOptions" />
+            </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:HttpAgent.HttpRetryOptions.AddRetryStatusCodes(System.Collections.Generic.IEnumerable{System.Int32})">
+            <summary>
+                添加多个需要重试的 HTTP 状态码
+            </summary>
+            <param name="statusCodes">HTTP 状态码集合</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRetryOptions" />
+            </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:HttpAgent.HttpRetryOptions.AddRetryException``1">
+            <summary>
+                添加一个需要重试的异常类型
+            </summary>
+            <typeparam name="TException">异常类型</typeparam>
+            <returns>
+                <see cref="T:HttpAgent.HttpRetryOptions" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRetryOptions.AddRetryException(System.Type)">
+            <summary>
+                添加一个需要重试的异常类型
+            </summary>
+            <param name="exceptionType">异常类型</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRetryOptions" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRetryOptions.AddRetryExceptions(System.Collections.Generic.IEnumerable{System.Type})">
+            <summary>
+                添加多个需要重试的异常类型
+            </summary>
+            <param name="exceptionTypes">异常类型集合</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRetryOptions" />
+            </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
+        <member name="M:HttpAgent.HttpRetryOptions.SetOnRetry(System.Action{HttpAgent.HttpRetryContext})">
+            <summary>
+                设置每次重试前的回调委托
+            </summary>
+            <param name="onRetry">回调委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRetryOptions" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRetryOptions.SetRetryIndefinitely(System.Boolean)">
+            <summary>
+                设置是否无限重试
+            </summary>
+            <param name="retryIndefinitely">是否启用</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRetryOptions" />
+            </returns>
+        </member>
+        <member name="T:HttpAgent.HttpTimeoutOptions">
+            <summary>
+                HTTP 请求超时选项
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpTimeoutOptions.Timeout">
+            <summary>
+                超时时间
+            </summary>
+            <remarks>设置为 <c>null</c> 表示使用默认超时（通常为 100 秒），设置为 <see cref="F:System.Threading.Timeout.InfiniteTimeSpan" /> 表示永不超时。</remarks>
+        </member>
+        <member name="P:HttpAgent.HttpTimeoutOptions.OnTimeout">
+            <summary>
+                超时发生时要执行的操作
+            </summary>
+        </member>
+        <member name="M:HttpAgent.HttpTimeoutOptions.SetTimeout(System.Nullable{System.TimeSpan})">
+            <summary>
+                设置超时时间
+            </summary>
+            <param name="timeout">超时时间，<c>null</c> 表示使用默认值</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpTimeoutOptions" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpTimeoutOptions.SetTimeout(System.Double)">
+            <summary>
+                设置超时时间
+            </summary>
+            <remarks>
+                <list type="bullet">
+                    <item>
+                        <description>设置为 <c>-1</c> 表示无超时</description>
+                    </item>
+                    <item>
+                        <description>设置为 <c>0</c> 将立即取消请求</description>
+                    </item>
+                    <item>
+                        <description>负值（除 <c>-1</c> 毫秒外）将引发 <see cref="T:System.ArgumentOutOfRangeException" /></description>
+                    </item>
+                </list>
+            </remarks>
+            <param name="milliseconds">超时时间（毫秒）</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpTimeoutOptions" />
+            </returns>
+            <exception cref="T:System.ArgumentOutOfRangeException"></exception>
+        </member>
+        <member name="M:HttpAgent.HttpTimeoutOptions.SetOnTimeout(System.Action)">
+            <summary>
+                设置超时发生时的回调操作
+            </summary>
+            <param name="onTimeout">超时发生时要执行的操作</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpTimeoutOptions" />
+            </returns>
+        </member>
         <member name="T:HttpAgent.HttpRemoteService">
             <summary>
                 <inheritdoc cref="T:HttpAgent.IHttpRemoteService" />
@@ -12191,18 +13096,6 @@
                 <see cref="T:System.Tuple`2" />
             </returns>
             <exception cref="T:System.InvalidOperationException"></exception>
-        </member>
-        <member name="M:HttpAgent.HttpRemoteService.ShouldSuppressException(System.Collections.Generic.HashSet{System.Type},System.Exception)">
-            <summary>
-                检查是否启用异常抑制机制
-            </summary>
-            <param name="suppressExceptionTypes">受抑制的异常类型列表</param>
-            <param name="exception">
-                <see cref="T:System.Exception" />
-            </param>
-            <returns>
-                <see cref="T:System.Boolean" />
-            </returns>
         </member>
         <member name="M:HttpAgent.HttpRemoteService.CreateHttpClientWithDefaults(HttpAgent.HttpRequestBuilder)">
             <summary>
@@ -17945,21 +18838,6 @@
         <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32,System.Int32,System.Int32)">
             <summary>Pushes 3 values onto the backtracking stack.</summary>
         </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.WordCategoriesMask">
-            <summary>Provides a mask of Unicode categories that combine to form [\w].</summary>
-        </member>
-        <member name="P:System.Text.RegularExpressions.Generated.Utilities.WordCharBitmap">
-            <summary>Gets a bitmap for whether each character 0 through 127 is in [\w]</summary>
-        </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_1F52B1A4D2E82B6FEDE25EC8C55F85BB36775196837076691C96925040F90D32">
-            <summary>Supports searching for the string "\\u".</summary>
-        </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_4A5B154448624742176A7AE18EDA0762C946CBB1B19F68418DD573D0A698E642">
-            <summary>Supports searching for the string "\u001b[".</summary>
-        </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_EBC667BDABA1472FA863B5B39B31251EF2B4C95DD643BDECF694CB1CE7BDC178">
-            <summary>Supports searching for the string "[[".</summary>
-        </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions">
             <summary>
                 HTTP 远程请求模块 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" /> 扩展类
@@ -17970,6 +18848,30 @@
                 添加 HTTP 远程请求服务
             </summary>
             <param name="services">
+                <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
+            </param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
+            </returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions.AddHttpRemote(Microsoft.Extensions.DependencyInjection.IServiceCollection,HttpAgent.HttpRemoteBuilder)">
+            <summary>
+                添加 HTTP 远程请求服务
+            </summary>
+            <param name="services">
+                <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
+            </param>
+            <param name="httpRemoteBuilder">
+                <see cref="T:HttpAgent.HttpRemoteBuilder" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
+            </returns>
+        </member>
+    </members>
+</doc>
+
                 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
             </param>
             <param name="configure">自定义配置委托</param>

@@ -76,4 +76,10 @@ public class ConstantsTests
     public void HTTP_RESPONSE_MESSAGE_ISNULL_MESSAGE() =>
         Assert.Equal("The response content was not read, as it was empty.",
             Constants.HTTP_RESPONSE_MESSAGE_ISNULL_MESSAGE);
+
+    [Fact]
+    public void PROFILER_ANALYZER_KEY() => Assert.Equal("ProfilerAnalyzer", Constants.PROFILER_ANALYZER_KEY);
+
+    [Fact]
+    public void REQUEST_EVENT_HANDLER_KEY() => Assert.Equal("RequestEventHandler", Constants.REQUEST_EVENT_HANDLER_KEY);
 }

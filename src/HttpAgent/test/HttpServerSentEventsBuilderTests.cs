@@ -208,7 +208,7 @@ public class HttpServerSentEventsBuilderTests
         var httpRequestBuilder2 = httpServerSentEventsBuilder.SetEventHandler<CustomServerSentEventsEventHandler2>()
             .WithRequest(builder => builder.SetTimeout(100)).Build(httpRemoteOptions);
 
-        Assert.Equal(TimeSpan.FromMilliseconds(100), httpRequestBuilder2.Timeout);
+        Assert.Equal(TimeSpan.FromMilliseconds(100), httpRequestBuilder2.TimeoutOptions?.Timeout);
         Assert.NotNull(httpRequestBuilder2.RequestEventHandlerType);
     }
 }

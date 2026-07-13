@@ -115,7 +115,7 @@ public class StatusCodePipelineHandlerTests(ITestOutputHelper output)
                     httpClient.SendAsync(httpRequestMessage, option, token), null);
         });
         Assert.Equal(
-            "HttpRequestBuilder's Timeout cannot be greater than HttpClient's Timeout, which defaults to 100 seconds.",
+            "HttpTimeoutOptions's Timeout cannot be greater than HttpClient's Timeout, which defaults to 100 seconds.",
             exception2.Message);
 
         await serviceProvider.DisposeAsync();

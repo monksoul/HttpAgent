@@ -16,12 +16,6 @@ public sealed class HttpClientOptions
         new(HttpRemoteOptions.JsonSerializerOptionsDefault);
 
     /// <summary>
-    ///     标识选项是否配置为默认值（未配置）
-    /// </summary>
-    /// <remarks>用于避免通过 <see cref="IOptionsSnapshot{TOptions}" /> 获取选项时无法确定是否已配置该选项。默认值为：<c>true</c>。</remarks>
-    internal bool IsDefault { get; set; } = true;
-
-    /// <summary>
     ///     指定 JSON 响应反序列化包装器
     /// </summary>
     /// <remarks>
@@ -34,4 +28,15 @@ public sealed class HttpClientOptions
     ///     是否全局启用 JSON 响应反序列化包装器
     /// </summary>
     public bool? UseJsonResponseWrapper { get; set; }
+
+    /// <summary>
+    ///     Access Token 提供器配置
+    /// </summary>
+    public IHttpAccessTokenProvider? HttpAccessTokenProvider { get; set; }
+
+    /// <summary>
+    ///     标识选项是否配置为默认值（未配置）
+    /// </summary>
+    /// <remarks>用于避免通过 <see cref="IOptionsSnapshot{TOptions}" /> 获取选项时无法确定是否已配置该选项。默认值为：<c>true</c>。</remarks>
+    internal bool IsDefault { get; set; } = true;
 }

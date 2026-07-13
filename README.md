@@ -13,8 +13,8 @@ consumption and high test coverage.
 
 ## Features
 
-- **Comprehensive `HTTP` Method Support**: Covers `GET`, `POST`, `PUT`, `DELETE`, `PATCH`, `HEAD`, `TRACE`, `OPTIONS` and
-  `QUERY` methods.
+- **Comprehensive `HTTP` Method Support**: Covers `GET`, `POST`, `PUT`, `DELETE`, `PATCH`, `HEAD`, `TRACE`, `OPTIONS`
+  and `QUERY` methods.
 - **File Transfer Functionality**: Supports file upload and download with real-time transfer progress monitoring.
 - **Polling Mechanism**: Supports standard polling and long polling with customizable polling intervals.
 - **Testing Toolkit**: Capable of stress testing, performance testing, and simulation testing with the ability to
@@ -26,6 +26,9 @@ consumption and high test coverage.
   compatible with `WebSocket` protocol.
 - **Request Management and Log Auditing**: Includes built-in request interception mechanisms and `HTTP` request log
   auditing functions.
+- **Automatic `Access Token` Management**: Built-in automatic `Access Token` refresh and injection mechanism, supports
+  custom `Token` providers and configurators, automatically attaches `Token` to requests, and retries automatically on
+  `401` responses.
 - **Media Type Handling**: Provides predefined handling mechanisms for mainstream `MediaTypes` and offers an open
   interface for custom handling.
 - **Declarative Requests**: Specifying the behavior of requests through simple attribute annotations or interface
@@ -42,7 +45,8 @@ consumption and high test coverage.
   ensure low resource consumption and high performance.
 - **Architecture Design**: Flexible architecture design that is easy to use and extend.
 - **Cross-Platform Independence**: Supports cross-platform operation without external dependencies.
-- **Application Type Support**: Supports any application type, including but not limited to Console, Web, WebAssembly, WinForms, WPF, MAUI.
+- **Application Type Support**: Supports any application type, including but not limited to Console, Web, WebAssembly,
+  WinForms, WPF, MAUI.
 - **High-Quality Code Assurance**: Adheres to high-standard coding practices, with unit and integration test coverage as
   high as `98%`.
 - **`.NET 8+` Compatibility**: Can be deployed and used in environments running `.NET 8` and higher versions.

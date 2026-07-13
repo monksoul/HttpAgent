@@ -597,7 +597,7 @@ public class HttpBuilderTests
         Assert.Equal("abcdefg123456", httpRequestBuilder.Cookies["sessionId"]);
         Assert.Equal("monksoul", httpRequestBuilder.Cookies["userid"]);
 
-        Assert.Equal(20000, httpRequestBuilder.Timeout!.Value.TotalMilliseconds);
+        Assert.Equal(20000, httpRequestBuilder.TimeoutOptions?.Timeout!.Value.TotalMilliseconds);
         Assert.Equal("furion", httpRequestBuilder.HttpClientName);
         Assert.True(httpRequestBuilder.ProfilerEnabled);
     }

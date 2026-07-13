@@ -14,6 +14,7 @@ public class HttpClientOptionsTests
         Assert.True(httpClientOptions.IsDefault);
         Assert.Null(httpClientOptions.JsonResponseWrapper);
         Assert.Null(httpClientOptions.UseJsonResponseWrapper);
+        Assert.Null(httpClientOptions.HttpAccessTokenProvider);
 
         Assert.NotNull(httpClientOptions.JsonSerializerOptions);
         Assert.NotEqual(HttpRemoteOptions.JsonSerializerOptionsDefault, httpClientOptions.JsonSerializerOptions);

@@ -54,6 +54,7 @@ public class HttpDeclarativeBuilderTests
                 typeof(EnsureSuccessStatusCodeDeclarativeExtractor),
                 new EnsureSuccessStatusCodeDeclarativeExtractor()
             },
+            { typeof(RetryDeclarativeExtractor), new RetryDeclarativeExtractor() },
             { typeof(TimeoutDeclarativeExtractor), new TimeoutDeclarativeExtractor() },
             { typeof(PathSegmentDeclarativeExtractor), new PathSegmentDeclarativeExtractor() },
             { typeof(QueryParamDeclarativeExtractor), new QueryParamDeclarativeExtractor() },
@@ -69,6 +70,10 @@ public class HttpDeclarativeBuilderTests
             {
                 typeof(JsonResponseStringUnwrapDeclarativeExtractor),
                 new JsonResponseStringUnwrapDeclarativeExtractor()
+            },
+            {
+                typeof(SuppressTokenManagementDeclarativeExtractor),
+                new SuppressTokenManagementDeclarativeExtractor()
             },
             { typeof(BodyDeclarativeExtractor), new BodyDeclarativeExtractor() }
         };
@@ -168,6 +173,7 @@ public class HttpDeclarativeBuilderTests
                 typeof(EnsureSuccessStatusCodeDeclarativeExtractor),
                 new EnsureSuccessStatusCodeDeclarativeExtractor()
             },
+            { typeof(RetryDeclarativeExtractor), new RetryDeclarativeExtractor() },
             { typeof(TimeoutDeclarativeExtractor), new TimeoutDeclarativeExtractor() },
             { typeof(PathSegmentDeclarativeExtractor), new PathSegmentDeclarativeExtractor() },
             { typeof(QueryParamDeclarativeExtractor), new QueryParamDeclarativeExtractor() },
@@ -183,6 +189,10 @@ public class HttpDeclarativeBuilderTests
             {
                 typeof(JsonResponseStringUnwrapDeclarativeExtractor),
                 new JsonResponseStringUnwrapDeclarativeExtractor()
+            },
+            {
+                typeof(SuppressTokenManagementDeclarativeExtractor),
+                new SuppressTokenManagementDeclarativeExtractor()
             },
             { typeof(BodyDeclarativeExtractor), new BodyDeclarativeExtractor() },
             { typeof(CustomHttpDeclarativeExtractor), new CustomHttpDeclarativeExtractor() }

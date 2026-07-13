@@ -304,7 +304,7 @@ public class HttpFileDownloadBuilderTests
                 builder.SetTimeout(100);
             }).Build(httpRemoteOptions);
 
-        Assert.Equal(TimeSpan.FromMilliseconds(100), httpRequestBuilder2.Timeout);
+        Assert.Equal(TimeSpan.FromMilliseconds(100), httpRequestBuilder2.TimeoutOptions?.Timeout);
         Assert.NotNull(httpRequestBuilder2.RequestEventHandlerType);
 
         var httpFileDownloadBuilder3 = new HttpFileDownloadBuilder(HttpMethod.Get, new Uri("http://localhost"));

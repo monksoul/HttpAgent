@@ -37,7 +37,7 @@ public class FileUploadManagerTests(ITestOutputHelper output)
             new HttpFileUploadBuilder(HttpMethod.Post, new Uri("http://localhost:5000"), filePath, "file")
                 .WithRequest(builder => builder.SetTimeout(100)));
         Assert.NotNull(fileUploadManager2.RequestBuilder);
-        Assert.Equal(TimeSpan.FromMilliseconds(100), fileUploadManager2.RequestBuilder.Timeout);
+        Assert.Equal(TimeSpan.FromMilliseconds(100), fileUploadManager2.RequestBuilder.TimeoutOptions?.Timeout);
 
         serviceProvider.Dispose();
     }

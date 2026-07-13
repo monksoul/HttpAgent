@@ -8,7 +8,7 @@ namespace HttpAgent;
 ///     <see cref="HttpRequestBuilder" /> 统一配置器
 /// </summary>
 /// <remarks>用于在构建 <see cref="HttpRequestMessage" /> 时调用，可对 <see cref="HttpRequestBuilder" /> 实例进行统一预处理。</remarks>
-public interface IHttpRequestBuilderConfigurer
+public interface IHttpRequestBuilderConfigurator
 {
     /// <summary>
     ///     配置

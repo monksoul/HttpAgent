@@ -51,7 +51,7 @@ public class HttpRequestBuilderDeclarativeExtractorTests
             new HttpDeclarativeMethodMetadata(method1, typeof(IHttpRequestBuilderConfigureDeclarativeExtractorTest2)));
         var httpRequestBuilder1 = HttpRequestBuilder.Get("http://localhost");
         new HttpRequestBuilderDeclarativeExtractor().Extract(httpRequestBuilder1, context1);
-        Assert.Null(httpRequestBuilder1.Timeout);
+        Assert.Null(httpRequestBuilder1.TimeoutOptions?.Timeout);
 
         var method2 =
             typeof(IHttpRequestBuilderConfigureDeclarativeExtractorTest2).GetMethod(
@@ -60,7 +60,7 @@ public class HttpRequestBuilderDeclarativeExtractorTests
             new HttpDeclarativeMethodMetadata(method2, typeof(IHttpRequestBuilderConfigureDeclarativeExtractorTest2)));
         var httpRequestBuilder2 = HttpRequestBuilder.Get("http://localhost");
         new HttpRequestBuilderDeclarativeExtractor().Extract(httpRequestBuilder2, context2);
-        Assert.Equal(TimeSpan.FromMilliseconds(1000), httpRequestBuilder2.Timeout);
+        Assert.Equal(TimeSpan.FromMilliseconds(1000), httpRequestBuilder2.TimeoutOptions?.Timeout);
     }
 }
 

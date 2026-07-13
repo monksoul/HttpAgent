@@ -21,9 +21,25 @@ public class Helpers
             client.BaseAddress = new Uri("http://localhost/test/");
         }).ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler { AllowAutoRedirect = allowAutoRedirect });
 
-        services.AddOptions<HttpRemoteOptions>().Configure(remoteOptions =>
+        services.Configure<HttpRemoteOptions>(remoteOptions =>
         {
             remoteOptions.AllowAutoRedirect = frameworkAllowAutoRedirect;
+            remoteOptions.PipelineHandlerTypes =
+            [
+                typeof(SuppressExceptionPipelineHandler),
+                typeof(ResponseAssertionPipelineHandler),
+                typeof(ResponseProfilerPipelineHandler),
+                typeof(RequestEventPipelineHandler),
+                typeof(TimeoutPipelineHandler),
+                typeof(RetryPipelineHandler),
+                typeof(TokenManagementPipelineHandler),
+                typeof(AutoRedirectPipelineHandler),
+                typeof(StatusCodePipelineHandler),
+                typeof(ContentLengthValidationPipelineHandler),
+                typeof(RequestBuilderPipelineHandler),
+                typeof(RequestProfilerPipelineHandler),
+                typeof(SendCorePipelineHandler)
+            ];
         });
 
         var isLoggingRegistered = services.Any(u => u.ServiceType == typeof(ILoggerProvider));
@@ -38,16 +54,21 @@ public class Helpers
 
         services.TryAddSingleton<IObjectContentConverterFactory, ObjectContentConverterFactory>();
 
+        services.TryAddSingleton<SuppressExceptionPipelineHandler>();
         services.TryAddSingleton<ResponseAssertionPipelineHandler>();
         services.TryAddSingleton<ResponseProfilerPipelineHandler>();
         services.TryAddSingleton<RequestEventPipelineHandler>();
         services.TryAddSingleton<TimeoutPipelineHandler>();
+        services.TryAddSingleton<RetryPipelineHandler>();
+        services.TryAddSingleton<TokenManagementPipelineHandler>();
         services.TryAddSingleton<AutoRedirectPipelineHandler>();
         services.TryAddSingleton<StatusCodePipelineHandler>();
         services.TryAddSingleton<ContentLengthValidationPipelineHandler>();
         services.TryAddSingleton<RequestBuilderPipelineHandler>();
         services.TryAddSingleton<RequestProfilerPipelineHandler>();
         services.TryAddSingleton<SendCorePipelineHandler>();
+
+        services.TryAddSingleton<HttpAccessTokenManager>();
 
         if (requestEventHandler is not null)
         {

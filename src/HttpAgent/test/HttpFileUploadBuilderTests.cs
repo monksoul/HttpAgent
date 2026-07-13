@@ -388,7 +388,7 @@ public class HttpFileUploadBuilderTests
         var httpRequestBuilder2 = httpFileUploadBuilder.SetEventHandler<CustomFileTransferEventHandler2>()
             .WithRequest(b => b.SetTimeout(100)).Build(httpRemoteOptions, progressChannel);
 
-        Assert.Equal(TimeSpan.FromMilliseconds(100), httpRequestBuilder2.Timeout);
+        Assert.Equal(TimeSpan.FromMilliseconds(100), httpRequestBuilder2.TimeoutOptions?.Timeout);
         Assert.NotNull(httpRequestBuilder2.RequestEventHandlerType);
     }
 }

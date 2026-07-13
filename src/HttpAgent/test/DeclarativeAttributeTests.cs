@@ -498,6 +498,31 @@ public class DeclarativeAttributeTests
     }
 
     [Fact]
+    public void RetryAttribute_ReturnOK()
+    {
+        var attributeUsage = typeof(RetryAttribute).GetCustomAttribute<AttributeUsageAttribute>();
+        Assert.NotNull(attributeUsage);
+        Assert.Equal(AttributeTargets.Method | AttributeTargets.Interface, attributeUsage.ValidOn);
+        Assert.False(attributeUsage.AllowMultiple);
+
+        var attribute = new RetryAttribute(10);
+        Assert.Equal(10, attribute.MaxRetries);
+        Assert.Equal(1000, attribute.RetryInterval);
+        Assert.False(attribute.UseExponentialBackoff);
+        Assert.Null(attribute.RetryIntervals);
+        Assert.Null(attribute.RetryStatusCodes);
+        Assert.Null(attribute.RetryExceptionTypes);
+        Assert.False(attribute.RetryIndefinitely);
+
+        var attribute2 = new RetryAttribute(10, 2000);
+        Assert.Equal(10, attribute2.MaxRetries);
+        Assert.Equal(2000, attribute2.RetryInterval);
+
+        var attribute3 = new RetryAttribute();
+        Assert.NotNull(attribute3);
+    }
+
+    [Fact]
     public void TraceIdentifierAttribute_ReturnOK()
     {
         var attributeUsage = typeof(TraceIdentifierAttribute).GetCustomAttribute<AttributeUsageAttribute>();
@@ -647,6 +672,18 @@ public class DeclarativeAttributeTests
         Assert.False(attributeUsage.AllowMultiple);
 
         var attribute = new SuppressValidationAttribute();
+        Assert.NotNull(attribute);
+    }
+
+    [Fact]
+    public void SuppressTokenManagementAttribute_ReturnOK()
+    {
+        var attributeUsage = typeof(SuppressTokenManagementAttribute).GetCustomAttribute<AttributeUsageAttribute>();
+        Assert.NotNull(attributeUsage);
+        Assert.Equal(AttributeTargets.Method, attributeUsage.ValidOn);
+        Assert.False(attributeUsage.AllowMultiple);
+
+        var attribute = new SuppressTokenManagementAttribute();
         Assert.NotNull(attribute);
     }
 

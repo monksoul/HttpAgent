@@ -875,7 +875,7 @@ public class HttpContextForwardBuilderTests
             var httpRequestBuilder =
                 await httpContextForwardBuilder.BuildAsync(u => u.SetTimeout(TimeSpan.FromSeconds(150)));
             Assert.True(httpRequestBuilder.DisableCacheEnabled);
-            Assert.Equal(TimeSpan.FromSeconds(150), httpRequestBuilder.Timeout);
+            Assert.Equal(TimeSpan.FromSeconds(150), httpRequestBuilder.TimeoutOptions?.Timeout);
 
             Assert.NotNull(httpRequestBuilder.Headers);
             Assert.Single(httpRequestBuilder.Headers);
@@ -926,7 +926,7 @@ public class HttpContextForwardBuilderTests
             var httpRequestBuilder =
                 await httpContextForwardBuilder.BuildAsync(u => u.SetTimeout(TimeSpan.FromSeconds(150)));
             Assert.True(httpRequestBuilder.DisableCacheEnabled);
-            Assert.Equal(TimeSpan.FromSeconds(150), httpRequestBuilder.Timeout);
+            Assert.Equal(TimeSpan.FromSeconds(150), httpRequestBuilder.TimeoutOptions?.Timeout);
 
             Assert.NotNull(httpRequestBuilder.Headers);
             Assert.Equal(3, httpRequestBuilder.Headers.Count);
@@ -990,7 +990,7 @@ public class HttpContextForwardBuilderTests
             var httpRequestBuilder =
                 await httpContextForwardBuilder.BuildAsync(u => u.SetTimeout(TimeSpan.FromSeconds(150)));
             Assert.True(httpRequestBuilder.DisableCacheEnabled);
-            Assert.Equal(TimeSpan.FromSeconds(150), httpRequestBuilder.Timeout);
+            Assert.Equal(TimeSpan.FromSeconds(150), httpRequestBuilder.TimeoutOptions?.Timeout);
 
             Assert.NotNull(httpRequestBuilder.Headers);
             Assert.Equal(3, httpRequestBuilder.Headers.Count);
@@ -1077,7 +1077,7 @@ public class HttpContextForwardBuilderTests
             var httpRequestBuilder =
                 httpContextForwardBuilder.Build(u => u.SetTimeout(TimeSpan.FromSeconds(150)));
             Assert.True(httpRequestBuilder.DisableCacheEnabled);
-            Assert.Equal(TimeSpan.FromSeconds(150), httpRequestBuilder.Timeout);
+            Assert.Equal(TimeSpan.FromSeconds(150), httpRequestBuilder.TimeoutOptions?.Timeout);
 
             Assert.NotNull(httpRequestBuilder.Headers);
             Assert.Single(httpRequestBuilder.Headers);
@@ -1132,7 +1132,7 @@ public class HttpContextForwardBuilderTests
             var httpRequestBuilder =
                 httpContextForwardBuilder.Build(u => u.SetTimeout(TimeSpan.FromSeconds(150)));
             Assert.True(httpRequestBuilder.DisableCacheEnabled);
-            Assert.Equal(TimeSpan.FromSeconds(150), httpRequestBuilder.Timeout);
+            Assert.Equal(TimeSpan.FromSeconds(150), httpRequestBuilder.TimeoutOptions?.Timeout);
 
             Assert.NotNull(httpRequestBuilder.Headers);
             Assert.Equal(3, httpRequestBuilder.Headers.Count);
@@ -1200,7 +1200,7 @@ public class HttpContextForwardBuilderTests
             var httpRequestBuilder =
                 httpContextForwardBuilder.Build(u => u.SetTimeout(TimeSpan.FromSeconds(150)));
             Assert.True(httpRequestBuilder.DisableCacheEnabled);
-            Assert.Equal(TimeSpan.FromSeconds(150), httpRequestBuilder.Timeout);
+            Assert.Equal(TimeSpan.FromSeconds(150), httpRequestBuilder.TimeoutOptions.Timeout);
 
             Assert.NotNull(httpRequestBuilder.Headers);
             Assert.Equal(3, httpRequestBuilder.Headers.Count);

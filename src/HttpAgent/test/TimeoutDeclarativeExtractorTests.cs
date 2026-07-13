@@ -26,7 +26,7 @@ public class TimeoutDeclarativeExtractorTests
             new HttpDeclarativeMethodMetadata(method1, typeof(ITimeoutDeclarativeExtractorTest1)));
         var httpRequestBuilder1 = HttpRequestBuilder.Get("http://localhost");
         new TimeoutDeclarativeExtractor().Extract(httpRequestBuilder1, context1);
-        Assert.Null(httpRequestBuilder1.Timeout);
+        Assert.Null(httpRequestBuilder1.TimeoutOptions?.Timeout);
 
         var method2 =
             typeof(ITimeoutDeclarativeExtractorTest2).GetMethod(
@@ -35,8 +35,8 @@ public class TimeoutDeclarativeExtractorTests
             new HttpDeclarativeMethodMetadata(method2, typeof(ITimeoutDeclarativeExtractorTest2)));
         var httpRequestBuilder2 = HttpRequestBuilder.Get("http://localhost");
         new TimeoutDeclarativeExtractor().Extract(httpRequestBuilder2, context2);
-        Assert.NotNull(httpRequestBuilder2.Timeout);
-        Assert.Equal(TimeSpan.FromMilliseconds(100), httpRequestBuilder2.Timeout);
+        Assert.NotNull(httpRequestBuilder2.TimeoutOptions?.Timeout);
+        Assert.Equal(TimeSpan.FromMilliseconds(100), httpRequestBuilder2.TimeoutOptions?.Timeout);
 
         var method3 =
             typeof(ITimeoutDeclarativeExtractorTest2).GetMethod(
@@ -45,8 +45,8 @@ public class TimeoutDeclarativeExtractorTests
             new HttpDeclarativeMethodMetadata(method3, typeof(ITimeoutDeclarativeExtractorTest2)));
         var httpRequestBuilder3 = HttpRequestBuilder.Get("http://localhost");
         new TimeoutDeclarativeExtractor().Extract(httpRequestBuilder3, context3);
-        Assert.NotNull(httpRequestBuilder3.Timeout);
-        Assert.Equal(TimeSpan.FromMilliseconds(200), httpRequestBuilder3.Timeout);
+        Assert.NotNull(httpRequestBuilder3.TimeoutOptions?.Timeout);
+        Assert.Equal(TimeSpan.FromMilliseconds(200), httpRequestBuilder3.TimeoutOptions?.Timeout);
     }
 }
 

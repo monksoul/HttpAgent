@@ -51,7 +51,7 @@ public class HttpMultipartFormDataBuilderDeclarativeExtractorTests
             new HttpDeclarativeMethodMetadata(method1, typeof(IHttpMultipartFormDataBuilderDeclarativeExtractorTest2)));
         var httpRequestBuilder1 = HttpRequestBuilder.Get("http://localhost");
         new HttpMultipartFormDataBuilderDeclarativeExtractor().Extract(httpRequestBuilder1, context1);
-        Assert.Null(httpRequestBuilder1.Timeout);
+        Assert.Null(httpRequestBuilder1.TimeoutOptions?.Timeout);
 
         var method2 =
             typeof(IHttpMultipartFormDataBuilderDeclarativeExtractorTest2).GetMethod(

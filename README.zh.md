@@ -18,9 +18,12 @@ HttpAgent 是一个高性能、灵活且易用的开源库，提供了全面的 
 - **`HTTP` 代理与微服务集成**：支持 `HTTP` 代理和请求转发，适用于微服务架构中的集成开发。
 - **实时通信能力**：通过 `Server-Sent Events (SSE)` 实现实时数据推送，并兼容 `WebSocket` 协议。
 - **请求管理和日志审计**：内置请求拦截机制及 `HTTP` 请求日志审计功能。
+- **`Access Token` 自动管理**：内置 `Access Token` 自动刷新与注入机制，支持自定义 `Token` 提供器和配置器，请求时自动携带
+  `Token`，并在 `401` 响应时自动重试。
 - **媒体类型处理**：预设主流 `MediaType` 的处理机制，并开放自定义处理接口。
 - **`MessagePack` 支持**：集成 `MessagePack` 序列化与反序列化功能，提高数据交换效率。
-- **`WebService` 支持**：全面支持 `SOAP` 和 `RESTful WebService`，包括自动生成客户端代理、`WSDL` 解析、`XML/JSON` 数据绑定，简化集成与交互。
+- **`WebService` 支持**：全面支持 `SOAP` 和 `RESTful WebService`，包括自动生成客户端代理、`WSDL` 解析、`XML/JSON`
+  数据绑定，简化集成与交互。
 - **`OData` 支持**：集成 `OData` 客户端，支持 `$filter`、`$select`、`$expand` 等标准查询选项，简化 `OData` 服务交互。
 - **声明式请求**：通过简单的属性注解或接口定义来指定请求的行为。
 - **响应转换灵活性**：提供常用的 `HTTP` 响应转换器，并支持自定义转换逻辑。

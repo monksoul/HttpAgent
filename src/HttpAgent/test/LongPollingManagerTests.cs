@@ -34,7 +34,7 @@ public class LongPollingManagerTests
             new HttpLongPollingBuilder(HttpMethod.Get, new Uri("http://localhost:5000")).WithRequest(builder =>
                 builder.SetTimeout(100)));
         Assert.NotNull(longPollingManager2.RequestBuilder);
-        Assert.Equal(TimeSpan.FromMilliseconds(100), longPollingManager2.RequestBuilder.Timeout);
+        Assert.Equal(TimeSpan.FromMilliseconds(100), longPollingManager2.RequestBuilder.TimeoutOptions?.Timeout);
 
         serviceProvider.Dispose();
     }
