@@ -7756,9 +7756,9 @@
                 标识是否已加载自定义 HTTP 声明式提取器
             </summary>
         </member>
-        <member name="F:HttpAgent.HttpDeclarativeBuilder._cachedExtractors">
+        <member name="F:HttpAgent.HttpDeclarativeBuilder._lazyExtractors">
             <summary>
-                HTTP 声明式提取器缓存
+                HTTP 声明式合并后的提取器缓存
             </summary>
         </member>
         <member name="M:HttpAgent.HttpDeclarativeBuilder.#ctor(System.Reflection.MethodInfo,System.Object[],System.Type)">
@@ -12966,6 +12966,11 @@
         </member>
         <member name="F:HttpAgent.HttpRemoteService._logger">
             <inheritdoc cref="T:HttpAgent.IHttpRemoteLogger" />
+        </member>
+        <member name="F:HttpAgent.HttpRemoteService._requestPipelineDelegate">
+            <summary>
+                预构建的请求管道委托链
+            </summary>
         </member>
         <member name="M:HttpAgent.HttpRemoteService.#ctor(System.IServiceProvider,HttpAgent.IHttpRemoteLogger,System.Net.Http.IHttpClientFactory,HttpAgent.IHttpContentProcessorFactory,HttpAgent.IHttpContentConverterFactory,Microsoft.Extensions.Options.IOptions{HttpAgent.HttpRemoteOptions})">
             <summary>

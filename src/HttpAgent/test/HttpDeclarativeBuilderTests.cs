@@ -9,7 +9,6 @@ public class HttpDeclarativeBuilderTests
 {
     public HttpDeclarativeBuilderTests()
     {
-        HttpDeclarativeBuilder._cachedExtractors = null;
         HttpDeclarativeBuilder._hasLoadedExtractors = 0;
     }
 
@@ -33,7 +32,8 @@ public class HttpDeclarativeBuilderTests
         Assert.NotNull(builder.InterfaceType);
         Assert.Equal(typeof(IHttpDeclarativeTest), builder.InterfaceType);
         Assert.Equal(0, HttpDeclarativeBuilder._hasLoadedExtractors);
-        Assert.Null(HttpDeclarativeBuilder._cachedExtractors);
+        Assert.NotNull(HttpDeclarativeBuilder._lazyExtractors);
+        Assert.NotEmpty(HttpDeclarativeBuilder._lazyExtractors.Value);
 
         Dictionary<Type, IHttpDeclarativeExtractor> extractors = new()
         {
@@ -129,8 +129,8 @@ public class HttpDeclarativeBuilderTests
         Assert.Equal(HttpMethod.Get, httpRequestBuilder.HttpMethod);
         Assert.Equal("https://furion.net/", httpRequestBuilder.RequestUri?.ToString());
         Assert.Equal(1, HttpDeclarativeBuilder._hasLoadedExtractors);
-        Assert.NotNull(HttpDeclarativeBuilder._cachedExtractors);
-        Assert.NotEmpty(HttpDeclarativeBuilder._cachedExtractors);
+        Assert.NotNull(HttpDeclarativeBuilder._lazyExtractors);
+        Assert.NotEmpty(HttpDeclarativeBuilder._lazyExtractors.Value);
 
         Assert.Equal(
             "[36m[3mSystem.Threading.Tasks.Task<System.String> Method1() | HttpAgent.Tests.IHttpDeclarativeTest[0m",
@@ -151,8 +151,8 @@ public class HttpDeclarativeBuilderTests
         Assert.Equal(HttpMethod.Get, httpRequestBuilder.HttpMethod);
         Assert.Equal("https://furion.net/", httpRequestBuilder.RequestUri?.ToString());
         Assert.Equal(1, HttpDeclarativeBuilder._hasLoadedExtractors);
-        Assert.NotNull(HttpDeclarativeBuilder._cachedExtractors);
-        Assert.NotEmpty(HttpDeclarativeBuilder._cachedExtractors);
+        Assert.NotNull(HttpDeclarativeBuilder._lazyExtractors);
+        Assert.NotEmpty(HttpDeclarativeBuilder._lazyExtractors.Value);
 
         Dictionary<Type, IHttpDeclarativeExtractor> extractors = new()
         {

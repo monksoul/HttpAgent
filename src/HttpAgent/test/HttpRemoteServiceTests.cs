@@ -54,6 +54,7 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
         Assert.NotNull(httpRemoteService._httpClientFactory);
         Assert.NotNull(httpRemoteService._httpContentProcessorFactory);
         Assert.NotNull(httpRemoteService._httpContentConverterFactory);
+        Assert.NotNull(httpRemoteService._requestPipelineDelegate);
 
         serviceProvider.Dispose();
     }
