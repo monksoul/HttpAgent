@@ -118,7 +118,7 @@ internal sealed class HttpAccessTokenManager
                 }
 
                 // 获取新的 Access Token
-                var httpAccessToken = await context.HttpAccessTokenProvider.GetAccessTokenAsync(cancellationToken);
+                var httpAccessToken = await context.HttpAccessTokenProvider.GetTokenAsync(cancellationToken);
 
                 // 更新缓存
                 _current = httpAccessToken;
@@ -153,7 +153,7 @@ internal sealed class HttpAccessTokenManager
             try
             {
                 // 获取新的 Access Token
-                var httpAccessToken = await context.HttpAccessTokenProvider.GetAccessTokenAsync(cancellationToken);
+                var httpAccessToken = await context.HttpAccessTokenProvider.GetTokenAsync(cancellationToken);
 
                 // 更新缓存
                 _current = httpAccessToken;

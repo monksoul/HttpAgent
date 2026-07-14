@@ -1593,7 +1593,7 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
     private sealed class HttpAccessTokenProvider : IHttpAccessTokenProvider
     {
         /// <inheritdoc />
-        public Task<HttpAccessToken> GetAccessTokenAsync(CancellationToken cancellationToken) =>
+        public Task<HttpAccessToken> GetTokenAsync(CancellationToken cancellationToken) =>
             Task.FromResult(new HttpAccessToken("accessToken", DateTimeOffset.Now.AddMinutes(10)));
     }
 }

@@ -22,7 +22,7 @@ public interface IHttpAccessTokenProvider
     /// <returns>
     ///     <see cref="HttpAccessToken" />
     /// </returns>
-    Task<HttpAccessToken> GetAccessTokenAsync(CancellationToken cancellationToken);
+    Task<HttpAccessToken> GetTokenAsync(CancellationToken cancellationToken);
 
     /// <summary>
     ///     指示是否需要强制刷新 Access Token 并重试请求

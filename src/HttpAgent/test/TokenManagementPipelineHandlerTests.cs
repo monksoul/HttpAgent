@@ -82,7 +82,7 @@ public class TokenManagementPipelineHandlerTests
     private sealed class HttpAccessTokenProvider : IHttpAccessTokenProvider
     {
         /// <inheritdoc />
-        public Task<HttpAccessToken> GetAccessTokenAsync(CancellationToken cancellationToken) =>
+        public Task<HttpAccessToken> GetTokenAsync(CancellationToken cancellationToken) =>
             Task.FromResult(new HttpAccessToken("new token", DateTimeOffset.Now.AddMinutes(10)));
     }
 
@@ -93,7 +93,7 @@ public class TokenManagementPipelineHandlerTests
             httpRequestBuilder.AddJwtBearerAuthentication(httpAccessToken.Value);
 
         /// <inheritdoc />
-        public Task<HttpAccessToken> GetAccessTokenAsync(CancellationToken cancellationToken) =>
+        public Task<HttpAccessToken> GetTokenAsync(CancellationToken cancellationToken) =>
             Task.FromResult(new HttpAccessToken("new token", DateTimeOffset.Now.AddMinutes(10)));
     }
 
