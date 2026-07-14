@@ -39,6 +39,6 @@ public interface IHttpAccessTokenProvider
     /// <returns>
     ///     <see cref="bool" />
     /// </returns>
-    bool ShouldRefreshToken(HttpResponseMessage httpResponseMessage, CancellationToken cancellationToken) =>
-        httpResponseMessage.StatusCode == HttpStatusCode.Unauthorized;
+    Task<bool> ShouldRefreshTokenAsync(HttpResponseMessage httpResponseMessage, CancellationToken cancellationToken) =>
+        Task.FromResult(httpResponseMessage.StatusCode == HttpStatusCode.Unauthorized);
 }
