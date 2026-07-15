@@ -560,7 +560,7 @@ public class GetStartController(
     /// <returns></returns>
     [HttpGet]
     [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)] // 禁用浏览器缓存
-    [Forward("https://baiqian.com")]
+    [Forward("https://baiqian.com", AllowedHosts = ["*"])]
     public Task<IActionResult?> ForwardToWebSite2()
     {
         throw new NotImplementedException();
@@ -572,7 +572,8 @@ public class GetStartController(
     /// <returns></returns>
     [HttpGet]
     [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)] // 禁用浏览器缓存
-    [Forward("https://gips1.baidu.com/it/u=1971954603,2916157720&fm=3028&app=3028&f=JPEG&fmt=auto?w=1920&h=2560")]
+    [Forward("https://gips1.baidu.com/it/u=1971954603,2916157720&fm=3028&app=3028&f=JPEG&fmt=auto?w=1920&h=2560",
+        AllowedHosts = ["*"])]
     public Task<IActionResult?> ForwardToImage2()
     {
         throw new NotImplementedException();
@@ -585,7 +586,8 @@ public class GetStartController(
     [HttpGet]
     [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)] // 禁用浏览器缓存
     [Forward(
-        "https://download.visualstudio.microsoft.com/download/pr/a17b907f-8457-45a8-90db-53f2665ee49e/49bccd33593ebceb2847674fe5fd768e/aspnetcore-runtime-8.0.10-win-x64.exe")]
+        "https://download.visualstudio.microsoft.com/download/pr/a17b907f-8457-45a8-90db-53f2665ee49e/49bccd33593ebceb2847674fe5fd768e/aspnetcore-runtime-8.0.10-win-x64.exe",
+        AllowedHosts = ["*"])]
     public Task<IActionResult?> ForwardToDownload2()
     {
         throw new NotImplementedException();
@@ -598,7 +600,7 @@ public class GetStartController(
     /// <param name="model"></param>
     /// <returns></returns>
     [HttpPost]
-    [Forward("https://localhost:7044/HttpRemote/AddForm")]
+    [Forward("https://localhost:7044/HttpRemote/AddForm", AllowedHosts = ["*"])]
     public Task<YourRemoteFormResult?> ForwardToForm2(int id, [FromForm] YourRemoteFormModel model)
     {
         throw new NotImplementedException();
@@ -609,7 +611,7 @@ public class GetStartController(
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    [Forward("https://localhost:7044/GetStart/PostRawString")]
+    [Forward("https://localhost:7044/GetStart/PostRawString", AllowedHosts = ["*"])]
     public Task<string> ForwardToString2()
     {
         throw new NotImplementedException();
@@ -620,7 +622,7 @@ public class GetStartController(
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    [Forward("https://localhost:7044/GetStart/PostRawString")]
+    [Forward("https://localhost:7044/GetStart/PostRawString", AllowedHosts = ["*"])]
     public Task ForwardToVoid2()
     {
         throw new NotImplementedException();

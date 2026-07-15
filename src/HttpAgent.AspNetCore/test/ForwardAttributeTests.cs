@@ -19,9 +19,11 @@ public class ForwardAttributeTests
         Assert.True(attribute.WithResponseStatusCode);
         Assert.True(attribute.WithResponseHeaders);
         Assert.True(attribute.WithResponseContentHeaders);
+        Assert.False(attribute.ResetHostRequestHeader);
+        Assert.Null(attribute.IgnoreQueryParameters);
         Assert.Null(attribute.IgnoreRequestHeaders);
         Assert.Null(attribute.IgnoreResponseHeaders);
-        Assert.False(attribute.ResetHostRequestHeader);
+        Assert.Null(attribute.AllowedHosts);
 
         var attribute2 = new ForwardAttribute("https://furion.net");
         Assert.Equal("https://furion.net", attribute2.RequestUri);
