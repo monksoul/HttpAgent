@@ -28,7 +28,11 @@ public class HttpContextForwardBuilderTests
         Assert.Equal(HttpMethod.Get, builder.HttpMethod);
         Assert.Null(builder.RequestUri);
 
-        var builder2 = new HttpContextForwardBuilder(httpContext, HttpMethod.Get, new Uri("http://localhost"));
+        var builder2 = new HttpContextForwardBuilder(httpContext, HttpMethod.Get, new Uri("http://localhost"),
+            new HttpContextForwardOptions
+            {
+                AllowedHosts = ["*"]
+            });
         Assert.Equal(HttpMethod.Get, builder2.HttpMethod);
         Assert.NotNull(builder2.RequestUri);
         Assert.Equal("http://localhost/", builder2.RequestUri.ToString());
@@ -39,7 +43,11 @@ public class HttpContextForwardBuilderTests
         {
             Request = { Headers = { ["X-Forward-To"] = "https://furion.net" } }, RequestServices = provider
         };
-        var builder3 = new HttpContextForwardBuilder(httpContext2, HttpMethod.Get);
+        var builder3 = new HttpContextForwardBuilder(httpContext2, HttpMethod.Get,
+            forwardOptions: new HttpContextForwardOptions
+            {
+                AllowedHosts = ["*"]
+            });
         Assert.Equal(HttpMethod.Get, builder3.HttpMethod);
         Assert.NotNull(builder3.RequestUri);
         Assert.Equal("https://furion.net/", builder3.RequestUri.ToString());
@@ -50,12 +58,49 @@ public class HttpContextForwardBuilderTests
         Assert.Equal(["X-Forward-To", "Host"], HttpContextForwardBuilder._ignoreRequestHeaders);
 
     [Fact]
+    public void GetTargetUri_Invalid_Parameters()
+    {
+        var httpContext = new DefaultHttpContext();
+        var forwardOptions = new HttpContextForwardOptions();
+
+        var exception = Assert.Throws<InvalidOperationException>(() =>
+            HttpContextForwardBuilder.GetTargetUri(httpContext, forwardOptions, new Uri("https://furion.net")));
+        Assert.Equal(
+            "No allowed hosts have been configured for request forwarding. To enable forwarding, add target hosts to HttpContextForwardOptions.AllowedHosts, or include `*` to allow all hosts (not recommended due to SSRF risk).",
+            exception.Message);
+
+        forwardOptions.AllowedHosts = ["baiqian.com"];
+        var exception2 = Assert.Throws<InvalidOperationException>(() =>
+            HttpContextForwardBuilder.GetTargetUri(httpContext, forwardOptions, new Uri("https://furion.net")));
+        Assert.Equal("The target host 'furion.net:443' is not in the allowed forwarding list.", exception2.Message);
+    }
+
+    [Fact]
     public void GetTargetUri_ReturnOK()
     {
-        var httpContext1 = new DefaultHttpContext();
-        Assert.Null(HttpContextForwardBuilder.GetTargetUri(httpContext1));
+        var httpContext = new DefaultHttpContext();
 
-        Assert.NotNull(HttpContextForwardBuilder.GetTargetUri(httpContext1, new Uri("https://furion.net")));
+        Assert.Null(HttpContextForwardBuilder.GetTargetUri(httpContext, new HttpContextForwardOptions()));
+
+        var optionsWithWildcard = new HttpContextForwardOptions { AllowedHosts = ["*"] };
+        var resultUri = HttpContextForwardBuilder.GetTargetUri(httpContext, optionsWithWildcard,
+            new Uri("https://furion.net"));
+        Assert.NotNull(resultUri);
+        Assert.Equal("https://furion.net/", resultUri.ToString());
+
+        httpContext.Request.Headers["X-Forward-To"] = "https://furion.net";
+        var optionsWithHost = new HttpContextForwardOptions { AllowedHosts = ["furion.net"] };
+        var uriFromHeader = HttpContextForwardBuilder.GetTargetUri(httpContext, optionsWithHost);
+        Assert.NotNull(uriFromHeader);
+        Assert.Equal("https://furion.net/", uriFromHeader.ToString());
+
+        httpContext.Request.Headers["X-Forward-To"] = "";
+        var uriEmptyHeader = HttpContextForwardBuilder.GetTargetUri(httpContext, optionsWithHost);
+        Assert.Null(uriEmptyHeader);
+
+        httpContext.Request.Headers.Remove("X-Forward-To");
+        var uriNoHeader = HttpContextForwardBuilder.GetTargetUri(httpContext, optionsWithHost);
+        Assert.Null(uriNoHeader);
     }
 
     [Fact]
@@ -74,10 +119,7 @@ public class HttpContextForwardBuilderTests
 
         var services2 = new ServiceCollection();
         services2.AddHttpContextAccessor();
-        services2.AddOptions<HttpContextForwardOptions>().Configure(o =>
-        {
-            o.OnForward = (_, _) => { };
-        });
+        services2.AddOptions<HttpContextForwardOptions>().Configure(o => { o.OnForward = (_, _) => { }; });
         using var provider2 = services2.BuildServiceProvider();
         var httpContext2 = new DefaultHttpContext { RequestServices = provider2 };
         var forwardOptions2 = HttpContextForwardBuilder.GetForwardOptions(httpContext2, null);
@@ -100,7 +142,7 @@ public class HttpContextForwardBuilderTests
                 var httpMethod = Helpers.ParseHttpMethod(context.Request.Method);
                 var requestUri = new Uri($"http://localhost:{port}");
                 var httpContextForwardBuilder = new HttpContextForwardBuilder(context, httpMethod, requestUri,
-                    new HttpContextForwardOptions { IgnoreQueryParameters = ["giveup"] });
+                    new HttpContextForwardOptions { IgnoreQueryParameters = ["giveup"], AllowedHosts = ["*"] });
                 var httpRequestBuilder = HttpRequestBuilder.Create(httpMethod, requestUri);
 
                 httpContextForwardBuilder.CopyQueryAndRouteValues(httpRequestBuilder);
@@ -146,7 +188,7 @@ public class HttpContextForwardBuilderTests
             var httpMethod = Helpers.ParseHttpMethod(context.Request.Method);
             var requestUri = new Uri($"http://localhost:{port}");
             var httpContextForwardBuilder = new HttpContextForwardBuilder(context, httpMethod, requestUri,
-                new HttpContextForwardOptions { WithQueryParameters = false });
+                new HttpContextForwardOptions { WithQueryParameters = false, AllowedHosts = ["*"] });
             var httpRequestBuilder = HttpRequestBuilder.Create(httpMethod, requestUri);
 
             httpContextForwardBuilder.CopyQueryAndRouteValues(httpRequestBuilder);
@@ -181,6 +223,7 @@ public class HttpContextForwardBuilderTests
         var urls = new[] { "--urls", $"http://localhost:{port}" };
         var builder = WebApplication.CreateBuilder(urls);
         builder.Services.AddHttpClient();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
         await using var app = builder.Build();
 
         app.MapGet("/test", async context =>
@@ -227,7 +270,7 @@ public class HttpContextForwardBuilderTests
             var httpMethod = Helpers.ParseHttpMethod(context.Request.Method);
             var requestUri = new Uri($"http://localhost:{port}");
             var httpContextForwardBuilder = new HttpContextForwardBuilder(context, httpMethod, requestUri,
-                new HttpContextForwardOptions { ResetHostRequestHeader = true });
+                new HttpContextForwardOptions { ResetHostRequestHeader = true, AllowedHosts = ["*"] });
             var httpRequestBuilder = HttpRequestBuilder.Create(httpMethod, requestUri);
 
             httpContextForwardBuilder.CopyHeaders(httpRequestBuilder);
@@ -260,6 +303,7 @@ public class HttpContextForwardBuilderTests
         var urls = new[] { "--urls", $"http://localhost:{port}" };
         var builder = WebApplication.CreateBuilder(urls);
         builder.Services.AddHttpClient();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
         {
@@ -324,6 +368,7 @@ public class HttpContextForwardBuilderTests
         var urls = new[] { "--urls", $"http://localhost:{port}" };
         var builder = WebApplication.CreateBuilder(urls);
         builder.Services.AddHttpClient();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
         {
@@ -414,6 +459,7 @@ public class HttpContextForwardBuilderTests
         var urls = new[] { "--urls", $"http://localhost:{port}" };
         var builder = WebApplication.CreateBuilder(urls);
         builder.Services.AddHttpClient();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
         {
@@ -519,6 +565,7 @@ public class HttpContextForwardBuilderTests
         var urls = new[] { "--urls", $"http://localhost:{port}" };
         var builder = WebApplication.CreateBuilder(urls);
         builder.Services.AddHttpClient();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
         {
@@ -606,6 +653,7 @@ public class HttpContextForwardBuilderTests
         var urls = new[] { "--urls", $"http://localhost:{port}" };
         var builder = WebApplication.CreateBuilder(urls);
         builder.Services.AddHttpClient();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
         await using var app = builder.Build();
 
         app.MapGet("/test", async context =>
@@ -648,6 +696,7 @@ public class HttpContextForwardBuilderTests
         var urls = new[] { "--urls", $"http://localhost:{port}" };
         var builder = WebApplication.CreateBuilder(urls);
         builder.Services.AddHttpClient();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
         {
@@ -711,6 +760,7 @@ public class HttpContextForwardBuilderTests
         var urls = new[] { "--urls", $"http://localhost:{port}" };
         var builder = WebApplication.CreateBuilder(urls);
         builder.Services.AddHttpClient();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
         {
@@ -796,6 +846,7 @@ public class HttpContextForwardBuilderTests
         var urls = new[] { "--urls", $"http://localhost:{port}" };
         var builder = WebApplication.CreateBuilder(urls);
         builder.Services.AddHttpClient();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
         await using var app = builder.Build();
 
         app.Use(async (ctx, next) =>
@@ -858,6 +909,7 @@ public class HttpContextForwardBuilderTests
         var urls = new[] { "--urls", $"http://localhost:{port}" };
         var builder = WebApplication.CreateBuilder(urls);
         builder.Services.AddHttpClient();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
         await using var app = builder.Build();
 
         app.MapGet("/test", async context =>
@@ -907,6 +959,7 @@ public class HttpContextForwardBuilderTests
         var urls = new[] { "--urls", $"http://localhost:{port}" };
         var builder = WebApplication.CreateBuilder(urls);
         builder.Services.AddHttpClient();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
         {
@@ -971,6 +1024,7 @@ public class HttpContextForwardBuilderTests
         var urls = new[] { "--urls", $"http://localhost:{port}" };
         var builder = WebApplication.CreateBuilder(urls);
         builder.Services.AddHttpClient();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
         {
@@ -1057,6 +1111,7 @@ public class HttpContextForwardBuilderTests
         var urls = new[] { "--urls", $"http://localhost:{port}" };
         var builder = WebApplication.CreateBuilder(urls);
         builder.Services.AddHttpClient();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
         await using var app = builder.Build();
 
         app.MapGet("/test", async context =>
@@ -1109,6 +1164,7 @@ public class HttpContextForwardBuilderTests
         var urls = new[] { "--urls", $"http://localhost:{port}" };
         var builder = WebApplication.CreateBuilder(urls);
         builder.Services.AddHttpClient();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
         {
@@ -1177,6 +1233,7 @@ public class HttpContextForwardBuilderTests
         var urls = new[] { "--urls", $"http://localhost:{port}" };
         var builder = WebApplication.CreateBuilder(urls);
         builder.Services.AddHttpClient();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
         {
@@ -1267,6 +1324,7 @@ public class HttpContextForwardBuilderTests
         var urls = new[] { "--urls", $"http://localhost:{port}" };
         var builder = WebApplication.CreateBuilder(urls);
         builder.Services.AddHttpClient();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
         await using var app = builder.Build();
 
         app.MapPost("/test", async (HttpContext context, HttpRemoteAspNetCoreModel1 model) =>
@@ -1274,7 +1332,6 @@ public class HttpContextForwardBuilderTests
             var httpMethod = Helpers.ParseHttpMethod(context.Request.Method);
             var requestUri = new Uri($"http://localhost:{port}");
             var httpContextForwardBuilder = new HttpContextForwardBuilder(context, httpMethod, requestUri);
-            var httpRequestBuilder = HttpRequestBuilder.Create(httpMethod, requestUri);
 
             try
             {
@@ -1315,6 +1372,7 @@ public class HttpContextForwardBuilderTests
         var urls = new[] { "--urls", $"http://localhost:{port}" };
         var builder = WebApplication.CreateBuilder(urls);
         builder.Services.AddHttpClient();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
         {
@@ -1353,5 +1411,137 @@ public class HttpContextForwardBuilderTests
         httpResponseMessage.EnsureSuccessStatusCode();
 
         await app.StopAsync();
+    }
+
+    [Fact]
+    public void ValidateHost_Invalid_Parameters()
+    {
+        var optionsNull = new HttpContextForwardOptions { AllowedHosts = null };
+        var uri = new Uri("https://furion.net");
+        Assert.Throws<InvalidOperationException>(() =>
+            HttpContextForwardBuilder.ValidateHost(uri, optionsNull));
+
+        var optionsEmpty = new HttpContextForwardOptions { AllowedHosts = new List<string>() };
+        Assert.Throws<InvalidOperationException>(() =>
+            HttpContextForwardBuilder.ValidateHost(uri, optionsEmpty));
+
+        var optionsSimple = new HttpContextForwardOptions
+        {
+            AllowedHosts = new List<string> { "furion.net" }
+        };
+        var uriEvil = new Uri("https://baiqian.com");
+        Assert.Throws<InvalidOperationException>(() =>
+            HttpContextForwardBuilder.ValidateHost(uriEvil, optionsSimple));
+
+        var optionsWithScheme = new HttpContextForwardOptions
+        {
+            AllowedHosts = new List<string> { "https://furion.net" }
+        };
+        var uriHttp = new Uri("http://furion.net");
+        Assert.Throws<InvalidOperationException>(() =>
+            HttpContextForwardBuilder.ValidateHost(uriHttp, optionsWithScheme));
+
+        var optionsWithPort = new HttpContextForwardOptions
+        {
+            AllowedHosts = new List<string> { "furion.net:8080" }
+        };
+        var uriWrongPort = new Uri("http://furion.net:9090");
+        Assert.Throws<InvalidOperationException>(() =>
+            HttpContextForwardBuilder.ValidateHost(uriWrongPort, optionsWithPort));
+
+        var optionsNoPort = new HttpContextForwardOptions
+        {
+            AllowedHosts = new List<string> { "furion.net" }
+        };
+        var uriNonDefaultPort = new Uri("http://furion.net:8080");
+        Assert.Throws<InvalidOperationException>(() =>
+            HttpContextForwardBuilder.ValidateHost(uriNonDefaultPort, optionsNoPort));
+
+        var optionsSpecificPort = new HttpContextForwardOptions
+        {
+            AllowedHosts = new List<string> { "furion.net:8080" }
+        };
+        var uriDefaultPort = new Uri("http://furion.net");
+        Assert.Throws<InvalidOperationException>(() =>
+            HttpContextForwardBuilder.ValidateHost(uriDefaultPort, optionsSpecificPort));
+
+        var optionsSchemeAndPort = new HttpContextForwardOptions
+        {
+            AllowedHosts = new List<string> { "https://furion.net:443" }
+        };
+        var uriHttp443 = new Uri("http://furion.net:443");
+        Assert.Throws<InvalidOperationException>(() =>
+            HttpContextForwardBuilder.ValidateHost(uriHttp443, optionsSchemeAndPort));
+    }
+
+    [Fact]
+    public void ValidateHost_ReturnOK()
+    {
+        var optionsWildcard = new HttpContextForwardOptions
+        {
+            AllowedHosts = new List<string> { "*" }
+        };
+        var uriAny = new Uri("https://any-domain.com:1234");
+        var exception = Record.Exception(() =>
+            HttpContextForwardBuilder.ValidateHost(uriAny, optionsWildcard));
+        Assert.Null(exception);
+
+        var optionsHostOnly = new HttpContextForwardOptions
+        {
+            AllowedHosts = new List<string> { "furion.net" }
+        };
+        var uriDefault = new Uri("http://furion.net");
+        exception = Record.Exception(() =>
+            HttpContextForwardBuilder.ValidateHost(uriDefault, optionsHostOnly));
+        Assert.Null(exception);
+
+        var uriHttpsDefault = new Uri("https://furion.net");
+        exception = Record.Exception(() =>
+            HttpContextForwardBuilder.ValidateHost(uriHttpsDefault, optionsHostOnly));
+        Assert.Null(exception);
+
+        var optionsPortWildcard = new HttpContextForwardOptions
+        {
+            AllowedHosts = new List<string> { "furion.net:*" }
+        };
+        var uriCustomPort = new Uri("http://furion.net:8080");
+        exception = Record.Exception(() =>
+            HttpContextForwardBuilder.ValidateHost(uriCustomPort, optionsPortWildcard));
+        Assert.Null(exception);
+
+        var optionsWithScheme = new HttpContextForwardOptions
+        {
+            AllowedHosts = new List<string> { "https://furion.net" }
+        };
+        var uriHttps = new Uri("https://furion.net");
+        exception = Record.Exception(() =>
+            HttpContextForwardBuilder.ValidateHost(uriHttps, optionsWithScheme));
+        Assert.Null(exception);
+
+        var optionsExact = new HttpContextForwardOptions
+        {
+            AllowedHosts = new List<string> { "http://furion.net:8080" }
+        };
+        var uriExact = new Uri("http://furion.net:8080");
+        exception = Record.Exception(() => HttpContextForwardBuilder.ValidateHost(uriExact, optionsExact));
+        Assert.Null(exception);
+
+        var optionsCase = new HttpContextForwardOptions
+        {
+            AllowedHosts = new List<string> { "HTTPS://Furion.NET" }
+        };
+        var uriLower = new Uri("https://furion.net");
+        exception = Record.Exception(() =>
+            HttpContextForwardBuilder.ValidateHost(uriLower, optionsCase));
+        Assert.Null(exception);
+
+        var optionsMulti = new HttpContextForwardOptions
+        {
+            AllowedHosts = new List<string> { "a.com", "b.com:8080", "https://c.com" }
+        };
+        var uriMatchSecond = new Uri("http://b.com:8080");
+        exception = Record.Exception(() =>
+            HttpContextForwardBuilder.ValidateHost(uriMatchSecond, optionsMulti));
+        Assert.Null(exception);
     }
 }

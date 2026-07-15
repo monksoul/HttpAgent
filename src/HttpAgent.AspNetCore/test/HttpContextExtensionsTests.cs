@@ -53,7 +53,11 @@ public class HttpContextExtensionsTests
             RequestServices = provider
         };
 
-        var builder2 = httpContext2.CreateForwardBuilder(HttpMethod.Get, (Uri?)null);
+        var builder2 = httpContext2.CreateForwardBuilder(HttpMethod.Get, (Uri?)null,
+            forwardOptions: new HttpContextForwardOptions
+            {
+                AllowedHosts = ["*"]
+            });
         Assert.NotNull(builder2);
         Assert.Equal(HttpMethod.Get, builder2.HttpMethod);
         Assert.NotNull(builder2.RequestUri);
@@ -74,15 +78,27 @@ public class HttpContextExtensionsTests
         Assert.NotNull(builder3.ForwardOptions);
         Assert.False(builder3.ForwardOptions.WithResponseContentHeaders);
 
-        var builder4 = httpContext2.CreateForwardBuilder((Uri?)null);
+        var builder4 = httpContext2.CreateForwardBuilder((Uri?)null,
+            forwardOptions: new HttpContextForwardOptions
+            {
+                AllowedHosts = ["*"]
+            });
         Assert.NotNull(builder4);
         Assert.Equal(HttpMethod.Get, builder4.HttpMethod);
 
-        var builder5 = httpContext2.CreateForwardBuilder(HttpMethod.Get, "https://furion.net");
+        var builder5 = httpContext2.CreateForwardBuilder(HttpMethod.Get, "https://furion.net",
+            forwardOptions: new HttpContextForwardOptions
+            {
+                AllowedHosts = ["*"]
+            });
         Assert.NotNull(builder5);
         Assert.Equal("https://furion.net/", builder4.RequestUri?.ToString());
 
-        var builder6 = httpContext2.CreateForwardBuilder("https://furion.net");
+        var builder6 = httpContext2.CreateForwardBuilder("https://furion.net",
+            forwardOptions: new HttpContextForwardOptions
+            {
+                AllowedHosts = ["*"]
+            });
         Assert.NotNull(builder6);
         Assert.Equal(HttpMethod.Get, builder6.HttpMethod);
     }
@@ -92,6 +108,7 @@ public class HttpContextExtensionsTests
     {
         var services = new ServiceCollection();
         services.AddHttpRemote();
+        services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
         using var provider = services.BuildServiceProvider();
 
         var httpContext = new DefaultHttpContext { RequestServices = provider };
@@ -107,6 +124,7 @@ public class HttpContextExtensionsTests
     {
         var services = new ServiceCollection();
         services.AddHttpRemote();
+        services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
         await using var provider = services.BuildServiceProvider();
 
         var httpContext = new DefaultHttpContext { RequestServices = provider };
@@ -136,6 +154,7 @@ public class HttpContextExtensionsTests
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(HttpRemoteController).Assembly);
         builder.Services.AddHttpRemote();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
 
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
@@ -152,14 +171,18 @@ public class HttpContextExtensionsTests
         {
             var result1 = await context.ForwardAsync<string>(HttpMethod.Get,
                 new Uri($"http://localhost:{port}/HttpRemote/Request1"),
-                forwardOptions: new HttpContextForwardOptions { IgnoreResponseHeaders = ["Content-Length"] });
+                forwardOptions: new HttpContextForwardOptions
+                    { IgnoreResponseHeaders = ["Content-Length"], AllowedHosts = ["*"] });
             var result2 = await context.ForwardAsync<string>(new Uri($"http://localhost:{port}/HttpRemote/Request1"),
-                forwardOptions: new HttpContextForwardOptions { IgnoreResponseHeaders = ["Content-Length"] });
+                forwardOptions: new HttpContextForwardOptions
+                    { IgnoreResponseHeaders = ["Content-Length"], AllowedHosts = ["*"] });
             var result3 = await context.ForwardAsync<string>(HttpMethod.Get,
                 $"http://localhost:{port}/HttpRemote/Request1",
-                forwardOptions: new HttpContextForwardOptions { IgnoreResponseHeaders = ["Content-Length"] });
+                forwardOptions: new HttpContextForwardOptions
+                    { IgnoreResponseHeaders = ["Content-Length"], AllowedHosts = ["*"] });
             var result4 = await context.ForwardAsync<string>($"http://localhost:{port}/HttpRemote/Request1",
-                forwardOptions: new HttpContextForwardOptions { IgnoreResponseHeaders = ["Content-Length"] });
+                forwardOptions: new HttpContextForwardOptions
+                    { IgnoreResponseHeaders = ["Content-Length"], AllowedHosts = ["*"] });
 
             await context.Response.WriteAsync(result1!.Result + " " + result2!.Result + " " + result3!.Result + " " +
                                               result4!.Result);
@@ -188,6 +211,7 @@ public class HttpContextExtensionsTests
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(HttpRemoteController).Assembly);
         builder.Services.AddHttpRemote();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
 
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
@@ -204,17 +228,21 @@ public class HttpContextExtensionsTests
         {
             var result1 = await context.ForwardAsync<HttpRemoteAspNetCoreModel1>(HttpMethod.Post,
                 new Uri($"http://localhost:{port}/HttpRemote/Request2"),
-                forwardOptions: new HttpContextForwardOptions { IgnoreResponseHeaders = ["Content-Length"] });
+                forwardOptions: new HttpContextForwardOptions
+                    { IgnoreResponseHeaders = ["Content-Length"], AllowedHosts = ["*"] });
 
             var result2 = await context.ForwardAsync<HttpRemoteAspNetCoreModel1>(
                 new Uri($"http://localhost:{port}/HttpRemote/Request2"),
-                forwardOptions: new HttpContextForwardOptions { IgnoreResponseHeaders = ["Content-Length"] });
+                forwardOptions: new HttpContextForwardOptions
+                    { IgnoreResponseHeaders = ["Content-Length"], AllowedHosts = ["*"] });
             var result3 = await context.ForwardAsync<HttpRemoteAspNetCoreModel1>(HttpMethod.Post,
                 $"http://localhost:{port}/HttpRemote/Request2",
-                forwardOptions: new HttpContextForwardOptions { IgnoreResponseHeaders = ["Content-Length"] });
+                forwardOptions: new HttpContextForwardOptions
+                    { IgnoreResponseHeaders = ["Content-Length"], AllowedHosts = ["*"] });
             var result4 =
                 await context.ForwardAsync<HttpRemoteAspNetCoreModel1>($"http://localhost:{port}/HttpRemote/Request2",
-                    forwardOptions: new HttpContextForwardOptions { IgnoreResponseHeaders = ["Content-Length"] });
+                    forwardOptions: new HttpContextForwardOptions
+                        { IgnoreResponseHeaders = ["Content-Length"], AllowedHosts = ["*"] });
 
             await context.Response.WriteAsync(result1!.Result!.Id + " " + result1.Result.Name + " " +
                                               result2!.Result!.Id + " " + result2.Result.Name +
@@ -249,6 +277,7 @@ public class HttpContextExtensionsTests
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(HttpRemoteController).Assembly);
         builder.Services.AddHttpRemote();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
 
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
@@ -266,18 +295,22 @@ public class HttpContextExtensionsTests
             {
                 var result1 = await context.ForwardAsync<HttpRemoteAspNetCoreModel1>(HttpMethod.Post,
                     new Uri($"http://localhost:{port}/HttpRemote/Request3"),
-                    forwardOptions: new HttpContextForwardOptions { IgnoreResponseHeaders = ["Content-Length"] });
+                    forwardOptions: new HttpContextForwardOptions
+                        { IgnoreResponseHeaders = ["Content-Length"], AllowedHosts = ["*"] });
 
                 var result2 = await context.ForwardAsync<HttpRemoteAspNetCoreModel1>(
                     new Uri($"http://localhost:{port}/HttpRemote/Request3"),
-                    forwardOptions: new HttpContextForwardOptions { IgnoreResponseHeaders = ["Content-Length"] });
+                    forwardOptions: new HttpContextForwardOptions
+                        { IgnoreResponseHeaders = ["Content-Length"], AllowedHosts = ["*"] });
                 var result3 = await context.ForwardAsync<HttpRemoteAspNetCoreModel1>(HttpMethod.Post,
                     $"http://localhost:{port}/HttpRemote/Request3",
-                    forwardOptions: new HttpContextForwardOptions { IgnoreResponseHeaders = ["Content-Length"] });
+                    forwardOptions: new HttpContextForwardOptions
+                        { IgnoreResponseHeaders = ["Content-Length"], AllowedHosts = ["*"] });
                 var result4 =
                     await context.ForwardAsync<HttpRemoteAspNetCoreModel1>(
                         $"http://localhost:{port}/HttpRemote/Request3",
-                        forwardOptions: new HttpContextForwardOptions { IgnoreResponseHeaders = ["Content-Length"] });
+                        forwardOptions: new HttpContextForwardOptions
+                            { IgnoreResponseHeaders = ["Content-Length"], AllowedHosts = ["*"] });
 
                 await context.Response.WriteAsync(result1!.Result!.Id + " " + result1.Result.Name + " " +
                                                   result2!.Result!.Id + " " + result2.Result.Name +
@@ -320,6 +353,7 @@ public class HttpContextExtensionsTests
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(HttpRemoteController).Assembly);
         builder.Services.AddHttpRemote();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
 
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
@@ -336,17 +370,21 @@ public class HttpContextExtensionsTests
         {
             var result1 = await context.ForwardAsync<string>(HttpMethod.Post,
                 new Uri($"http://localhost:{port}/HttpRemote/Request4"),
-                forwardOptions: new HttpContextForwardOptions { IgnoreResponseHeaders = ["Content-Length"] });
+                forwardOptions: new HttpContextForwardOptions
+                    { IgnoreResponseHeaders = ["Content-Length"], AllowedHosts = ["*"] });
 
             var result2 = await context.ForwardAsync<string>(
                 new Uri($"http://localhost:{port}/HttpRemote/Request4"),
-                forwardOptions: new HttpContextForwardOptions { IgnoreResponseHeaders = ["Content-Length"] });
+                forwardOptions: new HttpContextForwardOptions
+                    { IgnoreResponseHeaders = ["Content-Length"], AllowedHosts = ["*"] });
             var result3 = await context.ForwardAsync<string>(HttpMethod.Post,
                 $"http://localhost:{port}/HttpRemote/Request4",
-                forwardOptions: new HttpContextForwardOptions { IgnoreResponseHeaders = ["Content-Length"] });
+                forwardOptions: new HttpContextForwardOptions
+                    { IgnoreResponseHeaders = ["Content-Length"], AllowedHosts = ["*"] });
             var result4 =
                 await context.ForwardAsync<string>($"http://localhost:{port}/HttpRemote/Request4",
-                    forwardOptions: new HttpContextForwardOptions { IgnoreResponseHeaders = ["Content-Length"] });
+                    forwardOptions: new HttpContextForwardOptions
+                        { IgnoreResponseHeaders = ["Content-Length"], AllowedHosts = ["*"] });
 
             await context.Response.WriteAsync(result1!.Result + " " + result2!.Result + " " + result3!.Result + " " +
                                               result4!.Result);
@@ -387,6 +425,7 @@ public class HttpContextExtensionsTests
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(HttpRemoteController).Assembly);
         builder.Services.AddHttpRemote();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
 
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
@@ -403,17 +442,21 @@ public class HttpContextExtensionsTests
         {
             var result1 = await context.ForwardAsync<string>(HttpMethod.Post,
                 new Uri($"http://localhost:{port}/HttpRemote/Request5"),
-                forwardOptions: new HttpContextForwardOptions { IgnoreResponseHeaders = ["Content-Length"] });
+                forwardOptions: new HttpContextForwardOptions
+                    { IgnoreResponseHeaders = ["Content-Length"], AllowedHosts = ["*"] });
 
             var result2 = await context.ForwardAsync<string>(
                 new Uri($"http://localhost:{port}/HttpRemote/Request5"),
-                forwardOptions: new HttpContextForwardOptions { IgnoreResponseHeaders = ["Content-Length"] });
+                forwardOptions: new HttpContextForwardOptions
+                    { IgnoreResponseHeaders = ["Content-Length"], AllowedHosts = ["*"] });
             var result3 = await context.ForwardAsync<string>(HttpMethod.Post,
                 $"http://localhost:{port}/HttpRemote/Request5",
-                forwardOptions: new HttpContextForwardOptions { IgnoreResponseHeaders = ["Content-Length"] });
+                forwardOptions: new HttpContextForwardOptions
+                    { IgnoreResponseHeaders = ["Content-Length"], AllowedHosts = ["*"] });
             var result4 =
                 await context.ForwardAsync<string>($"http://localhost:{port}/HttpRemote/Request5",
-                    forwardOptions: new HttpContextForwardOptions { IgnoreResponseHeaders = ["Content-Length"] });
+                    forwardOptions: new HttpContextForwardOptions
+                        { IgnoreResponseHeaders = ["Content-Length"], AllowedHosts = ["*"] });
 
             await context.Response.WriteAsync(result1!.Result + " " + result2!.Result + " " + result3!.Result + " " +
                                               result4!.Result);
@@ -455,6 +498,7 @@ public class HttpContextExtensionsTests
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(HttpRemoteController).Assembly);
         builder.Services.AddHttpRemote();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
 
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
@@ -471,17 +515,21 @@ public class HttpContextExtensionsTests
         {
             var result1 = await context.ForwardAsync<string>(HttpMethod.Post,
                 new Uri($"http://localhost:{port}/HttpRemote/Request6"),
-                forwardOptions: new HttpContextForwardOptions { IgnoreResponseHeaders = ["Content-Length"] });
+                forwardOptions: new HttpContextForwardOptions
+                    { IgnoreResponseHeaders = ["Content-Length"], AllowedHosts = ["*"] });
 
             var result2 = await context.ForwardAsync<string>(
                 new Uri($"http://localhost:{port}/HttpRemote/Request6"),
-                forwardOptions: new HttpContextForwardOptions { IgnoreResponseHeaders = ["Content-Length"] });
+                forwardOptions: new HttpContextForwardOptions
+                    { IgnoreResponseHeaders = ["Content-Length"], AllowedHosts = ["*"] });
             var result3 = await context.ForwardAsync<string>(HttpMethod.Post,
                 $"http://localhost:{port}/HttpRemote/Request6",
-                forwardOptions: new HttpContextForwardOptions { IgnoreResponseHeaders = ["Content-Length"] });
+                forwardOptions: new HttpContextForwardOptions
+                    { IgnoreResponseHeaders = ["Content-Length"], AllowedHosts = ["*"] });
             var result4 =
                 await context.ForwardAsync<string>($"http://localhost:{port}/HttpRemote/Request6",
-                    forwardOptions: new HttpContextForwardOptions { IgnoreResponseHeaders = ["Content-Length"] });
+                    forwardOptions: new HttpContextForwardOptions
+                        { IgnoreResponseHeaders = ["Content-Length"], AllowedHosts = ["*"] });
 
             await context.Response.WriteAsync(result1!.Result + " " + result2!.Result + " " + result3!.Result + " " +
                                               result4!.Result);
@@ -524,6 +572,7 @@ public class HttpContextExtensionsTests
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(HttpRemoteController).Assembly);
         builder.Services.AddHttpRemote();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
 
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
@@ -593,6 +642,7 @@ public class HttpContextExtensionsTests
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(HttpRemoteController).Assembly);
         builder.Services.AddHttpRemote();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
 
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
@@ -609,14 +659,18 @@ public class HttpContextExtensionsTests
         {
             var result1 = context.Forward<string>(HttpMethod.Get,
                 new Uri($"http://localhost:{port}/HttpRemote/Request1"),
-                forwardOptions: new HttpContextForwardOptions { IgnoreResponseHeaders = ["Content-Length"] });
+                forwardOptions: new HttpContextForwardOptions
+                    { IgnoreResponseHeaders = ["Content-Length"], AllowedHosts = ["*"] });
             var result2 = context.Forward<string>(new Uri($"http://localhost:{port}/HttpRemote/Request1"),
-                forwardOptions: new HttpContextForwardOptions { IgnoreResponseHeaders = ["Content-Length"] });
+                forwardOptions: new HttpContextForwardOptions
+                    { IgnoreResponseHeaders = ["Content-Length"], AllowedHosts = ["*"] });
             var result3 = context.Forward<string>(HttpMethod.Get,
                 $"http://localhost:{port}/HttpRemote/Request1",
-                forwardOptions: new HttpContextForwardOptions { IgnoreResponseHeaders = ["Content-Length"] });
+                forwardOptions: new HttpContextForwardOptions
+                    { IgnoreResponseHeaders = ["Content-Length"], AllowedHosts = ["*"] });
             var result4 = context.Forward<string>($"http://localhost:{port}/HttpRemote/Request1",
-                forwardOptions: new HttpContextForwardOptions { IgnoreResponseHeaders = ["Content-Length"] });
+                forwardOptions: new HttpContextForwardOptions
+                    { IgnoreResponseHeaders = ["Content-Length"], AllowedHosts = ["*"] });
 
             await context.Response.WriteAsync(result1!.Result + " " + result2!.Result + " " + result3!.Result + " " +
                                               result4!.Result);
@@ -645,6 +699,7 @@ public class HttpContextExtensionsTests
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(HttpRemoteController).Assembly);
         builder.Services.AddHttpRemote();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
 
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
@@ -661,17 +716,21 @@ public class HttpContextExtensionsTests
         {
             var result1 = context.Forward<HttpRemoteAspNetCoreModel1>(HttpMethod.Post,
                 new Uri($"http://localhost:{port}/HttpRemote/Request2"),
-                forwardOptions: new HttpContextForwardOptions { IgnoreResponseHeaders = ["Content-Length"] });
+                forwardOptions: new HttpContextForwardOptions
+                    { IgnoreResponseHeaders = ["Content-Length"], AllowedHosts = ["*"] });
 
             var result2 = context.Forward<HttpRemoteAspNetCoreModel1>(
                 new Uri($"http://localhost:{port}/HttpRemote/Request2"),
-                forwardOptions: new HttpContextForwardOptions { IgnoreResponseHeaders = ["Content-Length"] });
+                forwardOptions: new HttpContextForwardOptions
+                    { IgnoreResponseHeaders = ["Content-Length"], AllowedHosts = ["*"] });
             var result3 = context.Forward<HttpRemoteAspNetCoreModel1>(HttpMethod.Post,
                 $"http://localhost:{port}/HttpRemote/Request2",
-                forwardOptions: new HttpContextForwardOptions { IgnoreResponseHeaders = ["Content-Length"] });
+                forwardOptions: new HttpContextForwardOptions
+                    { IgnoreResponseHeaders = ["Content-Length"], AllowedHosts = ["*"] });
             var result4 =
                 context.Forward<HttpRemoteAspNetCoreModel1>($"http://localhost:{port}/HttpRemote/Request2",
-                    forwardOptions: new HttpContextForwardOptions { IgnoreResponseHeaders = ["Content-Length"] });
+                    forwardOptions: new HttpContextForwardOptions
+                        { IgnoreResponseHeaders = ["Content-Length"], AllowedHosts = ["*"] });
 
             await context.Response.WriteAsync(result1!.Result!.Id + " " + result1.Result.Name + " " +
                                               result2!.Result!.Id + " " + result2.Result.Name +
@@ -722,17 +781,21 @@ public class HttpContextExtensionsTests
         {
             var result1 = context.Forward<string>(HttpMethod.Post,
                 new Uri($"http://localhost:{port}/HttpRemote/Request6"),
-                forwardOptions: new HttpContextForwardOptions { IgnoreResponseHeaders = ["Content-Length"] });
+                forwardOptions: new HttpContextForwardOptions
+                    { IgnoreResponseHeaders = ["Content-Length"], AllowedHosts = ["*"] });
 
             var result2 = context.Forward<string>(
                 new Uri($"http://localhost:{port}/HttpRemote/Request6"),
-                forwardOptions: new HttpContextForwardOptions { IgnoreResponseHeaders = ["Content-Length"] });
+                forwardOptions: new HttpContextForwardOptions
+                    { IgnoreResponseHeaders = ["Content-Length"], AllowedHosts = ["*"] });
             var result3 = context.Forward<string>(HttpMethod.Post,
                 $"http://localhost:{port}/HttpRemote/Request6",
-                forwardOptions: new HttpContextForwardOptions { IgnoreResponseHeaders = ["Content-Length"] });
+                forwardOptions: new HttpContextForwardOptions
+                    { IgnoreResponseHeaders = ["Content-Length"], AllowedHosts = ["*"] });
             var result4 =
                 context.Forward<string>($"http://localhost:{port}/HttpRemote/Request6",
-                    forwardOptions: new HttpContextForwardOptions { IgnoreResponseHeaders = ["Content-Length"] });
+                    forwardOptions: new HttpContextForwardOptions
+                        { IgnoreResponseHeaders = ["Content-Length"], AllowedHosts = ["*"] });
 
             await context.Response.WriteAsync(result1!.Result + " " + result2!.Result + " " + result3!.Result + " " +
                                               result4!.Result);
@@ -774,6 +837,7 @@ public class HttpContextExtensionsTests
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(HttpRemoteController).Assembly);
         builder.Services.AddHttpRemote();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
 
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
@@ -817,6 +881,7 @@ public class HttpContextExtensionsTests
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(HttpRemoteController).Assembly);
         builder.Services.AddHttpRemote();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
 
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
@@ -869,6 +934,7 @@ public class HttpContextExtensionsTests
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(HttpRemoteController).Assembly);
         builder.Services.AddHttpRemote();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
 
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
@@ -922,6 +988,7 @@ public class HttpContextExtensionsTests
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(HttpRemoteController).Assembly);
         builder.Services.AddHttpRemote();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
 
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
@@ -984,6 +1051,7 @@ public class HttpContextExtensionsTests
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(HttpRemoteController).Assembly);
         builder.Services.AddHttpRemote();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
 
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
@@ -1061,6 +1129,7 @@ public class HttpContextExtensionsTests
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(HttpRemoteController).Assembly);
         builder.Services.AddHttpRemote();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
 
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
@@ -1117,6 +1186,7 @@ public class HttpContextExtensionsTests
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(HttpRemoteController).Assembly);
         builder.Services.AddHttpRemote();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
 
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
@@ -1182,6 +1252,7 @@ public class HttpContextExtensionsTests
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(HttpRemoteController).Assembly);
         builder.Services.AddHttpRemote();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
 
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
@@ -1253,6 +1324,7 @@ public class HttpContextExtensionsTests
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(HttpRemoteController).Assembly);
         builder.Services.AddHttpRemote();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
 
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
@@ -1298,6 +1370,7 @@ public class HttpContextExtensionsTests
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(HttpRemoteController).Assembly);
         builder.Services.AddHttpRemote();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
 
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
@@ -1382,10 +1455,7 @@ public class HttpContextExtensionsTests
                 WithResponseStatusCode = false,
                 WithResponseHeaders = false,
                 OnForward =
-                    (ctx, res) =>
-                    {
-                        ctx.Response.ContentLength = 10;
-                    }
+                    (ctx, res) => { ctx.Response.ContentLength = 10; }
             });
         Assert.Equal(200, defaultHttpContext3.Response.StatusCode);
         Assert.DoesNotContain(defaultHttpContext3.Response.Headers, u => u.Key == "Framework");
@@ -1440,6 +1510,7 @@ public class HttpContextExtensionsTests
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(HttpRemoteController).Assembly);
         builder.Services.AddHttpRemote();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
 
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
@@ -1455,10 +1526,8 @@ public class HttpContextExtensionsTests
         app.MapPost("/test", async context =>
         {
             var actionResult = await context.ForwardAsync<IActionResult>(HttpMethod.Get,
-                new Uri($"http://localhost:{port}/HttpRemote/Request11"), hbuilder =>
-                {
-                    hbuilder.AddHttpContentConverters(() => [new IActionResultContentConverter()]);
-                });
+                new Uri($"http://localhost:{port}/HttpRemote/Request11"),
+                hbuilder => { hbuilder.AddHttpContentConverters(() => [new IActionResultContentConverter()]); });
 
             var contentResult = actionResult!.Result as ContentResult;
 

@@ -5461,8 +5461,8 @@
             ○ 1st capture group.<br/>
                 ○ Match a character in the set [+-] atomically any number of times.<br/>
                 ○ Match a Unicode digit atomically at least once.<br/>
-            ○ 2nd capture group.<br/>
-                ○ Match a character in the set [+-].<br/>
+           nd capture group.<br/>
+                ○ Match a character in the set [+\-].<br/>
             ○ 3rd capture group.<br/>
                 ○ Match a Unicode digit exactly 2 times.<br/>
             ○ 4th capture group.<br/>
@@ -6038,7 +6038,7 @@
         <member name="M:HttpAgent.Core.Extensions.StringExtensions.PlaceholderRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\{\\s*(\\w+\\s*(\\.\\s*\\w+\\s*)*)\\s*\\}</code><br/>
+            <code>\{\s*(\w+\s*(\.\s*\w+\s*)*)\s*\}</code><br/>
             Explanation:<br/>
             <code>
             ○ Match '{'.<br/>
@@ -6060,19 +6060,19 @@
         <member name="M:HttpAgent.Core.Extensions.StringExtensions.ConfigurationKeyRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\[\\[\\s*([\\w\\-:]+)((?:\\s*\\|\\s*[\\w\\-:]+)*)\\s*(?:\\|\\|\\s*([^\\]]*))?\\s*\\]\\]</code><br/>
+            <code>\[\[\s*([\w\-:]+)((?:\s*\|\s*[\w\-:]+)*)\s*(?:\|\|\s*([^\]]*))?\s*\]\]</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "[[".<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [-:\w] greedily at least once.<br/>
+                ○ Match a character in the set [\-:\w] greedily at least once.<br/>
             ○ 2nd capture group.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match a whitespace character atomically any number of times.<br/>
                     ○ Match '|'.<br/>
                     ○ Match a whitespace character greedily any number of times.<br/>
-                    ○ Match a character in the set [-:\w] greedily at least once.<br/>
+                    ○ Match a character in the set [\-:\w] greedily at least once.<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ Optional (greedy).<br/>
                 ○ Match the string "||".<br/>
@@ -6095,32 +6095,32 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Loop greedily at least once.<br/>
                 ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
+                    ○ Match a character in the set [\-.0-9A-Z_a-z~].<br/>
                     ○ Match a sequence of expressions.<br/>
                         ○ Match '%'.<br/>
-                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
+                        ○ Match a hexadecimal digit exactly 2 times.<br/>
             ○ Match '='.<br/>
             ○ Loop greedily any number of times.<br/>
                 ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
+                    ○ Match a character in the set [+\-.0-9A-Z_a-z~].<br/>
                     ○ Match a sequence of expressions.<br/>
                         ○ Match '%'.<br/>
-                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
+                        ○ Match a hexadecimal digit exactly 2 times.<br/>
             ○ Loop greedily any number of times.<br/>
                 ○ Match '&amp;'.<br/>
                 ○ Loop greedily at least once.<br/>
                     ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
+                        ○ Match a character in the set [\-.0-9A-Z_a-z~].<br/>
                         ○ Match a sequence of expressions.<br/>
                             ○ Match '%'.<br/>
-                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
+                            ○ Match a hexadecimal digit exactly 2 times.<br/>
                 ○ Match '='.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
+                        ○ Match a character in the set [+\-.0-9A-Z_a-z~].<br/>
                         ○ Match a sequence of expressions.<br/>
                             ○ Match '%'.<br/>
-                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
+                            ○ Match a hexadecimal digit exactly 2 times.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
             </remarks>
@@ -8830,12 +8830,12 @@
         <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.UnicodeEscapeRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\\\u([0-9a-fA-F]{4})</code><br/>
+            <code>\\u([0-9a-fA-F]{4})</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "\\u".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [0-9A-Fa-f] exactly 4 times.<br/>
+                ○ Match a hexadecimal digit exactly 4 times.<br/>
             </code>
             </remarks>
         </member>
@@ -10332,6 +10332,9 @@
                 非一次性计数器
             </summary>
         </member>
+        <member name="P:HttpAgent.DigestCredentials.CNonce"
+            </summary>
+        </member>
         <member name="P:HttpAgent.DigestCredentials.CNonce">
             <summary>
                 客户端提供的随机数
@@ -10620,9 +10623,7 @@
             <summary>
                 <inheritdoc cref="T:HttpAgent.FileTypeMapper" />
             </summary>
-            <param name="mapping">文件扩展名及其对应内容类型映射字典</param>
-        </member>
-        <member name="P:HttpAgent.FileTypeMapper.Mappings">
+            <param name="mapping">文件�appings">
             <summary>
                 文件扩展名及其对应内容类型映射字典
             </summary>
@@ -12170,12 +12171,12 @@
         <member name="M:HttpAgent.StatusCodePipelineHandler.StatusCodeRangeRegex">
             <remarks>
             Pattern:<br/>
-            <code>^\\d+[-~]\\d+$</code><br/>
+            <code>^\d+[-~]\d+$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
-            ○ Match a character in the set [-~].<br/>
+            ○ Match a character in the set [\-~].<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
@@ -12184,7 +12185,7 @@
         <member name="M:HttpAgent.StatusCodePipelineHandler.StatusCodeCompareRegex">
             <remarks>
             Pattern:<br/>
-            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\\d+)$</code><br/>
+            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\d+)$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
@@ -15086,6 +15087,8 @@
             <param name="requestUri">请求地址</param>
             <param name="configure">自定义配置委托</param>
             <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken委托</param>
+            <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
             <returns>
@@ -16456,9 +16459,7 @@
             </param>
             <returns>
                 <see cref="T:System.IO.Stream" />
-            </returns>
-        </member>
-        <member name="M:HttpAgent.IHttpRemoteService.HeadAsByteArrayAsync(System.String,System.Net.Http.HttpCompletionOption,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
+            </re.Http.HttpCompletionOption,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
             <summary>
                 发送 HTTP HEAD 远程请求
             </summary>
@@ -18860,6 +18861,12 @@
         <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32,System.Int32,System.Int32)">
             <summary>Pushes 3 values onto the backtracking stack.</summary>
         </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.WordCategoriesMask">
+            <summary>Provides a mask of Unicode categories that combine to form [\w].</summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.Generated.Utilities.WordCharBitmap">
+            <summary>Gets a bitmap for whether each character 0 through 127 is in [\w]</summary>
+        </member>
         <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_1F52B1A4D2E82B6FEDE25EC8C55F85BB36775196837076691C96925040F90D32">
             <summary>Supports searching for the string "\\u".</summary>
         </member>
@@ -18893,16 +18900,6 @@
             <param name="services">
                 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
             </param>
-            <param name="httpRemoteBuilder">
-                <see cref="T:HttpAgent.HttpRemoteBuilder" />
-            </param>
-            <returns>
-                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
-            </returns>
-        </member>
-    </members>
-</doc>
-     </param>
             <param name="httpRemoteBuilder">
                 <see cref="T:HttpAgent.HttpRemoteBuilder" />
             </param>

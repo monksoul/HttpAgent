@@ -16,6 +16,7 @@ public class HttpContextExtensionsForwardAsTests
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(HttpRemoteController).Assembly);
         builder.Services.AddHttpRemote();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
 
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
@@ -68,6 +69,7 @@ public class HttpContextExtensionsForwardAsTests
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(HttpRemoteController).Assembly);
         builder.Services.AddHttpRemote();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
 
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
@@ -115,6 +117,7 @@ public class HttpContextExtensionsForwardAsTests
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(HttpRemoteController).Assembly);
         builder.Services.AddHttpRemote();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
 
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
@@ -170,6 +173,7 @@ public class HttpContextExtensionsForwardAsTests
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(HttpRemoteController).Assembly);
         builder.Services.AddHttpRemote();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
 
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
@@ -242,6 +246,7 @@ public class HttpContextExtensionsForwardAsTests
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(HttpRemoteController).Assembly);
         builder.Services.AddHttpRemote();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
 
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
@@ -290,6 +295,7 @@ public class HttpContextExtensionsForwardAsTests
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(HttpRemoteController).Assembly);
         builder.Services.AddHttpRemote();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
 
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
@@ -346,6 +352,7 @@ public class HttpContextExtensionsForwardAsTests
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(HttpRemoteController).Assembly);
         builder.Services.AddHttpRemote();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
 
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
@@ -409,6 +416,7 @@ public class HttpContextExtensionsForwardAsTests
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(HttpRemoteController).Assembly);
         builder.Services.AddHttpRemote();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
 
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
@@ -452,6 +460,7 @@ public class HttpContextExtensionsForwardAsTests
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(HttpRemoteController).Assembly);
         builder.Services.AddHttpRemote();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
 
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
@@ -495,6 +504,7 @@ public class HttpContextExtensionsForwardAsTests
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(HttpRemoteController).Assembly);
         builder.Services.AddHttpRemote();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
 
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
@@ -538,6 +548,7 @@ public class HttpContextExtensionsForwardAsTests
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(HttpRemoteController).Assembly);
         builder.Services.AddHttpRemote();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
 
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
@@ -589,6 +600,7 @@ public class HttpContextExtensionsForwardAsTests
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(HttpRemoteController).Assembly);
         builder.Services.AddHttpRemote();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
 
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
@@ -636,6 +648,7 @@ public class HttpContextExtensionsForwardAsTests
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(HttpRemoteController).Assembly);
         builder.Services.AddHttpRemote();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
 
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
@@ -689,6 +702,7 @@ public class HttpContextExtensionsForwardAsTests
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(HttpRemoteController).Assembly);
         builder.Services.AddHttpRemote();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
 
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
@@ -738,6 +752,7 @@ public class HttpContextExtensionsForwardAsTests
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(HttpRemoteController).Assembly);
         builder.Services.AddHttpRemote();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
 
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
@@ -791,6 +806,7 @@ public class HttpContextExtensionsForwardAsTests
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(HttpRemoteController).Assembly);
         builder.Services.AddHttpRemote();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
 
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
@@ -840,6 +856,7 @@ public class HttpContextExtensionsForwardAsTests
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(HttpRemoteController).Assembly);
         builder.Services.AddHttpRemote();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
 
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
@@ -893,6 +910,7 @@ public class HttpContextExtensionsForwardAsTests
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(HttpRemoteController).Assembly);
         builder.Services.AddHttpRemote();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
 
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
@@ -942,6 +960,7 @@ public class HttpContextExtensionsForwardAsTests
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(HttpRemoteController).Assembly);
         builder.Services.AddHttpRemote();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
 
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>
@@ -994,6 +1013,7 @@ public class HttpContextExtensionsForwardAsTests
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(HttpRemoteController).Assembly);
         builder.Services.AddHttpRemote();
+        builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
 
         await using var app = builder.Build();
         app.Use(async (ctx, next) =>

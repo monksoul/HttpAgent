@@ -39,6 +39,8 @@ builder.Services.AddHttpClient("furion", client => { client.BaseAddress = new Ur
 builder.Services.TryAddTransient<AuthorizationDelegatingHandler>();
 
 builder.Services.AddServiceDiscovery();
+
+builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
 builder.Services.AddHttpRemote(options =>
     {
         // 注册单个 HTTP 声明式请求接口
