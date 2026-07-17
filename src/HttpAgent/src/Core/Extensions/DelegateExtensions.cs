@@ -29,10 +29,9 @@ internal static class DelegateExtensions
         {
             await func(parameter1, parameter2);
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            // 输出调试事件
-            Debugging.Error(e.Message);
+            // ignored
         }
     }
 
@@ -54,10 +53,9 @@ internal static class DelegateExtensions
         {
             await func(parameter);
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            // 输出调试事件
-            Debugging.Error(e.Message);
+            // ignored
         }
     }
 
@@ -81,10 +79,9 @@ internal static class DelegateExtensions
         {
             action(parameter1, parameter2);
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            // 输出调试事件
-            Debugging.Error(e.Message);
+            // ignored
         }
     }
 
@@ -106,10 +103,9 @@ internal static class DelegateExtensions
         {
             action(parameter);
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            // 输出调试事件
-            Debugging.Error(e.Message);
+            // ignored
         }
     }
 
@@ -129,10 +125,9 @@ internal static class DelegateExtensions
         {
             action();
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            // 输出调试事件
-            Debugging.Error(e.Message);
+            // ignored
         }
     }
 

@@ -10,9 +10,15 @@ namespace HttpAgent;
 public class AsyncEnumerableContentConverter<T> : HttpContentConverterBase<IAsyncEnumerable<T?>>
 {
     /// <inheritdoc />
-    public override IAsyncEnumerable<T?>? Read(HttpResponseMessage httpResponseMessage,
+    public override bool KeepsResponseAlive => true;
+
+    /// <inheritdoc />
+    public override IAsyncEnumerable<T?>? Read(HttpContentConverterContext context,
         CancellationToken cancellationToken = default)
     {
+        // 获取 HttpResponseMessage 实例
+        var httpResponseMessage = context.ResponseMessage;
+
         // 解析 HttpClient 客户端对应的 JSON 序列化上下文信息
         var jsonSerializationContext =
             HttpRemoteUtility.ResolveJsonSerializationContext(typeof(T), httpResponseMessage, ServiceProvider);
@@ -22,9 +28,12 @@ public class AsyncEnumerableContentConverter<T> : HttpContentConverterBase<IAsyn
     }
 
     /// <inheritdoc />
-    public override Task<IAsyncEnumerable<T?>?> ReadAsync(HttpResponseMessage httpResponseMessage,
+    public override Task<IAsyncEnumerable<T?>?> ReadAsync(HttpContentConverterContext context,
         CancellationToken cancellationToken = default)
     {
+        // 获取 HttpResponseMessage 实例
+        var httpResponseMessage = context.ResponseMessage;
+
         // 解析 HttpClient 客户端对应的 JSON 序列化上下文信息
         var jsonSerializationContext =
             HttpRemoteUtility.ResolveJsonSerializationContext(typeof(T), httpResponseMessage, ServiceProvider);

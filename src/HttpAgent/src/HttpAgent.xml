@@ -924,6 +924,7 @@
             </summary>
             <param name="httpMethod">请求方式</param>
             <param name="requestUri">请求地址</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="P:HttpAgent.HttpFileDownloadBuilder.RequestUri">
             <summary>
@@ -1009,6 +1010,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpFileDownloadBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpFileDownloadBuilder.SetDestinationPath(System.String)">
             <summary>
@@ -1022,6 +1024,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpFileDownloadBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpFileDownloadBuilder.SetFileExistsBehavior(HttpAgent.FileExistsBehavior)">
             <summary>
@@ -1062,6 +1065,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpFileDownloadBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpFileDownloadBuilder.SetOnProgressChanged(System.Func{HttpAgent.FileTransferProgress,System.Threading.Tasks.Task})">
             <summary>
@@ -1071,6 +1075,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpFileDownloadBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpFileDownloadBuilder.SetOnTransferCompleted(System.Action{System.Int64})">
             <summary>
@@ -1080,6 +1085,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpFileDownloadBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpFileDownloadBuilder.SetOnTransferFailed(System.Action{System.Exception})">
             <summary>
@@ -1089,6 +1095,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpFileDownloadBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpFileDownloadBuilder.SetOnFileExistAndSkip(System.Action)">
             <summary>
@@ -1098,6 +1105,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpFileDownloadBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpFileDownloadBuilder.SetEventHandler(System.Type)">
             <summary>
@@ -1107,6 +1115,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpFileDownloadBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
             <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpFileDownloadBuilder.SetEventHandler``1">
@@ -1166,6 +1175,8 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="T:HttpAgent.HttpFileUploadBuilder">
             <summary>
@@ -1187,6 +1198,8 @@
             <param name="filePath">文件路径</param>
             <param name="name">表单名称</param>
             <param name="fileName">文件的名称</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="P:HttpAgent.HttpFileUploadBuilder.RequestUri">
             <summary>
@@ -1267,6 +1280,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpFileUploadBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpFileUploadBuilder.SetAllowedFileExtensions(System.String[])">
             <summary>
@@ -1276,6 +1290,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpFileUploadBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpFileUploadBuilder.SetAllowedFileExtensions(System.String)">
             <summary>
@@ -1285,6 +1300,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpFileUploadBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpFileUploadBuilder.SetMaxFileSizeInBytes(System.Int64)">
             <summary>
@@ -1304,6 +1320,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpFileUploadBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpFileUploadBuilder.SetOnTransferStarted(System.Action)">
             <summary>
@@ -1313,6 +1330,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpFileUploadBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpFileUploadBuilder.SetOnProgressChanged(System.Func{HttpAgent.FileTransferProgress,System.Threading.Tasks.Task})">
             <summary>
@@ -1322,6 +1340,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpFileUploadBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpFileUploadBuilder.SetOnTransferCompleted(System.Action{System.Int64})">
             <summary>
@@ -1331,6 +1350,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpFileUploadBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpFileUploadBuilder.SetOnTransferFailed(System.Action{System.Exception})">
             <summary>
@@ -1340,6 +1360,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpFileUploadBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpFileUploadBuilder.SetEventHandler(System.Type)">
             <summary>
@@ -1349,6 +1370,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpFileUploadBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
             <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpFileUploadBuilder.SetEventHandler``1">
@@ -1409,6 +1431,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpFileUploadBuilder.EnsureLegalData(System.String,System.String[],System.Nullable{System.Int64})">
             <summary>
@@ -1417,6 +1440,7 @@
             <param name="filePath">文件路径</param>
             <param name="allowedFileExtensions">允许的文件扩展名</param>
             <param name="maxFileSizeInBytes">允许的文件大小。以字节为单位</param>
+            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="T:HttpAgent.HttpLongPollingBuilder">
             <summary>
@@ -1435,6 +1459,7 @@
             </summary>
             <param name="httpMethod">请求方式</param>
             <param name="requestUri">请求地址</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="P:HttpAgent.HttpLongPollingBuilder.RequestUri">
             <summary>
@@ -1506,6 +1531,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpLongPollingBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpLongPollingBuilder.SetOnError(System.Func{System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken,System.Threading.Tasks.Task})">
             <summary>
@@ -1515,6 +1541,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpLongPollingBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpLongPollingBuilder.SetOnEndOfStream(System.Func{System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken,System.Threading.Tasks.Task})">
             <summary>
@@ -1524,6 +1551,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpLongPollingBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpLongPollingBuilder.SetEventHandler(System.Type)">
             <summary>
@@ -1533,6 +1561,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpLongPollingBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
             <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpLongPollingBuilder.SetEventHandler``1">
@@ -1592,6 +1621,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="T:HttpAgent.HttpMultipartFormDataBuilder">
             <summary>
@@ -1630,6 +1660,7 @@
             <param name="httpRequestBuilder">
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </param>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="P:HttpAgent.HttpMultipartFormDataBuilder.Boundary">
             <summary>
@@ -1727,6 +1758,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpMultipartFormDataBuilder.AddFormItem(System.Object,System.String,System.Text.Encoding)">
             <summary>
@@ -1738,6 +1770,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpMultipartFormDataBuilder.AddHtml(System.String,System.String,System.Text.Encoding,System.String)">
             <summary>
@@ -1750,6 +1783,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpMultipartFormDataBuilder.AddXml(System.String,System.String,System.Text.Encoding,System.String)">
             <summary>
@@ -1762,6 +1796,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpMultipartFormDataBuilder.AddText(System.String,System.String,System.Text.Encoding,System.String)">
             <summary>
@@ -1774,6 +1809,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpMultipartFormDataBuilder.AddObject(System.Object,System.String,System.String,System.Text.Encoding)">
             <summary>
@@ -1786,6 +1822,8 @@
             <returns>
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentException"></exception>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpMultipartFormDataBuilder.AddFileFromRemote(System.String,System.String,System.String,System.String,System.Text.Encoding,System.Action{System.Net.Http.HttpClient,System.Net.Http.HttpRequestMessage},System.Net.Http.HttpMethod)">
             <summary>
@@ -1803,7 +1841,6 @@
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
             <exception cref="T:System.ArgumentException"></exception>
-            <exception cref="T:System.InvalidOperationException"></exception>
         </member>
         <member name="M:HttpAgent.HttpMultipartFormDataBuilder.AddFileFromBase64String(System.String,System.String,System.String,System.String,System.Text.Encoding)">
             <summary>
@@ -1818,6 +1855,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentException"></exception>
             <exception cref="T:System.InvalidOperationException"></exception>
         </member>
         <member name="M:HttpAgent.HttpMultipartFormDataBuilder.AddFileAsStream(System.String,System.String,System.String,System.String,System.Text.Encoding)">
@@ -1832,6 +1870,8 @@
             <returns>
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentException"></exception>
+            <exception cref="T:System.IO.FileNotFoundException"></exception>
         </member>
         <member name="M:HttpAgent.HttpMultipartFormDataBuilder.AddFileWithProgressAsStream(System.String,System.Threading.Channels.Channel{HttpAgent.FileTransferProgress},System.String,System.String,System.String,System.Text.Encoding)">
             <summary>
@@ -1846,6 +1886,9 @@
             <returns>
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentException"></exception>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:System.IO.FileNotFoundException"></exception>
         </member>
         <member name="M:HttpAgent.HttpMultipartFormDataBuilder.AddFileAsByteArray(System.String,System.String,System.String,System.String,System.Text.Encoding)">
             <summary>
@@ -1859,6 +1902,8 @@
             <returns>
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentException"></exception>
+            <exception cref="T:System.IO.FileNotFoundException"></exception>
         </member>
         <member name="M:HttpAgent.HttpMultipartFormDataBuilder.AddFile(System.IO.FileInfo,System.String,System.String,System.String,System.Text.Encoding)">
             <summary>
@@ -1874,6 +1919,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpMultipartFormDataBuilder.AddFile(HttpAgent.MultipartFile,System.String)">
             <summary>
@@ -1887,6 +1933,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpMultipartFormDataBuilder.AddStream(System.IO.Stream,System.String,System.String,System.String,System.Text.Encoding,System.Boolean)">
             <summary>
@@ -1899,10 +1946,12 @@
             <param name="fileName">文件的名称</param>
             <param name="contentType">内容类型</param>
             <param name="contentEncoding">内容编码</param>
-            <param name="disposeStreamOnRequestCompletion">是否在请求结束后自动释放流。默认值为：<c>false</c></param>
+            <param name="disposeResourcesOnRequestCompletion">是否在请求结束后自动释放资源。默认值为：<c>false</c></param>
             <returns>
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpMultipartFormDataBuilder.AddByteArray(System.Byte[],System.String,System.String,System.String,System.Text.Encoding)">
             <summary>
@@ -1916,6 +1965,8 @@
             <returns>
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpMultipartFormDataBuilder.AddFormUrlEncoded(System.Object,System.String,System.Text.Encoding,System.Boolean,System.Boolean)">
             <summary>
@@ -1932,6 +1983,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpMultipartFormDataBuilder.AddMultipartFormData(System.Object,System.String,System.Text.Encoding)">
             <summary>
@@ -1943,6 +1995,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpMultipartFormDataBuilder.Add(System.Net.Http.HttpContent,System.String,System.String,System.Text.Encoding)">
             <summary>
@@ -1957,6 +2010,8 @@
             <returns>
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpMultipartFormDataBuilder.SetOmitContentType(System.Boolean)">
             <summary>
@@ -1981,6 +2036,7 @@
             <returns>
                 <see cref="T:System.Net.Http.MultipartFormDataContent" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpMultipartFormDataBuilder.BuildHttpContent(HttpAgent.MultipartFormDataItem,System.String,HttpAgent.IHttpContentProcessorFactory,HttpAgent.IHttpContentProcessor[])">
             <summary>
@@ -1997,6 +2053,8 @@
             <returns>
                 <see cref="T:System.Net.Http.HttpContent" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpMultipartFormDataBuilder.TrySetContentDisposition(HttpAgent.MultipartFormDataItem,System.Net.Http.HttpContent,System.String,System.String)">
             <summary>
@@ -2071,6 +2129,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRemoteBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRemoteBuilder.AddHttpContentConverters(System.Func{System.Collections.Generic.IEnumerable{HttpAgent.IHttpContentConverter}})">
             <summary>
@@ -2081,6 +2140,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRemoteBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRemoteBuilder.AddGenericHttpContentConverters(System.Func{System.Collections.Generic.IEnumerable{HttpAgent.GenericHttpContentConverter}})">
             <summary>
@@ -2091,6 +2151,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRemoteBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRemoteBuilder.UseObjectContentConverterFactory``1">
             <summary>
@@ -2113,6 +2174,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRemoteBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
             <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRemoteBuilder.AddHttpDeclarative``1">
@@ -2137,6 +2199,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRemoteBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
             <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRemoteBuilder.AddHttpDeclaratives(System.Collections.Generic.IEnumerable{System.Type})">
@@ -2160,6 +2223,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRemoteBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRemoteBuilder.AddHttpDeclarativeExtractors(System.Func{System.Collections.Generic.IEnumerable{HttpAgent.IHttpDeclarativeExtractor}})">
             <summary>
@@ -2170,6 +2234,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRemoteBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRemoteBuilder.AddHttpDeclarativeExtractorsFromAssemblies(System.Collections.Generic.IEnumerable{System.Reflection.Assembly})">
             <summary>
@@ -2180,6 +2245,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRemoteBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRemoteBuilder.AddPipelineHandler``1(System.Int32)">
             <summary>
@@ -2206,6 +2272,7 @@
             </returns>
             <exception cref="T:System.ArgumentNullException"></exception>
             <exception cref="T:System.ArgumentException"></exception>
+            <exception cref="T:System.ArgumentOutOfRangeException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRemoteBuilder.Build(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
             <summary>
@@ -2275,6 +2342,7 @@
             </summary>
             <param name="httpMethod">请求方式</param>
             <param name="requestUri">请求地址</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.Build(HttpAgent.HttpRemoteOptions,HttpAgent.IHttpContentProcessorFactory,System.Uri)">
             <summary>
@@ -2290,6 +2358,7 @@
             <returns>
                 <see cref="T:System.Net.Http.HttpRequestMessage" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.BuildFinalRequestUri(System.Uri,HttpAgent.HttpRemoteOptions)">
             <summary>
@@ -2302,6 +2371,7 @@
             <returns>
                 <see cref="T:System.String" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
             <exception cref="T:System.InvalidOperationException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.AppendPathSegments(System.UriBuilder)">
@@ -2444,6 +2514,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.SetContentType(System.String)">
             <summary>
@@ -2453,6 +2524,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.SetContentEncoding(System.Text.Encoding)">
             <summary>
@@ -2471,6 +2543,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.SetJsonContent(System.Object,System.Text.Encoding,System.String,System.Text.Json.JsonSerializerOptions)">
             <summary>
@@ -2485,7 +2558,6 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
-            <exception cref="T:System.Text.Json.JsonException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.SetJsonContentWithoutValidation(System.String,System.Text.Encoding,System.String)">
             <summary>
@@ -2543,6 +2615,8 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.SetFormUrlEncodedContent(System.Object,System.Text.Encoding,System.Boolean,System.Boolean)">
             <summary>
@@ -2566,10 +2640,11 @@
             <param name="rawContent">原始请求内容</param>
             <param name="contentType">内容类型</param>
             <param name="contentEncoding">内容编码</param>
-            <param name="disposeStreamOnRequestCompletion">是否在请求结束后自动释放流。默认值为：<c>false</c></param>
+            <param name="disposeResourcesOnRequestCompletion">是否在请求结束后自动释放资源。默认值为：<c>false</c></param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.NotSupportedException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.RemoveContent">
             <summary>
@@ -2609,6 +2684,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.SetMultipartContent(HttpAgent.HttpMultipartFormDataBuilder)">
             <summary>
@@ -2624,6 +2700,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.WithHeader(System.String,System.Object,System.Boolean,System.Boolean)">
             <summary>
@@ -2637,6 +2714,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.WithHeaders(System.Collections.Generic.IDictionary{System.String,System.Object},System.Boolean,System.Boolean)">
             <summary>
@@ -2649,6 +2727,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.WithHeaders(System.Object,System.Boolean,System.Boolean)">
             <summary>
@@ -2661,6 +2740,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.RemoveHeaders(System.String[])">
             <summary>
@@ -2671,6 +2751,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.SetFragment(System.String)">
             <summary>
@@ -2680,6 +2761,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.WithPathSegment(System.String)">
             <summary>
@@ -2700,6 +2782,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.RemovePathSegments(System.String[])">
             <summary>
@@ -2710,6 +2793,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.WithQueryParameter(System.String,System.Object,System.Boolean,System.Boolean)">
             <summary>
@@ -2723,6 +2807,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.WithQueryParameter(System.String,System.Func{System.Object},System.Boolean,System.Boolean)">
             <summary>
@@ -2736,6 +2821,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.WithQueryParameter(System.String,System.Func{HttpAgent.UrlFormattingContext,System.Object},System.Boolean,System.Boolean)">
             <summary>
@@ -2749,6 +2835,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.WithQueryParameters(System.Collections.Generic.IDictionary{System.String,System.Object},System.Boolean,System.Boolean)">
             <summary>
@@ -2761,6 +2848,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.WithQueryParameters(System.Object,System.String,System.Boolean,System.Boolean)">
             <summary>
@@ -2774,6 +2862,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.SetQueryParametersSorter(System.Func{System.String[],System.String[]})">
             <summary>
@@ -2793,6 +2882,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.WithPathParameter(System.String,System.Object)">
             <summary>
@@ -2804,6 +2894,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.WithPathParameters(System.Collections.Generic.IDictionary{System.String,System.Object})">
             <summary>
@@ -2814,6 +2905,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.WithPathParameters(System.Object,System.String)">
             <summary>
@@ -2825,6 +2917,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.WithCookie(System.String)">
             <summary>
@@ -2835,6 +2928,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.WithCookie(System.String,System.Object)">
             <summary>
@@ -2846,6 +2940,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.WithCookies(System.String)">
             <summary>
@@ -2856,6 +2951,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.WithCookies(System.Collections.Generic.IDictionary{System.String,System.Object})">
             <summary>
@@ -2866,6 +2962,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.WithCookies(System.Object)">
             <summary>
@@ -2876,6 +2973,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.RemoveCookies(System.String[])">
             <summary>
@@ -2886,6 +2984,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.SetHttpClientName(System.String)">
             <summary>
@@ -2914,6 +3013,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.AddHttpContentProcessors(System.Func{System.Collections.Generic.IEnumerable{HttpAgent.IHttpContentProcessor}})">
             <summary>
@@ -2924,6 +3024,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.AddHttpContentConverters(System.Func{System.Collections.Generic.IEnumerable{HttpAgent.IHttpContentConverter}})">
             <summary>
@@ -2934,6 +3035,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.SetOnPreSetContent(System.Action{System.Net.Http.HttpContent})">
             <summary>
@@ -2963,6 +3065,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.SetOnRequestFailed(System.Action{System.Exception,System.Net.Http.HttpResponseMessage})">
             <summary>
@@ -2972,6 +3075,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.EnsureSuccessStatusCode">
             <summary>
@@ -2999,6 +3103,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.AddJwtBearerAuthentication(System.String)">
             <summary>
@@ -3008,6 +3113,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.AddDigestAuthentication(System.String,System.String)">
             <summary>
@@ -3018,6 +3124,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.AddAuthentication(System.String,System.String)">
             <summary>
@@ -3039,6 +3146,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.DisableCache">
             <summary>
@@ -3101,6 +3209,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.AddDisposables(System.Collections.Generic.IEnumerable{System.IDisposable})">
             <summary>
@@ -3113,6 +3222,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.ReleaseResources">
             <summary>
@@ -3190,6 +3300,8 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.Debugger">
             <summary>
@@ -3265,6 +3377,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.AcceptLanguage(System.String)">
             <summary>
@@ -3286,6 +3399,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.WithProperties(System.Collections.Generic.IDictionary{System.String,System.Object})">
             <summary>
@@ -3296,6 +3410,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.WithProperties(System.Object)">
             <summary>
@@ -3306,6 +3421,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.PerformanceOptimization">
             <summary>
@@ -3347,7 +3463,7 @@
             <summary>
                 设置请求基地址
             </summary>
-            <param name="baseAddress">基地址</param>
+            <param name="baseAddress">基地址。支持相对路径</param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
@@ -3419,6 +3535,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
             <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.When(System.Boolean,System.Action{HttpAgent.HttpRequestBuilder})">
@@ -3431,6 +3548,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.Clone">
             <summary>
@@ -3439,6 +3557,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.UseAssertions">
             <summary>
@@ -3469,6 +3588,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.UseJsonResponseWrapper">
             <summary>
@@ -3535,6 +3655,7 @@
             <returns>
                 <see cref="T:System.Collections.Generic.IDictionary`2" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.ReleaseDisposables">
             <summary>
@@ -3555,6 +3676,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="F:HttpAgent.HttpRequestBuilder._cachedProperties">
             <summary>
@@ -4339,6 +4461,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.DownloadFile(System.Net.Http.HttpMethod,System.Uri,System.String,System.Func{HttpAgent.FileTransferProgress,System.Threading.Tasks.Task},HttpAgent.FileExistsBehavior,System.Action{HttpAgent.HttpFileDownloadBuilder})">
             <summary>
@@ -4552,6 +4675,7 @@
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
             <exception cref="T:System.ArgumentException"></exception>
+            <exception cref="T:System.ArgumentNullException"></exception>
             <exception cref="T:System.InvalidOperationException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.HandleJsonNode(System.Text.Json.Nodes.JsonObject,System.String,System.Action{System.Text.Json.Nodes.JsonNode})">
@@ -4563,6 +4687,7 @@
             </param>
             <param name="propertyName">属性名</param>
             <param name="action">自定义操作</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="T:HttpAgent.HttpServerSentEventsBuilder">
             <summary>
@@ -4590,6 +4715,7 @@
             </summary>
             <param name="httpMethod">请求方式</param>
             <param name="requestUri">请求地址</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="P:HttpAgent.HttpServerSentEventsBuilder.RequestUri">
             <summary>
@@ -4662,6 +4788,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpServerSentEventsBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpServerSentEventsBuilder.SetOnMessage(System.Func{HttpAgent.ServerSentEventsData,System.Threading.CancellationToken,System.Threading.Tasks.Task})">
             <summary>
@@ -4671,6 +4798,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpServerSentEventsBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpServerSentEventsBuilder.SetOnError(System.Action{System.Exception})">
             <summary>
@@ -4680,6 +4808,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpServerSentEventsBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpServerSentEventsBuilder.SetEventHandler(System.Type)">
             <summary>
@@ -4689,6 +4818,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpServerSentEventsBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
             <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpServerSentEventsBuilder.SetEventHandler``1">
@@ -4748,6 +4878,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="T:HttpAgent.HttpStressTestHarnessBuilder">
             <summary>
@@ -4766,6 +4897,7 @@
             </summary>
             <param name="httpMethod">请求方式</param>
             <param name="requestUri">请求地址</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="P:HttpAgent.HttpStressTestHarnessBuilder.RequestUri">
             <summary>
@@ -4862,6 +4994,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="T:HttpAgent.IHttpRemoteBuilder">
             <summary>
@@ -5035,11 +5168,6 @@
                 <c>Referer</c> 标头请求基地址模板
             </summary>
         </member>
-        <member name="F:HttpAgent.Constants.HTTP_RESPONSE_MESSAGE_ISNULL_MESSAGE">
-            <summary>
-                <see cref="T:System.Net.Http.HttpResponseMessage" /> 为 null 时输出消息
-            </summary>
-        </member>
         <member name="F:HttpAgent.Constants.PROFILER_ANALYZER_KEY">
             <summary>
                 请求管道上下文中请求分析工具的键
@@ -5150,10 +5278,13 @@
                 <see cref="T:System.Collections.Generic.IAsyncEnumerable`1" /> 内容转换器
             </summary>
         </member>
-        <member name="M:HttpAgent.AsyncEnumerableContentConverter`1.Read(System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
+        <member name="P:HttpAgent.AsyncEnumerableContentConverter`1.KeepsResponseAlive">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.AsyncEnumerableContentConverter`1.ReadAsync(System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.AsyncEnumerableContentConverter`1.Read(HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.AsyncEnumerableContentConverter`1.ReadAsync(HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="T:HttpAgent.ByteArrayContentConverter">
@@ -5161,10 +5292,10 @@
                 字节数组内容转换器
             </summary>
         </member>
-        <member name="M:HttpAgent.ByteArrayContentConverter.Read(System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.ByteArrayContentConverter.Read(HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.ByteArrayContentConverter.ReadAsync(System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.ByteArrayContentConverter.ReadAsync(HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="T:HttpAgent.GenericHttpContentConverter">
@@ -5199,19 +5330,162 @@
         <member name="P:HttpAgent.HttpContentConverterBase`1.ServiceProvider">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpContentConverterBase`1.Read(System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.HttpContentConverterBase`1.Read(HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpContentConverterBase`1.ReadAsync(System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.HttpContentConverterBase`1.ReadAsync(HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpContentConverterBase`1.Read(System.Type,System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.HttpContentConverterBase`1.Read(System.Type,HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpContentConverterBase`1.ReadAsync(System.Type,System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.HttpContentConverterBase`1.ReadAsync(System.Type,HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="M:HttpAgent.HttpContentConverterBase`1.GetService(System.Type)">
+            <inheritdoc />
+        </member>
+        <member name="T:HttpAgent.HttpContentConverterContext">
+            <summary>
+                <see cref="T:HttpAgent.IHttpContentConverter" /> 内容处理器上下文
+            </summary>
+            <param name="ResponseMessage">
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </param>
+            <param name="Converters"><see cref="T:HttpAgent.IHttpContentConverter`1" /> 集合</param>
+        </member>
+        <member name="M:HttpAgent.HttpContentConverterContext.#ctor(System.Net.Http.HttpResponseMessage,System.Collections.Generic.IReadOnlyList{HttpAgent.IHttpContentConverter})">
+            <summary>
+                <see cref="T:HttpAgent.IHttpContentConverter" /> 内容处理器上下文
+            </summary>
+            <param name="ResponseMessage">
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </param>
+            <param name="Converters"><see cref="T:HttpAgent.IHttpContentConverter`1" /> 集合</param>
+        </member>
+        <member name="P:HttpAgent.HttpContentConverterContext.ResponseMessage">
+            <summary>
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpContentConverterContext.Converters">
+            <summary><see cref="T:HttpAgent.IHttpContentConverter`1" /> 集合</summary>
+        </member>
+        <member name="P:HttpAgent.HttpContentConverterContext.RequestDuration">
+            <summary>
+                请求耗时（毫秒）
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpContentConverterContext.Factory">
+            <inheritdoc cref="T:HttpAgent.IHttpContentConverterFactory" />
+        </member>
+        <member name="T:HttpAgent.HttpContentConverterResult`1">
+            <summary>
+                HTTP 内容转换结果
+            </summary>
+            <param name="ResponseMessage">
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </param>
+            <param name="Result">
+                <typeparamref name="TResult" />
+            </param>
+            <param name="Converter">
+                <see cref="T:HttpAgent.IHttpContentConverter" />
+            </param>
+            <typeparam name="TResult">转换的目标类型</typeparam>
+        </member>
+        <member name="M:HttpAgent.HttpContentConverterResult`1.#ctor(System.Net.Http.HttpResponseMessage,`0,HttpAgent.IHttpContentConverter)">
+            <summary>
+                HTTP 内容转换结果
+            </summary>
+            <param name="ResponseMessage">
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </param>
+            <param name="Result">
+                <typeparamref name="TResult" />
+            </param>
+            <param name="Converter">
+                <see cref="T:HttpAgent.IHttpContentConverter" />
+            </param>
+            <typeparam name="TResult">转换的目标类型</typeparam>
+        </member>
+        <member name="P:HttpAgent.HttpContentConverterResult`1.ResponseMessage">
+            <summary>
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpContentConverterResult`1.Result">
+            <summary>
+                <typeparamref name="TResult" />
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpContentConverterResult`1.Converter">
+            <summary>
+                <see cref="T:HttpAgent.IHttpContentConverter" />
+            </summary>
+        </member>
+        <member name="M:HttpAgent.HttpContentConverterResult`1.Dispose">
+            <inheritdoc />
+        </member>
+        <member name="T:HttpAgent.HttpContentConverterResult">
+            <summary>
+                HTTP 内容转换结果
+            </summary>
+            <param name="ResponseMessage">
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </param>
+            <param name="Result">
+                <see cref="T:System.Object" />
+            </param>
+            <param name="Converter">
+                <see cref="T:HttpAgent.IHttpContentConverter" />
+            </param>
+        </member>
+        <member name="M:HttpAgent.HttpContentConverterResult.#ctor(System.Net.Http.HttpResponseMessage,System.Object,HttpAgent.IHttpContentConverter)">
+            <summary>
+                HTTP 内容转换结果
+            </summary>
+            <param name="ResponseMessage">
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </param>
+            <param name="Result">
+                <see cref="T:System.Object" />
+            </param>
+            <param name="Converter">
+                <see cref="T:HttpAgent.IHttpContentConverter" />
+            </param>
+        </member>
+        <member name="P:HttpAgent.HttpContentConverterResult.ResponseMessage">
+            <summary>
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpContentConverterResult.Result">
+            <summary>
+                <see cref="T:System.Object" />
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpContentConverterResult.Converter">
+            <summary>
+                <see cref="T:HttpAgent.IHttpContentConverter" />
+            </summary>
+        </member>
+        <member name="M:HttpAgent.HttpContentConverterResult.Dispose">
+            <inheritdoc />
+        </member>
+        <member name="T:HttpAgent.HttpRemoteResultContentConverter`1">
+            <summary>
+                <see cref="T:HttpAgent.HttpRemoteResult`1" /> 内容转换器
+            </summary>
+            <typeparam name="TResult">转换的目标类型</typeparam>
+        </member>
+        <member name="P:HttpAgent.HttpRemoteResultContentConverter`1.KeepsResponseAlive">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.HttpRemoteResultContentConverter`1.Read(HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.HttpRemoteResultContentConverter`1.ReadAsync(HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="T:HttpAgent.HttpResponseMessageConverter">
@@ -5222,15 +5496,15 @@
         <member name="P:HttpAgent.HttpResponseMessageConverter.KeepsResponseAlive">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpResponseMessageConverter.Read(System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.HttpResponseMessageConverter.Read(HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpResponseMessageConverter.ReadAsync(System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.HttpResponseMessageConverter.ReadAsync(HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="T:HttpAgent.IHttpContentConverter">
             <summary>
-                <see cref="T:System.Net.Http.HttpResponseMessage" /> 响应内容转换器默认实现接口
+                <see cref="T:System.Net.Http.HttpResponseMessage" /> 响应内容转换器
             </summary>
         </member>
         <member name="P:HttpAgent.IHttpContentConverter.KeepsResponseAlive">
@@ -5243,13 +5517,13 @@
                 <inheritdoc cref="T:System.IServiceProvider" />
             </summary>
         </member>
-        <member name="M:HttpAgent.IHttpContentConverter.Read(System.Type,System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.IHttpContentConverter.Read(System.Type,HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
             <summary>
-                从 <see cref="T:System.Net.Http.HttpResponseMessage" /> 中同步读取数据并转换为 <see cref="T:System.Object" /> 实例
+                将 <see cref="T:System.Net.Http.HttpResponseMessage" /> 转换为 <see cref="T:System.Object" /> 实例
             </summary>
             <param name="resultType">转换的目标类型</param>
-            <param name="httpResponseMessage">
-                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            <param name="context">
+                <see cref="T:HttpAgent.HttpContentConverterContext" />
             </param>
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
@@ -5258,13 +5532,13 @@
                 <see cref="T:System.Object" />
             </returns>
         </member>
-        <member name="M:HttpAgent.IHttpContentConverter.ReadAsync(System.Type,System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.IHttpContentConverter.ReadAsync(System.Type,HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
             <summary>
-                从 <see cref="T:System.Net.Http.HttpResponseMessage" /> 中异步读取数据并转换为 <see cref="T:System.Object" /> 实例
+                将 <see cref="T:System.Net.Http.HttpResponseMessage" /> 转换为 <see cref="T:System.Object" /> 实例
             </summary>
             <param name="resultType">转换的目标类型</param>
-            <param name="httpResponseMessage">
-                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            <param name="context">
+                <see cref="T:HttpAgent.HttpContentConverterContext" />
             </param>
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
@@ -5279,12 +5553,12 @@
             </summary>
             <typeparam name="TResult">转换的目标类型</typeparam>
         </member>
-        <member name="M:HttpAgent.IHttpContentConverter`1.Read(System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.IHttpContentConverter`1.Read(HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
             <summary>
-                从 <see cref="T:System.Net.Http.HttpResponseMessage" /> 中同步读取数据并转换为目标类型
+                将 <see cref="T:System.Net.Http.HttpResponseMessage" /> 转换为目标类型
             </summary>
-            <param name="httpResponseMessage">
-                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            <param name="context">
+                <see cref="T:HttpAgent.HttpContentConverterContext" />
             </param>
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
@@ -5293,12 +5567,12 @@
                 <typeparamref name="TResult" />
             </returns>
         </member>
-        <member name="M:HttpAgent.IHttpContentConverter`1.ReadAsync(System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.IHttpContentConverter`1.ReadAsync(HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
             <summary>
-                从 <see cref="T:System.Net.Http.HttpResponseMessage" /> 中异步读取数据并转换为目标类型
+                将 <see cref="T:System.Net.Http.HttpResponseMessage" /> 转换为目标类型
             </summary>
-            <param name="httpResponseMessage">
-                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            <param name="context">
+                <see cref="T:HttpAgent.HttpContentConverterContext" />
             </param>
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
@@ -5319,20 +5593,20 @@
         <member name="P:HttpAgent.ObjectContentConverter.ServiceProvider">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.ObjectContentConverter.Read(System.Type,System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.ObjectContentConverter.Read(System.Type,HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.ObjectContentConverter.ReadAsync(System.Type,System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.ObjectContentConverter.ReadAsync(System.Type,HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="T:HttpAgent.ObjectContentConverter`1">
             <inheritdoc cref="T:HttpAgent.ObjectContentConverter" />
             <typeparam name="TResult">转换的目标类型</typeparam>
         </member>
-        <member name="M:HttpAgent.ObjectContentConverter`1.Read(System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.ObjectContentConverter`1.Read(HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.ObjectContentConverter`1.ReadAsync(System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.ObjectContentConverter`1.ReadAsync(HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="T:HttpAgent.StreamContentConverter">
@@ -5343,10 +5617,10 @@
         <member name="P:HttpAgent.StreamContentConverter.KeepsResponseAlive">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.StreamContentConverter.Read(System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.StreamContentConverter.Read(HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.StreamContentConverter.ReadAsync(System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.StreamContentConverter.ReadAsync(HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="T:HttpAgent.StringContentConverter">
@@ -5354,10 +5628,10 @@
                 字符串内容转换器
             </summary>
         </member>
-        <member name="M:HttpAgent.StringContentConverter.Read(System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.StringContentConverter.Read(HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.StringContentConverter.ReadAsync(System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.StringContentConverter.ReadAsync(HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="T:HttpAgent.VoidContentConverter">
@@ -5365,10 +5639,10 @@
                 <see cref="T:HttpAgent.VoidContent" /> 内容转换器
             </summary>
         </member>
-        <member name="M:HttpAgent.VoidContentConverter.Read(System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.VoidContentConverter.Read(HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.VoidContentConverter.ReadAsync(System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.VoidContentConverter.ReadAsync(HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="T:HttpAgent.XmlObjectContentConverter">
@@ -5382,10 +5656,10 @@
         <member name="P:HttpAgent.XmlObjectContentConverter.ServiceProvider">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.XmlObjectContentConverter.Read(System.Type,System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.XmlObjectContentConverter.Read(System.Type,HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.XmlObjectContentConverter.ReadAsync(System.Type,System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.XmlObjectContentConverter.ReadAsync(System.Type,HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="M:HttpAgent.XmlObjectContentConverter.DeserializeXml(System.Type,System.String)">
@@ -5402,10 +5676,10 @@
             <inheritdoc cref="T:HttpAgent.XmlObjectContentConverter" />
             <typeparam name="TResult">转换的目标类型</typeparam>
         </member>
-        <member name="M:HttpAgent.XmlObjectContentConverter`1.Read(System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.XmlObjectContentConverter`1.Read(HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.XmlObjectContentConverter`1.ReadAsync(System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.XmlObjectContentConverter`1.ReadAsync(HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="T:HttpAgent.Core.Converters.Json.FlexibleDateTimeConverter">
@@ -5422,7 +5696,7 @@
         <member name="M:HttpAgent.Core.Converters.Json.FlexibleDateTimeConverter.Regex">
             <remarks>
             Pattern:<br/>
-            <code>^/Date\\(([+-]*\\d+)\\)/$</code><br/>
+            <code>^/Date\(([+-]*\d+)\)/$</code><br/>
             Options:<br/>
             <code>RegexOptions.CultureInvariant</code><br/>
             Explanation:<br/>
@@ -5430,7 +5704,7 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Match the string "/Date(".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [+-] atomically any number of times.<br/>
+                ○ Match a character in the set [+\-] atomically any number of times.<br/>
                 ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match the string ")/".<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
@@ -5451,7 +5725,7 @@
         <member name="M:HttpAgent.Core.Converters.Json.FlexibleDateTimeOffsetConverter.Regex">
             <remarks>
             Pattern:<br/>
-            <code>^/Date\\(([+-]*\\d+)([+-])(\\d{2})(\\d{2})\\)/$</code><br/>
+            <code>^/Date\(([+-]*\d+)([+-])(\d{2})(\d{2})\)/$</code><br/>
             Options:<br/>
             <code>RegexOptions.CultureInvariant</code><br/>
             Explanation:<br/>
@@ -5459,10 +5733,10 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Match the string "/Date(".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [+-] atomically any number of times.<br/>
+                ○ Match a character in the set [+\-] atomically any number of times.<br/>
                 ○ Match a Unicode digit atomically at least once.<br/>
             ○ 2nd capture group.<br/>
-                ○ Match a character in the set [+-].<br/>
+                ○ Match a character in the set [+\-].<br/>
             ○ 3rd capture group.<br/>
                 ○ Match a Unicode digit exactly 2 times.<br/>
             ○ 4th capture group.<br/>
@@ -6038,7 +6312,7 @@
         <member name="M:HttpAgent.Core.Extensions.StringExtensions.PlaceholderRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\{\\s*(\\w+\\s*(\\.\\s*\\w+\\s*)*)\\s*\\}</code><br/>
+            <code>\{\s*(\w+\s*(\.\s*\w+\s*)*)\s*\}</code><br/>
             Explanation:<br/>
             <code>
             ○ Match '{'.<br/>
@@ -6060,19 +6334,19 @@
         <member name="M:HttpAgent.Core.Extensions.StringExtensions.ConfigurationKeyRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\[\\[\\s*([\\w\\-:]+)((?:\\s*\\|\\s*[\\w\\-:]+)*)\\s*(?:\\|\\|\\s*([^\\]]*))?\\s*\\]\\]</code><br/>
+            <code>\[\[\s*([\w\-:]+)((?:\s*\|\s*[\w\-:]+)*)\s*(?:\|\|\s*([^\]]*))?\s*\]\]</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "[[".<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [-:\w] greedily at least once.<br/>
+                ○ Match a character in the set [\-:\w] greedily at least once.<br/>
             ○ 2nd capture group.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match a whitespace character atomically any number of times.<br/>
                     ○ Match '|'.<br/>
                     ○ Match a whitespace character greedily any number of times.<br/>
-                    ○ Match a character in the set [-:\w] greedily at least once.<br/>
+                    ○ Match a character in the set [\-:\w] greedily at least once.<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ Optional (greedy).<br/>
                 ○ Match the string "||".<br/>
@@ -6095,32 +6369,32 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Loop greedily at least once.<br/>
                 ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
+                    ○ Match a character in the set [\-.0-9A-Z_a-z~].<br/>
                     ○ Match a sequence of expressions.<br/>
                         ○ Match '%'.<br/>
-                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
+                        ○ Match a hexadecimal digit exactly 2 times.<br/>
             ○ Match '='.<br/>
             ○ Loop greedily any number of times.<br/>
                 ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
+                    ○ Match a character in the set [+\-.0-9A-Z_a-z~].<br/>
                     ○ Match a sequence of expressions.<br/>
                         ○ Match '%'.<br/>
-                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
+                        ○ Match a hexadecimal digit exactly 2 times.<br/>
             ○ Loop greedily any number of times.<br/>
                 ○ Match '&amp;'.<br/>
                 ○ Loop greedily at least once.<br/>
                     ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
+                        ○ Match a character in the set [\-.0-9A-Z_a-z~].<br/>
                         ○ Match a sequence of expressions.<br/>
                             ○ Match '%'.<br/>
-                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
+                            ○ Match a hexadecimal digit exactly 2 times.<br/>
                 ○ Match '='.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
+                        ○ Match a character in the set [+\-.0-9A-Z_a-z~].<br/>
                         ○ Match a sequence of expressions.<br/>
                             ○ Match '%'.<br/>
-                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
+                            ○ Match a hexadecimal digit exactly 2 times.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
             </remarks>
@@ -6831,9 +7105,9 @@
                 </para>
             </remarks>
         </member>
-        <member name="P:HttpAgent.BodyAttribute.DisposeStreamOnRequestCompletion">
+        <member name="P:HttpAgent.BodyAttribute.DisposeResourcesOnRequestCompletion">
             <summary>
-                是否在请求结束后自动释放流
+                是否在请求结束后自动释放资源
             </summary>
             <remarks>默认值为：<c>false</c>。</remarks>
         </member>
@@ -8830,12 +9104,12 @@
         <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.UnicodeEscapeRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\\\u([0-9a-fA-F]{4})</code><br/>
+            <code>\\u([0-9a-fA-F]{4})</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "\\u".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [0-9A-Fa-f] exactly 4 times.<br/>
+                ○ Match a hexadecimal digit exactly 4 times.<br/>
             </code>
             </remarks>
         </member>
@@ -8845,11 +9119,6 @@
         <member name="F:HttpAgent.HttpContentConverterFactory._converters">
             <summary>
                 <see cref="T:HttpAgent.IHttpContentConverter`1" /> 字典集合
-            </summary>
-        </member>
-        <member name="F:HttpAgent.HttpContentConverterFactory._currentConverter">
-            <summary>
-                用于在当前异步上下文中传递最近一次使用的 <see cref="T:HttpAgent.IHttpContentConverter" />
             </summary>
         </member>
         <member name="F:HttpAgent.HttpContentConverterFactory._genericConverterCache">
@@ -8881,46 +9150,23 @@
         <member name="P:HttpAgent.HttpContentConverterFactory.ServiceProvider">
             <inheritdoc />
         </member>
-        <member name="P:HttpAgent.HttpContentConverterFactory.CurrentConverter">
+        <member name="M:HttpAgent.HttpContentConverterFactory.Read``1(HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpContentConverterFactory.Read``1(System.Net.Http.HttpResponseMessage,HttpAgent.IHttpContentConverter[],System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.HttpContentConverterFactory.Read(System.Type,HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpContentConverterFactory.Read(System.Type,System.Net.Http.HttpResponseMessage,HttpAgent.IHttpContentConverter[],System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.HttpContentConverterFactory.ReadAsync``1(HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpContentConverterFactory.ReadAsync``1(System.Net.Http.HttpResponseMessage,HttpAgent.IHttpContentConverter[],System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.HttpContentConverterFactory.ReadAsync(System.Type,HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpContentConverterFactory.ReadAsync(System.Type,System.Net.Http.HttpResponseMessage,HttpAgent.IHttpContentConverter[],System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.HttpContentConverterFactory.GetConverter``1(HttpAgent.HttpContentConverterContext)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpContentConverterFactory.GetConverter``1(System.Net.Http.HttpResponseMessage,HttpAgent.IHttpContentConverter[])">
-            <summary>
-                获取 <see cref="T:HttpAgent.IHttpContentConverter`1" /> 实例
-            </summary>
-            <param name="httpResponseMessage">
-                <see cref="T:System.Net.Http.HttpResponseMessage" />
-            </param>
-            <param name="converters"><see cref="T:HttpAgent.IHttpContentConverter`1" /> 数组</param>
-            <typeparam name="TResult">转换的目标类型</typeparam>
-            <returns>
-                <see cref="T:HttpAgent.IHttpContentConverter`1" />
-            </returns>
-        </member>
-        <member name="M:HttpAgent.HttpContentConverterFactory.GetConverter(System.Type,System.Net.Http.HttpResponseMessage,HttpAgent.IHttpContentConverter[])">
-            <summary>
-                获取 <see cref="T:HttpAgent.IHttpContentConverter" /> 实例
-            </summary>
-            <param name="httpResponseMessage">
-                <see cref="T:System.Net.Http.HttpResponseMessage" />
-            </param>
-            <param name="resultType">转换的目标类型</param>
-            <param name="converters"><see cref="T:HttpAgent.IHttpContentConverter`1" /> 数组</param>
-            <returns>
-                <see cref="T:HttpAgent.IHttpContentConverter" />
-            </returns>
+        <member name="M:HttpAgent.HttpContentConverterFactory.GetConverter(System.Type,HttpAgent.HttpContentConverterContext)">
+            <inheritdoc />
         </member>
         <member name="M:HttpAgent.HttpContentConverterFactory.LogContentConversionError(System.Type,System.Net.Http.HttpResponseMessage,System.Exception)">
             <summary>
@@ -8988,77 +9234,88 @@
                 <inheritdoc cref="T:System.IServiceProvider" />
             </summary>
         </member>
-        <member name="P:HttpAgent.IHttpContentConverterFactory.CurrentConverter">
-            <summary>
-                获取当前异步上下文中最后一次使用的 <see cref="T:HttpAgent.IHttpContentConverter" />
-            </summary>
-        </member>
-        <member name="M:HttpAgent.IHttpContentConverterFactory.Read``1(System.Net.Http.HttpResponseMessage,HttpAgent.IHttpContentConverter[],System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.IHttpContentConverterFactory.Read``1(HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
             <summary>
                 将 <see cref="T:System.Net.Http.HttpResponseMessage" /> 转换为
                 <typeparamref name="TResult" />
                 实例
             </summary>
-            <param name="httpResponseMessage">
-                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            <param name="context">
+                <see cref="T:HttpAgent.HttpContentConverterContext" />
             </param>
-            <param name="converters"><see cref="T:HttpAgent.IHttpContentConverter`1" /> 数组</param>
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
             <typeparam name="TResult">转换的目标类型</typeparam>
             <returns>
-                <typeparamref name="TResult" />
+                <see cref="T:HttpAgent.HttpContentConverterResult`1" />
             </returns>
         </member>
-        <member name="M:HttpAgent.IHttpContentConverterFactory.Read(System.Type,System.Net.Http.HttpResponseMessage,HttpAgent.IHttpContentConverter[],System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.IHttpContentConverterFactory.Read(System.Type,HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
             <summary>
                 将 <see cref="T:System.Net.Http.HttpResponseMessage" /> 转换为 <see cref="T:System.Object" /> 实例
             </summary>
             <param name="resultType">转换的目标类型</param>
-            <param name="httpResponseMessage">
-                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            <param name="context">
+                <see cref="T:HttpAgent.HttpContentConverterContext" />
             </param>
-            <param name="converters"><see cref="T:HttpAgent.IHttpContentConverter`1" /> 数组</param>
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
             <returns>
-                <see cref="T:System.Object" />
+                <see cref="T:HttpAgent.HttpContentConverterResult" />
             </returns>
         </member>
-        <member name="M:HttpAgent.IHttpContentConverterFactory.ReadAsync``1(System.Net.Http.HttpResponseMessage,HttpAgent.IHttpContentConverter[],System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.IHttpContentConverterFactory.ReadAsync``1(HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
             <summary>
                 将 <see cref="T:System.Net.Http.HttpResponseMessage" /> 转换为
                 <typeparamref name="TResult" />
                 实例
             </summary>
-            <param name="httpResponseMessage">
-                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            <param name="context">
+                <see cref="T:HttpAgent.HttpContentConverterContext" />
             </param>
-            <param name="converters"><see cref="T:HttpAgent.IHttpContentConverter`1" /> 数组</param>
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
             <typeparam name="TResult">转换的目标类型</typeparam>
             <returns>
-                <typeparamref name="TResult" />
+                <see cref="T:HttpAgent.HttpContentConverterResult`1" />
             </returns>
         </member>
-        <member name="M:HttpAgent.IHttpContentConverterFactory.ReadAsync(System.Type,System.Net.Http.HttpResponseMessage,HttpAgent.IHttpContentConverter[],System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.IHttpContentConverterFactory.ReadAsync(System.Type,HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
             <summary>
                 将 <see cref="T:System.Net.Http.HttpResponseMessage" /> 转换为 <see cref="T:System.Object" /> 实例
             </summary>
             <param name="resultType">转换的目标类型</param>
-            <param name="httpResponseMessage">
-                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            <param name="context">
+                <see cref="T:HttpAgent.HttpContentConverterContext" />
             </param>
-            <param name="converters"><see cref="T:HttpAgent.IHttpContentConverter`1" /> 数组</param>
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
             <returns>
-                <see cref="T:System.Object" />
+                <see cref="T:HttpAgent.HttpContentConverterResult" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.IHttpContentConverterFactory.GetConverter``1(HttpAgent.HttpContentConverterContext)">
+            <summary>
+                根据目标类型获取对应的 <see cref="T:HttpAgent.IHttpContentConverter`1" /> 实例
+            </summary>
+            <param name="context"><see cref="T:HttpAgent.HttpContentConverterContext" /> 集合</param>
+            <typeparam name="TResult">转换的目标类型</typeparam>
+            <returns>
+                <see cref="T:HttpAgent.IHttpContentConverter`1" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.IHttpContentConverterFactory.GetConverter(System.Type,HttpAgent.HttpContentConverterContext)">
+            <summary>
+                根据目标类型获取对应的 <see cref="T:HttpAgent.IHttpContentConverter" /> 实例
+            </summary>
+            <param name="resultType">转换的目标类型</param>
+            <param name="context"><see cref="T:HttpAgent.HttpContentConverterContext" /> 集合</param>
+            <returns>
+                <see cref="T:HttpAgent.IHttpContentConverter" />
             </returns>
         </member>
         <member name="T:HttpAgent.IHttpContentProcessorFactory">
@@ -9088,25 +9345,25 @@
                 <see cref="T:HttpAgent.ObjectContentConverter`1" /> 工厂
             </summary>
         </member>
-        <member name="M:HttpAgent.IObjectContentConverterFactory.GetConverter``1(System.Net.Http.HttpResponseMessage)">
+        <member name="M:HttpAgent.IObjectContentConverterFactory.GetConverter``1(HttpAgent.HttpContentConverterContext)">
             <summary>
-                获取 <see cref="T:HttpAgent.ObjectContentConverter`1" /> 实例
+                根据目标类型获取对应的 <see cref="T:HttpAgent.IHttpContentConverter`1" /> 实例
             </summary>
             <typeparam name="TResult">转换的目标类型</typeparam>
-            <param name="httpResponseMessage">
-                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            <param name="context">
+                <see cref="T:HttpAgent.HttpContentConverterContext" />
             </param>
             <returns>
                 <see cref="T:HttpAgent.IHttpContentConverter`1" />
             </returns>
         </member>
-        <member name="M:HttpAgent.IObjectContentConverterFactory.GetConverter(System.Type,System.Net.Http.HttpResponseMessage)">
+        <member name="M:HttpAgent.IObjectContentConverterFactory.GetConverter(System.Type,HttpAgent.HttpContentConverterContext)">
             <summary>
-                获取 <see cref="T:HttpAgent.ObjectContentConverter" /> 实例
+                根据目标类型获取对应的 <see cref="T:HttpAgent.IHttpContentConverter" /> 实例
             </summary>
             <param name="resultType">转换的目标类型</param>
-            <param name="httpResponseMessage">
-                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            <param name="context">
+                <see cref="T:HttpAgent.HttpContentConverterContext" />
             </param>
             <returns>
                 <see cref="T:HttpAgent.IHttpContentConverter" />
@@ -9115,10 +9372,10 @@
         <member name="T:HttpAgent.ObjectContentConverterFactory">
             <inheritdoc cref="T:HttpAgent.IObjectContentConverterFactory" />
         </member>
-        <member name="M:HttpAgent.ObjectContentConverterFactory.GetConverter``1(System.Net.Http.HttpResponseMessage)">
+        <member name="M:HttpAgent.ObjectContentConverterFactory.GetConverter``1(HttpAgent.HttpContentConverterContext)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.ObjectContentConverterFactory.GetConverter(System.Type,System.Net.Http.HttpResponseMessage)">
+        <member name="M:HttpAgent.ObjectContentConverterFactory.GetConverter(System.Type,HttpAgent.HttpContentConverterContext)">
             <inheritdoc />
         </member>
         <member name="T:HttpAgent.IUrlParameterFormatter">
@@ -10559,12 +10816,12 @@
         <member name="M:HttpAgent.FileTransferProgress.AnsiRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\e\\[[\\d;]*[a-zA-Z]</code><br/>
+            <code>\e\[[\d;]*[a-zA-Z]</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "\u001b[".<br/>
             ○ Match a character in the set [;\d] atomically any number of times.<br/>
-            ○ Match a character in the set [A-Za-z].<br/>
+            ○ Match an ASCII letter.<br/>
             </code>
             </remarks>
         </member>
@@ -12170,12 +12427,12 @@
         <member name="M:HttpAgent.StatusCodePipelineHandler.StatusCodeRangeRegex">
             <remarks>
             Pattern:<br/>
-            <code>^\\d+[-~]\\d+$</code><br/>
+            <code>^\d+[-~]\d+$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
-            ○ Match a character in the set [-~].<br/>
+            ○ Match a character in the set [\-~].<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
@@ -12184,7 +12441,7 @@
         <member name="M:HttpAgent.StatusCodePipelineHandler.StatusCodeCompareRegex">
             <remarks>
             Pattern:<br/>
-            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\\d+)$</code><br/>
+            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\d+)$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
@@ -12475,7 +12732,7 @@
         </member>
         <member name="P:HttpAgent.HttpContentProcessorContext.CompletionDisposables">
             <summary>
-                设置需要在请求结束后自动释放的流集合
+                设置需要在请求结束后自动释放的资源集合
             </summary>
         </member>
         <member name="M:HttpAgent.HttpContentProcessorContext.Composite(System.Collections.Generic.IEnumerable{System.Net.Http.HttpContent})">
@@ -13099,6 +13356,40 @@
         <member name="M:HttpAgent.HttpRemoteService.SendAsync``1(HttpAgent.HttpRequestBuilder,System.Net.Http.HttpCompletionOption,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
+        <member name="M:HttpAgent.HttpRemoteService.SendCoreAsync(HttpAgent.HttpRequestBuilder,System.Net.Http.HttpCompletionOption,System.Threading.CancellationToken)">
+            <summary>
+                发送 HTTP 远程请求（核心）
+            </summary>
+            <param name="httpRequestBuilder">
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </param>
+            <param name="completionOption">
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
+            </param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns>
+                <see cref="T:System.Tuple`2" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRemoteService.SendCore(HttpAgent.HttpRequestBuilder,System.Net.Http.HttpCompletionOption,System.Threading.CancellationToken)">
+            <summary>
+                发送 HTTP 远程请求（核心）
+            </summary>
+            <param name="httpRequestBuilder">
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </param>
+            <param name="completionOption">
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
+            </param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns>
+                <see cref="T:System.Tuple`2" />
+            </returns>
+        </member>
         <member name="M:HttpAgent.HttpRemoteService.SendCoreAsync(HttpAgent.HttpRequestBuilder,System.Net.Http.HttpCompletionOption,System.Func{System.Net.Http.HttpClient,System.Net.Http.HttpRequestMessage,System.Net.Http.HttpCompletionOption,System.Threading.CancellationToken,System.Threading.Tasks.Task{System.Net.Http.HttpResponseMessage}},System.Func{System.Net.Http.HttpClient,System.Net.Http.HttpRequestMessage,System.Net.Http.HttpCompletionOption,System.Threading.CancellationToken,System.Net.Http.HttpResponseMessage},System.Threading.CancellationToken)">
             <summary>
                 发送 HTTP 远程请求并处理 <see cref="T:System.Net.Http.HttpResponseMessage" /> 实例
@@ -13152,21 +13443,6 @@
             <param name="httpRequestBuilder">
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </param>
-        </member>
-        <member name="M:HttpAgent.HttpRemoteService.DynamicCreateHttpRemoteResult(System.Type,System.Net.Http.HttpResponseMessage,System.Object,System.Int64)">
-            <summary>
-                动态创建 <see cref="T:HttpAgent.HttpRemoteResult`1" /> 实例
-            </summary>
-            <param name="httpRemoteResultType"><see cref="T:HttpAgent.HttpRemoteResult`1" /> 类型</param>
-            <param name="httpResponseMessage">
-                <see cref="T:System.Net.Http.HttpResponseMessage" />
-            </param>
-            <param name="result"><see cref="T:HttpAgent.HttpRemoteResult`1" /> 泛型类型的实例</param>
-            <param name="requestDuration">请求耗时（毫秒）</param>
-            <returns>
-                <see cref="T:System.Object" />
-            </returns>
-            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRemoteService.DownloadFile(System.String,System.String,System.Func{HttpAgent.FileTransferProgress,System.Threading.Tasks.Task},HttpAgent.FileExistsBehavior,System.Action{HttpAgent.HttpFileDownloadBuilder},System.Threading.CancellationToken)">
             <inheritdoc />
@@ -14348,6 +14624,40 @@
             <typeparam name="TResult">转换的目标类型</typeparam>
             <returns>
                 <see cref="T:HttpAgent.HttpRemoteResult`1" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.IHttpRemoteService.SendCoreAsync(HttpAgent.HttpRequestBuilder,System.Net.Http.HttpCompletionOption,System.Threading.CancellationToken)">
+            <summary>
+                发送 HTTP 远程请求（核心）
+            </summary>
+            <param name="httpRequestBuilder">
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </param>
+            <param name="completionOption">
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
+            </param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns>
+                <see cref="T:System.Tuple`2" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.IHttpRemoteService.SendCore(HttpAgent.HttpRequestBuilder,System.Net.Http.HttpCompletionOption,System.Threading.CancellationToken)">
+            <summary>
+                发送 HTTP 远程请求（核心）
+            </summary>
+            <param name="httpRequestBuilder">
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </param>
+            <param name="completionOption">
+                <see cref="T:System.Net.Http.HttpCompletionOption" />
+            </param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns>
+                <see cref="T:System.Tuple`2" />
             </returns>
         </member>
         <member name="M:HttpAgent.IHttpRemoteService.DownloadFile(System.String,System.String,System.Func{HttpAgent.FileTransferProgress,System.Threading.Tasks.Task},HttpAgent.FileExistsBehavior,System.Action{HttpAgent.HttpFileDownloadBuilder},System.Threading.CancellationToken)">
@@ -18161,6 +18471,11 @@
         <member name="M:HttpAgent.WebSocketClient.Dispose">
             <inheritdoc />
         </member>
+        <member name="M:HttpAgent.WebSocketClient.CleanupResources">
+            <summary>
+                释放底层资源
+            </summary>
+        </member>
         <member name="M:HttpAgent.WebSocketClient.ConnectAsync(System.Threading.CancellationToken)">
             <summary>
                 连接到服务器
@@ -18458,95 +18773,6 @@
             <summary>
                 别名
             </summary>
-        </member>
-        <member name="T:System.Debugging">
-            <summary>
-                向事件管理器中输出事件信息
-            </summary>
-        </member>
-        <member name="M:System.Debugging.WriteLine(System.Int32,System.String)">
-            <summary>
-                输出一行事件信息
-            </summary>
-            <param name="level">
-                <para>信息级别</para>
-                <list type="number">
-                    <item>
-                        <description>跟踪</description>
-                    </item>
-                    <item>
-                        <description>信息</description>
-                    </item>
-                    <item>
-                        <description>警告</description>
-                    </item>
-                    <item>
-                        <description>错误</description>
-                    </item>
-                    <item>
-                        <description>文件</description>
-                    </item>
-                    <item>
-                        <description>提示</description>
-                    </item>
-                    <item>
-                        <description>搜索</description>
-                    </item>
-                    <item>
-                        <description>时钟</description>
-                    </item>
-                </list>
-            </param>
-            <param name="message">事件信息</param>
-        </member>
-        <member name="M:System.Debugging.Error(System.String)">
-            <summary>
-                输出错误级别事件信息
-            </summary>
-            <param name="message">事件信息</param>
-        </member>
-        <member name="M:System.Debugging.File(System.String)">
-            <summary>
-                输出文件级别事件信息
-            </summary>
-            <param name="message">事件信息</param>
-        </member>
-        <member name="M:System.Debugging.GetLevelEmoji(System.Int32)">
-            <summary>
-                获取信息级别对应的 emoji
-            </summary>
-            <param name="level">
-                <para>信息级别</para>
-                <list type="number">
-                    <item>
-                        <description>跟踪</description>
-                    </item>
-                    <item>
-                        <description>信息</description>
-                    </item>
-                    <item>
-                        <description>警告</description>
-                    </item>
-                    <item>
-                        <description>错误</description>
-                    </item>
-                    <item>
-                        <description>文件</description>
-                    </item>
-                    <item>
-                        <description>提示</description>
-                    </item>
-                    <item>
-                        <description>搜索</description>
-                    </item>
-                    <item>
-                        <description>时钟</description>
-                    </item>
-                </list>
-            </param>
-            <returns>
-                <see cref="T:System.String" />
-            </returns>
         </member>
         <member name="T:System.Text.RegularExpressions.Generated.Regex_0">
             <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the Regex method.</summary>
@@ -18860,6 +19086,21 @@
         <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32,System.Int32,System.Int32)">
             <summary>Pushes 3 values onto the backtracking stack.</summary>
         </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.WordCategoriesMask">
+            <summary>Provides a mask of Unicode categories that combine to form [\w].</summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.Generated.Utilities.WordCharBitmap">
+            <summary>Gets a bitmap for whether each character 0 through 127 is in [\w]</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_1F52B1A4D2E82B6FEDE25EC8C55F85BB36775196837076691C96925040F90D32">
+            <summary>Supports searching for the string "\\u".</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_4A5B154448624742176A7AE18EDA0762C946CBB1B19F68418DD573D0A698E642">
+            <summary>Supports searching for the string "\u001b[".</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_EBC667BDABA1472FA863B5B39B31251EF2B4C95DD643BDECF694CB1CE7BDC178">
+            <summary>Supports searching for the string "[[".</summary>
+        </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions">
             <summary>
                 HTTP 远程请求模块 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" /> 扩展类
@@ -18883,34 +19124,6 @@
             </summary>
             <param name="services">
                 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
-            </param>
-            <param name="httpRemoteBuilder">
-                <see cref="T:HttpAgent.HttpRemoteBuilder" />
-            </param>
-            <returns>
-                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
-            </returns>
-        </member>
-    </members>
-</doc>
-     </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions.AddHttpRemote(Microsoft.Extensions.DependencyInjection.IServiceCollection,HttpAgent.HttpRemoteBuilder)">
-            <summary>
-                添加 HTTP 远程请求服务
-            </summary>
-            <param name="services">
-                <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
-            </param>
-            <param name="httpRemoteBuilder">
-                <see cref="T:HttpAgent.HttpRemoteBuilder" />
-            </param>
-            <returns>
-                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
-            </returns>
-        </member>
-    </members>
-</doc>
-ncyInjection.IServiceCollection" />
             </param>
             <param name="httpRemoteBuilder">
                 <see cref="T:HttpAgent.HttpRemoteBuilder" />

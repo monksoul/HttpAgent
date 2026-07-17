@@ -14,7 +14,7 @@ public static class IApplicationBuilderExtensions
     /// </summary>
     /// <remarks>
     ///     <para>支持 <c>HttpRequest.Body</c> 重复读取。</para>
-    ///     <para>https://learn.microsoft.com/zh-cn/aspnet/core/fundamentals/use-http-context?view=aspnetcore-8.0#enable-request-body-buffering</para>
+    ///     <para>参考文献：https://learn.microsoft.com/zh-cn/aspnet/core/fundamentals/use-http-context?view=aspnetcore-8.0#enable-request-body-buffering</para>
     /// </remarks>
     /// <param name="app">
     ///     <see cref="IApplicationBuilder" />

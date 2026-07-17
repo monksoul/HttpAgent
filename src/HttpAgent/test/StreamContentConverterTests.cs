@@ -24,7 +24,7 @@ public class StreamContentConverterTests
         httpResponseMessage.Content = streamContent;
 
         var converter = new StreamContentConverter();
-        var stream = converter.Read(httpResponseMessage);
+        var stream = converter.Read(new HttpContentConverterContext(httpResponseMessage));
         Assert.NotNull(stream);
 
         using var reader = new StreamReader(stream, Encoding.UTF8);
@@ -41,7 +41,7 @@ public class StreamContentConverterTests
         httpResponseMessage.Content = streamContent;
 
         var converter = new StreamContentConverter();
-        var stream = await converter.ReadAsync(httpResponseMessage);
+        var stream = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage));
         Assert.NotNull(stream);
 
         using var reader = new StreamReader(stream, Encoding.UTF8);
@@ -60,7 +60,8 @@ public class StreamContentConverterTests
         using var cancellationTokenSource = new CancellationTokenSource();
 
         var converter = new StreamContentConverter();
-        var stream = await converter.ReadAsync(httpResponseMessage, cancellationTokenSource.Token);
+        var stream = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage),
+            cancellationTokenSource.Token);
         Assert.NotNull(stream);
 
         using var reader = new StreamReader(stream, Encoding.UTF8);
@@ -77,7 +78,7 @@ public class StreamContentConverterTests
         httpResponseMessage.Content = streamContent;
 
         var converter = new StreamContentConverter();
-        var stream = converter.Read(typeof(Stream), httpResponseMessage);
+        var stream = converter.Read(typeof(Stream), new HttpContentConverterContext(httpResponseMessage));
         Assert.NotNull(stream);
 
         using var reader = new StreamReader((Stream)stream, Encoding.UTF8);
@@ -94,7 +95,7 @@ public class StreamContentConverterTests
         httpResponseMessage.Content = streamContent;
 
         var converter = new StreamContentConverter();
-        var stream = await converter.ReadAsync(typeof(Stream), httpResponseMessage);
+        var stream = await converter.ReadAsync(typeof(Stream), new HttpContentConverterContext(httpResponseMessage));
         Assert.NotNull(stream);
 
         using var reader = new StreamReader((Stream)stream, Encoding.UTF8);
@@ -113,7 +114,8 @@ public class StreamContentConverterTests
         using var cancellationTokenSource = new CancellationTokenSource();
 
         var converter = new StreamContentConverter();
-        var stream = await converter.ReadAsync(typeof(Stream), httpResponseMessage, cancellationTokenSource.Token);
+        var stream = await converter.ReadAsync(typeof(Stream), new HttpContentConverterContext(httpResponseMessage),
+            cancellationTokenSource.Token);
         Assert.NotNull(stream);
 
         using var reader = new StreamReader((Stream)stream, Encoding.UTF8);

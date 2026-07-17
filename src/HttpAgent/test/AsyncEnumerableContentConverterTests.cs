@@ -14,7 +14,7 @@ public class AsyncEnumerableContentConverterTests
         Assert.True(
             typeof(IHttpContentConverter<IAsyncEnumerable<ObjectModel>>).IsAssignableFrom(
                 typeof(AsyncEnumerableContentConverter<ObjectModel>)));
-        Assert.False(converter.KeepsResponseAlive);
+        Assert.True(converter.KeepsResponseAlive);
     }
 
     [Fact]
@@ -25,7 +25,8 @@ public class AsyncEnumerableContentConverterTests
         httpResponseMessage.Content = stringContent;
 
         var converter = new AsyncEnumerableContentConverter<ObjectModel>();
-        var asyncEnumerable = converter.Read(typeof(IAsyncEnumerable<ObjectModel>), httpResponseMessage);
+        var asyncEnumerable = converter.Read(typeof(IAsyncEnumerable<ObjectModel>),
+            new HttpContentConverterContext(httpResponseMessage));
         Assert.NotNull(asyncEnumerable);
         await foreach (var item in (asyncEnumerable as IAsyncEnumerable<ObjectModel>)!)
         {
@@ -39,7 +40,8 @@ public class AsyncEnumerableContentConverterTests
         httpResponseMessage2.Content = stringContent2;
 
         var converter2 = new AsyncEnumerableContentConverter<ObjectModel>();
-        var asyncEnumerable2 = converter2.Read(typeof(IAsyncEnumerable<ObjectModel>), httpResponseMessage2);
+        var asyncEnumerable2 = converter2.Read(typeof(IAsyncEnumerable<ObjectModel>),
+            new HttpContentConverterContext(httpResponseMessage2));
         Assert.NotNull(asyncEnumerable2);
         await foreach (var item in (asyncEnumerable2 as IAsyncEnumerable<ObjectModel>)!)
         {
@@ -57,7 +59,8 @@ public class AsyncEnumerableContentConverterTests
         httpResponseMessage.Content = stringContent;
 
         var converter = new AsyncEnumerableContentConverter<ObjectModel>();
-        var asyncEnumerable = await converter.ReadAsync(typeof(IAsyncEnumerable<ObjectModel>), httpResponseMessage);
+        var asyncEnumerable = await converter.ReadAsync(typeof(IAsyncEnumerable<ObjectModel>),
+            new HttpContentConverterContext(httpResponseMessage));
         Assert.NotNull(asyncEnumerable);
         await foreach (var item in (asyncEnumerable as IAsyncEnumerable<ObjectModel>)!)
         {
@@ -71,7 +74,8 @@ public class AsyncEnumerableContentConverterTests
         httpResponseMessage2.Content = stringContent2;
 
         var converter2 = new AsyncEnumerableContentConverter<ObjectModel>();
-        var asyncEnumerable2 = await converter2.ReadAsync(typeof(IAsyncEnumerable<ObjectModel>), httpResponseMessage2);
+        var asyncEnumerable2 = await converter2.ReadAsync(typeof(IAsyncEnumerable<ObjectModel>),
+            new HttpContentConverterContext(httpResponseMessage2));
         Assert.NotNull(asyncEnumerable2);
         await foreach (var item in (asyncEnumerable2 as IAsyncEnumerable<ObjectModel>)!)
         {
@@ -89,7 +93,7 @@ public class AsyncEnumerableContentConverterTests
         httpResponseMessage.Content = stringContent;
 
         var converter = new AsyncEnumerableContentConverter<ObjectModel>();
-        var asyncEnumerable = converter.Read(httpResponseMessage);
+        var asyncEnumerable = converter.Read(new HttpContentConverterContext(httpResponseMessage));
         Assert.NotNull(asyncEnumerable);
         await foreach (var item in asyncEnumerable)
         {
@@ -103,7 +107,7 @@ public class AsyncEnumerableContentConverterTests
         httpResponseMessage2.Content = stringContent2;
 
         var converter2 = new AsyncEnumerableContentConverter<ObjectModel>();
-        var asyncEnumerable2 = converter2.Read(httpResponseMessage2);
+        var asyncEnumerable2 = converter2.Read(new HttpContentConverterContext(httpResponseMessage2));
         Assert.NotNull(asyncEnumerable2);
         await foreach (var item in asyncEnumerable2)
         {
@@ -121,7 +125,7 @@ public class AsyncEnumerableContentConverterTests
         httpResponseMessage.Content = stringContent;
 
         var converter = new AsyncEnumerableContentConverter<ObjectModel>();
-        var asyncEnumerable = await converter.ReadAsync(httpResponseMessage);
+        var asyncEnumerable = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage));
         Assert.NotNull(asyncEnumerable);
         await foreach (var item in asyncEnumerable)
         {
@@ -135,7 +139,7 @@ public class AsyncEnumerableContentConverterTests
         httpResponseMessage2.Content = stringContent2;
 
         var converter2 = new AsyncEnumerableContentConverter<ObjectModel>();
-        var asyncEnumerable2 = await converter2.ReadAsync(httpResponseMessage2);
+        var asyncEnumerable2 = await converter2.ReadAsync(new HttpContentConverterContext(httpResponseMessage2));
         Assert.NotNull(asyncEnumerable2);
         await foreach (var item in asyncEnumerable2)
         {

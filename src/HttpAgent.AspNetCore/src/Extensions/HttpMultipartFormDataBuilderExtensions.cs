@@ -25,6 +25,7 @@ public static class HttpMultipartFormDataBuilderExtensions
     /// <returns>
     ///     <see cref="HttpMultipartFormDataBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public static HttpMultipartFormDataBuilder AddFile(this HttpMultipartFormDataBuilder httpMultipartFormDataBuilder,
         IFormFile formFile, string? name = null, string? fileName = null, string? contentType = null,
         Encoding? contentEncoding = null)
@@ -51,6 +52,7 @@ public static class HttpMultipartFormDataBuilderExtensions
     /// <returns>
     ///     <see cref="HttpMultipartFormDataBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public static HttpMultipartFormDataBuilder AddFiles(this HttpMultipartFormDataBuilder httpMultipartFormDataBuilder,
         IEnumerable<IFormFile> formFiles, string? name = null)
     {
@@ -86,6 +88,7 @@ public static class HttpMultipartFormDataBuilderExtensions
     /// <returns>
     ///     <see cref="HttpMultipartFormDataBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public static HttpMultipartFormDataBuilder AddFile(this HttpMultipartFormDataBuilder httpMultipartFormDataBuilder,
         IBrowserFile browserFile, string? name = null, string? fileName = null, string? contentType = null,
         Encoding? contentEncoding = null, long maxAllowedSize = 512000, CancellationToken cancellationToken = default)
@@ -116,6 +119,7 @@ public static class HttpMultipartFormDataBuilderExtensions
     /// <returns>
     ///     <see cref="HttpMultipartFormDataBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public static HttpMultipartFormDataBuilder AddFiles(this HttpMultipartFormDataBuilder httpMultipartFormDataBuilder,
         IEnumerable<IBrowserFile> browserFiles, string? name = null, long maxAllowedSize = 512000,
         CancellationToken cancellationToken = default)

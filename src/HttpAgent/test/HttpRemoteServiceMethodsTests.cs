@@ -22,7 +22,6 @@ public class HttpRemoteServiceMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
 
@@ -54,7 +53,6 @@ public class HttpRemoteServiceMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
 
@@ -87,7 +85,6 @@ public class HttpRemoteServiceMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
 
@@ -120,7 +117,6 @@ public class HttpRemoteServiceMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
 
@@ -154,7 +150,6 @@ public class HttpRemoteServiceMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
 
@@ -185,7 +180,6 @@ public class HttpRemoteServiceMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
 
@@ -217,7 +211,6 @@ public class HttpRemoteServiceMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
 
@@ -249,7 +242,6 @@ public class HttpRemoteServiceMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
 
@@ -283,7 +275,6 @@ public class HttpRemoteServiceMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
 
@@ -322,7 +313,6 @@ public class HttpRemoteServiceMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
 
@@ -355,7 +345,6 @@ public class HttpRemoteServiceMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
 
@@ -395,7 +384,6 @@ public class HttpRemoteServiceMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
 
@@ -429,7 +417,6 @@ public class HttpRemoteServiceMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
 
@@ -467,7 +454,6 @@ public class HttpRemoteServiceMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
 
@@ -499,7 +485,6 @@ public class HttpRemoteServiceMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
 
@@ -539,7 +524,6 @@ public class HttpRemoteServiceMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
 
@@ -586,7 +570,6 @@ public class HttpRemoteServiceMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
 
@@ -630,7 +613,6 @@ public class HttpRemoteServiceMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
 
@@ -659,7 +641,6 @@ public class HttpRemoteServiceMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
 
@@ -692,7 +673,6 @@ public class HttpRemoteServiceMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
 
@@ -722,7 +702,6 @@ public class HttpRemoteServiceMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
 
@@ -756,7 +735,6 @@ public class HttpRemoteServiceMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
 
@@ -784,7 +762,6 @@ public class HttpRemoteServiceMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
 
@@ -816,7 +793,6 @@ public class HttpRemoteServiceMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
 
@@ -845,7 +821,6 @@ public class HttpRemoteServiceMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
 
@@ -879,7 +854,6 @@ public class HttpRemoteServiceMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
 
@@ -907,7 +881,6 @@ public class HttpRemoteServiceMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
 
@@ -936,7 +909,6 @@ public class HttpRemoteServiceMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
 
@@ -965,7 +937,6 @@ public class HttpRemoteServiceMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
 
@@ -998,7 +969,6 @@ public class HttpRemoteServiceMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
 
@@ -1028,7 +998,6 @@ public class HttpRemoteServiceMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
 
@@ -1062,7 +1031,6 @@ public class HttpRemoteServiceMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
 
@@ -1090,7 +1058,6 @@ public class HttpRemoteServiceMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
 
@@ -1122,7 +1089,6 @@ public class HttpRemoteServiceMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
 
@@ -1152,7 +1118,6 @@ public class HttpRemoteServiceMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
 
@@ -1186,7 +1151,6 @@ public class HttpRemoteServiceMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
 
@@ -1216,7 +1180,6 @@ public class HttpRemoteServiceMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
 

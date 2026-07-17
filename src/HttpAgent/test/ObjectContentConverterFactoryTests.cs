@@ -20,27 +20,29 @@ public class ObjectContentConverterFactoryTests
         var httpResponseMessage = new HttpResponseMessage();
         httpResponseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-        Assert.True(factory.GetConverter(typeof(object), httpResponseMessage).GetType() ==
+        var converterContext = new HttpContentConverterContext(httpResponseMessage);
+
+        Assert.True(factory.GetConverter(typeof(object), converterContext).GetType() ==
                     typeof(ObjectContentConverter));
-        Assert.True(factory.GetConverter<object>(httpResponseMessage).GetType() ==
+        Assert.True(factory.GetConverter<object>(converterContext).GetType() ==
                     typeof(ObjectContentConverter<object>));
 
         httpResponseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/xml");
-        Assert.True(factory.GetConverter(typeof(object), httpResponseMessage).GetType() ==
+        Assert.True(factory.GetConverter(typeof(object), converterContext).GetType() ==
                     typeof(XmlObjectContentConverter));
-        Assert.True(factory.GetConverter<object>(httpResponseMessage).GetType() ==
+        Assert.True(factory.GetConverter<object>(converterContext).GetType() ==
                     typeof(XmlObjectContentConverter<object>));
 
         httpResponseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/xml-patch+xml");
-        Assert.True(factory.GetConverter(typeof(object), httpResponseMessage).GetType() ==
+        Assert.True(factory.GetConverter(typeof(object), converterContext).GetType() ==
                     typeof(XmlObjectContentConverter));
-        Assert.True(factory.GetConverter<object>(httpResponseMessage).GetType() ==
+        Assert.True(factory.GetConverter<object>(converterContext).GetType() ==
                     typeof(XmlObjectContentConverter<object>));
 
         httpResponseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("text/xml");
-        Assert.True(factory.GetConverter(typeof(object), httpResponseMessage).GetType() ==
+        Assert.True(factory.GetConverter(typeof(object), converterContext).GetType() ==
                     typeof(XmlObjectContentConverter));
-        Assert.True(factory.GetConverter<object>(httpResponseMessage).GetType() ==
+        Assert.True(factory.GetConverter<object>(converterContext).GetType() ==
                     typeof(XmlObjectContentConverter<object>));
     }
 }

@@ -25,7 +25,7 @@ public class VoidContentConverterTests
         httpResponseMessage.Content = stringContent;
 
         var converter = new VoidContentConverter();
-        var result = converter.Read(httpResponseMessage);
+        var result = converter.Read(new HttpContentConverterContext(httpResponseMessage));
         Assert.Null(result);
     }
 
@@ -37,7 +37,7 @@ public class VoidContentConverterTests
         httpResponseMessage.Content = stringContent;
 
         var converter = new VoidContentConverter();
-        var result = await converter.ReadAsync(httpResponseMessage);
+        var result = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage));
         Assert.Null(result);
     }
 
@@ -51,7 +51,8 @@ public class VoidContentConverterTests
         using var cancellationTokenSource = new CancellationTokenSource();
 
         var converter = new VoidContentConverter();
-        var result = await converter.ReadAsync(httpResponseMessage, cancellationTokenSource.Token);
+        var result = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage),
+            cancellationTokenSource.Token);
         Assert.Null(result);
     }
 
@@ -63,7 +64,7 @@ public class VoidContentConverterTests
         httpResponseMessage.Content = stringContent;
 
         var converter = new VoidContentConverter();
-        var result = converter.Read(typeof(string), httpResponseMessage);
+        var result = converter.Read(typeof(string), new HttpContentConverterContext(httpResponseMessage));
         Assert.Null(result);
     }
 
@@ -75,7 +76,7 @@ public class VoidContentConverterTests
         httpResponseMessage.Content = stringContent;
 
         var converter = new VoidContentConverter();
-        var result = await converter.ReadAsync(typeof(string), httpResponseMessage);
+        var result = await converter.ReadAsync(typeof(string), new HttpContentConverterContext(httpResponseMessage));
         Assert.Null(result);
     }
 
@@ -89,7 +90,8 @@ public class VoidContentConverterTests
         using var cancellationTokenSource = new CancellationTokenSource();
 
         var converter = new VoidContentConverter();
-        var result = await converter.ReadAsync(typeof(string), httpResponseMessage, cancellationTokenSource.Token);
+        var result = await converter.ReadAsync(typeof(string), new HttpContentConverterContext(httpResponseMessage),
+            cancellationTokenSource.Token);
         Assert.Null(result);
     }
 }

@@ -6,6 +6,16 @@ namespace HttpAgent.AspNetCore.Tests;
 
 public class IActionResultContentConverterTests
 {
+    [Fact]
+    public void New_ReturnOK()
+    {
+        var converter = new IActionResultContentConverter();
+        Assert.NotNull(converter);
+        Assert.True(
+            typeof(IHttpContentConverter<IActionResult>).IsAssignableFrom(typeof(IActionResultContentConverter)));
+        Assert.True(converter.KeepsResponseAlive);
+    }
+
     [Theory]
     [InlineData(200, null)]
     [InlineData(204, typeof(NoContentResult))]
@@ -45,7 +55,8 @@ public class IActionResultContentConverterTests
 
         var httpResponseMessage = new HttpResponseMessage { StatusCode = HttpStatusCode.OK };
         httpResponseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
-        var actionResult = actionResultContentConverter.Read(httpResponseMessage);
+        var actionResult =
+            actionResultContentConverter.Read(new HttpContentConverterContext(httpResponseMessage));
 
         Assert.NotNull(actionResult);
         Assert.True(actionResult is ContentResult);
@@ -68,7 +79,8 @@ public class IActionResultContentConverterTests
         httpResponseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
         httpResponseMessage.Content.Headers.ContentDisposition =
             new ContentDispositionHeaderValue("attachment") { FileName = "test.pdf" };
-        var actionResult = actionResultContentConverter.Read(httpResponseMessage);
+        var actionResult =
+            actionResultContentConverter.Read(new HttpContentConverterContext(httpResponseMessage));
 
         Assert.NotNull(actionResult);
         Assert.True(actionResult is FileStreamResult);
@@ -94,7 +106,8 @@ public class IActionResultContentConverterTests
 
         var httpResponseMessage = new HttpResponseMessage { StatusCode = HttpStatusCode.OK };
         httpResponseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
-        var actionResult = await actionResultContentConverter.ReadAsync(httpResponseMessage);
+        var actionResult =
+            await actionResultContentConverter.ReadAsync(new HttpContentConverterContext(httpResponseMessage));
 
         Assert.NotNull(actionResult);
         Assert.True(actionResult is ContentResult);
@@ -117,7 +130,8 @@ public class IActionResultContentConverterTests
         httpResponseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
         httpResponseMessage.Content.Headers.ContentDisposition =
             new ContentDispositionHeaderValue("attachment") { FileName = "test.pdf" };
-        var actionResult = await actionResultContentConverter.ReadAsync(httpResponseMessage);
+        var actionResult =
+            await actionResultContentConverter.ReadAsync(new HttpContentConverterContext(httpResponseMessage));
 
         Assert.NotNull(actionResult);
         Assert.True(actionResult is FileStreamResult);
@@ -143,7 +157,8 @@ public class IActionResultContentConverterTests
 
         var httpResponseMessage = new HttpResponseMessage { StatusCode = HttpStatusCode.OK };
         httpResponseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
-        var actionResult = actionResultContentConverter.Read(typeof(ContentResult), httpResponseMessage);
+        var actionResult = actionResultContentConverter.Read(typeof(ContentResult),
+            new HttpContentConverterContext(httpResponseMessage));
 
         Assert.NotNull(actionResult);
         Assert.True(actionResult is ContentResult);
@@ -166,7 +181,8 @@ public class IActionResultContentConverterTests
         httpResponseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
         httpResponseMessage.Content.Headers.ContentDisposition =
             new ContentDispositionHeaderValue("attachment") { FileName = "test.pdf" };
-        var actionResult = actionResultContentConverter.Read(typeof(FileStreamResult), httpResponseMessage);
+        var actionResult = actionResultContentConverter.Read(typeof(FileStreamResult),
+            new HttpContentConverterContext(httpResponseMessage));
 
         Assert.NotNull(actionResult);
         Assert.True(actionResult is FileStreamResult);
@@ -192,7 +208,8 @@ public class IActionResultContentConverterTests
 
         var httpResponseMessage = new HttpResponseMessage { StatusCode = HttpStatusCode.OK };
         httpResponseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
-        var actionResult = await actionResultContentConverter.ReadAsync(typeof(ContentResult), httpResponseMessage);
+        var actionResult = await actionResultContentConverter.ReadAsync(typeof(ContentResult),
+            new HttpContentConverterContext(httpResponseMessage));
 
         Assert.NotNull(actionResult);
         Assert.True(actionResult is ContentResult);
@@ -215,7 +232,8 @@ public class IActionResultContentConverterTests
         httpResponseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
         httpResponseMessage.Content.Headers.ContentDisposition =
             new ContentDispositionHeaderValue("attachment") { FileName = "test.pdf" };
-        var actionResult = await actionResultContentConverter.ReadAsync(typeof(FileStreamResult), httpResponseMessage);
+        var actionResult = await actionResultContentConverter.ReadAsync(typeof(FileStreamResult),
+            new HttpContentConverterContext(httpResponseMessage));
 
         Assert.NotNull(actionResult);
         Assert.True(actionResult is FileStreamResult);

@@ -145,7 +145,7 @@ public class HttpRequestBuilderTests
         Assert.Equal("https://furion.net/service/user/job/?id=10", finalRequestUri12);
 
         var httpRequestBuilder12 =
-            new HttpRequestBuilder(HttpMethod.Get, new Uri("/api/test", UriKind.RelativeOrAbsolute));
+            new HttpRequestBuilder(HttpMethod.Get, new Uri("api/test", UriKind.RelativeOrAbsolute));
         httpRequestBuilder12.SetBaseAddress("/furion");
 
         var exception2 =
@@ -158,6 +158,18 @@ public class HttpRequestBuilderTests
         var finalRequestUri13 =
             httpRequestBuilder12.BuildFinalRequestUri(new Uri("http://localhost"), httpRemoteOptions);
         Assert.Equal("http://localhost/furion/api/test", finalRequestUri13);
+
+        var httpRequestBuilder13 =
+            new HttpRequestBuilder(HttpMethod.Get, new Uri("/api/test", UriKind.RelativeOrAbsolute));
+        var finalRequestUri14 =
+            httpRequestBuilder13.BuildFinalRequestUri(new Uri("http://localhost/abc/"), httpRemoteOptions);
+        Assert.Equal("http://localhost/api/test", finalRequestUri14);
+
+        var httpRequestBuilder14 =
+            new HttpRequestBuilder(HttpMethod.Get, new Uri("api/test", UriKind.RelativeOrAbsolute));
+        var finalRequestUri15 =
+            httpRequestBuilder14.BuildFinalRequestUri(new Uri("http://localhost/abc/"), httpRemoteOptions);
+        Assert.Equal("http://localhost/abc/api/test", finalRequestUri15);
     }
 
     [Fact]

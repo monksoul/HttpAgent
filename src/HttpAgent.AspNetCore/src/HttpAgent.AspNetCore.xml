@@ -199,10 +199,13 @@
                 <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult" /> 内容转换器
             </summary>
         </member>
-        <member name="M:HttpAgent.IActionResultContentConverter.Read(System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
+        <member name="P:HttpAgent.IActionResultContentConverter.KeepsResponseAlive">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.IActionResultContentConverter.ReadAsync(System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.IActionResultContentConverter.Read(HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.IActionResultContentConverter.ReadAsync(HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="M:HttpAgent.IActionResultContentConverter.TryGetEmptyContentResult(System.Net.Http.HttpResponseMessage,System.Net.HttpStatusCode@,Microsoft.AspNetCore.Mvc.IActionResult@)">
@@ -785,6 +788,7 @@
             <returns>
                 <typeparamref name="TResult" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsAsync``1(Microsoft.AspNetCore.Http.HttpContext,System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
@@ -867,6 +871,7 @@
             <returns>
                 <typeparamref name="TResult" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsString(Microsoft.AspNetCore.Http.HttpContext,System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
@@ -1573,6 +1578,7 @@
             <returns>
                 <see cref="T:System.Object" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.ForwardAsAsync(Microsoft.AspNetCore.Http.HttpContext,System.Type,System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
@@ -1655,6 +1661,7 @@
             <returns>
                 <see cref="T:System.Object" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="T:HttpAgent.HttpMultipartFormDataBuilderExtensions">
             <summary>
@@ -1678,6 +1685,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpMultipartFormDataBuilderExtensions.AddFiles(HttpAgent.HttpMultipartFormDataBuilder,System.Collections.Generic.IEnumerable{Microsoft.AspNetCore.Http.IFormFile},System.String)">
             <summary>
@@ -1693,6 +1701,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpMultipartFormDataBuilderExtensions.AddFile(HttpAgent.HttpMultipartFormDataBuilder,Microsoft.AspNetCore.Components.Forms.IBrowserFile,System.String,System.String,System.String,System.Text.Encoding,System.Int64,System.Threading.CancellationToken)">
             <summary>
@@ -1715,6 +1724,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpMultipartFormDataBuilderExtensions.AddFiles(HttpAgent.HttpMultipartFormDataBuilder,System.Collections.Generic.IEnumerable{Microsoft.AspNetCore.Components.Forms.IBrowserFile},System.String,System.Int64,System.Threading.CancellationToken)">
             <summary>
@@ -1734,6 +1744,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="T:HttpAgent.AspNetCore.Extensions.IApplicationBuilderExtensions">
             <summary>
@@ -1746,7 +1757,7 @@
             </summary>
             <remarks>
                 <para>支持 <c>HttpRequest.Body</c> 重复读取。</para>
-                <para>https://learn.microsoft.com/zh-cn/aspnet/core/fundamentals/use-http-context?view=aspnetcore-8.0#enable-request-body-buffering</para>
+                <para>参考文献：https://learn.microsoft.com/zh-cn/aspnet/core/fundamentals/use-http-context?view=aspnetcore-8.0#enable-request-body-buffering</para>
             </remarks>
             <param name="app">
                 <see cref="T:Microsoft.AspNetCore.Builder.IApplicationBuilder" />

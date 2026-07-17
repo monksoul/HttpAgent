@@ -17,22 +17,19 @@ public abstract class HttpContentConverterBase<TResult> : IHttpContentConverter<
     public IServiceProvider? ServiceProvider { get; set; }
 
     /// <inheritdoc />
-    public abstract TResult? Read(HttpResponseMessage httpResponseMessage,
+    public abstract TResult? Read(HttpContentConverterContext context, CancellationToken cancellationToken = default);
+
+    /// <inheritdoc />
+    public abstract Task<TResult?> ReadAsync(HttpContentConverterContext context,
         CancellationToken cancellationToken = default);
 
     /// <inheritdoc />
-    public abstract Task<TResult?> ReadAsync(HttpResponseMessage httpResponseMessage,
-        CancellationToken cancellationToken = default);
+    public virtual object? Read(Type resultType, HttpContentConverterContext context,
+        CancellationToken cancellationToken = default) => Read(context, cancellationToken);
 
     /// <inheritdoc />
-    public virtual object? Read(Type resultType, HttpResponseMessage httpResponseMessage,
-        CancellationToken cancellationToken = default) =>
-        Read(httpResponseMessage, cancellationToken);
-
-    /// <inheritdoc />
-    public virtual async Task<object?> ReadAsync(Type resultType, HttpResponseMessage httpResponseMessage,
-        CancellationToken cancellationToken = default) =>
-        await ReadAsync(httpResponseMessage, cancellationToken);
+    public virtual async Task<object?> ReadAsync(Type resultType, HttpContentConverterContext context,
+        CancellationToken cancellationToken = default) => await ReadAsync(context, cancellationToken);
 
     /// <inheritdoc />
     public object? GetService(Type serviceType) => ServiceProvider?.GetService(serviceType);

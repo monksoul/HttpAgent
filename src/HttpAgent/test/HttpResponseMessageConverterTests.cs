@@ -22,7 +22,7 @@ public class HttpResponseMessageConverterTests
         var httpResponseMessage = new HttpResponseMessage();
 
         var converter = new HttpResponseMessageConverter();
-        var responseMessage = converter.Read(httpResponseMessage);
+        var responseMessage = converter.Read(new HttpContentConverterContext(httpResponseMessage));
         Assert.NotNull(responseMessage);
         Assert.Equal(httpResponseMessage, responseMessage);
     }
@@ -33,7 +33,7 @@ public class HttpResponseMessageConverterTests
         var httpResponseMessage = new HttpResponseMessage();
 
         var converter = new HttpResponseMessageConverter();
-        var responseMessage = await converter.ReadAsync(httpResponseMessage);
+        var responseMessage = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage));
         Assert.NotNull(responseMessage);
         Assert.Equal(httpResponseMessage, responseMessage);
     }
@@ -46,7 +46,8 @@ public class HttpResponseMessageConverterTests
         using var cancellationTokenSource = new CancellationTokenSource();
 
         var converter = new HttpResponseMessageConverter();
-        var responseMessage = await converter.ReadAsync(httpResponseMessage, cancellationTokenSource.Token);
+        var responseMessage = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage),
+            cancellationTokenSource.Token);
         Assert.NotNull(responseMessage);
         Assert.Equal(httpResponseMessage, responseMessage);
     }
@@ -57,7 +58,7 @@ public class HttpResponseMessageConverterTests
         var httpResponseMessage = new HttpResponseMessage();
 
         var converter = new HttpResponseMessageConverter();
-        var responseMessage = converter.Read(typeof(byte[]), httpResponseMessage);
+        var responseMessage = converter.Read(typeof(byte[]), new HttpContentConverterContext(httpResponseMessage));
         Assert.NotNull(responseMessage);
         Assert.Equal(httpResponseMessage, responseMessage);
     }
@@ -68,7 +69,8 @@ public class HttpResponseMessageConverterTests
         var httpResponseMessage = new HttpResponseMessage();
 
         var converter = new HttpResponseMessageConverter();
-        var responseMessage = await converter.ReadAsync(typeof(byte[]), httpResponseMessage);
+        var responseMessage =
+            await converter.ReadAsync(typeof(byte[]), new HttpContentConverterContext(httpResponseMessage));
         Assert.NotNull(responseMessage);
         Assert.Equal(httpResponseMessage, responseMessage);
     }
@@ -82,7 +84,8 @@ public class HttpResponseMessageConverterTests
 
         var converter = new HttpResponseMessageConverter();
         var responseMessage =
-            await converter.ReadAsync(typeof(byte[]), httpResponseMessage, cancellationTokenSource.Token);
+            await converter.ReadAsync(typeof(byte[]), new HttpContentConverterContext(httpResponseMessage),
+                cancellationTokenSource.Token);
         Assert.NotNull(responseMessage);
         Assert.Equal(httpResponseMessage, responseMessage);
     }

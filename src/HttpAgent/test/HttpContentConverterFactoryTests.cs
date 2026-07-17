@@ -19,9 +19,7 @@ public class HttpContentConverterFactoryTests
         var logger = serviceProvider.GetRequiredService<IHttpRemoteLogger>();
         var httpContentConverterFactory1 = new HttpContentConverterFactory(serviceProvider, logger, null!, null!);
         Assert.NotNull(httpContentConverterFactory1.ServiceProvider);
-        Assert.Null(httpContentConverterFactory1.CurrentConverter);
         Assert.NotNull(httpContentConverterFactory1._logger);
-        Assert.NotNull(httpContentConverterFactory1._currentConverter);
         Assert.NotNull(httpContentConverterFactory1._converters);
         Assert.Equal(5, httpContentConverterFactory1._converters.Count);
         Assert.Equal(
@@ -31,10 +29,16 @@ public class HttpContentConverterFactoryTests
             ],
             httpContentConverterFactory1._converters.Select(u => u.Key));
         Assert.NotNull(httpContentConverterFactory1._genericConverters);
-        Assert.Single(httpContentConverterFactory1._genericConverters);
+        Assert.Equal(2, httpContentConverterFactory1._genericConverters.Count);
+
         Assert.Equal(typeof(IAsyncEnumerable<>), httpContentConverterFactory1._genericConverters.Keys.First());
         Assert.NotNull(httpContentConverterFactory1._genericConverters[typeof(IAsyncEnumerable<>)].First()
             .Invoke([typeof(ObjectModel)]));
+
+        Assert.Equal(typeof(HttpRemoteResult<>), httpContentConverterFactory1._genericConverters.Keys.Last());
+        Assert.NotNull(httpContentConverterFactory1._genericConverters[typeof(HttpRemoteResult<>)].Last()
+            .Invoke([typeof(ObjectModel)]));
+
         Assert.NotNull(httpContentConverterFactory1._genericConverterCache);
         Assert.Empty(httpContentConverterFactory1._genericConverterCache);
 
@@ -69,7 +73,7 @@ public class HttpContentConverterFactoryTests
                         typeof(CustomAsyncEnumerableContentConverter<>).MakeGenericType(typeArgs[0]))!)
             ]);
         Assert.NotNull(httpContentConverterFactory4._genericConverters);
-        Assert.Single(httpContentConverterFactory4._genericConverters);
+        Assert.Equal(2, httpContentConverterFactory4._genericConverters.Count);
         Assert.Equal(2, httpContentConverterFactory4._genericConverters[typeof(IAsyncEnumerable<>)].Count);
 
         var httpContentConverterFactory5 =
@@ -79,8 +83,9 @@ public class HttpContentConverterFactoryTests
                         typeof(CustomAsyncEnumerableContentConverter<>).MakeGenericType(typeArgs[0]))!)
             ]);
         Assert.NotNull(httpContentConverterFactory5._genericConverters);
-        Assert.Equal(2, httpContentConverterFactory5._genericConverters.Count);
+        Assert.Equal(3, httpContentConverterFactory5._genericConverters.Count);
         Assert.Single(httpContentConverterFactory5._genericConverters[typeof(IAsyncEnumerable<>)]);
+        Assert.Single(httpContentConverterFactory5._genericConverters[typeof(HttpRemoteResult<>)]);
         Assert.Single(httpContentConverterFactory5._genericConverters[typeof(IEnumerable<>)]);
     }
 
@@ -99,46 +104,46 @@ public class HttpContentConverterFactoryTests
         var httpResponseMessage = new HttpResponseMessage();
         httpResponseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
+        var converterContext = new HttpContentConverterContext(httpResponseMessage);
+
         Assert.Equal(typeof(HttpResponseMessageConverter),
-            httpContentConverterFactory.GetConverter<HttpResponseMessage>(httpResponseMessage).GetType());
-        Assert.True(httpContentConverterFactory.CurrentConverter is HttpResponseMessageConverter);
+            httpContentConverterFactory
+                .GetConverter<HttpResponseMessage>(converterContext).GetType());
 
         Assert.Equal(typeof(StringContentConverter),
-            httpContentConverterFactory.GetConverter<string>(httpResponseMessage).GetType());
-        Assert.True(httpContentConverterFactory.CurrentConverter is StringContentConverter);
+            httpContentConverterFactory.GetConverter<string>(converterContext).GetType());
 
         Assert.Equal(typeof(ByteArrayContentConverter),
-            httpContentConverterFactory.GetConverter<byte[]>(httpResponseMessage).GetType());
-        Assert.True(httpContentConverterFactory.CurrentConverter is ByteArrayContentConverter);
+            httpContentConverterFactory.GetConverter<byte[]>(converterContext).GetType());
 
         Assert.Equal(typeof(StreamContentConverter),
-            httpContentConverterFactory.GetConverter<Stream>(httpResponseMessage).GetType());
+            httpContentConverterFactory.GetConverter<Stream>(converterContext).GetType());
         Assert.Equal(typeof(VoidContentConverter),
-            httpContentConverterFactory.GetConverter<VoidContent>(httpResponseMessage).GetType());
+            httpContentConverterFactory.GetConverter<VoidContent>(converterContext).GetType());
         Assert.Equal(typeof(ObjectContentConverter<int>),
-            httpContentConverterFactory.GetConverter<int>(httpResponseMessage).GetType());
+            httpContentConverterFactory.GetConverter<int>(converterContext).GetType());
         Assert.Equal(typeof(ObjectContentConverter<ObjectModel>),
-            httpContentConverterFactory.GetConverter<ObjectModel>(httpResponseMessage).GetType());
+            httpContentConverterFactory.GetConverter<ObjectModel>(converterContext).GetType());
         Assert.Equal(typeof(AsyncEnumerableContentConverter<ObjectModel>),
-            httpContentConverterFactory.GetConverter<IAsyncEnumerable<ObjectModel>>(httpResponseMessage).GetType());
+            httpContentConverterFactory.GetConverter<IAsyncEnumerable<ObjectModel>>(converterContext).GetType());
 
         var httpRequestMessage = new HttpRequestMessage();
         httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPER_KEY, "TRUE");
         httpResponseMessage.RequestMessage = httpRequestMessage;
         Assert.Equal(typeof(ObjectContentConverter<HttpResponseMessage>),
-            httpContentConverterFactory.GetConverter<HttpResponseMessage>(httpResponseMessage).GetType());
+            httpContentConverterFactory.GetConverter<HttpResponseMessage>(converterContext).GetType());
         Assert.Equal(typeof(ObjectContentConverter<string>),
-            httpContentConverterFactory.GetConverter<string>(httpResponseMessage).GetType());
+            httpContentConverterFactory.GetConverter<string>(converterContext).GetType());
         Assert.Equal(typeof(ObjectContentConverter<byte[]>),
-            httpContentConverterFactory.GetConverter<byte[]>(httpResponseMessage).GetType());
+            httpContentConverterFactory.GetConverter<byte[]>(converterContext).GetType());
         Assert.Equal(typeof(ObjectContentConverter<Stream>),
-            httpContentConverterFactory.GetConverter<Stream>(httpResponseMessage).GetType());
+            httpContentConverterFactory.GetConverter<Stream>(converterContext).GetType());
         Assert.Equal(typeof(VoidContentConverter),
-            httpContentConverterFactory.GetConverter<VoidContent>(httpResponseMessage).GetType());
+            httpContentConverterFactory.GetConverter<VoidContent>(converterContext).GetType());
         Assert.Equal(typeof(ObjectContentConverter<int>),
-            httpContentConverterFactory.GetConverter<int>(httpResponseMessage).GetType());
+            httpContentConverterFactory.GetConverter<int>(converterContext).GetType());
         Assert.Equal(typeof(ObjectContentConverter<ObjectModel>),
-            httpContentConverterFactory.GetConverter<ObjectModel>(httpResponseMessage).GetType());
+            httpContentConverterFactory.GetConverter<ObjectModel>(converterContext).GetType());
     }
 
     [Fact]
@@ -157,8 +162,8 @@ public class HttpContentConverterFactoryTests
         httpResponseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
         Assert.Equal(typeof(CustomObjectContentConverter<ObjectModel>),
-            httpContentConverterFactory!.GetConverter<ObjectModel>(httpResponseMessage).GetType());
-        Assert.True(httpContentConverterFactory.CurrentConverter is CustomObjectContentConverter<ObjectModel>);
+            httpContentConverterFactory!.GetConverter<ObjectModel>(new HttpContentConverterContext(httpResponseMessage))
+                .GetType());
     }
 
     [Fact]
@@ -177,10 +182,13 @@ public class HttpContentConverterFactoryTests
         httpResponseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
         Assert.Equal(typeof(CustomStringContentConverter),
-            httpContentConverterFactory.GetConverter<string>(httpResponseMessage, new CustomStringContentConverter())
+            httpContentConverterFactory
+                .GetConverter<string>(new HttpContentConverterContext(httpResponseMessage,
+                    [new CustomStringContentConverter()]))
                 .GetType());
         Assert.Equal(typeof(CustomByteArrayContentConverter),
-            httpContentConverterFactory.GetConverter<byte[]>(httpResponseMessage).GetType());
+            httpContentConverterFactory.GetConverter<byte[]>(new HttpContentConverterContext(httpResponseMessage))
+                .GetType());
     }
 
     [Fact]
@@ -200,11 +208,12 @@ public class HttpContentConverterFactoryTests
         var httpContentConverterFactory =
             new HttpContentConverterFactory(serviceProvider, logger, null!, null!);
 
-        var result = httpContentConverterFactory.Read<string>(httpResponseMessage);
-        Assert.Equal("furion", result);
+        var result = httpContentConverterFactory.Read<string>(new HttpContentConverterContext(httpResponseMessage));
+        Assert.Equal("furion", result.Result);
 
-        var result2 = httpContentConverterFactory.Read<HttpResponseMessage>(httpResponseMessage);
-        Assert.Equal(result2, httpResponseMessage);
+        var result2 =
+            httpContentConverterFactory.Read<HttpResponseMessage>(new HttpContentConverterContext(httpResponseMessage));
+        Assert.Equal(result2.Result, httpResponseMessage);
     }
 
     [Fact]
@@ -224,11 +233,14 @@ public class HttpContentConverterFactoryTests
         var httpContentConverterFactory =
             new HttpContentConverterFactory(serviceProvider, logger, null!, null!);
 
-        var result = await httpContentConverterFactory.ReadAsync<string>(httpResponseMessage);
-        Assert.Equal("furion", result);
+        var result =
+            await httpContentConverterFactory.ReadAsync<string>(new HttpContentConverterContext(httpResponseMessage));
+        Assert.Equal("furion", result.Result);
 
-        var result2 = await httpContentConverterFactory.ReadAsync<HttpResponseMessage>(httpResponseMessage);
-        Assert.Equal(result2, httpResponseMessage);
+        var result2 =
+            await httpContentConverterFactory.ReadAsync<HttpResponseMessage>(
+                new HttpContentConverterContext(httpResponseMessage));
+        Assert.Equal(result2.Result, httpResponseMessage);
     }
 
     [Fact]
@@ -250,9 +262,10 @@ public class HttpContentConverterFactoryTests
 
         using var cancellationTokenSource = new CancellationTokenSource();
 
-        var result = await httpContentConverterFactory.ReadAsync<string>(httpResponseMessage,
-            cancellationToken: cancellationTokenSource.Token);
-        Assert.Equal("furion", result);
+        var result = await httpContentConverterFactory.ReadAsync<string>(
+            new HttpContentConverterContext(httpResponseMessage),
+            cancellationTokenSource.Token);
+        Assert.Equal("furion", result.Result);
     }
 
     [Fact]
@@ -270,35 +283,37 @@ public class HttpContentConverterFactoryTests
         var httpResponseMessage = new HttpResponseMessage();
         httpResponseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
+        var converterContext = new HttpContentConverterContext(httpResponseMessage);
+
         Assert.Equal(typeof(StringContentConverter),
-            httpContentConverterFactory.GetConverter(typeof(string), httpResponseMessage).GetType());
+            httpContentConverterFactory.GetConverter(typeof(string), converterContext).GetType());
         Assert.Equal(typeof(ByteArrayContentConverter),
-            httpContentConverterFactory.GetConverter(typeof(byte[]), httpResponseMessage).GetType());
+            httpContentConverterFactory.GetConverter(typeof(byte[]), converterContext).GetType());
         Assert.Equal(typeof(StreamContentConverter),
-            httpContentConverterFactory.GetConverter(typeof(Stream), httpResponseMessage).GetType());
+            httpContentConverterFactory.GetConverter(typeof(Stream), converterContext).GetType());
         Assert.Equal(typeof(ObjectContentConverter),
-            httpContentConverterFactory.GetConverter(typeof(int), httpResponseMessage).GetType());
+            httpContentConverterFactory.GetConverter(typeof(int), converterContext).GetType());
         Assert.Equal(typeof(ObjectContentConverter),
-            httpContentConverterFactory.GetConverter(typeof(ObjectModel), httpResponseMessage).GetType());
+            httpContentConverterFactory.GetConverter(typeof(ObjectModel), converterContext).GetType());
         Assert.Equal(typeof(AsyncEnumerableContentConverter<ObjectModel>),
-            httpContentConverterFactory.GetConverter(typeof(IAsyncEnumerable<ObjectModel>), httpResponseMessage)
+            httpContentConverterFactory.GetConverter(typeof(IAsyncEnumerable<ObjectModel>), converterContext)
                 .GetType());
 
         var httpRequestMessage = new HttpRequestMessage();
         httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_WRAPPER_KEY, "TRUE");
         httpResponseMessage.RequestMessage = httpRequestMessage;
         Assert.Equal(typeof(ObjectContentConverter),
-            httpContentConverterFactory.GetConverter(typeof(string), httpResponseMessage).GetType());
+            httpContentConverterFactory.GetConverter(typeof(string), converterContext).GetType());
         Assert.Equal(typeof(ObjectContentConverter),
-            httpContentConverterFactory.GetConverter(typeof(byte[]), httpResponseMessage).GetType());
+            httpContentConverterFactory.GetConverter(typeof(byte[]), converterContext).GetType());
         Assert.Equal(typeof(ObjectContentConverter),
-            httpContentConverterFactory.GetConverter(typeof(Stream), httpResponseMessage).GetType());
+            httpContentConverterFactory.GetConverter(typeof(Stream), converterContext).GetType());
         Assert.Equal(typeof(VoidContentConverter),
-            httpContentConverterFactory.GetConverter(typeof(VoidContent), httpResponseMessage).GetType());
+            httpContentConverterFactory.GetConverter(typeof(VoidContent), converterContext).GetType());
         Assert.Equal(typeof(ObjectContentConverter),
-            httpContentConverterFactory.GetConverter(typeof(int), httpResponseMessage).GetType());
+            httpContentConverterFactory.GetConverter(typeof(int), converterContext).GetType());
         Assert.Equal(typeof(ObjectContentConverter),
-            httpContentConverterFactory.GetConverter(typeof(ObjectModel), httpResponseMessage).GetType());
+            httpContentConverterFactory.GetConverter(typeof(ObjectModel), converterContext).GetType());
     }
 
     [Fact]
@@ -317,7 +332,8 @@ public class HttpContentConverterFactoryTests
         httpResponseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
         Assert.Equal(typeof(CustomObjectContentConverter),
-            httpContentConverterFactory!.GetConverter(typeof(ObjectModel), httpResponseMessage).GetType());
+            httpContentConverterFactory!
+                .GetConverter(typeof(ObjectModel), new HttpContentConverterContext(httpResponseMessage)).GetType());
     }
 
     [Fact]
@@ -337,9 +353,12 @@ public class HttpContentConverterFactoryTests
 
         Assert.Equal(typeof(CustomStringContentConverter),
             httpContentConverterFactory
-                .GetConverter(typeof(string), httpResponseMessage, new CustomStringContentConverter()).GetType());
+                .GetConverter(typeof(string),
+                    new HttpContentConverterContext(httpResponseMessage, [new CustomStringContentConverter()]))
+                .GetType());
         Assert.Equal(typeof(CustomByteArrayContentConverter),
-            httpContentConverterFactory.GetConverter(typeof(byte[]), httpResponseMessage).GetType());
+            httpContentConverterFactory
+                .GetConverter(typeof(byte[]), new HttpContentConverterContext(httpResponseMessage)).GetType());
     }
 
     [Fact]
@@ -359,11 +378,13 @@ public class HttpContentConverterFactoryTests
         var httpContentConverterFactory =
             new HttpContentConverterFactory(serviceProvider, logger, null!, null!);
 
-        var result = httpContentConverterFactory.Read(typeof(string), httpResponseMessage);
-        Assert.Equal("furion", result);
+        var result =
+            httpContentConverterFactory.Read(typeof(string), new HttpContentConverterContext(httpResponseMessage));
+        Assert.Equal("furion", result.Result);
 
-        var result2 = httpContentConverterFactory.Read(typeof(HttpResponseMessage), httpResponseMessage);
-        Assert.Equal(result2, httpResponseMessage);
+        var result2 = httpContentConverterFactory.Read(typeof(HttpResponseMessage),
+            new HttpContentConverterContext(httpResponseMessage));
+        Assert.Equal(result2.Result, httpResponseMessage);
     }
 
     [Fact]
@@ -383,11 +404,14 @@ public class HttpContentConverterFactoryTests
         var httpContentConverterFactory =
             new HttpContentConverterFactory(serviceProvider, logger, null!, null!);
 
-        var result = await httpContentConverterFactory.ReadAsync(typeof(string), httpResponseMessage);
-        Assert.Equal("furion", result);
+        var result =
+            await httpContentConverterFactory.ReadAsync(typeof(string),
+                new HttpContentConverterContext(httpResponseMessage));
+        Assert.Equal("furion", result.Result);
 
-        var result2 = await httpContentConverterFactory.ReadAsync(typeof(HttpResponseMessage), httpResponseMessage);
-        Assert.Equal(result2, httpResponseMessage);
+        var result2 = await httpContentConverterFactory.ReadAsync(typeof(HttpResponseMessage),
+            new HttpContentConverterContext(httpResponseMessage));
+        Assert.Equal(result2.Result, httpResponseMessage);
     }
 
     [Fact]
@@ -409,9 +433,10 @@ public class HttpContentConverterFactoryTests
 
         using var cancellationTokenSource = new CancellationTokenSource();
 
-        var result = await httpContentConverterFactory.ReadAsync(typeof(string), httpResponseMessage,
-            cancellationToken: cancellationTokenSource.Token);
-        Assert.Equal("furion", result);
+        var result = await httpContentConverterFactory.ReadAsync(typeof(string),
+            new HttpContentConverterContext(httpResponseMessage),
+            cancellationTokenSource.Token);
+        Assert.Equal("furion", result.Result);
     }
 
     [Fact]

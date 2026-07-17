@@ -73,11 +73,6 @@ public class ConstantsTests
         Assert.Equal("{BASE_ADDRESS}", Constants.REFERER_HEADER_BASE_ADDRESS_TEMPLATE);
 
     [Fact]
-    public void HTTP_RESPONSE_MESSAGE_ISNULL_MESSAGE() =>
-        Assert.Equal("The response content was not read, as it was empty.",
-            Constants.HTTP_RESPONSE_MESSAGE_ISNULL_MESSAGE);
-
-    [Fact]
     public void PROFILER_ANALYZER_KEY() => Assert.Equal("ProfilerAnalyzer", Constants.PROFILER_ANALYZER_KEY);
 
     [Fact]

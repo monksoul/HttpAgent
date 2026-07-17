@@ -8,10 +8,10 @@ namespace HttpAgent;
 internal sealed class ObjectContentConverterFactory : IObjectContentConverterFactory
 {
     /// <inheritdoc />
-    public IHttpContentConverter<TResult> GetConverter<TResult>(HttpResponseMessage httpResponseMessage)
+    public IHttpContentConverter<TResult> GetConverter<TResult>(HttpContentConverterContext context)
     {
         // 检查 HTTP 响应的内容类型是否为 XML 媒体类型
-        if (httpResponseMessage.IsXmlContent())
+        if (context.ResponseMessage.IsXmlContent())
         {
             return new XmlObjectContentConverter<TResult>();
         }
@@ -20,10 +20,10 @@ internal sealed class ObjectContentConverterFactory : IObjectContentConverterFac
     }
 
     /// <inheritdoc />
-    public IHttpContentConverter GetConverter(Type resultType, HttpResponseMessage httpResponseMessage)
+    public IHttpContentConverter GetConverter(Type resultType, HttpContentConverterContext context)
     {
         // 检查 HTTP 响应的内容类型是否为 XML 媒体类型
-        if (httpResponseMessage.IsXmlContent())
+        if (context.ResponseMessage.IsXmlContent())
         {
             return new XmlObjectContentConverter();
         }

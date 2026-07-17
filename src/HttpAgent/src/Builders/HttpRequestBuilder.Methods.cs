@@ -30,6 +30,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentException"></exception>
     public HttpRequestBuilder SetTraceIdentifier(string traceIdentifier)
     {
         // 空检查
@@ -47,6 +48,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentException"></exception>
     public HttpRequestBuilder SetContentType(string contentType)
     {
         // 空检查
@@ -90,6 +92,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentException"></exception>
     public HttpRequestBuilder SetContentEncoding(string encodingName)
     {
         // 空检查
@@ -112,7 +115,6 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
-    /// <exception cref="JsonException"></exception>
     public HttpRequestBuilder SetJsonContent(object? rawJson, Encoding? contentEncoding = null,
         string? contentType = null, JsonSerializerOptions? jsonSerializerOptions = null)
     {
@@ -195,6 +197,8 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    /// <exception cref="ArgumentException"></exception>
     public HttpRequestBuilder SetRawStringContent(string text, string contentType, Encoding? contentEncoding = null)
     {
         // 空检查
@@ -245,12 +249,13 @@ public sealed partial class HttpRequestBuilder
     /// <param name="rawContent">原始请求内容</param>
     /// <param name="contentType">内容类型</param>
     /// <param name="contentEncoding">内容编码</param>
-    /// <param name="disposeStreamOnRequestCompletion">是否在请求结束后自动释放流。默认值为：<c>false</c></param>
+    /// <param name="disposeResourcesOnRequestCompletion">是否在请求结束后自动释放资源。默认值为：<c>false</c></param>
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="NotSupportedException"></exception>
     public HttpRequestBuilder SetContent(object? rawContent, string? contentType = null,
-        Encoding? contentEncoding = null, bool disposeStreamOnRequestCompletion = false)
+        Encoding? contentEncoding = null, bool disposeResourcesOnRequestCompletion = false)
     {
         // 空检查
         if (!string.IsNullOrWhiteSpace(contentType))
@@ -281,8 +286,8 @@ public sealed partial class HttpRequestBuilder
             SetContentEncoding(contentEncoding);
         }
 
-        // 是否在请求结束后自动释放流
-        if (disposeStreamOnRequestCompletion && rawContent is IDisposable disposable)
+        // 是否在请求结束后自动释放资源
+        if (disposeResourcesOnRequestCompletion && rawContent is IDisposable disposable)
         {
             AddDisposable(disposable);
         }
@@ -346,6 +351,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public HttpRequestBuilder SetMultipartContent(Action<HttpMultipartFormDataBuilder> configure, bool omitContentType)
     {
         // 空检查
@@ -375,6 +381,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     internal HttpRequestBuilder SetMultipartContent(HttpMultipartFormDataBuilder httpMultipartFormDataBuilder)
     {
         // 空检查
@@ -396,6 +403,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentException"></exception>
     public HttpRequestBuilder WithHeader(string key, object? value, bool escape = false, bool replace = false)
     {
         // 空检查
@@ -415,6 +423,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public HttpRequestBuilder WithHeaders(IDictionary<string, object?> headers, bool escape = false,
         bool replace = false)
     {
@@ -436,6 +445,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public HttpRequestBuilder WithHeaders(object headerSource, bool escape = false, bool replace = false)
     {
         // 空检查
@@ -454,6 +464,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public HttpRequestBuilder RemoveHeaders(params string[] headerNames)
     {
         // 空检查
@@ -486,6 +497,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentException"></exception>
     public HttpRequestBuilder SetFragment(string fragment)
     {
         // 空检查
@@ -514,6 +526,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public HttpRequestBuilder WithPathSegments(IEnumerable<string> segments)
     {
         // 空检查
@@ -533,6 +546,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public HttpRequestBuilder RemovePathSegments(params string[] segments)
     {
         // 空检查
@@ -569,6 +583,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentException"></exception>
     public HttpRequestBuilder WithQueryParameter(string key, object? value, bool replace = false,
         bool ignoreNullValues = false)
     {
@@ -590,6 +605,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public HttpRequestBuilder WithQueryParameter(string key, Func<object?> valueProvider, bool replace = false,
         bool ignoreNullValues = false)
     {
@@ -610,6 +626,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public HttpRequestBuilder WithQueryParameter(string key, Func<UrlFormattingContext, object?> valueProvider,
         bool replace = false, bool ignoreNullValues = false)
     {
@@ -629,6 +646,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public HttpRequestBuilder WithQueryParameters(IDictionary<string, object?> parameters, bool replace = false,
         bool ignoreNullValues = false)
     {
@@ -657,6 +675,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public HttpRequestBuilder WithQueryParameters(object parameterSource, string? prefix = null, bool replace = false,
         bool ignoreNullValues = false)
     {
@@ -691,6 +710,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public HttpRequestBuilder RemoveQueryParameters(params string[] parameterNames)
     {
         // 空检查
@@ -725,6 +745,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentException"></exception>
     public HttpRequestBuilder WithPathParameter(string key, object? value)
     {
         // 空检查
@@ -741,6 +762,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public HttpRequestBuilder WithPathParameters(IDictionary<string, object?> parameters)
     {
         // 空检查
@@ -764,6 +786,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public HttpRequestBuilder WithPathParameters(object? parameterSource, string? prefix = null)
     {
         // 检查是否设置了模板字符串前缀
@@ -793,6 +816,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentException"></exception>
     public HttpRequestBuilder WithCookie(string cookieHeaderValue)
     {
         // 空检查
@@ -810,6 +834,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentException"></exception>
     public HttpRequestBuilder WithCookie(string key, object? value)
     {
         // 空检查
@@ -826,6 +851,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentException"></exception>
     public HttpRequestBuilder WithCookies(string cookieHeaderValue)
     {
         // 空检查
@@ -842,6 +868,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public HttpRequestBuilder WithCookies(IDictionary<string, object?> cookies)
     {
         // 空检查
@@ -864,6 +891,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public HttpRequestBuilder WithCookies(object cookieSource)
     {
         // 空检查
@@ -883,6 +911,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public HttpRequestBuilder RemoveCookies(params string[] cookieNames)
     {
         // 空检查
@@ -951,6 +980,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public HttpRequestBuilder SetHttpClientProvider(Func<(HttpClient Instance, Action<HttpClient>? Release)> configure)
     {
         // 空检查
@@ -969,6 +999,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public HttpRequestBuilder AddHttpContentProcessors(Func<IEnumerable<IHttpContentProcessor>> configure)
     {
         // 空检查
@@ -989,6 +1020,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public HttpRequestBuilder AddHttpContentConverters(Func<IEnumerable<IHttpContentConverter>> configure)
     {
         // 空检查
@@ -1038,6 +1070,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public HttpRequestBuilder SetOnPostReceiveResponse(Action<HttpResponseMessage> configure)
     {
         // 空检查
@@ -1055,6 +1088,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public HttpRequestBuilder SetOnRequestFailed(Action<Exception, HttpResponseMessage?> configure)
     {
         // 空检查
@@ -1095,6 +1129,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentException"></exception>
     public HttpRequestBuilder AddBasicAuthentication(string username, string password)
     {
         // 空检查
@@ -1116,6 +1151,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentException"></exception>
     public HttpRequestBuilder AddJwtBearerAuthentication(string jwtToken)
     {
         // 空检查
@@ -1134,6 +1170,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentException"></exception>
     public HttpRequestBuilder AddDigestAuthentication(string username, string password)
     {
         // 空检查
@@ -1167,6 +1204,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public HttpRequestBuilder AddAuthentication(AuthenticationHeaderValue authenticationHeader)
     {
         // 空检查
@@ -1265,6 +1303,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public HttpRequestBuilder AddDisposable(IDisposable disposable)
     {
         // 空检查
@@ -1283,6 +1322,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public HttpRequestBuilder AddDisposables(params IEnumerable<IDisposable> disposables)
     {
         // 空检查
@@ -1385,6 +1425,8 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    /// <exception cref="ArgumentException"></exception>
     public HttpRequestBuilder WithStatusCodeHandler(IEnumerable<object> statusCodes,
         Func<HttpResponseMessage, CancellationToken, Task> handler)
     {
@@ -1489,6 +1531,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public HttpRequestBuilder Profiler(Action<HttpRemoteAnalyzer> predicate, bool enabled)
     {
         // 空检查
@@ -1519,6 +1562,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public HttpRequestBuilder WithProperty(string key, object? value)
     {
         // 空检查
@@ -1535,6 +1579,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public HttpRequestBuilder WithProperties(IDictionary<string, object?> properties)
     {
         // 空检查
@@ -1553,6 +1598,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public HttpRequestBuilder WithProperties(object? propertySource)
     {
         // 空检查
@@ -1612,18 +1658,12 @@ public sealed partial class HttpRequestBuilder
     /// <summary>
     ///     设置请求基地址
     /// </summary>
-    /// <param name="baseAddress">基地址</param>
+    /// <param name="baseAddress">基地址。支持相对路径</param>
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
     public HttpRequestBuilder SetBaseAddress(Uri? baseAddress)
     {
-        // 检查基地址是否是绝对路径地址（移动到构建时检查）
-        // if (baseAddress is not null && !baseAddress.IsAbsoluteUri)
-        // {
-        //     throw new ArgumentException("The base address must be absolute.", nameof(baseAddress));
-        // }
-
         BaseAddress = baseAddress;
 
         return this;
@@ -1709,6 +1749,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     /// <exception cref="ArgumentException"></exception>
     public HttpRequestBuilder SuppressExceptions(Type[] exceptionTypes)
     {
@@ -1722,7 +1763,7 @@ public sealed partial class HttpRequestBuilder
                 "All elements in exceptionTypes must be non-null and assignable to System.Exception.");
         }
 
-        // 释放引用（无关紧要）
+        // 释放引用
         SuppressExceptionTypes = null;
 
         // 空检查
@@ -1752,6 +1793,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public HttpRequestBuilder When(bool condition, Action<HttpRequestBuilder> configure)
     {
         // 空检查
@@ -1772,6 +1814,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public HttpRequestBuilder Clone()
     {
         // 空检查
@@ -1822,6 +1865,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public HttpRequestBuilder Asserts(Action<HttpAssertionBuilder> configure)
     {
         // 空检查
@@ -1930,6 +1974,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="IDictionary{TKey,TValue}" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     internal static IDictionary<string, List<string?>>? MergeHeaders(
         [NotNullIfNotNull(nameof(existing))] IDictionary<string, List<string?>>? existing,
         IDictionary<string, object?> newHeaders, bool escape, bool replace)
@@ -2004,6 +2049,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     internal HttpRequestBuilder ConfigureForRedirect(Uri? redirectUri, HttpMethod redirectMethod)
     {
         // 空检查

@@ -244,7 +244,6 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
         var (httpResponseMessage, requestDuration) = await httpRemoteService.SendCoreAsync(httpRequestBuilder,
@@ -289,7 +288,6 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
         var (httpResponseMessage, requestDuration) = await httpRemoteService.SendCoreAsync(httpRequestBuilder,
@@ -324,7 +322,6 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"))
             .EnsureSuccessStatusCode();
@@ -359,7 +356,6 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
         await app.StartAsync();
 
         var i = 0;
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"))
             .SetOnPreSendRequest(_ =>
@@ -400,7 +396,6 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
         await app.StartAsync();
 
         var i = 0;
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"))
             .SetOnPreSendRequest(_ =>
@@ -452,7 +447,6 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
         await app.StartAsync();
 
         var i = 0;
-        // 测试代码
         var customRequestEventHandler = new CustomRequestEventHandler();
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService(customRequestEventHandler);
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"))
@@ -506,7 +500,6 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
         await app.StartAsync();
 
         var i = 0;
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"))
             .SetHttpClientProvider(() => (new HttpClient(), client =>
@@ -544,7 +537,6 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
         await app.StartAsync();
 
         var i = 0;
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"))
             .SetHttpClientProvider(() => (new HttpClient(), client =>
@@ -579,7 +571,6 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
 
         await app.StartAsync();
 
-        // 测试代码
         var callTimeoutActionTimes = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder =
@@ -634,7 +625,6 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
     [Fact]
     public async Task SendCoreAsync_UnknownServer_ReturnOK()
     {
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder =
             new HttpRequestBuilder(HttpMethod.Get, new Uri("https://test-unknown-server.com/test"));
@@ -653,7 +643,6 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
     [Fact]
     public async Task SendCoreAsync_UnknownServer_EnsureSuccessStatusCode_ReturnOK()
     {
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder =
             new HttpRequestBuilder(HttpMethod.Get, new Uri("https://test-unknown-server.com/test"))
@@ -689,7 +678,6 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
         using var cancellationTokenSource = new CancellationTokenSource();
         cancellationTokenSource.CancelAfter(200);
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder =
             new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
@@ -721,7 +709,6 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
 
         await app.StartAsync();
 
-        // 测试代码
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -810,7 +797,6 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var i = 0;
@@ -848,7 +834,6 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var i = 0;
@@ -888,7 +873,6 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService(allowAutoRedirect: false);
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
         var (httpResponseMessage, requestDuration) = await httpRemoteService.SendCoreAsync(httpRequestBuilder,
@@ -933,7 +917,6 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) =
             Helpers.CreateHttpRemoteService(allowAutoRedirect: false, frameworkAllowAutoRedirect: false);
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
@@ -960,7 +943,6 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
     [Fact]
     public async Task SendCoreAsync_UnknownServer_WithSuppressExceptions_ReturnOK()
     {
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder =
             new HttpRequestBuilder(HttpMethod.Get, new Uri("https://test-unknown-server.com/test"));
@@ -1000,7 +982,6 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"))
             .EnsureSuccessStatusCode();
@@ -1023,30 +1004,6 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
     }
 
     [Fact]
-    public void DynamicCreateHttpRemoteResult_Invalid_Parameters()
-    {
-        var exception = Assert.Throws<ArgumentException>(() =>
-            HttpRemoteService.DynamicCreateHttpRemoteResult(typeof(string), null!, null, 100));
-
-        Assert.Equal(
-            $"`{typeof(string)}` type is not assignable from `{typeof(HttpRemoteResult<>)}`. (Parameter 'httpRemoteResultType')",
-            exception.Message);
-    }
-
-    [Fact]
-    public void DynamicCreateHttpRemoteResult_ReturnOK()
-    {
-        var httpResponseMessage = new HttpResponseMessage { StatusCode = HttpStatusCode.OK };
-        httpResponseMessage.Content = new StringContent("Hello World!");
-
-        var httpRemoteResult = HttpRemoteService.DynamicCreateHttpRemoteResult(typeof(HttpRemoteResult<string>),
-            httpResponseMessage, "Hello World!", 50) as HttpRemoteResult<string>;
-
-        Assert.NotNull(httpRemoteResult);
-        Assert.Equal("Hello World!", httpRemoteResult.Result);
-    }
-
-    [Fact]
     public async Task SendAsString_ReturnOK()
     {
         var port = NetworkUtility.FindAvailableTcpPort();
@@ -1062,7 +1019,6 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -1095,7 +1051,6 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -1132,7 +1087,6 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -1165,7 +1119,6 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var str = await httpRemoteService.SendAsStringAsync(HttpRequestBuilder.Get($"http://localhost:{port}/test"));
@@ -1195,7 +1148,6 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         await using var stream =
@@ -1230,7 +1182,6 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var bytes = await httpRemoteService.SendAsByteArrayAsync(
@@ -1588,6 +1539,66 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
         Assert.Equal(3, i);
 
         await app.StopAsync();
+    }
+
+    [Fact]
+    public async Task SendCoreAsync_NoSendMethod_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        await using var app = builder.Build();
+
+        app.MapGet("/test", async () =>
+        {
+            await Task.Delay(50);
+            return "Hello World!";
+        });
+
+        await app.StartAsync();
+
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
+        var (httpResponseMessage, requestDuration) =
+            await httpRemoteService.SendCoreAsync(httpRequestBuilder, HttpCompletionOption.ResponseContentRead);
+
+        Assert.NotNull(httpResponseMessage);
+        Assert.True(requestDuration > 0);
+        Assert.True(httpResponseMessage.IsSuccessStatusCode);
+        Assert.Equal(200, (int)httpResponseMessage.StatusCode);
+        Assert.Equal("Hello World!", await httpResponseMessage.Content.ReadAsStringAsync());
+
+        await serviceProvider.DisposeAsync();
+    }
+
+    [Fact]
+    public async Task SendCore_NoSendMethod_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        await using var app = builder.Build();
+
+        app.MapGet("/test", async () =>
+        {
+            await Task.Delay(50);
+            return "Hello World!";
+        });
+
+        await app.StartAsync();
+
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
+        var (httpResponseMessage, requestDuration) =
+            httpRemoteService.SendCore(httpRequestBuilder, HttpCompletionOption.ResponseContentRead);
+
+        Assert.NotNull(httpResponseMessage);
+        Assert.True(requestDuration > 0);
+        Assert.True(httpResponseMessage.IsSuccessStatusCode);
+        Assert.Equal(200, (int)httpResponseMessage.StatusCode);
+        Assert.Equal("Hello World!", await httpResponseMessage.Content.ReadAsStringAsync());
+
+        await serviceProvider.DisposeAsync();
     }
 
     private sealed class HttpAccessTokenProvider : IHttpAccessTokenProvider

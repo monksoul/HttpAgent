@@ -3,20 +3,16 @@
 public class ClayContentConverter : HttpContentConverterBase<Clay>
 {
     /// <inheritdoc />
-    public override Clay? Read(HttpResponseMessage httpResponseMessage,
-        CancellationToken cancellationToken = default)
+    public override Clay? Read(HttpContentConverterContext context, CancellationToken cancellationToken = default)
     {
-        var str = AsyncUtility.RunSync(() => httpResponseMessage.Content.ReadAsStringAsync(cancellationToken));
-
-        return Clay.Parse(str, ClayOptions.Flexible);
+        return AsyncUtility.RunSync(() => ReadAsync(context, cancellationToken));
     }
 
     /// <inheritdoc />
-    public override async Task<Clay?> ReadAsync(HttpResponseMessage httpResponseMessage,
+    public override async Task<Clay?> ReadAsync(HttpContentConverterContext context,
         CancellationToken cancellationToken = default)
     {
-        var str = await httpResponseMessage.Content.ReadAsStringAsync(cancellationToken);
-
+        var str = await context.ResponseMessage.Content.ReadAsStringAsync(cancellationToken);
         return Clay.Parse(str, ClayOptions.Flexible);
     }
 }
@@ -24,20 +20,16 @@ public class ClayContentConverter : HttpContentConverterBase<Clay>
 public class DynamicContentConverter : HttpContentConverterBase<dynamic>
 {
     /// <inheritdoc />
-    public override dynamic? Read(HttpResponseMessage httpResponseMessage,
-        CancellationToken cancellationToken = default)
+    public override dynamic? Read(HttpContentConverterContext context, CancellationToken cancellationToken = default)
     {
-        var str = AsyncUtility.RunSync(() => httpResponseMessage.Content.ReadAsStringAsync(cancellationToken));
-
-        return Clay.Parse(str, ClayOptions.Flexible);
+        return AsyncUtility.RunSync(() => ReadAsync(context, cancellationToken));
     }
 
     /// <inheritdoc />
-    public override async Task<dynamic?> ReadAsync(HttpResponseMessage httpResponseMessage,
+    public override async Task<dynamic?> ReadAsync(HttpContentConverterContext context,
         CancellationToken cancellationToken = default)
     {
-        var str = await httpResponseMessage.Content.ReadAsStringAsync(cancellationToken);
-
+        var str = await context.ResponseMessage.Content.ReadAsStringAsync(cancellationToken);
         return Clay.Parse(str, ClayOptions.Flexible);
     }
 }

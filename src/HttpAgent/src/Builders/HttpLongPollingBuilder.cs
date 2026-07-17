@@ -20,6 +20,7 @@ public sealed class HttpLongPollingBuilder
     /// </summary>
     /// <param name="httpMethod">请求方式</param>
     /// <param name="requestUri">请求地址</param>
+    /// <exception cref="ArgumentNullException"></exception>
     internal HttpLongPollingBuilder(HttpMethod httpMethod, Uri? requestUri)
     {
         // 空检查
@@ -120,6 +121,7 @@ public sealed class HttpLongPollingBuilder
     /// <returns>
     ///     <see cref="HttpLongPollingBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public HttpLongPollingBuilder SetOnDataReceived(Func<HttpResponseMessage, CancellationToken, Task> configure)
     {
         // 空检查
@@ -137,6 +139,7 @@ public sealed class HttpLongPollingBuilder
     /// <returns>
     ///     <see cref="HttpLongPollingBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public HttpLongPollingBuilder SetOnError(Func<HttpResponseMessage, CancellationToken, Task> configure)
     {
         // 空检查
@@ -154,6 +157,7 @@ public sealed class HttpLongPollingBuilder
     /// <returns>
     ///     <see cref="HttpLongPollingBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public HttpLongPollingBuilder SetOnEndOfStream(Func<HttpResponseMessage, CancellationToken, Task> configure)
     {
         // 空检查
@@ -171,6 +175,7 @@ public sealed class HttpLongPollingBuilder
     /// <returns>
     ///     <see cref="HttpLongPollingBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     /// <exception cref="ArgumentException"></exception>
     public HttpLongPollingBuilder SetEventHandler(Type longPollingEventHandlerType)
     {
@@ -254,6 +259,7 @@ public sealed class HttpLongPollingBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     internal HttpRequestBuilder Build(HttpRemoteOptions httpRemoteOptions)
     {
         // 空检查

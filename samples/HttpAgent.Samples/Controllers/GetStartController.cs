@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace HttpAgent.Samples.Controllers;
+﻿namespace HttpAgent.Samples.Controllers;
 
 [ApiController]
 [Route("[controller]/[action]")]
@@ -635,10 +633,10 @@ public class GetStartController(
     [HttpGet]
     public async Task<string?> GetResult()
     {
-        var result1 = await httpRemoteService.GetAsync<string>("https://furion.net/");
+        using var result1 = await httpRemoteService.GetAsync<string>("https://furion.net/");
 
         // 构建器方式
-        var result2 = await httpRemoteService.SendAsync<string>(HttpRequestBuilder.Get("https://furion.net/"));
+        using var result2 = await httpRemoteService.SendAsync<string>(HttpRequestBuilder.Get("https://furion.net/"));
 
         Console.WriteLine(result1?.ToString());
 

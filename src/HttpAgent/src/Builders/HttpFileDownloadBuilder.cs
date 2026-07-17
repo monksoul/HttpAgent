@@ -20,6 +20,7 @@ public sealed class HttpFileDownloadBuilder
     /// </summary>
     /// <param name="httpMethod">请求方式</param>
     /// <param name="requestUri">请求地址</param>
+    /// <exception cref="ArgumentNullException"></exception>
     internal HttpFileDownloadBuilder(HttpMethod httpMethod, Uri? requestUri)
     {
         // 空检查
@@ -112,6 +113,7 @@ public sealed class HttpFileDownloadBuilder
     /// <returns>
     ///     <see cref="HttpFileDownloadBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentException"></exception>
     public HttpFileDownloadBuilder SetBufferSize(int bufferSize)
     {
         // 小于或等于 0 检查
@@ -136,6 +138,7 @@ public sealed class HttpFileDownloadBuilder
     /// <returns>
     ///     <see cref="HttpFileDownloadBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentException"></exception>
     public HttpFileDownloadBuilder SetDestinationPath(string? destinationPath)
     {
         // 跳过空检查
@@ -217,6 +220,7 @@ public sealed class HttpFileDownloadBuilder
     /// <returns>
     ///     <see cref="HttpFileDownloadBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public HttpFileDownloadBuilder SetOnTransferStarted(Action configure)
     {
         // 空检查
@@ -234,6 +238,7 @@ public sealed class HttpFileDownloadBuilder
     /// <returns>
     ///     <see cref="HttpFileDownloadBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public HttpFileDownloadBuilder SetOnProgressChanged(Func<FileTransferProgress, Task> configure)
     {
         // 空检查
@@ -251,6 +256,7 @@ public sealed class HttpFileDownloadBuilder
     /// <returns>
     ///     <see cref="HttpFileDownloadBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public HttpFileDownloadBuilder SetOnTransferCompleted(Action<long> configure)
     {
         // 空检查
@@ -268,6 +274,7 @@ public sealed class HttpFileDownloadBuilder
     /// <returns>
     ///     <see cref="HttpFileDownloadBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public HttpFileDownloadBuilder SetOnTransferFailed(Action<Exception> configure)
     {
         // 空检查
@@ -285,6 +292,7 @@ public sealed class HttpFileDownloadBuilder
     /// <returns>
     ///     <see cref="HttpFileDownloadBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public HttpFileDownloadBuilder SetOnFileExistAndSkip(Action configure)
     {
         // 空检查
@@ -302,6 +310,7 @@ public sealed class HttpFileDownloadBuilder
     /// <returns>
     ///     <see cref="HttpFileDownloadBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     /// <exception cref="ArgumentException"></exception>
     public HttpFileDownloadBuilder SetEventHandler(Type fileTransferEventHandlerType)
     {
@@ -385,6 +394,8 @@ public sealed class HttpFileDownloadBuilder
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    /// <exception cref="ArgumentException"></exception>
     internal HttpRequestBuilder Build(HttpRemoteOptions httpRemoteOptions)
     {
         // 空检查

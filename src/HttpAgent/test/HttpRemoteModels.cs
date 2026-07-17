@@ -39,26 +39,13 @@ public class XmlModel
 public class CustomObjectContentConverter : ObjectContentConverter
 {
     /// <inheritdoc />
-    public override object? Read(Type resultType, HttpResponseMessage httpResponseMessage,
+    public override async Task<object?> ReadAsync(Type resultType, HttpContentConverterContext context,
         CancellationToken cancellationToken = default)
     {
-        // // 解析 HttpClient 客户端对应的 JSON 序列化上下文信息
-        var jsonSerializationContext =
-            HttpRemoteUtility.ResolveJsonSerializationContext(resultType, httpResponseMessage, ServiceProvider);
+        // 获取 HttpResponseMessage 实例
+        var httpResponseMessage = context.ResponseMessage;
 
-        // 获取 JSON 反序列化的值（若需使用 Newtonsoft.Json 进行序列化或反序列化操作，请将以下代码替换为 Newtonsoft.Json 库的相应方法调用） ✅✅✅
-        var deserializedValue = AsyncUtility.RunSync(() => httpResponseMessage.Content.ReadFromJsonAsync(
-            jsonSerializationContext.ResultType, jsonSerializationContext.JsonSerializerOptions, cancellationToken));
-
-        // 获取转换的目标类型值
-        return jsonSerializationContext.GetResultValue(deserializedValue, httpResponseMessage);
-    }
-
-    /// <inheritdoc />
-    public override async Task<object?> ReadAsync(Type resultType, HttpResponseMessage httpResponseMessage,
-        CancellationToken cancellationToken = default)
-    {
-        // // 解析 HttpClient 客户端对应的 JSON 序列化上下文信息
+        // 解析 HttpClient 客户端对应的 JSON 序列化上下文信息
         var jsonSerializationContext =
             HttpRemoteUtility.ResolveJsonSerializationContext(resultType, httpResponseMessage, ServiceProvider);
 
@@ -74,14 +61,13 @@ public class CustomObjectContentConverter : ObjectContentConverter
 public class CustomObjectContentConverter<TResult> : CustomObjectContentConverter, IHttpContentConverter<TResult>
 {
     /// <inheritdoc />
-    public virtual TResult? Read(HttpResponseMessage httpResponseMessage,
-        CancellationToken cancellationToken = default) =>
-        (TResult?)base.Read(typeof(TResult), httpResponseMessage, cancellationToken);
+    public virtual TResult? Read(HttpContentConverterContext context, CancellationToken cancellationToken = default) =>
+        (TResult?)base.Read(typeof(TResult), context, cancellationToken);
 
     /// <inheritdoc />
-    public virtual async Task<TResult?> ReadAsync(HttpResponseMessage httpResponseMessage,
+    public virtual async Task<TResult?> ReadAsync(HttpContentConverterContext context,
         CancellationToken cancellationToken = default) =>
-        (TResult?)await base.ReadAsync(typeof(TResult), httpResponseMessage, cancellationToken);
+        (TResult?)await base.ReadAsync(typeof(TResult), context, cancellationToken);
 }
 
 public class NotImplementObjectContentConverterFactory;
@@ -89,11 +75,11 @@ public class NotImplementObjectContentConverterFactory;
 public class CustomObjectContentConverterFactory : IObjectContentConverterFactory
 {
     /// <inheritdoc />
-    public IHttpContentConverter<TResult> GetConverter<TResult>(HttpResponseMessage httpResponseMessage) =>
+    public IHttpContentConverter<TResult> GetConverter<TResult>(HttpContentConverterContext context) =>
         new CustomObjectContentConverter<TResult>();
 
     /// <inheritdoc />
-    public IHttpContentConverter GetConverter(Type resultType, HttpResponseMessage httpResponseMessage) =>
+    public IHttpContentConverter GetConverter(Type resultType, HttpContentConverterContext context) =>
         new CustomObjectContentConverter();
 }
 
@@ -352,10 +338,10 @@ public class MultipartFileModel
 public class CustomAsyncEnumerableContentConverter<T> : HttpContentConverterBase<IAsyncEnumerable<T?>>
 {
     /// <inheritdoc />
-    public override IAsyncEnumerable<T?>? Read(HttpResponseMessage httpResponseMessage,
+    public override IAsyncEnumerable<T?>? Read(HttpContentConverterContext context,
         CancellationToken cancellationToken = default) => throw new NotImplementedException();
 
     /// <inheritdoc />
-    public override Task<IAsyncEnumerable<T?>?> ReadAsync(HttpResponseMessage httpResponseMessage,
+    public override Task<IAsyncEnumerable<T?>?> ReadAsync(HttpContentConverterContext context,
         CancellationToken cancellationToken = default) => throw new NotImplementedException();
 }

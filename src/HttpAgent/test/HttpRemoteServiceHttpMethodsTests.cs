@@ -22,7 +22,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -53,7 +52,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -85,7 +83,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -117,7 +114,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -150,7 +146,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var httpResponseMessage = await httpRemoteService.GetAsync($"http://localhost:{port}/test");
@@ -180,7 +175,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -212,7 +206,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var httpResponseMessage =
@@ -243,7 +236,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -275,7 +267,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -313,7 +304,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -346,7 +336,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -385,7 +374,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -418,7 +406,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var httpRemoteResult = await httpRemoteService.GetAsync<string>($"http://localhost:{port}/test");
@@ -456,7 +443,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -488,7 +474,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -528,7 +513,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -561,7 +545,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -590,7 +573,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -622,7 +604,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -652,7 +633,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -685,7 +665,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var result = await httpRemoteService.GetAsAsync<string>($"http://localhost:{port}/test");
@@ -713,7 +692,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -745,7 +723,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -776,7 +753,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -810,7 +786,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -841,7 +816,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -873,7 +847,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -905,7 +878,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -938,7 +910,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var httpResponseMessage = await httpRemoteService.PutAsync($"http://localhost:{port}/test");
@@ -968,7 +939,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -1000,7 +970,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var httpResponseMessage =
@@ -1031,7 +1000,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -1064,7 +1032,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -1102,7 +1069,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -1135,7 +1101,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -1175,7 +1140,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -1209,7 +1173,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var httpRemoteResult = await httpRemoteService.PutAsync<string>($"http://localhost:{port}/test");
@@ -1246,7 +1209,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -1278,7 +1240,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -1318,7 +1279,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -1352,7 +1312,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -1381,7 +1340,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -1414,7 +1372,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -1444,7 +1401,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -1478,7 +1434,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var result = await httpRemoteService.PutAsAsync<string>($"http://localhost:{port}/test");
@@ -1506,7 +1461,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -1538,7 +1492,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -1569,7 +1522,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -1603,7 +1555,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -1634,7 +1585,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -1666,7 +1616,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -1698,7 +1647,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -1731,7 +1679,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var httpResponseMessage = await httpRemoteService.PostAsync($"http://localhost:{port}/test");
@@ -1761,7 +1708,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -1793,7 +1739,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var httpResponseMessage =
@@ -1825,7 +1770,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -1858,7 +1802,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -1897,7 +1840,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -1930,7 +1872,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -1970,7 +1911,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -2004,7 +1944,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var httpRemoteResult = await httpRemoteService.PostAsync<string>($"http://localhost:{port}/test");
@@ -2042,7 +1981,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -2074,7 +2012,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -2115,7 +2052,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -2149,7 +2085,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -2178,7 +2113,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -2211,7 +2145,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -2241,7 +2174,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -2275,7 +2207,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var result = await httpRemoteService.PostAsAsync<string>($"http://localhost:{port}/test");
@@ -2303,7 +2234,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -2335,7 +2265,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -2366,7 +2295,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -2400,7 +2328,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -2431,7 +2358,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -2464,7 +2390,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -2496,7 +2421,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -2530,7 +2454,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var httpResponseMessage = await httpRemoteService.DeleteAsync($"http://localhost:{port}/test");
@@ -2560,7 +2483,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -2593,7 +2515,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var httpResponseMessage =
@@ -2625,7 +2546,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -2658,7 +2578,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -2697,7 +2616,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -2730,7 +2648,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -2770,7 +2687,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -2804,7 +2720,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var httpRemoteResult = await httpRemoteService.DeleteAsync<string>($"http://localhost:{port}/test");
@@ -2842,7 +2757,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -2874,7 +2788,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -2915,7 +2828,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -2949,7 +2861,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -2978,7 +2889,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -3012,7 +2922,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -3043,7 +2952,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -3077,7 +2985,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var result = await httpRemoteService.DeleteAsAsync<string>($"http://localhost:{port}/test");
@@ -3105,7 +3012,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -3137,7 +3043,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -3168,7 +3073,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -3202,7 +3106,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -3233,7 +3136,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -3265,7 +3167,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -3297,7 +3198,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -3330,7 +3230,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var httpResponseMessage = await httpRemoteService.HeadAsync($"http://localhost:{port}/test");
@@ -3360,7 +3259,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -3392,7 +3290,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var httpResponseMessage =
@@ -3424,7 +3321,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -3457,7 +3353,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -3497,7 +3392,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -3530,7 +3424,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -3571,7 +3464,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -3605,7 +3497,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var httpRemoteResult = await httpRemoteService.HeadAsync<string>($"http://localhost:{port}/test");
@@ -3644,7 +3535,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -3676,7 +3566,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -3718,7 +3607,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -3752,7 +3640,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -3781,7 +3668,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -3814,7 +3700,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -3844,7 +3729,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -3878,7 +3762,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var httpRemoteResult = await httpRemoteService.HeadAsAsync<string>($"http://localhost:{port}/test");
@@ -3905,7 +3788,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -3937,7 +3819,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -3968,7 +3849,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -4002,7 +3882,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -4033,7 +3912,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -4066,7 +3944,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -4098,7 +3975,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -4132,7 +4008,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var httpResponseMessage = await httpRemoteService.OptionsAsync($"http://localhost:{port}/test");
@@ -4162,7 +4037,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -4195,7 +4069,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var httpResponseMessage =
@@ -4227,7 +4100,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -4260,7 +4132,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -4299,7 +4170,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -4332,7 +4202,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -4373,7 +4242,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -4407,7 +4275,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var httpRemoteResult = await httpRemoteService.OptionsAsync<string>($"http://localhost:{port}/test");
@@ -4445,7 +4312,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -4477,7 +4343,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -4518,7 +4383,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -4552,7 +4416,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -4581,7 +4444,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -4615,7 +4477,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -4646,7 +4507,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -4680,7 +4540,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var result = await httpRemoteService.OptionsAsAsync<string>($"http://localhost:{port}/test");
@@ -4708,7 +4567,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -4740,7 +4598,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -4771,7 +4628,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -4805,7 +4661,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -4836,7 +4691,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -4869,7 +4723,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -4901,7 +4754,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -4934,7 +4786,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var httpResponseMessage = await httpRemoteService.TraceAsync($"http://localhost:{port}/test");
@@ -4964,7 +4815,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -4997,7 +4847,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var httpResponseMessage =
@@ -5029,7 +4878,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -5062,7 +4910,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -5100,7 +4947,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -5133,7 +4979,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -5172,7 +5017,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -5206,7 +5050,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var httpRemoteResult = await httpRemoteService.TraceAsync<string>($"http://localhost:{port}/test");
@@ -5243,7 +5086,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -5275,7 +5117,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -5316,7 +5157,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -5350,7 +5190,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -5379,7 +5218,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -5412,7 +5250,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -5443,7 +5280,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -5477,7 +5313,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var result = await httpRemoteService.TraceAsAsync<string>($"http://localhost:{port}/test");
@@ -5505,7 +5340,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -5537,7 +5371,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -5568,7 +5401,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -5602,7 +5434,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -5633,7 +5464,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -5665,7 +5495,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -5697,7 +5526,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -5730,7 +5558,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var httpResponseMessage = await httpRemoteService.PatchAsync($"http://localhost:{port}/test");
@@ -5760,7 +5587,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -5793,7 +5619,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var httpResponseMessage =
@@ -5825,7 +5650,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -5858,7 +5682,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -5896,7 +5719,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -5929,7 +5751,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -5969,7 +5790,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -6003,7 +5823,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var httpRemoteResult = await httpRemoteService.PatchAsync<string>($"http://localhost:{port}/test");
@@ -6040,7 +5859,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -6072,7 +5890,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -6112,7 +5929,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -6146,7 +5962,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -6175,7 +5990,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -6208,7 +6022,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -6239,7 +6052,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -6273,7 +6085,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var result = await httpRemoteService.PatchAsAsync<string>($"http://localhost:{port}/test");
@@ -6301,7 +6112,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -6333,7 +6143,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -6364,7 +6173,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -6398,7 +6206,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -6429,7 +6236,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -6461,7 +6267,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -6493,7 +6298,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -6526,7 +6330,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var httpResponseMessage = await httpRemoteService.QueryAsync($"http://localhost:{port}/test");
@@ -6556,7 +6359,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -6589,7 +6391,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var httpResponseMessage =
@@ -6621,7 +6422,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -6654,7 +6454,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -6693,7 +6492,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -6726,7 +6524,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -6766,7 +6563,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -6800,7 +6596,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var httpRemoteResult = await httpRemoteService.QueryAsync<string>($"http://localhost:{port}/test");
@@ -6838,7 +6633,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -6870,7 +6664,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -6911,7 +6704,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -6945,7 +6737,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -6974,7 +6765,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -7007,7 +6797,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -7038,7 +6827,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -7072,7 +6860,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var result = await httpRemoteService.QueryAsAsync<string>($"http://localhost:{port}/test");
@@ -7100,7 +6887,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -7132,7 +6918,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -7163,7 +6948,6 @@ public class HttpRemoteServiceHttpMethodsTests
 
         await app.StartAsync();
 
-        // 测试代码
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         using var cancellationTokenSource = new CancellationTokenSource();

@@ -34,10 +34,9 @@ internal static class EventHandlerExtensions
         {
             handler(sender, args);
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            // 输出调试事件
-            Debugging.Error(e.Message);
+            // ignored
         }
     }
 }

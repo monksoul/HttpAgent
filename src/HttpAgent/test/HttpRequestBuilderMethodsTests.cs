@@ -351,7 +351,7 @@ public class HttpRequestBuilderMethodsTests
         httpRequestBuilder.SetContent(new MemoryStream());
         Assert.Null(httpRequestBuilder.Disposables);
 
-        httpRequestBuilder.SetContent(new MemoryStream(), disposeStreamOnRequestCompletion: true);
+        httpRequestBuilder.SetContent(new MemoryStream(), disposeResourcesOnRequestCompletion: true);
         Assert.NotNull(httpRequestBuilder.Disposables);
         Assert.Single(httpRequestBuilder.Disposables);
     }

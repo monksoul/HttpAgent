@@ -23,7 +23,7 @@ public class StringContentConverterTests
         httpResponseMessage.Content = stringContent;
 
         var converter = new StringContentConverter();
-        var str = converter.Read(httpResponseMessage);
+        var str = converter.Read(new HttpContentConverterContext(httpResponseMessage));
         Assert.Equal("furion", str);
     }
 
@@ -35,7 +35,7 @@ public class StringContentConverterTests
         httpResponseMessage.Content = stringContent;
 
         var converter = new StringContentConverter();
-        var str = await converter.ReadAsync(httpResponseMessage);
+        var str = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage));
         Assert.Equal("furion", str);
     }
 
@@ -49,7 +49,8 @@ public class StringContentConverterTests
         using var cancellationTokenSource = new CancellationTokenSource();
 
         var converter = new StringContentConverter();
-        var str = await converter.ReadAsync(httpResponseMessage, cancellationTokenSource.Token);
+        var str = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage),
+            cancellationTokenSource.Token);
         Assert.Equal("furion", str);
     }
 
@@ -61,7 +62,7 @@ public class StringContentConverterTests
         httpResponseMessage.Content = stringContent;
 
         var converter = new StringContentConverter();
-        var str = converter.Read(typeof(string), httpResponseMessage);
+        var str = converter.Read(typeof(string), new HttpContentConverterContext(httpResponseMessage));
         Assert.Equal("furion", str);
     }
 
@@ -73,7 +74,7 @@ public class StringContentConverterTests
         httpResponseMessage.Content = stringContent;
 
         var converter = new StringContentConverter();
-        var str = await converter.ReadAsync(typeof(string), httpResponseMessage);
+        var str = await converter.ReadAsync(typeof(string), new HttpContentConverterContext(httpResponseMessage));
         Assert.Equal("furion", str);
     }
 
@@ -87,7 +88,8 @@ public class StringContentConverterTests
         using var cancellationTokenSource = new CancellationTokenSource();
 
         var converter = new StringContentConverter();
-        var str = await converter.ReadAsync(typeof(string), httpResponseMessage, cancellationTokenSource.Token);
+        var str = await converter.ReadAsync(typeof(string), new HttpContentConverterContext(httpResponseMessage),
+            cancellationTokenSource.Token);
         Assert.Equal("furion", str);
     }
 }

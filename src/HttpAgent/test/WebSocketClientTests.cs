@@ -142,14 +142,8 @@ public class WebSocketClientTests
         using var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
 
         var i = 0;
-        webSocketClient.Connecting += (s, e) =>
-        {
-            i++;
-        };
-        webSocketClient.Connected += (s, e) =>
-        {
-            i++;
-        };
+        webSocketClient.Connecting += (s, e) => { i++; };
+        webSocketClient.Connected += (s, e) => { i++; };
         await webSocketClient.ConnectAsync();
 
         Assert.NotNull(webSocketClient._clientWebSocket);
@@ -300,13 +294,7 @@ public class WebSocketClientTests
 
         var i = 0;
 
-        var options = new WebSocketClientOptions($"ws://localhost:{port}/ws")
-        {
-            Configure = o =>
-            {
-                i++;
-            }
-        };
+        var options = new WebSocketClientOptions($"ws://localhost:{port}/ws") { Configure = o => { i++; } };
         using var webSocketClient = new WebSocketClient(options);
 
         await webSocketClient.ConnectAsync();
@@ -353,10 +341,7 @@ public class WebSocketClientTests
 
         using var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
         var i = 0;
-        webSocketClient.Connecting += (s, e) =>
-        {
-            i++;
-        };
+        webSocketClient.Connecting += (s, e) => { i++; };
 
         await webSocketClient.ConnectAsync();
         await webSocketClient.ConnectAsync();
@@ -410,10 +395,7 @@ public class WebSocketClientTests
         };
         using var webSocketClient = new WebSocketClient(options);
         var i = 0;
-        webSocketClient.Reconnecting += (s, e) =>
-        {
-            i++;
-        };
+        webSocketClient.Reconnecting += (s, e) => { i++; };
 
         await Assert.ThrowsAsync<WebSocketException>(async () => await webSocketClient.ConnectAsync());
 
@@ -591,14 +573,8 @@ public class WebSocketClientTests
         using var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
 
         var i = 0;
-        webSocketClient.Closing += (s, e) =>
-        {
-            i++;
-        };
-        webSocketClient.Closed += (s, e) =>
-        {
-            i++;
-        };
+        webSocketClient.Closing += (s, e) => { i++; };
+        webSocketClient.Closed += (s, e) => { i++; };
 
         await webSocketClient.ConnectAsync();
         await webSocketClient.CloseAsync();
@@ -647,14 +623,8 @@ public class WebSocketClientTests
         using var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
 
         var i = 0;
-        webSocketClient.Closing += (s, e) =>
-        {
-            i++;
-        };
-        webSocketClient.Closed += (s, e) =>
-        {
-            i++;
-        };
+        webSocketClient.Closing += (s, e) => { i++; };
+        webSocketClient.Closed += (s, e) => { i++; };
 
         await webSocketClient.ConnectAsync();
         await webSocketClient.CloseAsync();
@@ -749,10 +719,7 @@ public class WebSocketClientTests
         using var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
 
         var i = 0;
-        webSocketClient.TextReceived += (s, e) =>
-        {
-            i++;
-        };
+        webSocketClient.TextReceived += (s, e) => { i++; };
 
         await webSocketClient.ConnectAsync();
         await webSocketClient.ListenAsync();
@@ -804,10 +771,7 @@ public class WebSocketClientTests
         using var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
 
         var i = 0;
-        webSocketClient.TextReceived += (s, e) =>
-        {
-            i++;
-        };
+        webSocketClient.TextReceived += (s, e) => { i++; };
 
         await webSocketClient.ConnectAsync();
 #pragma warning disable CS4014 // 由于此调用不会等待，因此在调用完成前将继续执行当前方法
@@ -862,14 +826,8 @@ public class WebSocketClientTests
         using var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
 
         var i = 0;
-        webSocketClient.TextReceived += (s, e) =>
-        {
-            i++;
-        };
-        webSocketClient.BinaryReceived += (s, e) =>
-        {
-            i++;
-        };
+        webSocketClient.TextReceived += (s, e) => { i++; };
+        webSocketClient.BinaryReceived += (s, e) => { i++; };
 
         await webSocketClient.ConnectAsync();
         await webSocketClient.ListenAsync();
@@ -888,6 +846,19 @@ public class WebSocketClientTests
 
         await webSocketClient.CloseAsync();
         await app.StopAsync();
+    }
+
+    [Fact]
+    public void CleanupResources_ReturnOK()
+    {
+        var webSocketClient = new WebSocketClient("ws://localhost:12345");
+        webSocketClient.CleanupResources();
+
+        Assert.Null(webSocketClient._clientWebSocket);
+        Assert.Null(webSocketClient._messageCancellationTokenSource);
+        Assert.Null(webSocketClient._receiveMessageTask);
+        Assert.Null(webSocketClient.State);
+        Assert.Equal(0, webSocketClient.CurrentReconnectRetries);
     }
 
     private static async Task Echo(WebSocket webSocket)

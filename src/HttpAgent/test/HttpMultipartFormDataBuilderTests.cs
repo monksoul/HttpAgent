@@ -836,7 +836,7 @@ public class HttpMultipartFormDataBuilderTests
         var builder2 = new HttpMultipartFormDataBuilder(HttpRequestBuilder.Get("http://localhost"));
         using var stream2 = new MemoryStream();
         Assert.Null(builder2._httpRequestBuilder.Disposables);
-        builder2.AddStream(stream2, "test", "image.jpg", "image/jpeg", disposeStreamOnRequestCompletion: true);
+        builder2.AddStream(stream2, "test", "image.jpg", "image/jpeg", disposeResourcesOnRequestCompletion: true);
         Assert.NotNull(builder2._httpRequestBuilder.Disposables);
         Assert.Single(builder2._httpRequestBuilder.Disposables);
     }
