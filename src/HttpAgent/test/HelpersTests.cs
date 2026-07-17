@@ -228,10 +228,10 @@ public class HelpersTests
         Assert.Equal("http://localhost/api", HttpAgent.Helpers.CombineUrl(null, "http://localhost/api"));
         Assert.Equal("http://localhost/api", HttpAgent.Helpers.CombineUrl("/furion", "http://localhost/api"));
 
-        Assert.Equal("/api", HttpAgent.Helpers.CombineUrl("/furion", "/api"));
+        Assert.Equal("/furion/api", HttpAgent.Helpers.CombineUrl("/furion", "/api"));
         Assert.Equal("/furion/api", HttpAgent.Helpers.CombineUrl("/furion", "api"));
         Assert.Equal("/furion/api", HttpAgent.Helpers.CombineUrl("/furion/", "api"));
-        Assert.Equal("/api", HttpAgent.Helpers.CombineUrl("furion", "/api"));
+        Assert.Equal("furion/api", HttpAgent.Helpers.CombineUrl("furion", "/api"));
         Assert.Equal("furion/api", HttpAgent.Helpers.CombineUrl("furion", "api"));
 
         Assert.Equal("http://localhost/api", HttpAgent.Helpers.CombineUrl("http://localhost/furion", "/api"));
