@@ -28,6 +28,10 @@ public interface IHttpService : IHttpDeclarative
     // URL 编码表单提交
     [Post("https://localhost:7044/HttpRemote/AddURLForm")]
     Task<YourRemoteModel> PostURLForm([Body(MediaTypeNames.Application.FormUrlEncoded)] object data);
+
+    // 获取网站内容
+    [Get("https://furion.net")]
+    ValueTask<string> GetWebSiteContent2();
 }
 
 public interface INormalService

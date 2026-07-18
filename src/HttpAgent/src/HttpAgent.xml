@@ -5713,7 +5713,7 @@
         <member name="M:HttpAgent.Core.Converters.Json.FlexibleDateTimeConverter.Regex">
             <remarks>
             Pattern:<br/>
-            <code>^/Date\\(([+-]*\\d+)\\)/$</code><br/>
+            <code>^/Date\(([+-]*\d+)\)/$</code><br/>
             Options:<br/>
             <code>RegexOptions.CultureInvariant</code><br/>
             Explanation:<br/>
@@ -5742,7 +5742,7 @@
         <member name="M:HttpAgent.Core.Converters.Json.FlexibleDateTimeOffsetConverter.Regex">
             <remarks>
             Pattern:<br/>
-            <code>^/Date\\(([+-]*\\d+)([+-])(\\d{2})(\\d{2})\\)/$</code><br/>
+            <code>^/Date\(([+-]*\d+)([+-])(\d{2})(\d{2})\)/$</code><br/>
             Options:<br/>
             <code>RegexOptions.CultureInvariant</code><br/>
             Explanation:<br/>
@@ -5860,23 +5860,6 @@
                 <typeparamref name="TEventArgs" />
             </param>
             <typeparam name="TEventArgs">事件参数</typeparam>
-        </member>
-        <member name="T:HttpAgent.Core.Extensions.ICollectionExtensions">
-            <summary>
-                <see cref="T:System.Collections.Generic.ICollection`1" /> 扩展类
-            </summary>
-        </member>
-        <member name="M:HttpAgent.Core.Extensions.ICollectionExtensions.IsNullOrEmpty``1(System.Collections.Generic.ICollection{``0})">
-            <summary>
-                判断集合是否为空
-            </summary>
-            <typeparam name="T">对象类型</typeparam>
-            <param name="collection">
-                <see cref="T:System.Collections.Generic.ICollection`1" />
-            </param>
-            <returns>
-                <see cref="T:System.Boolean" />
-            </returns>
         </member>
         <member name="T:HttpAgent.Core.Extensions.IDictionaryExtensions">
             <summary>
@@ -6288,6 +6271,7 @@
             <returns>
                 <see cref="T:System.String" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.Core.Extensions.StringExtensions.ReplacePlaceholders(System.String,System.Object,System.String,System.Reflection.BindingFlags)">
             <summary>
@@ -6325,24 +6309,30 @@
             <returns>
                 <see cref="T:System.Boolean" />
             </returns>
+            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.Core.Extensions.StringExtensions.PlaceholderRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\{\\s*(\\w+\\s*(\\.\\s*\\w+\\s*)*)\\s*\\}</code><br/>
+            <code>\{\s*(?:\*\*)?\s*(\w+(?:\s*\.\s*\w+)*)\s*(\?)?\s*\}</code><br/>
             Explanation:<br/>
             <code>
             ○ Match '{'.<br/>
+            ○ Match a whitespace character greedily any number of times.<br/>
+            ○ Optional (greedy).<br/>
+                ○ Match the string "**".<br/>
             ○ Match a whitespace character atomically any number of times.<br/>
             ○ 1st capture group.<br/>
                 ○ Match a word character greedily at least once.<br/>
-                ○ Match a whitespace character greedily any number of times.<br/>
                 ○ Loop greedily any number of times.<br/>
-                    ○ 2nd capture group.<br/>
-                        ○ Match '.'.<br/>
-                        ○ Match a whitespace character atomically any number of times.<br/>
-                        ○ Match a word character greedily at least once.<br/>
-                        ○ Match a whitespace character greedily any number of times.<br/>
+                    ○ Match a whitespace character atomically any number of times.<br/>
+                    ○ Match '.'.<br/>
+                    ○ Match a whitespace character atomically any number of times.<br/>
+                    ○ Match a word character greedily at least once.<br/>
+            ○ Match a whitespace character greedily any number of times.<br/>
+            ○ Optional (greedy).<br/>
+                ○ 2nd capture group.<br/>
+                    ○ Match '?'.<br/>
             ○ Match a whitespace character atomically any number of times.<br/>
             ○ Match '}'.<br/>
             </code>
@@ -6351,10 +6341,13 @@
         <member name="M:HttpAgent.Core.Extensions.StringExtensions.ConfigurationKeyRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\[\\[\\s*([\\w\\-:]+)((?:\\s*\\|\\s*[\\w\\-:]+)*)\\s*(?:\\|\\|\\s*([^\\]]*))?\\s*\\]\\]</code><br/>
+            <code>\[\[\s*(?:\*\*)?\s*([\w\-:]+)((?:\s*\|\s*[\w\-:]+)*)\s*(?:\|\|\s*([^\]]*))?\s*(\?)?\s*\]\]</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "[[".<br/>
+            ○ Match a whitespace character greedily any number of times.<br/>
+            ○ Optional (greedy).<br/>
+                ○ Match the string "**".<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ 1st capture group.<br/>
                 ○ Match a character in the set [\-:\w] greedily at least once.<br/>
@@ -6370,6 +6363,10 @@
                 ○ Match a whitespace character greedily any number of times.<br/>
                 ○ 3rd capture group.<br/>
                     ○ Match a character other than ']' greedily any number of times.<br/>
+            ○ Match a whitespace character greedily any number of times.<br/>
+            ○ Optional (greedy).<br/>
+                ○ 4th capture group.<br/>
+                    ○ Match '?'.<br/>
             ○ Match a whitespace character atomically any number of times.<br/>
             ○ Match the string "]]".<br/>
             </code>
@@ -8558,6 +8555,12 @@
         <member name="M:HttpAgent.HttpDeclarativeDispatchProxy.InvokeAsyncT``1(System.Reflection.MethodInfo,System.Object[])">
             <inheritdoc />
         </member>
+        <member name="M:HttpAgent.HttpDeclarativeDispatchProxy.InvokeValueTaskAsync(System.Reflection.MethodInfo,System.Object[])">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.HttpDeclarativeDispatchProxy.InvokeValueTaskAsyncT``1(System.Reflection.MethodInfo,System.Object[])">
+            <inheritdoc />
+        </member>
         <member name="T:HttpAgent.HttpDeclarativeExtractorContext">
             <summary>
                 HTTP 声明式提取器上下文
@@ -9137,7 +9140,7 @@
         <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.UnicodeEscapeRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\\\u([0-9a-fA-F]{4})</code><br/>
+            <code>\\u([0-9a-fA-F]{4})</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "\\u".<br/>
@@ -9433,16 +9436,22 @@
                 URL 参数格式化上下文
             </summary>
         </member>
-        <member name="M:HttpAgent.UrlFormattingContext.#ctor(System.String)">
+        <member name="M:HttpAgent.UrlFormattingContext.#ctor(System.String,System.String)">
             <summary>
                 <inheritdoc cref="T:HttpAgent.UrlFormattingContext" />
             </summary>
             <param name="key">URL 参数名（键）</param>
+            <param name="httpClientName"><see cref="T:System.Net.Http.HttpClient" /> 实例的配置名称</param>
             <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="P:HttpAgent.UrlFormattingContext.Key">
             <summary>
                 URL 参数名（键）
+            </summary>
+        </member>
+        <member name="P:HttpAgent.UrlFormattingContext.HttpClientName">
+            <summary>
+                <see cref="T:System.Net.Http.HttpClient" /> 实例的配置名称
             </summary>
         </member>
         <member name="T:HttpAgent.UrlParameterFormatter">
@@ -10855,7 +10864,7 @@
         <member name="M:HttpAgent.FileTransferProgress.AnsiRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\e\\[[\\d;]*[a-zA-Z]</code><br/>
+            <code>\e\[[\d;]*[a-zA-Z]</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "\u001b[".<br/>
@@ -12466,7 +12475,7 @@
         <member name="M:HttpAgent.StatusCodePipelineHandler.StatusCodeRangeRegex">
             <remarks>
             Pattern:<br/>
-            <code>^\\d+[-~]\\d+$</code><br/>
+            <code>^\d+[-~]\d+$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
@@ -12480,7 +12489,7 @@
         <member name="M:HttpAgent.StatusCodePipelineHandler.StatusCodeCompareRegex">
             <remarks>
             Pattern:<br/>
-            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\\d+)$</code><br/>
+            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\d+)$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
@@ -18815,6 +18824,82 @@
                 别名
             </summary>
         </member>
+        <member name="M:System.Reflection.DispatchProxyAsync.Create``2">
+            <summary>
+                创建指定接口的代理实例
+            </summary>
+            <typeparam name="T">要代理的接口类型</typeparam>
+            <typeparam name="TProxy">
+                <see cref="T:System.Reflection.DispatchProxyAsync" />
+            </typeparam>
+            <returns>
+                <typeparamref name="T" />
+            </returns>
+        </member>
+        <member name="M:System.Reflection.DispatchProxyAsync.Create(System.Type,System.Type)">
+            <summary>
+                创建指定接口的代理实例
+            </summary>
+            <param name="type">要代理的接口类型</param>
+            <param name="proxyType">
+                <see cref="T:System.Reflection.DispatchProxyAsync" />
+            </param>
+            <returns>
+                <see cref="T:System.Object" />
+            </returns>
+        </member>
+        <member name="M:System.Reflection.DispatchProxyAsync.Invoke(System.Reflection.MethodInfo,System.Object[])">
+            <summary>
+                同步方法调用入口
+            </summary>
+            <param name="method">被调用的方法信息</param>
+            <param name="args">方法参数数组</param>
+            <returns>
+                <see cref="T:System.Object" />
+            </returns>
+        </member>
+        <member name="M:System.Reflection.DispatchProxyAsync.InvokeAsync(System.Reflection.MethodInfo,System.Object[])">
+            <summary>
+                返回 <see cref="T:System.Threading.Tasks.Task" /> 的异步方法调用入口
+            </summary>
+            <param name="method">被调用的方法信息</param>
+            <param name="args">方法参数数组</param>
+            <returns>
+                <see cref="T:System.Threading.Tasks.Task" />
+            </returns>
+        </member>
+        <member name="M:System.Reflection.DispatchProxyAsync.InvokeAsyncT``1(System.Reflection.MethodInfo,System.Object[])">
+            <summary>
+                返回 <see cref="T:System.Threading.Tasks.Task`1" /> 的异步方法调用入口
+            </summary>
+            <typeparam name="T">异步操作的返回值类型</typeparam>
+            <param name="method">被调用的方法信息</param>
+            <param name="args">方法参数数组</param>
+            <returns>
+                <see cref="T:System.Threading.Tasks.Task`1" />
+            </returns>
+        </member>
+        <member name="M:System.Reflection.DispatchProxyAsync.InvokeValueTaskAsync(System.Reflection.MethodInfo,System.Object[])">
+            <summary>
+                返回 <see cref="T:System.Threading.Tasks.ValueTask" /> 的异步方法调用入口
+            </summary>
+            <param name="method">被调用的方法信息</param>
+            <param name="args">方法参数数组</param>
+            <returns>
+                <see cref="T:System.Threading.Tasks.ValueTask" />
+            </returns>
+        </member>
+        <member name="M:System.Reflection.DispatchProxyAsync.InvokeValueTaskAsyncT``1(System.Reflection.MethodInfo,System.Object[])">
+            <summary>
+                返回 <see cref="T:System.Threading.Tasks.ValueTask`1" /> 的异步方法调用入口
+            </summary>
+            <typeparam name="T">异步操作的返回值类型</typeparam>
+            <param name="method">被调用的方法信息</param>
+            <param name="args">方法参数数组</param>
+            <returns>
+                <see cref="T:System.Threading.Tasks.ValueTask`1" />
+            </returns>
+        </member>
         <member name="T:System.Text.RegularExpressions.Generated.Regex_0">
             <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the Regex method.</summary>
         </member>
@@ -19172,6 +19257,10 @@
             <returns>
                 <see cref="T:HttpAgent.IHttpRemoteBuilder" />
             </returns>
+        </member>
+    </members>
+</doc>
+returns>
         </member>
     </members>
 </doc>

@@ -21,7 +21,7 @@ public class UrlParameterFormatterTests
     public void Format_ReturnOK(object? value, string? result)
     {
         var formatter = new UrlParameterFormatter();
-        Assert.Equal(result, formatter.Format(value, new UrlFormattingContext("name")));
+        Assert.Equal(result, formatter.Format(value, new UrlFormattingContext("name", null)));
     }
 
     [Fact]
@@ -30,22 +30,22 @@ public class UrlParameterFormatterTests
         var formatter = new UrlParameterFormatter();
         Assert.Equal("2024-08-20T20:21:00.0000000Z",
             formatter.Format(new DateTime(2024, 8, 20, 20, 21, 0, 0, DateTimeKind.Utc),
-                new UrlFormattingContext("name")));
+                new UrlFormattingContext("name", null)));
 
         var formatter2 = new TestUrlParameterFormatter();
         Assert.Equal("2024-08-20",
             formatter2.Format(new DateTime(2024, 8, 20, 20, 21, 0, 0, DateTimeKind.Utc),
-                new UrlFormattingContext("name")));
+                new UrlFormattingContext("name", null)));
     }
 
     [Fact]
     public void Format_ValueProvider_ReturnOK()
     {
         var formatter = new UrlParameterFormatter();
-        Assert.Equal("Furion", formatter.Format(() => "Furion", new UrlFormattingContext("name")));
+        Assert.Equal("Furion", formatter.Format(() => "Furion", new UrlFormattingContext("name", null)));
         Assert.Equal("Furion_Key",
             formatter.Format((UrlFormattingContext context) => "Furion_" + context.Key,
-                new UrlFormattingContext("Key")));
+                new UrlFormattingContext("Key", null)));
     }
 
     [Theory]
@@ -54,22 +54,22 @@ public class UrlParameterFormatterTests
     [InlineData(false, "False")]
     [InlineData("Furion", "Furion")]
     public void DefaultFormatter_ReturnOK(object? value, string? result) => Assert.Equal(result,
-        UrlParameterFormatter.DefaultFormatter(value, new UrlFormattingContext("name")));
+        UrlParameterFormatter.DefaultFormatter(value, new UrlFormattingContext("name", null)));
 
     [Fact]
     public void DefaultFormatter_DateTime_ReturnOK() =>
         Assert.Equal("2024-08-20T20:21:00.0000000Z",
             UrlParameterFormatter.DefaultFormatter(new DateTime(2024, 8, 20, 20, 21, 0, 0, DateTimeKind.Utc),
-                new UrlFormattingContext("name")));
+                new UrlFormattingContext("name", null)));
 
     [Fact]
     public void DefaultFormatter_ValueProvider_ReturnOK()
     {
         Assert.Equal("Furion",
-            UrlParameterFormatter.DefaultFormatter(() => "Furion", new UrlFormattingContext("name")));
+            UrlParameterFormatter.DefaultFormatter(() => "Furion", new UrlFormattingContext("name", null)));
         Assert.Equal("Furion_Key",
             UrlParameterFormatter.DefaultFormatter((UrlFormattingContext context) => "Furion_" + context.Key,
-                new UrlFormattingContext("Key")));
+                new UrlFormattingContext("Key", null)));
     }
 }
 

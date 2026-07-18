@@ -219,6 +219,9 @@ public class GetStartController(
 
         // URL 编码表单提交
         var content5 = await httpService.PostURLForm(new { id = 1, name = "furion" });
+
+        // 获取网站内容
+        var content6 = await httpService.GetWebSiteContent2();
     }
 
     [HttpGet]

@@ -681,7 +681,7 @@ public class HttpRequestBuilderMethodsTests
         Assert.Single(httpRequestBuilder.QueryParameters);
         var valueProvider2 = httpRequestBuilder.QueryParameters["name"].First() as Func<UrlFormattingContext, object?>;
         Assert.NotNull(valueProvider2);
-        Assert.Equal("furion_name", valueProvider2(new UrlFormattingContext("name")));
+        Assert.Equal("furion_name", valueProvider2(new UrlFormattingContext("name", null)));
 
         httpRequestBuilder.QueryParameters.Clear();
 

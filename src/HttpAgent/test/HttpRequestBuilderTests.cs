@@ -352,6 +352,54 @@ public class HttpRequestBuilderTests
         httpRequestBuilder5.WithPathParameters(new { id = 1, name = "Furion" }, "user");
         var newUri6 = httpRequestBuilder5.ReplacePlaceholders(uriBuilder5.Uri.ToString(), null);
         Assert.Equal("http://localhost/?id=1&name=Furion", newUri6);
+
+        var httpRequestBuilder6 =
+            new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost/{id}/{name?}"))
+                .WithPathParameters(new { });
+        var uriBuilder6 = new UriBuilder(httpRequestBuilder6.RequestUri!);
+
+        var newUri7 = httpRequestBuilder6.ReplacePlaceholders(uriBuilder6.Uri.ToString(), null);
+        Assert.Equal("http://localhost/{id}/", newUri7);
+
+        var httpRequestBuilder7 =
+            new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost/{id}/{name}"))
+                .WithPathParameters(new { name = (object?)null });
+        var uriBuilder7 = new UriBuilder(httpRequestBuilder7.RequestUri!);
+
+        var newUri8 = httpRequestBuilder7.ReplacePlaceholders(uriBuilder7.Uri.ToString(), null);
+        Assert.Equal("http://localhost/{id}/", newUri8);
+
+        var httpRequestBuilder8 =
+            new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost/{id}/{name?}"))
+                .WithPathParameters(new { name = "monksoul" });
+        var uriBuilder8 = new UriBuilder(httpRequestBuilder8.RequestUri!);
+
+        var newUri9 = httpRequestBuilder8.ReplacePlaceholders(uriBuilder8.Uri.ToString(), null);
+        Assert.Equal("http://localhost/{id}/monksoul", newUri9);
+
+        var httpRequestBuilder9 =
+            new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost/{id}/{name?}"))
+                .WithPathParameters(new { name = (object?)null });
+        var uriBuilder9 = new UriBuilder(httpRequestBuilder9.RequestUri!);
+
+        var newUri10 = httpRequestBuilder9.ReplacePlaceholders(uriBuilder9.Uri.ToString(), null);
+        Assert.Equal("http://localhost/{id}/", newUri10);
+
+        var httpRequestBuilder10 =
+            new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost/{path}"))
+                .WithPathParameters(new { path = "files/images/photo.jpg" });
+        var uriBuilder10 = new UriBuilder(httpRequestBuilder10.RequestUri!);
+
+        var newUri11 = httpRequestBuilder10.ReplacePlaceholders(uriBuilder10.Uri.ToString(), null);
+        Assert.Equal("http://localhost/files/images/photo.jpg", newUri11);
+
+        var httpRequestBuilder11 =
+            new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost/{**path}"))
+                .WithPathParameters(new { path = "files/images/photo.jpg" });
+        var uriBuilder11 = new UriBuilder(httpRequestBuilder11.RequestUri!);
+
+        var newUri12 = httpRequestBuilder11.ReplacePlaceholders(uriBuilder11.Uri.ToString(), null);
+        Assert.Equal("http://localhost/files/images/photo.jpg", newUri12);
     }
 
     [Fact]

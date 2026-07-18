@@ -9,16 +9,17 @@ public class UrlFormattingContextTests
     [Fact]
     public void New_Invalid_Parameters()
     {
-        Assert.Throws<ArgumentNullException>(() => new UrlFormattingContext(null!));
-        Assert.Throws<ArgumentException>(() => new UrlFormattingContext(string.Empty));
-        Assert.Throws<ArgumentException>(() => new UrlFormattingContext(" "));
+        Assert.Throws<ArgumentNullException>(() => new UrlFormattingContext(null!, null));
+        Assert.Throws<ArgumentException>(() => new UrlFormattingContext(string.Empty, null));
+        Assert.Throws<ArgumentException>(() => new UrlFormattingContext(" ", null));
     }
 
     [Fact]
     public void New_ReturnOK()
     {
-        var context = new UrlFormattingContext("id");
+        var context = new UrlFormattingContext("id", "furion");
         Assert.NotNull(context);
         Assert.Equal("id", context.Key);
+        Assert.Equal("furion", context.HttpClientName);
     }
 }

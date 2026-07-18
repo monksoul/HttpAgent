@@ -902,7 +902,7 @@ public sealed class HttpMultipartFormDataBuilder
         ArgumentNullException.ThrowIfNull(httpContentProcessorFactory);
 
         // 空检查
-        if (_partContents.IsNullOrEmpty())
+        if (_partContents is null or { Count: 0 })
         {
             return null;
         }
