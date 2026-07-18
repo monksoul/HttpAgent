@@ -262,7 +262,7 @@ public class HelpersTests
     {
         var macAddress = HttpRemoteUtility.GetLocalMacAddress();
 
-        Assert.NotEmpty(macAddress);
+        Assert.NotNull(macAddress);
         Assert.Contains('-', macAddress);
     }
 }

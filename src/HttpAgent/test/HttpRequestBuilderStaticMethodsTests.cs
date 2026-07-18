@@ -658,21 +658,21 @@ public class HttpRequestBuilderStaticMethodsTests
     }
 
     [Fact]
-    public void HandleJsonNode_Invalid_Parameters()
+    public void TryProcessJsonProperty_Invalid_Parameters()
     {
-        Assert.Throws<ArgumentNullException>(() => HttpRequestBuilder.HandleJsonNode(null!, null!, null!));
+        Assert.Throws<ArgumentNullException>(() => HttpRequestBuilder.TryProcessJsonProperty(null!, null!, null!));
 
         var jsonObject = JsonNode.Parse("""{"id":1,"name":"furion"}""")!.AsObject();
-        Assert.Throws<ArgumentNullException>(() => HttpRequestBuilder.HandleJsonNode(jsonObject, null!, null!));
-        Assert.Throws<ArgumentNullException>(() => HttpRequestBuilder.HandleJsonNode(jsonObject, "id", null!));
+        Assert.Throws<ArgumentNullException>(() => HttpRequestBuilder.TryProcessJsonProperty(jsonObject, null!, null!));
+        Assert.Throws<ArgumentNullException>(() => HttpRequestBuilder.TryProcessJsonProperty(jsonObject, "id", null!));
     }
 
     [Fact]
-    public void HandleJsonNode_ReturnOK()
+    public void TryProcessJsonProperty_ReturnOK()
     {
         var jsonObject = JsonNode.Parse("""{"id":1,"name":"furion"}""")!.AsObject();
 
-        HttpRequestBuilder.HandleJsonNode(jsonObject, "id", node =>
+        HttpRequestBuilder.TryProcessJsonProperty(jsonObject, "id", node =>
         {
             Assert.Equal(1, node.GetValue<int>());
         });

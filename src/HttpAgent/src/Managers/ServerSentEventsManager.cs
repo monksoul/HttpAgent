@@ -25,6 +25,7 @@ internal sealed class ServerSentEventsManager
     /// <param name="httpServerSentEventsBuilder">
     ///     <see cref="HttpServerSentEventsBuilder" />
     /// </param>
+    /// <exception cref="ArgumentNullException"></exception>
     internal ServerSentEventsManager(IHttpRemoteService httpRemoteService,
         HttpServerSentEventsBuilder httpServerSentEventsBuilder)
     {

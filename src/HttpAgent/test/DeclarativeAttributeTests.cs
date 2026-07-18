@@ -672,7 +672,10 @@ public class DeclarativeAttributeTests
         Assert.False(attributeUsage.AllowMultiple);
 
         var attribute = new SuppressValidationAttribute();
-        Assert.NotNull(attribute);
+        Assert.True(attribute.Enabled);
+
+        var attribute2 = new SuppressValidationAttribute(false);
+        Assert.False(attribute2.Enabled);
     }
 
     [Fact]

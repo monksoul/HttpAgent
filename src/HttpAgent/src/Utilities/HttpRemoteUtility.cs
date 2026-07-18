@@ -257,6 +257,7 @@ public static class HttpRemoteUtility
         catch
         {
             socket.Dispose();
+
             throw;
         }
     }
@@ -265,10 +266,11 @@ public static class HttpRemoteUtility
     ///     获取本机第一个活跃的非回环 IPv4 地址
     /// </summary>
     /// <remarks>如果遍历所有本机网络接口后仍无可用地址，则返回安全回退值 <c>127.0.0.1</c>。</remarks>
+    /// <param name="defaultAddress">缺省 IPv4 地址，默认值为：<c>127.0.0.1</c></param>
     /// <returns>
     ///     <see cref="string" />
     /// </returns>
-    public static string GetLocalIPv4()
+    public static string GetLocalIPv4(string defaultAddress = "127.0.0.1")
     {
         try
         {
@@ -303,7 +305,7 @@ public static class HttpRemoteUtility
         {
         }
 
-        return "127.0.0.1";
+        return defaultAddress;
     }
 
     /// <summary>
@@ -312,7 +314,7 @@ public static class HttpRemoteUtility
     /// <returns>
     ///     <see cref="string" />
     /// </returns>
-    public static string GetLocalMacAddress()
+    public static string? GetLocalMacAddress()
     {
         try
         {
@@ -350,7 +352,7 @@ public static class HttpRemoteUtility
         {
         }
 
-        return string.Empty;
+        return null;
     }
 
     /// <summary>

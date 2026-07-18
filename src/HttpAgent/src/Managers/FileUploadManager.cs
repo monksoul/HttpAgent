@@ -29,6 +29,7 @@ internal sealed class FileUploadManager
     /// <param name="httpFileUploadBuilder">
     ///     <see cref="HttpFileUploadBuilder" />
     /// </param>
+    /// <exception cref="ArgumentNullException"></exception>
     internal FileUploadManager(IHttpRemoteService httpRemoteService, HttpFileUploadBuilder httpFileUploadBuilder)
     {
         // 空检查
