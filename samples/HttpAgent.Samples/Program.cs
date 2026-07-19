@@ -53,6 +53,9 @@ builder.Services.AddHttpRemote(options =>
         // 封闭泛型类型支持
         options.AddHttpDeclarative<IHttpInService<string>>();
 
+        // 无需实现 IHttpDeclarative 支持
+        options.AddHttpDeclarative(typeof(INormalService), false);
+
         options.AddHttpContentConverters(() => [new ClayContentConverter(), new DynamicContentConverter()]);
     }).ConfigureOptions(options => options.JsonSerializerOptions.AddClayConverters())
     .ConfigureHttpClientDefaults(clientBuilder =>

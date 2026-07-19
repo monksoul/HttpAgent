@@ -414,13 +414,15 @@ public class HttpRemoteBuilderTests
     public void BuildHttpDeclarativeServices_ReturnOK()
     {
         var services = new ServiceCollection();
-        var builder = new HttpRemoteBuilder().AddHttpDeclarative<IHttpTest>();
+        var builder = new HttpRemoteBuilder().AddHttpDeclarative<IHttpTest>()
+            .AddHttpDeclarative(typeof(IHttpNotImplementTest), false);
 
         builder.BuildHttpDeclarativeServices(services);
         builder.BuildHttpDeclarativeServices(services);
 
         Assert.Contains(services, u => u.ServiceType == typeof(IHttpTest));
-        Assert.Single(services);
+        Assert.Contains(services, u => u.ServiceType == typeof(IHttpNotImplementTest));
+        Assert.Equal(2, services.Count);
     }
 
     [Fact]

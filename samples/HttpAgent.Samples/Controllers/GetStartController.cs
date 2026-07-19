@@ -222,6 +222,8 @@ public class GetStartController(
 
         // 获取网站内容
         var content6 = await httpService.GetWebSiteContent2();
+
+        var content7 = await httpRemoteService.For<INormalService>().GetBaidu();
     }
 
     [HttpGet]

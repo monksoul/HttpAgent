@@ -1600,6 +1600,48 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
 
         await serviceProvider.DisposeAsync();
     }
+    
+    [Fact]
+    public async Task For_Invalid_Parameters()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        builder.Services.AddHttpRemote();
+        await using var app = builder.Build();
+        
+        var httpRemoteService = app.Services.GetRequiredService<IHttpRemoteService>();
+        Assert.Throws<InvalidOperationException>(httpRemoteService.For<IHttpDeclarativeTest>);
+    }
+    
+    [Fact]
+    public async Task For_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        builder.Services.AddHttpRemote(builder =>
+        {
+            builder.AddHttpDeclarative<IHttpDeclarativeTest>();
+        });
+        await using var app = builder.Build();
+
+        app.MapGet("/test", async context =>
+        {
+            await Task.Delay(50);
+
+            await context.Response.WriteAsync("Hello World!");
+        });
+
+        await app.StartAsync();
+
+        var httpRemoteService = app.Services.GetRequiredService<IHttpRemoteService>();
+        var result = await httpRemoteService.For<IHttpDeclarativeTest>()
+            .GetUrlAsync($"http://localhost:{port}/test", CancellationToken.None);
+        Assert.Equal("Hello World!", result);
+
+        await app.StopAsync();
+    }
 
     private sealed class HttpAccessTokenProvider : IHttpAccessTokenProvider
     {

@@ -280,6 +280,12 @@ public interface IHttpTest : IHttpDeclarative
     Task<string> GetContent();
 }
 
+public interface IHttpNotImplementTest
+{
+    [Get("https://furion.net/")]
+    Task<string> GetContent();
+}
+
 public interface IHttpTestBase<T> : IHttpDeclarative;
 
 public interface IHttpTest2 : IHttpDeclarative;

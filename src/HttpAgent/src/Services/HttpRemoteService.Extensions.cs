@@ -145,4 +145,7 @@ internal sealed partial class HttpRemoteService
     /// <inheritdoc />
     public Task<T?> SendAsAsync<T>(HttpDeclarativeBuilder httpDeclarativeBuilder) =>
         new DeclarativeManager(this, httpDeclarativeBuilder).StartAsync<T>();
+
+    /// <inheritdoc />
+    public T For<T>() where T : notnull => ServiceProvider.GetRequiredService<T>();
 }
