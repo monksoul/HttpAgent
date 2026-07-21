@@ -10,10 +10,14 @@ public class TokenManagementPipelineHandlerTests
     public void New_ReturnOK()
     {
         var services = new ServiceCollection();
+        services.AddLogging();
         services.TryAddSingleton<HttpAccessTokenManager>();
+        services.TryAddSingleton<IHttpRemoteLogger>(provider =>
+            ActivatorUtilities.CreateInstance<HttpRemoteLogger>(provider, true));
         using var serviceProvider = services.BuildServiceProvider();
 
         var handler = new TokenManagementPipelineHandler(serviceProvider,
+            serviceProvider.GetRequiredService<IHttpRemoteLogger>(),
             serviceProvider.GetRequiredService<HttpAccessTokenManager>());
 
         Assert.NotNull(handler);
@@ -23,10 +27,14 @@ public class TokenManagementPipelineHandlerTests
     public void ApplyAccessToken_Invalid_Parameters()
     {
         var services = new ServiceCollection();
+        services.AddLogging();
         services.TryAddSingleton<HttpAccessTokenManager>();
+        services.TryAddSingleton<IHttpRemoteLogger>(provider =>
+            ActivatorUtilities.CreateInstance<HttpRemoteLogger>(provider, true));
         using var serviceProvider = services.BuildServiceProvider();
 
         var handler = new TokenManagementPipelineHandler(serviceProvider,
+            serviceProvider.GetRequiredService<IHttpRemoteLogger>(),
             serviceProvider.GetRequiredService<HttpAccessTokenManager>());
 
         Assert.Throws<ArgumentNullException>(() => handler.ApplyAccessToken(null!, null!, null!));
@@ -40,10 +48,14 @@ public class TokenManagementPipelineHandlerTests
     public void ApplyAccessToken_ReturnOK()
     {
         var services = new ServiceCollection();
+        services.AddLogging();
         services.TryAddSingleton<HttpAccessTokenManager>();
+        services.TryAddSingleton<IHttpRemoteLogger>(provider =>
+            ActivatorUtilities.CreateInstance<HttpRemoteLogger>(provider, true));
         using var serviceProvider = services.BuildServiceProvider();
 
         var handler = new TokenManagementPipelineHandler(serviceProvider,
+            serviceProvider.GetRequiredService<IHttpRemoteLogger>(),
             serviceProvider.GetRequiredService<HttpAccessTokenManager>());
 
         var httpRequestBuilder = HttpRequestBuilder.Get("http://localhost");
@@ -67,6 +79,7 @@ public class TokenManagementPipelineHandlerTests
         using var serviceProvider2 = services2.BuildServiceProvider();
 
         var handler2 = new TokenManagementPipelineHandler(serviceProvider2,
+            serviceProvider.GetRequiredService<IHttpRemoteLogger>(),
             serviceProvider2.GetRequiredService<HttpAccessTokenManager>());
 
         var httpRequestBuilder2 = HttpRequestBuilder.Get("http://localhost");
@@ -100,7 +113,14 @@ public class TokenManagementPipelineHandlerTests
     internal sealed class HttpAccessTokenConfigurator : IHttpAccessTokenConfigurator
     {
         /// <inheritdoc />
-        public void Configure(HttpRequestBuilder httpRequestBuilder, HttpAccessToken httpAccessToken) =>
+        public void Configure(HttpRequestBuilder httpRequestBuilder, HttpAccessToken httpAccessToken)
+        {
             httpRequestBuilder.AddAuthentication("Custom", httpAccessToken.Value);
+
+            httpRequestBuilder.SetOnPostReceiveResponse(response =>
+            {
+                // 更新 httpAccessToken
+            });
+        }
     }
 }

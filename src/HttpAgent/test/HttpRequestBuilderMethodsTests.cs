@@ -452,6 +452,9 @@ public class HttpRequestBuilderMethodsTests
 
         httpRequestBuilder.WithHeader("name", new[] { "furion", "age" });
         Assert.Equal(["furion", "age"], httpRequestBuilder.Headers["name"]);
+
+        httpRequestBuilder.WithHeader("date", DateTime.Parse("2026-07-01 12:30:00"), format: "yyyy-MM-dd");
+        Assert.Equal("2026-07-01", httpRequestBuilder.Headers["date"].First());
     }
 
     [Fact]
@@ -687,6 +690,9 @@ public class HttpRequestBuilderMethodsTests
 
         httpRequestBuilder.WithQueryParameter("name", (object?)null);
         Assert.Null(httpRequestBuilder.QueryParameters["name"].First());
+
+        httpRequestBuilder.WithQueryParameter("date", DateTime.Parse("2026-07-01 12:30:00"), format: "yyyy-MM-dd");
+        Assert.Equal("2026-07-01", httpRequestBuilder.QueryParameters["date"].First());
     }
 
     [Fact]
@@ -956,6 +962,9 @@ public class HttpRequestBuilderMethodsTests
         Assert.NotNull(httpRequestBuilder2.Cookies);
         Assert.Equal(3, httpRequestBuilder2.Cookies.Count);
         Assert.Equal(["DeviceId", "ASP.NET_SessionId", "CookieLastUName"], httpRequestBuilder2.Cookies.Keys);
+
+        httpRequestBuilder.WithCookie("date", DateTime.Parse("2026-07-01 12:30:00"), "yyyy-MM-dd");
+        Assert.Equal("2026-07-01", httpRequestBuilder.Cookies["date"]);
     }
 
     [Fact]
@@ -2113,6 +2122,19 @@ public class HttpRequestBuilderMethodsTests
 
         httpRequestBuilder.WithoutTokenManagement();
         Assert.True(httpRequestBuilder.SuppressTokenManagement);
+    }
+
+    [Fact]
+    public void SetCompletionOption_ReturnOK()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        Assert.Null(httpRequestBuilder.CompletionOption);
+
+        httpRequestBuilder.SetCompletionOption(HttpCompletionOption.ResponseHeadersRead);
+        Assert.Equal(HttpCompletionOption.ResponseHeadersRead, httpRequestBuilder.CompletionOption);
+
+        httpRequestBuilder.SetCompletionOption(null);
+        Assert.Null(httpRequestBuilder.CompletionOption);
     }
 
     [Fact]

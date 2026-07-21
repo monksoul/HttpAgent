@@ -35,6 +35,7 @@ public class HttpRemoteLoggerTests
         logger.LogTrace("Message");
         logger.LogDebug("Message");
         logger.LogWarning("Message");
+        logger.LogWarning(new Exception("错误了"), "Message");
         logger.LogCritical("Message");
         logger.LogError(new Exception("错误了"), "Message");
         logger.Log(LogLevel.Information, null, "错误消息");
@@ -55,6 +56,7 @@ public class HttpRemoteLoggerTests
         logger.LogTrace("Message");
         logger.LogDebug("Message");
         logger.LogWarning("Message");
+        logger.LogWarning(new Exception("错误了"), "Message");
         logger.LogCritical("Message");
         logger.LogError(new Exception("错误了"), "Message");
         logger.Log(LogLevel.Information, null, "错误消息");

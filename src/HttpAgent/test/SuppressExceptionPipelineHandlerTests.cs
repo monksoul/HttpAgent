@@ -9,7 +9,15 @@ public class SuppressExceptionPipelineHandlerTests
     [Fact]
     public void New_ReturnOK()
     {
-        var handler = new SuppressExceptionPipelineHandler();
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddOptions<HttpRemoteOptions>();
+        services.TryAddSingleton<IHttpRemoteLogger>(provider =>
+            ActivatorUtilities.CreateInstance<HttpRemoteLogger>(provider, true));
+
+        using var serviceProvider = services.BuildServiceProvider();
+
+        var handler = new SuppressExceptionPipelineHandler(serviceProvider.GetRequiredService<IHttpRemoteLogger>());
         Assert.NotNull(handler);
     }
 

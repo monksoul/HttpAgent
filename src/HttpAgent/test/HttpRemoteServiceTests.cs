@@ -1600,7 +1600,7 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
 
         await serviceProvider.DisposeAsync();
     }
-    
+
     [Fact]
     public async Task For_Invalid_Parameters()
     {
@@ -1609,11 +1609,11 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
         var builder = WebApplication.CreateBuilder(urls);
         builder.Services.AddHttpRemote();
         await using var app = builder.Build();
-        
+
         var httpRemoteService = app.Services.GetRequiredService<IHttpRemoteService>();
         Assert.Throws<InvalidOperationException>(httpRemoteService.For<IHttpDeclarativeTest>);
     }
-    
+
     [Fact]
     public async Task For_ReturnOK()
     {

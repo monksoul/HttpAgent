@@ -33,7 +33,7 @@ internal sealed class QueryParamDeclarativeExtractor : IHttpDeclarativeExtractor
                 if (queryAttribute.HasSetValue)
                 {
                     httpRequestBuilder.WithQueryParameter(queryName, queryAttribute.Value, queryAttribute.Replace,
-                        queryAttribute.IgnoreNullValues);
+                        queryAttribute.IgnoreNullValues, queryAttribute.Format);
                 }
                 // 移除查询参数
                 else
@@ -79,7 +79,7 @@ internal sealed class QueryParamDeclarativeExtractor : IHttpDeclarativeExtractor
                 if (parameter.ParameterType.IsBaseTypeOrEnumOrCollection())
                 {
                     httpRequestBuilder.WithQueryParameter(parameterName, value ?? queryAttribute.Value,
-                        queryAttribute.Replace, queryAttribute.IgnoreNullValues);
+                        queryAttribute.Replace, queryAttribute.IgnoreNullValues, queryAttribute.Format);
 
                     continue;
                 }

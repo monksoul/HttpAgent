@@ -10,8 +10,16 @@ public class UrlParameterFormatter : IUrlParameterFormatter
     /// <inheritdoc />
     public virtual string? Format(object? value, UrlFormattingContext context) => DefaultFormatter(value, context);
 
-    /// <inheritdoc cref="Format" />
-    /// <remarks>默认格式化行为。</remarks>
+    /// <summary>
+    ///     默认格式化
+    /// </summary>
+    /// <param name="value">参数值</param>
+    /// <param name="context">
+    ///     <see cref="UrlFormattingContext" />
+    /// </param>
+    /// <returns>
+    ///     <see cref="string" />
+    /// </returns>
     public static string? DefaultFormatter(object? value, UrlFormattingContext context)
     {
         // 检查值是否为委托，如果是则获取实际值

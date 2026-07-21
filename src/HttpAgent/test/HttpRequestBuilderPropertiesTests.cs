@@ -53,6 +53,7 @@ public class HttpRequestBuilderPropertiesTests
         Assert.Null(httpRequestBuilder2.AuthenticationHeader);
         Assert.Null(httpRequestBuilder2.MultipartFormDataBuilder);
         Assert.False(httpRequestBuilder2.OmitContentType);
+        Assert.Null(httpRequestBuilder2.CompletionOption);
         Assert.Null(httpRequestBuilder2.RetryOptions);
         Assert.Null(httpRequestBuilder2.TimeoutOptions);
         Assert.False(httpRequestBuilder2.EnsureSuccessStatusCodeEnabled);
@@ -79,10 +80,10 @@ public class HttpRequestBuilderPropertiesTests
         Assert.False(httpRequestBuilder2.SuppressTokenManagement);
 
         Assert.NotNull(HttpRequestBuilder._cachedProperties);
-        Assert.Equal(54, HttpRequestBuilder._cachedProperties.Value.Length);
+        Assert.Equal(55, HttpRequestBuilder._cachedProperties.Value.Length);
 
         Assert.Equal(
-            "RequestUri|HttpMethod|TraceIdentifier|ContentType|ContentEncoding|RawContent|Headers|HeadersToRemove|Fragment|PathSegments|PathSegmentsToRemove|QueryParameters|QueryParametersSorter|QueryParametersToRemove|PathParameters|ObjectPathParameters|Cookies|CookiesToRemove|HttpClientName|MaxResponseContentBufferSize|AuthenticationHeader|Properties|BaseAddress|Version|HttpClientProvider|HttpContentProcessorProviders|HttpContentConverterProviders|OnPreSetContent|OnPreSendRequest|OnPostReceiveResponse|OnRequestFailed|MultipartFormDataBuilder|OmitContentType|RetryOptions|TimeoutOptions|EnsureSuccessStatusCodeEnabled|DisableCacheEnabled|RequestEventHandlerType|Disposables|HttpClientPooling|HttpClientPoolingEnabled|ProfilerEnabled|ProfilerPredicate|PerformanceOptimizationEnabled|AutoSetHostHeaderEnabled|ProfilerDisabled|StatusCodeHandlers|SuppressExceptionTypes|AssertionsEnabled|Assertions|UriBuilderConfigure|JsonResponseWrapperEnabled|JsonResponseStringUnwrapEnabled|SuppressTokenManagement",
+            "RequestUri|HttpMethod|TraceIdentifier|ContentType|ContentEncoding|RawContent|Headers|HeadersToRemove|Fragment|PathSegments|PathSegmentsToRemove|QueryParameters|QueryParametersSorter|QueryParametersToRemove|PathParameters|ObjectPathParameters|Cookies|CookiesToRemove|HttpClientName|MaxResponseContentBufferSize|AuthenticationHeader|Properties|BaseAddress|Version|HttpClientProvider|HttpContentProcessorProviders|HttpContentConverterProviders|OnPreSetContent|OnPreSendRequest|OnPostReceiveResponse|OnRequestFailed|MultipartFormDataBuilder|OmitContentType|CompletionOption|RetryOptions|TimeoutOptions|EnsureSuccessStatusCodeEnabled|DisableCacheEnabled|RequestEventHandlerType|Disposables|HttpClientPooling|HttpClientPoolingEnabled|ProfilerEnabled|ProfilerPredicate|PerformanceOptimizationEnabled|AutoSetHostHeaderEnabled|ProfilerDisabled|StatusCodeHandlers|SuppressExceptionTypes|AssertionsEnabled|Assertions|UriBuilderConfigure|JsonResponseWrapperEnabled|JsonResponseStringUnwrapEnabled|SuppressTokenManagement",
             string.Join('|', HttpRequestBuilder._cachedProperties.Value.Select(u => u.Name)));
     }
 }

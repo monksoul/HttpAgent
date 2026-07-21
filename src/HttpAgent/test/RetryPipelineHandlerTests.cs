@@ -9,7 +9,15 @@ public class RetryPipelineHandlerTests
     [Fact]
     public void New_ReturnOK()
     {
-        var handler = new RetryPipelineHandler();
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddOptions<HttpRemoteOptions>();
+        services.TryAddSingleton<IHttpRemoteLogger>(provider =>
+            ActivatorUtilities.CreateInstance<HttpRemoteLogger>(provider, true));
+
+        using var serviceProvider = services.BuildServiceProvider();
+
+        var handler = new RetryPipelineHandler(serviceProvider.GetRequiredService<IHttpRemoteLogger>());
         Assert.NotNull(handler);
     }
 
@@ -94,5 +102,24 @@ public class RetryPipelineHandlerTests
             HttpStatusCode.InternalServerError));
         Assert.False(RetryPipelineHandler.ShouldRetryOnStatusCode([HttpStatusCode.InternalServerError],
             HttpStatusCode.Unauthorized));
+    }
+
+    [Fact]
+    public void DefaultOnRetry_ReturnOK()
+    {
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddOptions<HttpRemoteOptions>();
+        services.TryAddSingleton<IHttpRemoteLogger>(provider =>
+            ActivatorUtilities.CreateInstance<HttpRemoteLogger>(provider, true));
+
+        using var serviceProvider = services.BuildServiceProvider();
+
+        var handler = new RetryPipelineHandler(serviceProvider.GetRequiredService<IHttpRemoteLogger>());
+
+        handler.DefaultOnRetry(new HttpRetryContext
+        {
+            Attempt = 1, StatusCode = HttpStatusCode.InternalServerError, MaxRetries = 3
+        });
     }
 }

@@ -233,6 +233,7 @@ public class DeclarativeAttributeTests
         Assert.Null(attribute.Name);
         Assert.Null(attribute.Value);
         Assert.Null(attribute.AliasAs);
+        Assert.Null(attribute.Format);
         Assert.False(attribute.HasSetValue);
 
         var attribute2 = new CookieAttribute("name");
@@ -326,6 +327,7 @@ public class DeclarativeAttributeTests
         Assert.Null(attribute.AliasAs);
         Assert.False(attribute.HasSetValue);
         Assert.False(attribute.Replace);
+        Assert.Null(attribute.Format);
 
         var attribute2 = new HeaderAttribute("Set-Cookie");
         Assert.Equal("Set-Cookie", attribute2.Name);
@@ -430,6 +432,7 @@ public class DeclarativeAttributeTests
         Assert.Null(attribute.Prefix);
         Assert.False(attribute.Replace);
         Assert.False(attribute.IgnoreNullValues);
+        Assert.Null(attribute.Format);
 
         var attribute2 = new QueryParamAttribute("name");
         Assert.Equal("name", attribute2.Name);
