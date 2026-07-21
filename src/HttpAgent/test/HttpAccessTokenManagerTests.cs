@@ -15,6 +15,40 @@ public class HttpAccessTokenManagerTests
     }
 
     [Fact]
+    public async Task SetTokenAsync_Invalid_Parameters()
+    {
+        var tokenManager = new HttpAccessTokenManager();
+        await Assert.ThrowsAsync<ArgumentNullException>(() =>
+            tokenManager.SetTokenAsync(null, null!, CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task SetTokenAsync_ReturnOK()
+    {
+        var tokenManager = new HttpAccessTokenManager();
+        Assert.Empty(tokenManager._httpClientNameCaches);
+
+        await tokenManager.SetTokenAsync(null, new HttpAccessToken("new token", DateTimeOffset.Now.AddMinutes(10)),
+            CancellationToken.None);
+
+        Assert.Single(tokenManager._httpClientNameCaches);
+    }
+
+    [Fact]
+    public async Task GetTokenAsync_ReturnOK()
+    {
+        var tokenManager = new HttpAccessTokenManager();
+        Assert.Empty(tokenManager._httpClientNameCaches);
+
+        await tokenManager.SetTokenAsync(null, new HttpAccessToken("new token", DateTimeOffset.Now.AddMinutes(10)),
+            CancellationToken.None);
+
+        var accessToken = await tokenManager.GetTokenAsync(null, CancellationToken.None);
+        Assert.NotNull(accessToken);
+        Assert.Equal("new token", accessToken.Value);
+    }
+
+    [Fact]
     public async Task GetOrRefreshAsync_Invalid_Parameters()
     {
         var tokenManager = new HttpAccessTokenManager();
@@ -87,7 +121,8 @@ public class HttpAccessTokenManagerTests
     private sealed class HttpAccessTokenProvider : IHttpAccessTokenProvider
     {
         /// <inheritdoc />
-        public Task<HttpAccessToken> GetTokenAsync(CancellationToken cancellationToken) =>
-            Task.FromResult(new HttpAccessToken("new token", DateTimeOffset.Now.AddMinutes(10)));
+        public Task<HttpAccessToken?>
+            GetTokenAsync(HttpAccessTokenContext context, CancellationToken cancellationToken) =>
+            Task.FromResult<HttpAccessToken?>(new HttpAccessToken("new token", DateTimeOffset.Now.AddMinutes(10)));
     }
 }

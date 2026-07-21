@@ -194,7 +194,7 @@ public sealed partial class WebSocketClient : IDisposable
         {
             throw;
         }
-        catch (Exception e)
+        catch (Exception)
         {
             // 释放底层资源
             CleanupResources();

@@ -20,6 +20,8 @@ public class HttpAccessTokenContextTests
         Assert.NotNull(tokenContext.HttpClientName);
         Assert.Equal(string.Empty, tokenContext.HttpClientName);
         Assert.NotNull(tokenContext.HttpAccessTokenProvider);
+        Assert.NotNull(tokenContext.Items);
+        Assert.Empty(tokenContext.Items);
 
         var tokenContext2 = new HttpAccessTokenContext("github", new HttpAccessTokenProvider());
         Assert.NotNull(tokenContext2.HttpClientName);
@@ -30,7 +32,8 @@ public class HttpAccessTokenContextTests
     private sealed class HttpAccessTokenProvider : IHttpAccessTokenProvider
     {
         /// <inheritdoc />
-        public Task<HttpAccessToken> GetTokenAsync(CancellationToken cancellationToken) =>
+        public Task<HttpAccessToken?>
+            GetTokenAsync(HttpAccessTokenContext context, CancellationToken cancellationToken) =>
             throw new NotImplementedException();
     }
 }

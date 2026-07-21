@@ -15,7 +15,7 @@ public class RequestBuilderPipelineHandlerTests
 
         using var serviceProvider = services.BuildServiceProvider();
 
-        var handler = new RequestBuilderPipelineHandler(
+        var handler = new RequestBuilderPipelineHandler(serviceProvider,
             serviceProvider.GetRequiredService<IHttpContentProcessorFactory>(),
             serviceProvider.GetRequiredService<IOptions<HttpRemoteOptions>>());
 
@@ -28,7 +28,7 @@ public class RequestBuilderPipelineHandlerTests
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
         httpRequestBuilder.SetOnPreSendRequest(_ => throw new Exception("出错了"));
 
-        RequestBuilderPipelineHandler.HandlePreSendRequest(httpRequestBuilder, new CustomRequestEventHandler(),
+        RequestBuilderPipelineHandler.HandlePreSendRequest(httpRequestBuilder, null, new CustomRequestEventHandler(),
             new HttpRequestMessage());
     }
 }

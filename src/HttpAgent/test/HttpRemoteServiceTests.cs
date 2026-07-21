@@ -4,7 +4,7 @@
 
 namespace HttpAgent.Tests;
 
-public class HttpRemoteServiceTests(ITestOutputHelper output)
+public class HttpRemoteServiceTests
 {
     [Fact]
     public void New_Invalid_Parameters()
@@ -1646,8 +1646,9 @@ public class HttpRemoteServiceTests(ITestOutputHelper output)
     private sealed class HttpAccessTokenProvider : IHttpAccessTokenProvider
     {
         /// <inheritdoc />
-        public Task<HttpAccessToken> GetTokenAsync(CancellationToken cancellationToken) =>
-            Task.FromResult(new HttpAccessToken("accessToken", DateTimeOffset.Now.AddMinutes(10)));
+        public Task<HttpAccessToken?>
+            GetTokenAsync(HttpAccessTokenContext context, CancellationToken cancellationToken) =>
+            Task.FromResult<HttpAccessToken?>(new HttpAccessToken("accessToken", DateTimeOffset.Now.AddMinutes(10)));
     }
 }
 

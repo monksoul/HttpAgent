@@ -4,7 +4,7 @@
 
 namespace HttpAgent.Tests;
 
-public class StatusCodePipelineHandlerTests(ITestOutputHelper output)
+public class StatusCodePipelineHandlerTests
 {
     [Fact]
     public void New_ReturnOK()

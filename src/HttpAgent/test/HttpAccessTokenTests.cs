@@ -21,6 +21,14 @@ public class HttpAccessTokenTests
         Assert.Null(accessToken.Scheme);
         Assert.NotNull(accessToken.Items);
         Assert.Empty(accessToken.Items);
+        Assert.Null(accessToken.RefreshToken);
+
+        accessToken.RefreshToken = "refresh token value";
+        Assert.Equal("refresh token value", accessToken.RefreshToken);
+        Assert.Single(accessToken.Items);
+        Assert.Equal("refresh token value", accessToken.Items["refresh_token"]);
+
+        Assert.Equal("refresh_token", HttpAccessToken.RefreshTokenKey);
     }
 
     [Fact]

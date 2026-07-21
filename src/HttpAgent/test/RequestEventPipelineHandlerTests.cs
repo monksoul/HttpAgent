@@ -29,7 +29,7 @@ public class RequestEventPipelineHandlerTests
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
         httpRequestBuilder.SetOnPostReceiveResponse(_ => throw new Exception("出错了"));
 
-        RequestEventPipelineHandler.HandlePostReceiveResponse(httpRequestBuilder, new CustomRequestEventHandler(),
+        RequestEventPipelineHandler.HandlePostReceiveResponse(httpRequestBuilder, null, new CustomRequestEventHandler(),
             new HttpResponseMessage());
     }
 
@@ -39,7 +39,7 @@ public class RequestEventPipelineHandlerTests
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
         httpRequestBuilder.SetOnRequestFailed((_, _) => throw new Exception("出错了"));
 
-        RequestEventPipelineHandler.HandleRequestFailed(httpRequestBuilder, new CustomRequestEventHandler(),
+        RequestEventPipelineHandler.HandleRequestFailed(httpRequestBuilder, null, new CustomRequestEventHandler(),
             new Exception("出错了"),
             new HttpResponseMessage());
     }

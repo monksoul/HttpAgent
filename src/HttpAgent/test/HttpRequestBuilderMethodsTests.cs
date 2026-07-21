@@ -2125,6 +2125,28 @@ public class HttpRequestBuilderMethodsTests
     }
 
     [Fact]
+    public void WithAccessTokenData_Invalid_Parameters()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        Assert.Throws<ArgumentNullException>(() => httpRequestBuilder.WithAccessTokenData(null!, null));
+        Assert.Throws<ArgumentException>(() => httpRequestBuilder.WithAccessTokenData(string.Empty, null));
+        Assert.Throws<ArgumentException>(() => httpRequestBuilder.WithAccessTokenData(" ", null));
+        Assert.Throws<ArgumentNullException>(() => httpRequestBuilder.WithAccessTokenData(null!));
+    }
+
+    [Fact]
+    public void WithAccessTokenData_ReturnOK()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        Assert.Null(httpRequestBuilder.AccessTokenData);
+
+        httpRequestBuilder.WithAccessTokenData("username", "Furion");
+        Assert.NotNull(httpRequestBuilder.AccessTokenData);
+        Assert.Single(httpRequestBuilder.AccessTokenData);
+        Assert.Equal("Furion", httpRequestBuilder.AccessTokenData["username"]);
+    }
+
+    [Fact]
     public void SetCompletionOption_ReturnOK()
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));

@@ -4,9 +4,28 @@
         <name>HttpAgent</name>
     </assembly>
     <members>
+        <member name="T:HttpAgent.FurionAccessTokenProvider">
+            <summary>
+                Furion 框架 Access Token 提供器
+            </summary>
+        </member>
+        <member name="M:HttpAgent.FurionAccessTokenProvider.Configure(HttpAgent.HttpRequestBuilder,HttpAgent.HttpAccessToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.FurionAccessTokenProvider.GetTokenAsync(HttpAgent.HttpAccessTokenContext,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.FurionAccessTokenProvider.RefreshTokenAsync(HttpAgent.HttpAccessTokenContext,HttpAgent.HttpAccessToken,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
         <member name="T:HttpAgent.HttpAccessToken">
             <summary>
                 Access Token 信息
+            </summary>
+        </member>
+        <member name="F:HttpAgent.HttpAccessToken.RefreshTokenKey">
+            <summary>
+                刷新 Token 常量
             </summary>
         </member>
         <member name="M:HttpAgent.HttpAccessToken.#ctor(System.String,System.DateTimeOffset)">
@@ -31,6 +50,12 @@
             <summary>
                 HTTP 认证方案
             </summary>
+        </member>
+        <member name="P:HttpAgent.HttpAccessToken.RefreshToken">
+            <summary>
+                刷新 Token（可选）
+            </summary>
+            <remarks>内部是 <c>Items["refresh_token"]</c> 的便捷访问器。如果不需要，可保持为 <c>null</c>。</remarks>
         </member>
         <member name="P:HttpAgent.HttpAccessToken.Items">
             <summary>
@@ -64,6 +89,15 @@
                 <see cref="T:System.Net.Http.HttpClient" /> 实例的配置名称
             </summary>
         </member>
+        <member name="P:HttpAgent.HttpAccessTokenContext.Items">
+            <summary>
+                共享数据字典
+            </summary>
+            <remarks>
+                <para>用于存储与 Access Token 相关的自定义数据。</para>
+                <para>可通过 <c>HttpRequestBuilder.WithAccessTokenData</c> 方法进行设置。</para>
+            </remarks>
+        </member>
         <member name="P:HttpAgent.HttpAccessTokenContext.HttpAccessTokenProvider">
             <summary>
                 <see cref="T:HttpAgent.IHttpAccessTokenProvider" /> 实例
@@ -78,6 +112,12 @@
             <summary>
                 <see cref="T:System.Net.Http.HttpClient" /> 实例的配置名称的 Access Token 缓存字典
             </summary>
+        </member>
+        <member name="M:HttpAgent.HttpAccessTokenManager.SetTokenAsync(System.String,HttpAgent.HttpAccessToken,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.HttpAccessTokenManager.GetTokenAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
         </member>
         <member name="M:HttpAgent.HttpAccessTokenManager.GetOrRefreshAsync(HttpAgent.HttpAccessTokenContext,System.Threading.CancellationToken)">
             <summary>
@@ -130,6 +170,17 @@
                 当前有效的 <see cref="T:HttpAgent.HttpAccessToken" /> 实例
             </summary>
         </member>
+        <member name="M:HttpAgent.HttpAccessTokenManager.AccessTokenCache.SetAsync(HttpAgent.HttpAccessToken,System.Threading.CancellationToken)">
+            <summary>
+                设置 Access Token
+            </summary>
+            <param name="httpAccessToken">
+                <see cref="T:HttpAgent.HttpAccessToken" />
+            </param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+        </member>
         <member name="M:HttpAgent.HttpAccessTokenManager.AccessTokenCache.GetOrRefreshAsync(HttpAgent.HttpAccessTokenContext,System.Threading.CancellationToken)">
             <summary>
                 获取或刷新 Access Token
@@ -175,6 +226,40 @@
                 <see cref="T:HttpAgent.HttpAccessToken" />
             </param>
         </member>
+        <member name="T:HttpAgent.IHttpAccessTokenManager">
+            <summary>
+                Access Token 管理器接口
+            </summary>
+        </member>
+        <member name="M:HttpAgent.IHttpAccessTokenManager.SetTokenAsync(System.String,HttpAgent.HttpAccessToken,System.Threading.CancellationToken)">
+            <summary>
+                设置 Access Token
+            </summary>
+            <remarks>用于首次获取或常规获取。</remarks>
+            <param name="httpClientName"><see cref="T:System.Net.Http.HttpClient" /> 实例的配置名称</param>
+            <param name="httpAccessToken">
+                <see cref="T:HttpAgent.HttpAccessToken" />
+            </param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns>
+                <see cref="T:System.Threading.Tasks.Task" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.IHttpAccessTokenManager.GetTokenAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+                获取当前缓存的 Access Token
+            </summary>
+            <remarks>此方法不会触发刷新操作。</remarks>
+            <param name="httpClientName"><see cref="T:System.Net.Http.HttpClient" /> 实例的配置名称</param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.HttpAccessToken" />
+            </returns>
+        </member>
         <member name="T:HttpAgent.IHttpAccessTokenProvider">
             <summary>
                 Access Token 提供器
@@ -184,11 +269,14 @@
                 <para>实现该接口的类型也可以同时实现 <see cref="T:HttpAgent.IHttpAccessTokenConfigurator" />。</para>
             </remarks>
         </member>
-        <member name="M:HttpAgent.IHttpAccessTokenProvider.GetTokenAsync(System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.IHttpAccessTokenProvider.GetTokenAsync(HttpAgent.HttpAccessTokenContext,System.Threading.CancellationToken)">
             <summary>
                 获取 Access Token
             </summary>
-            <remarks>用于首次获取或常规获取。</remarks>
+            <remarks>若使用 <see cref="M:HttpAgent.IHttpAccessTokenManager.SetTokenAsync(System.String,HttpAgent.HttpAccessToken,System.Threading.CancellationToken)" /> 设置 Access Token，那么该方法可以空实现或抛出异常。</remarks>
+            <param name="context">
+                <see cref="T:HttpAgent.HttpAccessTokenContext" />
+            </param>
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
@@ -196,11 +284,14 @@
                 <see cref="T:HttpAgent.HttpAccessToken" />
             </returns>
         </member>
-        <member name="M:HttpAgent.IHttpAccessTokenProvider.RefreshTokenAsync(HttpAgent.HttpAccessToken,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.IHttpAccessTokenProvider.RefreshTokenAsync(HttpAgent.HttpAccessTokenContext,HttpAgent.HttpAccessToken,System.Threading.CancellationToken)">
             <summary>
                 刷新 Access Token
             </summary>
-            <remarks>默认实现直接调用 <see cref="M:HttpAgent.IHttpAccessTokenProvider.GetTokenAsync(System.Threading.CancellationToken)" />。若认证流程中“首次获取 Token”与“刷新 Token”使用不同的接口（如登录接口 vs 刷新专用接口），可重写此方法并提供专用的刷新逻辑。</remarks>
+            <remarks>默认实现直接调用 <see cref="M:HttpAgent.IHttpAccessTokenProvider.GetTokenAsync(HttpAgent.HttpAccessTokenContext,System.Threading.CancellationToken)" />。若认证流程中“首次获取 Token”与“刷新 Token”使用不同的接口（如登录接口 vs 刷新专用接口），可重写此方法并提供专用的刷新逻辑。</remarks>
+            <param name="context">
+                <see cref="T:HttpAgent.HttpAccessTokenContext" />
+            </param>
             <param name="currentToken">当前已缓存的 <see cref="T:HttpAgent.HttpAccessToken" /></param>
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
@@ -209,13 +300,16 @@
                 <see cref="T:HttpAgent.HttpAccessToken" />
             </returns>
         </member>
-        <member name="M:HttpAgent.IHttpAccessTokenProvider.ShouldRefreshTokenAsync(System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.IHttpAccessTokenProvider.ShouldRefreshTokenAsync(HttpAgent.HttpAccessTokenContext,System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
             <summary>
                 指示是否需要强制刷新 Access Token 并重试请求
             </summary>
             <remarks>
                 默认实现仅在状态码为 <see cref="F:System.Net.HttpStatusCode.Unauthorized" />（401）时返回 <c>true</c>。可重写此方法以自定义刷新策略（例如检查 403、响应头、响应体等）。
             </remarks>
+            <param name="context">
+                <see cref="T:HttpAgent.HttpAccessTokenContext" />
+            </param>
             <param name="httpResponseMessage">
                 <see cref="T:System.Net.Http.HttpResponseMessage" />
             </param>
@@ -3096,11 +3190,11 @@
             <summary>
                 设置在收到 HTTP 响应之后执行的操作
             </summary>
+            <remarks>支持多次调用。</remarks>
             <param name="configure">自定义配置委托</param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
-            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.SetOnRequestFailed(System.Action{System.Exception,System.Net.Http.HttpResponseMessage})">
             <summary>
@@ -3679,6 +3773,29 @@
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
         </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.WithAccessTokenData(System.String,System.Object)">
+            <summary>
+                设置获取 Access Token 时传递的自定义数据
+            </summary>
+            <remarks>支持多次调用。</remarks>
+            <param name="key">键</param>
+            <param name="value">值</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.WithAccessTokenData(System.Collections.Generic.IDictionary{System.String,System.Object})">
+            <summary>
+                批量设置获取 Access Token 时传递的自定义数据
+            </summary>
+            <remarks>支持多次调用。</remarks>
+            <param name="data">数据字典</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
         <member name="M:HttpAgent.HttpRequestBuilder.SetCompletionOption(System.Nullable{System.Net.Http.HttpCompletionOption})">
             <summary>
                 设置 HTTP 完成选项
@@ -3729,6 +3846,9 @@
                 <see cref="T:HttpAgent.HttpRequestBuilder" /> 类型的所有实例属性信息
             </summary>
             <remarks>避免在每次调用 <see cref="M:HttpAgent.HttpRequestBuilder.Clone" /> 方法时重复进行反射操作，提升性能。</remarks>
+        </member>
+        <member name="F:HttpAgent.HttpRequestBuilder._onPostReceiveResponse">
+            <inheritdoc cref="P:HttpAgent.HttpRequestBuilder.OnPostReceiveResponse" />
         </member>
         <member name="F:HttpAgent.HttpRequestBuilder._onPreSendRequest">
             <inheritdoc cref="P:HttpAgent.HttpRequestBuilder.OnPreSendRequest" />
@@ -3949,6 +4069,12 @@
             <summary>
                 HTTP 请求超时选项
             </summary>
+        </member>
+        <member name="P:HttpAgent.HttpRequestBuilder.AccessTokenData">
+            <summary>
+                获取 Access Token 时传递的自定义数据
+            </summary>
+            <remarks>该数据将被复制到 <see cref="P:HttpAgent.HttpAccessTokenContext.Items" /> 中，供 <see cref="T:HttpAgent.IHttpAccessTokenProvider" /> 使用。</remarks>
         </member>
         <member name="P:HttpAgent.HttpRequestBuilder.EnsureSuccessStatusCodeEnabled">
             <summary>
@@ -5748,7 +5874,7 @@
         <member name="M:HttpAgent.Core.Converters.Json.FlexibleDateTimeConverter.Regex">
             <remarks>
             Pattern:<br/>
-            <code>^/Date\(([+-]*\d+)\)/$</code><br/>
+            <code>^/Date\\(([+-]*\\d+)\\)/$</code><br/>
             Options:<br/>
             <code>RegexOptions.CultureInvariant</code><br/>
             Explanation:<br/>
@@ -5756,7 +5882,7 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Match the string "/Date(".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [+\-] atomically any number of times.<br/>
+                ○ Match a character in the set [+-] atomically any number of times.<br/>
                 ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match the string ")/".<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
@@ -5777,7 +5903,7 @@
         <member name="M:HttpAgent.Core.Converters.Json.FlexibleDateTimeOffsetConverter.Regex">
             <remarks>
             Pattern:<br/>
-            <code>^/Date\(([+-]*\d+)([+-])(\d{2})(\d{2})\)/$</code><br/>
+            <code>^/Date\\(([+-]*\\d+)([+-])(\\d{2})(\\d{2})\\)/$</code><br/>
             Options:<br/>
             <code>RegexOptions.CultureInvariant</code><br/>
             Explanation:<br/>
@@ -5785,10 +5911,10 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Match the string "/Date(".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [+\-] atomically any number of times.<br/>
+                ○ Match a character in the set [+-] atomically any number of times.<br/>
                 ○ Match a Unicode digit atomically at least once.<br/>
             ○ 2nd capture group.<br/>
-                ○ Match a character in the set [+\-].<br/>
+                ○ Match a character in the set [+-].<br/>
             ○ 3rd capture group.<br/>
                 ○ Match a Unicode digit exactly 2 times.<br/>
             ○ 4th capture group.<br/>
@@ -6349,7 +6475,7 @@
         <member name="M:HttpAgent.Core.Extensions.StringExtensions.PlaceholderRegex">
             <remarks>
             Pattern:<br/>
-            <code>\{\s*(?:\*\*)?\s*(\w+(?:\s*\.\s*\w+)*)\s*(\?)?\s*\}</code><br/>
+            <code>\\{\\s*(?:\\*\\*)?\\s*(\\w+(?:\\s*\\.\\s*\\w+)*)\\s*(\\?)?\\s*\\}</code><br/>
             Explanation:<br/>
             <code>
             ○ Match '{'.<br/>
@@ -6376,7 +6502,7 @@
         <member name="M:HttpAgent.Core.Extensions.StringExtensions.ConfigurationKeyRegex">
             <remarks>
             Pattern:<br/>
-            <code>\[\[\s*(?:\*\*)?\s*([\w\-:]+)((?:\s*\|\s*[\w\-:]+)*)\s*(?:\|\|\s*([^\]]*))?\s*(\?)?\s*\]\]</code><br/>
+            <code>\\[\\[\\s*(?:\\*\\*)?\\s*([\\w\\-:]+)((?:\\s*\\|\\s*[\\w\\-:]+)*)\\s*(?:\\|\\|\\s*([^\\]]*))?\\s*(\\?)?\\s*\\]\\]</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "[[".<br/>
@@ -6385,13 +6511,13 @@
                 ○ Match the string "**".<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [\-:\w] greedily at least once.<br/>
+                ○ Match a character in the set [-:\w] greedily at least once.<br/>
             ○ 2nd capture group.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match a whitespace character atomically any number of times.<br/>
                     ○ Match '|'.<br/>
                     ○ Match a whitespace character greedily any number of times.<br/>
-                    ○ Match a character in the set [\-:\w] greedily at least once.<br/>
+                    ○ Match a character in the set [-:\w] greedily at least once.<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ Optional (greedy).<br/>
                 ○ Match the string "||".<br/>
@@ -6418,32 +6544,32 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Loop greedily at least once.<br/>
                 ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [\-.0-9A-Z_a-z~].<br/>
+                    ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
                     ○ Match a sequence of expressions.<br/>
                         ○ Match '%'.<br/>
-                        ○ Match a hexadecimal digit exactly 2 times.<br/>
+                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
             ○ Match '='.<br/>
             ○ Loop greedily any number of times.<br/>
                 ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [+\-.0-9A-Z_a-z~].<br/>
+                    ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
                     ○ Match a sequence of expressions.<br/>
                         ○ Match '%'.<br/>
-                        ○ Match a hexadecimal digit exactly 2 times.<br/>
+                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
             ○ Loop greedily any number of times.<br/>
                 ○ Match '&amp;'.<br/>
                 ○ Loop greedily at least once.<br/>
                     ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [\-.0-9A-Z_a-z~].<br/>
+                        ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
                         ○ Match a sequence of expressions.<br/>
                             ○ Match '%'.<br/>
-                            ○ Match a hexadecimal digit exactly 2 times.<br/>
+                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
                 ○ Match '='.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [+\-.0-9A-Z_a-z~].<br/>
+                        ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
                         ○ Match a sequence of expressions.<br/>
                             ○ Match '%'.<br/>
-                            ○ Match a hexadecimal digit exactly 2 times.<br/>
+                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
             </remarks>
@@ -6835,6 +6961,218 @@
                 <see cref="T:System.Text.Json.JsonDocument" />
             </returns>
             <exception cref="T:System.Text.Json.JsonException"></exception>
+        </member>
+        <member name="T:HttpAgent.Core.Utilities.JwtTokenUtility">
+            <summary>
+                JWT 实用方法
+            </summary>
+        </member>
+        <member name="M:HttpAgent.Core.Utilities.JwtTokenUtility.GetPayloadJson(System.String)">
+            <summary>
+                获取 JWT Payload 部分的 JSON 字符串
+            </summary>
+            <param name="token">完整 JWT 或单独的 Payload 片段</param>
+            <returns>
+                <see cref="T:System.String" />
+            </returns>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
+        <member name="M:HttpAgent.Core.Utilities.JwtTokenUtility.Parse(System.String)">
+            <summary>
+                解析 JWT 的 Payload
+            </summary>
+            <param name="token">完整 JWT 或单独的 Payload 片段</param>
+            <returns>
+                <see cref="T:HttpAgent.Core.Utilities.JwtTokenUtility.JwtPayload" />
+            </returns>
+        </member>
+        <member name="T:HttpAgent.Core.Utilities.JwtTokenUtility.JwtPayload">
+            <summary>
+                JWT Payload 内容
+            </summary>
+        </member>
+        <member name="F:HttpAgent.Core.Utilities.JwtTokenUtility.JwtPayload._root">
+            <summary>
+                根 <see cref="T:System.Text.Json.JsonElement" />
+            </summary>
+        </member>
+        <member name="M:HttpAgent.Core.Utilities.JwtTokenUtility.JwtPayload.#ctor(System.Text.Json.JsonElement,System.String)">
+            <summary>
+                <inheritdoc cref="T:HttpAgent.Core.Utilities.JwtTokenUtility.JwtPayload" />
+            </summary>
+            <param name="root">根 <see cref="T:System.Text.Json.JsonElement" /></param>
+            <param name="rawJson">原始 JSON 字符串</param>
+        </member>
+        <member name="P:HttpAgent.Core.Utilities.JwtTokenUtility.JwtPayload.RawJson">
+            <summary>
+                原始 JSON 字符串
+            </summary>
+        </member>
+        <member name="M:HttpAgent.Core.Utilities.JwtTokenUtility.JwtPayload.Contains(System.String)">
+            <summary>
+                检查是否包含指定声明
+            </summary>
+            <param name="claimName">声明的键名</param>
+            <returns>
+                <see cref="T:System.Boolean" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Core.Utilities.JwtTokenUtility.JwtPayload.GetProperty(System.String)">
+            <summary>
+                获取指定声明
+            </summary>
+            <param name="claimName">声明的键名</param>
+            <returns>
+                <see cref="T:System.Text.Json.JsonElement" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Core.Utilities.JwtTokenUtility.JwtPayload.GetIssuer">
+            <summary>
+                获取签发者
+            </summary>
+            <returns>
+                <see cref="T:System.String" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Core.Utilities.JwtTokenUtility.JwtPayload.GetSubject">
+            <summary>
+                获取主题
+            </summary>
+            <returns>
+                <see cref="T:System.String" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Core.Utilities.JwtTokenUtility.JwtPayload.GetAudience">
+            <summary>
+                获取接收方
+            </summary>
+            <returns>
+                <see cref="T:System.String" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Core.Utilities.JwtTokenUtility.JwtPayload.GetExpiration">
+            <summary>
+                获取过期时间（Unix 秒）
+            </summary>
+            <remarks>可通过 <c>DateTimeOffset.FromUnixTimeSeconds(exp)</c> 转换为 <see cref="T:System.DateTimeOffset" />。</remarks>
+            <returns>
+                <see cref="T:System.Int64" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Core.Utilities.JwtTokenUtility.JwtPayload.GetIssuedAt">
+            <summary>
+                获取签发时间（Unix 秒）
+            </summary>
+            <returns>
+                <see cref="T:System.Int64" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Core.Utilities.JwtTokenUtility.JwtPayload.GetNotBefore">
+            <summary>
+                获取生效时间（Unix 秒）
+            </summary>
+            <returns>
+                <see cref="T:System.Int64" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Core.Utilities.JwtTokenUtility.JwtPayload.GetJwtId">
+            <summary>
+                获取唯一标识
+            </summary>
+            <returns>
+                <see cref="T:System.String" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Core.Utilities.JwtTokenUtility.JwtPayload.GetExpirationTimeUtc">
+            <summary>
+                获取过期时间（UTC 时间）
+            </summary>
+            <returns>
+                <see cref="T:System.DateTimeOffset" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Core.Utilities.JwtTokenUtility.JwtPayload.GetExpirationTime">
+            <summary>
+                获取过期时间（本地时间）
+            </summary>
+            <returns>
+                <see cref="T:System.DateTime" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Core.Utilities.JwtTokenUtility.JwtPayload.GetIssuedAtTimeUtc">
+            <summary>
+                获取签发时间（UTC 时间）
+            </summary>
+            <returns>
+                <see cref="T:System.DateTimeOffset" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Core.Utilities.JwtTokenUtility.JwtPayload.GetIssuedAtTime">
+            <summary>
+                获取签发时间（本地时间）
+            </summary>
+            <returns>
+                <see cref="T:System.DateTime" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Core.Utilities.JwtTokenUtility.JwtPayload.GetNotBeforeTimeUtc">
+            <summary>
+                获取生效时间（UTC 时间）
+            </summary>
+            <returns>
+                <see cref="T:System.DateTimeOffset" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Core.Utilities.JwtTokenUtility.JwtPayload.GetNotBeforeTime">
+            <summary>
+                获取生效时间（本地时间）
+            </summary>
+            <returns>
+                <see cref="T:System.DateTime" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Core.Utilities.JwtTokenUtility.JwtPayload.GetString(System.String)">
+            <summary>
+                获取指定声明的字符串值
+            </summary>
+            <param name="claimName">声明的键名</param>
+            <returns>
+                <see cref="T:System.String" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Core.Utilities.JwtTokenUtility.JwtPayload.GetInt32(System.String)">
+            <summary>
+                获取指定声明的 32 位整数值
+            </summary>
+            <param name="claimName">声明的键名</param>
+            <returns>
+                <see cref="T:System.Int32" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Core.Utilities.JwtTokenUtility.JwtPayload.GetInt64(System.String)">
+            <summary>
+                获取指定声明的 64 位整数值
+            </summary>
+            <param name="claimName">声明的键名</param>
+            <returns>
+                <see cref="T:System.Int64" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Core.Utilities.JwtTokenUtility.JwtPayload.IsExpired">
+            <summary>
+                判断是否已过期
+            </summary>
+            <returns>
+                <see cref="T:System.Boolean" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Core.Utilities.JwtTokenUtility.JwtPayload.IsActive">
+            <summary>
+                判断 Token 当前是否有效（已生效且未过期）
+            </summary>
+            <returns>
+                <see cref="T:System.Boolean" />
+            </returns>
         </member>
         <member name="T:HttpAgent.Core.Utilities.NetworkUtility">
             <summary>
@@ -9193,12 +9531,12 @@
         <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.UnicodeEscapeRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\u([0-9a-fA-F]{4})</code><br/>
+            <code>\\\\u([0-9a-fA-F]{4})</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "\\u".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a hexadecimal digit exactly 4 times.<br/>
+                ○ Match a character in the set [0-9A-Fa-f] exactly 4 times.<br/>
             </code>
             </remarks>
         </member>
@@ -10936,12 +11274,12 @@
         <member name="M:HttpAgent.FileTransferProgress.AnsiRegex">
             <remarks>
             Pattern:<br/>
-            <code>\e\[[\d;]*[a-zA-Z]</code><br/>
+            <code>\\e\\[[\\d;]*[a-zA-Z]</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "\u001b[".<br/>
             ○ Match a character in the set [;\d] atomically any number of times.<br/>
-            ○ Match an ASCII letter.<br/>
+            ○ Match a character in the set [A-Za-z].<br/>
             </code>
             </remarks>
         </member>
@@ -12186,6 +12524,11 @@
                 Access Token 提供器配置
             </summary>
         </member>
+        <member name="P:HttpAgent.HttpClientOptions.HttpRequestEventHandler">
+            <summary>
+                事件处理程序提供器配置
+            </summary>
+        </member>
         <member name="P:HttpAgent.HttpClientOptions.IsDefault">
             <summary>
                 标识选项是否配置为默认值（未配置）
@@ -12328,6 +12671,9 @@
             <summary>
                 构建 <see cref="T:System.Net.Http.HttpRequestMessage" /> 管道处理器
             </summary>
+            <param name="serviceProvider">
+                <see cref="T:System.IServiceProvider" />
+            </param>
             <param name="httpContentProcessorFactory">
                 <see cref="T:HttpAgent.IHttpContentProcessorFactory" />
             </param>
@@ -12335,10 +12681,13 @@
                 <see cref="T:HttpAgent.HttpRemoteOptions" />
             </param>
         </member>
-        <member name="M:HttpAgent.RequestBuilderPipelineHandler.#ctor(HttpAgent.IHttpContentProcessorFactory,Microsoft.Extensions.Options.IOptions{HttpAgent.HttpRemoteOptions})">
+        <member name="M:HttpAgent.RequestBuilderPipelineHandler.#ctor(System.IServiceProvider,HttpAgent.IHttpContentProcessorFactory,Microsoft.Extensions.Options.IOptions{HttpAgent.HttpRemoteOptions})">
             <summary>
                 构建 <see cref="T:System.Net.Http.HttpRequestMessage" /> 管道处理器
             </summary>
+            <param name="serviceProvider">
+                <see cref="T:System.IServiceProvider" />
+            </param>
             <param name="httpContentProcessorFactory">
                 <see cref="T:HttpAgent.IHttpContentProcessorFactory" />
             </param>
@@ -12349,13 +12698,14 @@
         <member name="M:HttpAgent.RequestBuilderPipelineHandler.HandleAsync(HttpAgent.HttpRequestPipelineContext,System.Func{System.Threading.Tasks.Task{System.Net.Http.HttpResponseMessage}})">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.RequestBuilderPipelineHandler.HandlePreSendRequest(HttpAgent.HttpRequestBuilder,HttpAgent.IHttpRequestEventHandler,System.Net.Http.HttpRequestMessage)">
+        <member name="M:HttpAgent.RequestBuilderPipelineHandler.HandlePreSendRequest(HttpAgent.HttpRequestBuilder,HttpAgent.IHttpRequestEventHandler,HttpAgent.IHttpRequestEventHandler,System.Net.Http.HttpRequestMessage)">
             <summary>
                 处理发送 HTTP 请求之前
             </summary>
             <param name="httpRequestBuilder">
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </param>
+            <param name="globalEventHandler"><see cref="T:HttpAgent.HttpClientOptions" /> 配置 <see cref="T:HttpAgent.IHttpRequestEventHandler" /></param>
             <param name="requestEventHandler">
                 <see cref="T:HttpAgent.IHttpRequestEventHandler" />
             </param>
@@ -12388,13 +12738,14 @@
         <member name="M:HttpAgent.RequestEventPipelineHandler.HandleAsync(HttpAgent.HttpRequestPipelineContext,System.Func{System.Threading.Tasks.Task{System.Net.Http.HttpResponseMessage}})">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.RequestEventPipelineHandler.HandleRequestFailed(HttpAgent.HttpRequestBuilder,HttpAgent.IHttpRequestEventHandler,System.Exception,System.Net.Http.HttpResponseMessage)">
+        <member name="M:HttpAgent.RequestEventPipelineHandler.HandleRequestFailed(HttpAgent.HttpRequestBuilder,HttpAgent.IHttpRequestEventHandler,HttpAgent.IHttpRequestEventHandler,System.Exception,System.Net.Http.HttpResponseMessage)">
             <summary>
                 处理发送 HTTP 请求发生异常
             </summary>
             <param name="httpRequestBuilder">
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </param>
+            <param name="globalEventHandler"><see cref="T:HttpAgent.HttpClientOptions" /> 配置 <see cref="T:HttpAgent.IHttpRequestEventHandler" /></param>
             <param name="requestEventHandler">
                 <see cref="T:HttpAgent.IHttpRequestEventHandler" />
             </param>
@@ -12405,13 +12756,14 @@
                 <see cref="T:System.Net.Http.HttpResponseMessage" />
             </param>
         </member>
-        <member name="M:HttpAgent.RequestEventPipelineHandler.HandlePostReceiveResponse(HttpAgent.HttpRequestBuilder,HttpAgent.IHttpRequestEventHandler,System.Net.Http.HttpResponseMessage)">
+        <member name="M:HttpAgent.RequestEventPipelineHandler.HandlePostReceiveResponse(HttpAgent.HttpRequestBuilder,HttpAgent.IHttpRequestEventHandler,HttpAgent.IHttpRequestEventHandler,System.Net.Http.HttpResponseMessage)">
             <summary>
                 处理收到 HTTP 响应之后
             </summary>
             <param name="httpRequestBuilder">
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </param>
+            <param name="globalEventHandler"><see cref="T:HttpAgent.HttpClientOptions" /> 配置 <see cref="T:HttpAgent.IHttpRequestEventHandler" /></param>
             <param name="requestEventHandler">
                 <see cref="T:HttpAgent.IHttpRequestEventHandler" />
             </param>
@@ -12606,12 +12958,12 @@
         <member name="M:HttpAgent.StatusCodePipelineHandler.StatusCodeRangeRegex">
             <remarks>
             Pattern:<br/>
-            <code>^\d+[-~]\d+$</code><br/>
+            <code>^\\d+[-~]\\d+$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
-            ○ Match a character in the set [\-~].<br/>
+            ○ Match a character in the set [-~].<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
@@ -12620,7 +12972,7 @@
         <member name="M:HttpAgent.StatusCodePipelineHandler.StatusCodeCompareRegex">
             <remarks>
             Pattern:<br/>
-            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\d+)$</code><br/>
+            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\\d+)$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
@@ -19373,21 +19725,6 @@
         <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32,System.Int32,System.Int32)">
             <summary>Pushes 3 values onto the backtracking stack.</summary>
         </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.WordCategoriesMask">
-            <summary>Provides a mask of Unicode categories that combine to form [\w].</summary>
-        </member>
-        <member name="P:System.Text.RegularExpressions.Generated.Utilities.WordCharBitmap">
-            <summary>Gets a bitmap for whether each character 0 through 127 is in [\w]</summary>
-        </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_1F52B1A4D2E82B6FEDE25EC8C55F85BB36775196837076691C96925040F90D32">
-            <summary>Supports searching for the string "\\u".</summary>
-        </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_4A5B154448624742176A7AE18EDA0762C946CBB1B19F68418DD573D0A698E642">
-            <summary>Supports searching for the string "\u001b[".</summary>
-        </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_EBC667BDABA1472FA863B5B39B31251EF2B4C95DD643BDECF694CB1CE7BDC178">
-            <summary>Supports searching for the string "[[".</summary>
-        </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions">
             <summary>
                 HTTP 远程请求模块 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" /> 扩展类
@@ -19421,7 +19758,28 @@
         </member>
     </members>
 </doc>
-returns>
+ummary>
+            <param name="services">
+                <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
+            </param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
+            </returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions.AddHttpRemote(Microsoft.Extensions.DependencyInjection.IServiceCollection,HttpAgent.HttpRemoteBuilder)">
+            <summary>
+                添加 HTTP 远程请求服务
+            </summary>
+            <param name="services">
+                <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
+            </param>
+            <param name="httpRemoteBuilder">
+                <see cref="T:HttpAgent.HttpRemoteBuilder" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
+            </returns>
         </member>
     </members>
 </doc>
