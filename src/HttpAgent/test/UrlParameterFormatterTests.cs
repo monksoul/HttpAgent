@@ -21,7 +21,8 @@ public class UrlParameterFormatterTests
     public void Format_ReturnOK(object? value, string? result)
     {
         var formatter = new UrlParameterFormatter();
-        Assert.Equal(result, formatter.Format(value, new UrlFormattingContext("name", null)));
+        Assert.Equal(result,
+            formatter.Format(new UrlFormattingContext("name", null), "value", [value])?.FirstOrDefault().Value);
     }
 
     [Fact]
@@ -29,23 +30,25 @@ public class UrlParameterFormatterTests
     {
         var formatter = new UrlParameterFormatter();
         Assert.Equal("2024-08-20T20:21:00.0000000Z",
-            formatter.Format(new DateTime(2024, 8, 20, 20, 21, 0, 0, DateTimeKind.Utc),
-                new UrlFormattingContext("name", null)));
+            formatter.Format(new UrlFormattingContext("name", null), "date",
+                [new DateTime(2024, 8, 20, 20, 21, 0, 0, DateTimeKind.Utc)])?.FirstOrDefault().Value);
 
         var formatter2 = new TestUrlParameterFormatter();
         Assert.Equal("2024-08-20",
-            formatter2.Format(new DateTime(2024, 8, 20, 20, 21, 0, 0, DateTimeKind.Utc),
-                new UrlFormattingContext("name", null)));
+            formatter2.Format(new UrlFormattingContext("name", null), "date",
+                [new DateTime(2024, 8, 20, 20, 21, 0, 0, DateTimeKind.Utc)])?.FirstOrDefault().Value);
     }
 
     [Fact]
     public void Format_ValueProvider_ReturnOK()
     {
         var formatter = new UrlParameterFormatter();
-        Assert.Equal("Furion", formatter.Format(() => "Furion", new UrlFormattingContext("name", null)));
+        Assert.Equal("Furion",
+            formatter.Format(new UrlFormattingContext("name", null), "value", [() => "Furion"])?.FirstOrDefault()
+                .Value);
         Assert.Equal("Furion_Key",
-            formatter.Format((UrlFormattingContext context) => "Furion_" + context.Key,
-                new UrlFormattingContext("Key", null)));
+            formatter.Format(new UrlFormattingContext("Key", null), "value",
+                [(UrlFormattingContext context) => "Furion_" + context.Key])?.FirstOrDefault().Value);
     }
 
     [Theory]
@@ -53,36 +56,42 @@ public class UrlParameterFormatterTests
     [InlineData(true, "True")]
     [InlineData(false, "False")]
     [InlineData("Furion", "Furion")]
-    public void DefaultFormatter_ReturnOK(object? value, string? result) => Assert.Equal(result,
-        UrlParameterFormatter.DefaultFormatter(value, new UrlFormattingContext("name", null)));
+    public void FormatValue_ReturnOK(object? value, string? result) => Assert.Equal(result,
+        UrlParameterFormatter.FormatValue(new UrlFormattingContext("name", null), value));
 
     [Fact]
-    public void DefaultFormatter_DateTime_ReturnOK() =>
+    public void FormatValue_DateTime_ReturnOK() =>
         Assert.Equal("2024-08-20T20:21:00.0000000Z",
-            UrlParameterFormatter.DefaultFormatter(new DateTime(2024, 8, 20, 20, 21, 0, 0, DateTimeKind.Utc),
-                new UrlFormattingContext("name", null)));
+            UrlParameterFormatter.FormatValue(new UrlFormattingContext("name", null),
+                new DateTime(2024, 8, 20, 20, 21, 0, 0, DateTimeKind.Utc)));
 
     [Fact]
-    public void DefaultFormatter_ValueProvider_ReturnOK()
+    public void FormatValue_ValueProvider_ReturnOK()
     {
         Assert.Equal("Furion",
-            UrlParameterFormatter.DefaultFormatter(() => "Furion", new UrlFormattingContext("name", null)));
+            UrlParameterFormatter.FormatValue(new UrlFormattingContext("name", null), () => "Furion"));
         Assert.Equal("Furion_Key",
-            UrlParameterFormatter.DefaultFormatter((UrlFormattingContext context) => "Furion_" + context.Key,
-                new UrlFormattingContext("Key", null)));
+            UrlParameterFormatter.FormatValue(new UrlFormattingContext("Key", null),
+                (UrlFormattingContext context) => "Furion_" + context.Key));
     }
 }
 
 public class TestUrlParameterFormatter : UrlParameterFormatter
 {
     /// <inheritdoc />
-    public override string? Format(object? value, UrlFormattingContext context)
+    public override IEnumerable<KeyValuePair<string, string?>>? Format(UrlFormattingContext context, string key,
+        IEnumerable<object?> values)
     {
-        if (value is DateTime dateTime)
+        foreach (var value in values)
         {
-            return dateTime.ToString("yyyy-MM-dd");
+            if (value is DateTime dateTime)
+            {
+                yield return new KeyValuePair<string, string?>(key, dateTime.ToString("yyyy-MM-dd"));
+            }
+            else
+            {
+                yield return new KeyValuePair<string, string?>(key, FormatValue(context, value));
+            }
         }
-
-        return base.Format(value, context);
     }
 }

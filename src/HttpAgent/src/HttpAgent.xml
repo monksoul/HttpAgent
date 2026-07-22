@@ -36,6 +36,20 @@
             <param name="expiresAt">Access Token 的绝对过期时间</param>
             <exception cref="T:System.ArgumentException"></exception>
         </member>
+        <member name="M:HttpAgent.HttpAccessToken.#ctor(System.String,System.Int64)">
+            <summary>
+                <inheritdoc cref="T:HttpAgent.HttpAccessToken" />
+            </summary>
+            <param name="value">Access Token 值</param>
+            <param name="expiresAt">Access Token 的绝对过期时间（Unix 秒）</param>
+        </member>
+        <member name="M:HttpAgent.HttpAccessToken.#ctor(System.String)">
+            <summary>
+                <inheritdoc cref="T:HttpAgent.HttpAccessToken" />
+            </summary>
+            <param name="jwtToken">完整 JWT Token 字符串</param>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
         <member name="P:HttpAgent.HttpAccessToken.Value">
             <summary>
                 Access Token 值
@@ -62,6 +76,24 @@
                 共享数据字典
             </summary>
             <remarks>用于存储与 Access Token 相关的自定义数据。</remarks>
+        </member>
+        <member name="M:HttpAgent.HttpAccessToken.SetExpiresAt(System.DateTimeOffset)">
+            <summary>
+                设置 Access Token 的绝对过期时间
+            </summary>
+            <param name="expiresAt">Access Token 的绝对过期时间</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpAccessToken" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpAccessToken.SetExpiresAt(System.Int64)">
+            <summary>
+                设置 Access Token 的绝对过期时间
+            </summary>
+            <param name="expiresAt">Access Token 的绝对过期时间（Unix 秒）</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpAccessToken" />
+            </returns>
         </member>
         <member name="M:HttpAgent.HttpAccessToken.IsExpired">
             <summary>
@@ -2515,7 +2547,7 @@
             <param name="uriBuilder">
                 <see cref="T:System.UriBuilder" />
             </param>
-            <param name="formatter">
+            <param name="urlParameterFormatter">
                 <see cref="T:HttpAgent.IUrlParameterFormatter" />
             </param>
         </member>
@@ -2992,11 +3024,11 @@
             </returns>
             <exception cref="T:System.ArgumentNullException"></exception>
         </member>
-        <member name="M:HttpAgent.HttpRequestBuilder.SetQueryParametersSorter(System.Func{System.String[],System.String[]})">
+        <member name="M:HttpAgent.HttpRequestBuilder.SetQueryParametersSorter(System.Func{System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.String}}})">
             <summary>
                 设置查询参数排序规则
             </summary>
-            <param name="sorter">查询参数排序委托，接收 <c>key=value</c> 格式的字符串数组，返回排序后的新数组。为 <c>null</c> 时不执行排序，保持原始添加顺序</param>
+            <param name="sorter">接收所有查询键值对（包括原始 URL 参数和用户追加的参数），返回排序后的键值对序列。为 <c>null</c> 时不执行排序，保持参数的添加顺序</param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
@@ -3931,7 +3963,7 @@
             <summary>
                 查询参数排序委托
             </summary>
-            <remarks>接收 <c>key=value</c> 格式的字符串数组，返回排序后的新数组。为 <c>null</c> 时不执行排序，保持原始添加顺序。</remarks>
+            <remarks>接收所有查询键值对（包括原始 URL 参数和用户追加的参数），返回排序后的键值对序列。为 <c>null</c> 时不执行排序，保持参数的添加顺序。</remarks>
         </member>
         <member name="P:HttpAgent.HttpRequestBuilder.QueryParametersToRemove">
             <summary>
@@ -5882,7 +5914,7 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Match the string "/Date(".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [+\-] atomically any number of times.<br/>
+                ○ Match a character in the set [+-] atomically any number of times.<br/>
                 ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match the string ")/".<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
@@ -5911,10 +5943,10 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Match the string "/Date(".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [+\-] atomically any number of times.<br/>
+                ○ Match a character in the set [+-] atomically any number of times.<br/>
                 ○ Match a Unicode digit atomically at least once.<br/>
             ○ 2nd capture group.<br/>
-                ○ Match a character in the set [+\-].<br/>
+                ○ Match a character in the set [+-].<br/>
             ○ 3rd capture group.<br/>
                 ○ Match a Unicode digit exactly 2 times.<br/>
             ○ 4th capture group.<br/>
@@ -6511,13 +6543,13 @@
                 ○ Match the string "**".<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [\-:\w] greedily at least once.<br/>
+                ○ Match a character in the set [-:\w] greedily at least once.<br/>
             ○ 2nd capture group.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match a whitespace character atomically any number of times.<br/>
                     ○ Match '|'.<br/>
                     ○ Match a whitespace character greedily any number of times.<br/>
-                    ○ Match a character in the set [\-:\w] greedily at least once.<br/>
+                    ○ Match a character in the set [-:\w] greedily at least once.<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ Optional (greedy).<br/>
                 ○ Match the string "||".<br/>
@@ -6544,32 +6576,32 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Loop greedily at least once.<br/>
                 ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [\-.0-9A-Z_a-z~].<br/>
+                    ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
                     ○ Match a sequence of expressions.<br/>
                         ○ Match '%'.<br/>
-                        ○ Match a hexadecimal digit exactly 2 times.<br/>
+                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
             ○ Match '='.<br/>
             ○ Loop greedily any number of times.<br/>
                 ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [+\-.0-9A-Z_a-z~].<br/>
+                    ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
                     ○ Match a sequence of expressions.<br/>
                         ○ Match '%'.<br/>
-                        ○ Match a hexadecimal digit exactly 2 times.<br/>
+                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
             ○ Loop greedily any number of times.<br/>
                 ○ Match '&amp;'.<br/>
                 ○ Loop greedily at least once.<br/>
                     ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [\-.0-9A-Z_a-z~].<br/>
+                        ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
                         ○ Match a sequence of expressions.<br/>
                             ○ Match '%'.<br/>
-                            ○ Match a hexadecimal digit exactly 2 times.<br/>
+                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
                 ○ Match '='.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [+\-.0-9A-Z_a-z~].<br/>
+                        ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
                         ○ Match a sequence of expressions.<br/>
                             ○ Match '%'.<br/>
-                            ○ Match a hexadecimal digit exactly 2 times.<br/>
+                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
             </remarks>
@@ -9536,7 +9568,7 @@
             <code>
             ○ Match the string "\\u".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a hexadecimal digit exactly 4 times.<br/>
+                ○ Match a character in the set [0-9A-Fa-f] exactly 4 times.<br/>
             </code>
             </remarks>
         </member>
@@ -9810,17 +9842,16 @@
                 URL 参数格式化程序
             </summary>
         </member>
-        <member name="M:HttpAgent.IUrlParameterFormatter.Format(System.Object,HttpAgent.UrlFormattingContext)">
+        <member name="M:HttpAgent.IUrlParameterFormatter.Format(HttpAgent.UrlFormattingContext,System.String,System.Collections.Generic.IEnumerable{System.Object})">
             <summary>
                 格式化
             </summary>
-            <param name="value">参数值</param>
             <param name="context">
                 <see cref="T:HttpAgent.UrlFormattingContext" />
             </param>
-            <returns>
-                <see cref="T:System.String" />
-            </returns>
+            <param name="key">参数名</param>
+            <param name="values">参数值集合</param>
+            <returns><see cref="T:System.Collections.Generic.KeyValuePair`2" /> 集合</returns>
         </member>
         <member name="T:HttpAgent.UrlFormattingContext">
             <summary>
@@ -9837,7 +9868,7 @@
         </member>
         <member name="P:HttpAgent.UrlFormattingContext.Key">
             <summary>
-                URL 参数名（键）
+                URL 参数名
             </summary>
         </member>
         <member name="P:HttpAgent.UrlFormattingContext.HttpClientName">
@@ -9845,20 +9876,25 @@
                 <see cref="T:System.Net.Http.HttpClient" /> 实例的配置名称
             </summary>
         </member>
+        <member name="P:HttpAgent.UrlFormattingContext.IsOriginal">
+            <summary>
+                是否为原始 URL 参数
+            </summary>
+        </member>
         <member name="T:HttpAgent.UrlParameterFormatter">
             <inheritdoc cref="T:HttpAgent.IUrlParameterFormatter" />
         </member>
-        <member name="M:HttpAgent.UrlParameterFormatter.Format(System.Object,HttpAgent.UrlFormattingContext)">
+        <member name="M:HttpAgent.UrlParameterFormatter.Format(HttpAgent.UrlFormattingContext,System.String,System.Collections.Generic.IEnumerable{System.Object})">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.UrlParameterFormatter.DefaultFormatter(System.Object,HttpAgent.UrlFormattingContext)">
+        <member name="M:HttpAgent.UrlParameterFormatter.FormatValue(HttpAgent.UrlFormattingContext,System.Object)">
             <summary>
-                默认格式化
+                格式化单个参数值
             </summary>
-            <param name="value">参数值</param>
             <param name="context">
                 <see cref="T:HttpAgent.UrlFormattingContext" />
             </param>
+            <param name="value">参数值</param>
             <returns>
                 <see cref="T:System.String" />
             </returns>
@@ -11279,7 +11315,7 @@
             <code>
             ○ Match the string "\u001b[".<br/>
             ○ Match a character in the set [;\d] atomically any number of times.<br/>
-            ○ Match an ASCII letter.<br/>
+            ○ Match a character in the set [A-Za-z].<br/>
             </code>
             </remarks>
         </member>
@@ -12963,7 +12999,7 @@
             <code>
             ○ Match if at the beginning of the string.<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
-            ○ Match a character in the set [\-~].<br/>
+            ○ Match a character in the set [-~].<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
@@ -19725,12 +19761,6 @@
         <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32,System.Int32,System.Int32)">
             <summary>Pushes 3 values onto the backtracking stack.</summary>
         </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.WordCategoriesMask">
-            <summary>Provides a mask of Unicode categories that combine to form [\w].</summary>
-        </member>
-        <member name="P:System.Text.RegularExpressions.Generated.Utilities.WordCharBitmap">
-            <summary>Gets a bitmap for whether each character 0 through 127 is in [\w]</summary>
-        </member>
         <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_1F52B1A4D2E82B6FEDE25EC8C55F85BB36775196837076691C96925040F90D32">
             <summary>Supports searching for the string "\\u".</summary>
         </member>
@@ -19763,6 +19793,17 @@
             </summary>
             <param name="services">
                 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
+            </param>
+            <param name="httpRemoteBuilder">
+                <see cref="T:HttpAgent.HttpRemoteBuilder" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
+            </returns>
+        </member>
+    </members>
+</doc>
+ncyInjection.IServiceCollection" />
             </param>
             <param name="httpRemoteBuilder">
                 <see cref="T:HttpAgent.HttpRemoteBuilder" />

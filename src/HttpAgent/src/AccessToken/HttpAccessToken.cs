@@ -30,6 +30,30 @@ public sealed class HttpAccessToken
     }
 
     /// <summary>
+    ///     <inheritdoc cref="HttpAccessToken" />
+    /// </summary>
+    /// <param name="value">Access Token 值</param>
+    /// <param name="expiresAt">Access Token 的绝对过期时间（Unix 秒）</param>
+    public HttpAccessToken(string value, long expiresAt)
+        : this(value, DateTimeOffset.FromUnixTimeSeconds(expiresAt))
+    {
+    }
+
+    /// <summary>
+    ///     <inheritdoc cref="HttpAccessToken" />
+    /// </summary>
+    /// <param name="jwtToken">完整 JWT Token 字符串</param>
+    /// <exception cref="ArgumentException"></exception>
+    public HttpAccessToken(string jwtToken)
+    {
+        // 空检查
+        ArgumentException.ThrowIfNullOrWhiteSpace(jwtToken);
+
+        Value = jwtToken;
+        ExpiresAt = JwtTokenUtility.Parse(jwtToken).GetExpirationTimeUtc()!.Value;
+    }
+
+    /// <summary>
     ///     Access Token 值
     /// </summary>
     public string Value { get; set; }
@@ -70,6 +94,29 @@ public sealed class HttpAccessToken
     /// </summary>
     /// <remarks>用于存储与 Access Token 相关的自定义数据。</remarks>
     public IDictionary<object, object?> Items { get; } = new Dictionary<object, object?>();
+
+    /// <summary>
+    ///     设置 Access Token 的绝对过期时间
+    /// </summary>
+    /// <param name="expiresAt">Access Token 的绝对过期时间</param>
+    /// <returns>
+    ///     <see cref="HttpAccessToken" />
+    /// </returns>
+    public HttpAccessToken SetExpiresAt(DateTimeOffset expiresAt)
+    {
+        ExpiresAt = expiresAt;
+
+        return this;
+    }
+
+    /// <summary>
+    ///     设置 Access Token 的绝对过期时间
+    /// </summary>
+    /// <param name="expiresAt">Access Token 的绝对过期时间（Unix 秒）</param>
+    /// <returns>
+    ///     <see cref="HttpAccessToken" />
+    /// </returns>
+    public HttpAccessToken SetExpiresAt(long expiresAt) => SetExpiresAt(DateTimeOffset.FromUnixTimeSeconds(expiresAt));
 
     /// <summary>
     ///     检查 Access Token 是否过期

@@ -21,5 +21,6 @@ public class UrlFormattingContextTests
         Assert.NotNull(context);
         Assert.Equal("id", context.Key);
         Assert.Equal("furion", context.HttpClientName);
+        Assert.False(context.IsOriginal);
     }
 }
