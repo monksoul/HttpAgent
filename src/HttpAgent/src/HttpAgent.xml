@@ -5914,7 +5914,7 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Match the string "/Date(".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [+-] atomically any number of times.<br/>
+                ○ Match a character in the set [+\-] atomically any number of times.<br/>
                 ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match the string ")/".<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
@@ -5943,10 +5943,10 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Match the string "/Date(".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [+-] atomically any number of times.<br/>
+                ○ Match a character in the set [+\-] atomically any number of times.<br/>
                 ○ Match a Unicode digit atomically at least once.<br/>
             ○ 2nd capture group.<br/>
-                ○ Match a character in the set [+-].<br/>
+                ○ Match a character in the set [+\-].<br/>
             ○ 3rd capture group.<br/>
                 ○ Match a Unicode digit exactly 2 times.<br/>
             ○ 4th capture group.<br/>
@@ -6504,10 +6504,99 @@
             </returns>
             <exception cref="T:System.ArgumentException"></exception>
         </member>
+        <member name="M:HttpAgent.Core.Extensions.StringExtensions.ResolveNestedPathFromDictionary(System.String,System.Collections.Generic.IDictionary{System.String,System.String})">
+            <summary>
+                从字典中按路径逐级解析值
+            </summary>
+            <param name="path">占位符路径</param>
+            <param name="replacementSource">
+                <see cref="T:System.Collections.Generic.IDictionary`2" />
+            </param>
+            <returns>
+                <see cref="T:System.String" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Core.Extensions.StringExtensions.ResolveNestedPathFromObject(System.Object,System.String,System.Boolean@,System.String,System.Reflection.BindingFlags)">
+            <summary>
+                从对象中按路径逐级解析值
+            </summary>
+            <param name="source">源对象</param>
+            <param name="path">占位符路径</param>
+            <param name="isMatch">是否成功匹配</param>
+            <param name="prefix">路径前缀</param>
+            <param name="bindingFlags">
+                <see cref="T:System.Reflection.BindingFlags" />
+            </param>
+            <returns>
+                <see cref="T:System.Object" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Core.Extensions.StringExtensions.ReadIdentifier(System.String,System.Int32@)">
+            <summary>
+                读取路径的第一个标识符
+            </summary>
+            <param name="path">路径字符串</param>
+            <param name="index">当前读取位置，读取后指向标识符末尾</param>
+            <returns>
+                <see cref="T:System.String" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Core.Extensions.StringExtensions.ReadInteger(System.String,System.Int32@)">
+            <summary>
+                从 <paramref name="path" /> 的当前位置读取一个非负整数
+            </summary>
+            <remarks>失败返回 -1。</remarks>
+            <param name="path">路径字符串</param>
+            <param name="index">当前读取位置，读取后指向数字末尾</param>
+            <returns>
+                <see cref="T:System.Int32" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Core.Extensions.StringExtensions.TryParseJsonNode(System.String)">
+            <summary>
+                尝试将字符串解析为 <see cref="T:System.Text.Json.Nodes.JsonNode" />
+            </summary>
+            <param name="value">JSON 字符串</param>
+            <returns>
+                <see cref="T:System.Text.Json.Nodes.JsonNode" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Core.Extensions.StringExtensions.NodeToRawString(System.Text.Json.Nodes.JsonNode)">
+            <summary>
+                将 <see cref="T:System.Text.Json.Nodes.JsonNode" /> 转换为字符串
+            </summary>
+            <param name="node">
+                <see cref="T:System.Text.Json.Nodes.JsonNode" />
+            </param>
+            <returns>
+                <see cref="T:System.String" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Core.Extensions.StringExtensions.GetIndexValue(System.Object,System.Int32)">
+            <summary>
+                通过索引访问集合元素
+            </summary>
+            <remarks>支持按整数索引获取集合中的元素。</remarks>
+            <param name="source">集合对象</param>
+            <param name="index">索引位置</param>
+            <returns>
+                <see cref="T:System.Object" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Core.Extensions.StringExtensions.GetDictionaryValue(System.Object,System.String)">
+            <summary>
+                通过字符串键从字典中获取值
+            </summary>
+            <param name="source">字典对象</param>
+            <param name="key">字符串键</param>
+            <returns>
+                <see cref="T:System.Object" />
+            </returns>
+        </member>
         <member name="M:HttpAgent.Core.Extensions.StringExtensions.PlaceholderRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\{\\s*(?:\\*\\*)?\\s*(\\w+(?:\\s*\\.\\s*\\w+)*)\\s*(\\?)?\\s*\\}</code><br/>
+            <code>\\{\\s*(?:\\*\\*)?\\s*(\\w+(?:\\s*\\.\\s*\\w+|\\s*\\[\\s*\\d+\\s*\\])*)\\s*(\\?)?\\s*\\}</code><br/>
             Explanation:<br/>
             <code>
             ○ Match '{'.<br/>
@@ -6518,10 +6607,19 @@
             ○ 1st capture group.<br/>
                 ○ Match a word character greedily at least once.<br/>
                 ○ Loop greedily any number of times.<br/>
-                    ○ Match a whitespace character atomically any number of times.<br/>
-                    ○ Match '.'.<br/>
-                    ○ Match a whitespace character atomically any number of times.<br/>
-                    ○ Match a word character greedily at least once.<br/>
+                    ○ Match with 2 alternative expressions.<br/>
+                        ○ Match a sequence of expressions.<br/>
+                            ○ Match a whitespace character atomically any number of times.<br/>
+                            ○ Match '.'.<br/>
+                            ○ Match a whitespace character atomically any number of times.<br/>
+                            ○ Match a word character greedily at least once.<br/>
+                        ○ Match a sequence of expressions.<br/>
+                            ○ Match a whitespace character atomically any number of times.<br/>
+                            ○ Match '['.<br/>
+                            ○ Match a whitespace character atomically any number of times.<br/>
+                            ○ Match a Unicode digit atomically at least once.<br/>
+                            ○ Match a whitespace character atomically any number of times.<br/>
+                            ○ Match ']'.<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ Optional (greedy).<br/>
                 ○ 2nd capture group.<br/>
@@ -6543,13 +6641,13 @@
                 ○ Match the string "**".<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [-:\w] greedily at least once.<br/>
+                ○ Match a character in the set [\-:\w] greedily at least once.<br/>
             ○ 2nd capture group.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match a whitespace character atomically any number of times.<br/>
                     ○ Match '|'.<br/>
                     ○ Match a whitespace character greedily any number of times.<br/>
-                    ○ Match a character in the set [-:\w] greedily at least once.<br/>
+                    ○ Match a character in the set [\-:\w] greedily at least once.<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ Optional (greedy).<br/>
                 ○ Match the string "||".<br/>
@@ -6576,32 +6674,32 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Loop greedily at least once.<br/>
                 ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
+                    ○ Match a character in the set [\-.0-9A-Z_a-z~].<br/>
                     ○ Match a sequence of expressions.<br/>
                         ○ Match '%'.<br/>
-                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
+                        ○ Match a hexadecimal digit exactly 2 times.<br/>
             ○ Match '='.<br/>
             ○ Loop greedily any number of times.<br/>
                 ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
+                    ○ Match a character in the set [+\-.0-9A-Z_a-z~].<br/>
                     ○ Match a sequence of expressions.<br/>
                         ○ Match '%'.<br/>
-                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
+                        ○ Match a hexadecimal digit exactly 2 times.<br/>
             ○ Loop greedily any number of times.<br/>
                 ○ Match '&amp;'.<br/>
                 ○ Loop greedily at least once.<br/>
                     ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
+                        ○ Match a character in the set [\-.0-9A-Z_a-z~].<br/>
                         ○ Match a sequence of expressions.<br/>
                             ○ Match '%'.<br/>
-                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
+                            ○ Match a hexadecimal digit exactly 2 times.<br/>
                 ○ Match '='.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
+                        ○ Match a character in the set [+\-.0-9A-Z_a-z~].<br/>
                         ○ Match a sequence of expressions.<br/>
                             ○ Match '%'.<br/>
-                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
+                            ○ Match a hexadecimal digit exactly 2 times.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
             </remarks>
@@ -9568,7 +9666,7 @@
             <code>
             ○ Match the string "\\u".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [0-9A-Fa-f] exactly 4 times.<br/>
+                ○ Match a hexadecimal digit exactly 4 times.<br/>
             </code>
             </remarks>
         </member>
@@ -11315,7 +11413,7 @@
             <code>
             ○ Match the string "\u001b[".<br/>
             ○ Match a character in the set [;\d] atomically any number of times.<br/>
-            ○ Match a character in the set [A-Za-z].<br/>
+            ○ Match an ASCII letter.<br/>
             </code>
             </remarks>
         </member>
@@ -12999,7 +13097,7 @@
             <code>
             ○ Match if at the beginning of the string.<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
-            ○ Match a character in the set [-~].<br/>
+            ○ Match a character in the set [\-~].<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
@@ -19761,6 +19859,12 @@
         <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32,System.Int32,System.Int32)">
             <summary>Pushes 3 values onto the backtracking stack.</summary>
         </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.WordCategoriesMask">
+            <summary>Provides a mask of Unicode categories that combine to form [\w].</summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.Generated.Utilities.WordCharBitmap">
+            <summary>Gets a bitmap for whether each character 0 through 127 is in [\w]</summary>
+        </member>
         <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_1F52B1A4D2E82B6FEDE25EC8C55F85BB36775196837076691C96925040F90D32">
             <summary>Supports searching for the string "\\u".</summary>
         </member>
@@ -19793,17 +19897,6 @@
             </summary>
             <param name="services">
                 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
-            </param>
-            <param name="httpRemoteBuilder">
-                <see cref="T:HttpAgent.HttpRemoteBuilder" />
-            </param>
-            <returns>
-                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
-            </returns>
-        </member>
-    </members>
-</doc>
-ncyInjection.IServiceCollection" />
             </param>
             <param name="httpRemoteBuilder">
                 <see cref="T:HttpAgent.HttpRemoteBuilder" />

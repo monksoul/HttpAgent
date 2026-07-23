@@ -335,7 +335,7 @@ public class HttpRequestBuilderTests
         httpRequestBuilder3.WithPathParameters(null!, "user");
         var uriBuilder3 = new UriBuilder(httpRequestBuilder3.RequestUri!);
         var newUri4 = httpRequestBuilder3.ReplacePlaceholders(uriBuilder3.Uri.ToString(), null);
-        Assert.Equal("http://localhost/", newUri4);
+        Assert.Equal("http://localhost/{user.id}", newUri4);
 
         var httpRequestBuilder4 =
             new HttpRequestBuilder(HttpMethod.Get,
