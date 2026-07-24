@@ -72,6 +72,12 @@ internal sealed partial class HttpRemoteService
         SendAsync(HttpRequestBuilder.ServerSentEvents(requestUri, onMessage, configure), cancellationToken);
 
     /// <inheritdoc />
+    public IAsyncEnumerable<ServerSentEventsData> ServerSentEventsAsAsyncEnumerable(string? requestUri,
+        Action<HttpServerSentEventsBuilder>? configure = null,
+        CancellationToken cancellationToken = default) =>
+        SendAsAsyncEnumerable(HttpRequestBuilder.ServerSentEvents(requestUri, configure), cancellationToken);
+
+    /// <inheritdoc />
     public void Send(HttpServerSentEventsBuilder httpServerSentEventsBuilder,
         CancellationToken cancellationToken = default) =>
         new ServerSentEventsManager(this, httpServerSentEventsBuilder).Start(cancellationToken);
@@ -80,6 +86,11 @@ internal sealed partial class HttpRemoteService
     public Task SendAsync(HttpServerSentEventsBuilder httpServerSentEventsBuilder,
         CancellationToken cancellationToken = default) =>
         new ServerSentEventsManager(this, httpServerSentEventsBuilder).StartAsync(cancellationToken);
+
+    /// <inheritdoc />
+    public IAsyncEnumerable<ServerSentEventsData> SendAsAsyncEnumerable(
+        HttpServerSentEventsBuilder httpServerSentEventsBuilder, CancellationToken cancellationToken = default) =>
+        new ServerSentEventsManager(this, httpServerSentEventsBuilder).StartAsAsyncEnumerable(cancellationToken);
 
     /// <inheritdoc />
     public StressTestHarnessResult StressTestHarness(string? requestUri, int numberOfRequests = 100,
@@ -122,6 +133,12 @@ internal sealed partial class HttpRemoteService
         SendAsync(HttpRequestBuilder.LongPolling(requestUri, onDataReceived, configure), cancellationToken);
 
     /// <inheritdoc />
+    public IAsyncEnumerable<HttpResponseMessage> LongPollingAsAsyncEnumerable(string? requestUri,
+        Action<HttpLongPollingBuilder>? configure = null,
+        CancellationToken cancellationToken = default) =>
+        SendAsAsyncEnumerable(HttpRequestBuilder.LongPolling(requestUri, configure), cancellationToken);
+
+    /// <inheritdoc />
     public void Send(HttpLongPollingBuilder httpLongPollingBuilder, CancellationToken cancellationToken = default) =>
         new LongPollingManager(this, httpLongPollingBuilder).Start(cancellationToken);
 
@@ -129,6 +146,11 @@ internal sealed partial class HttpRemoteService
     public Task SendAsync(HttpLongPollingBuilder httpLongPollingBuilder,
         CancellationToken cancellationToken = default) =>
         new LongPollingManager(this, httpLongPollingBuilder).StartAsync(cancellationToken);
+
+    /// <inheritdoc />
+    public IAsyncEnumerable<HttpResponseMessage> SendAsAsyncEnumerable(HttpLongPollingBuilder httpLongPollingBuilder,
+        CancellationToken cancellationToken = default) =>
+        new LongPollingManager(this, httpLongPollingBuilder).StartAsAsyncEnumerable(cancellationToken);
 
     /// <inheritdoc />
     public object? Declarative(MethodInfo method, object[] args, Type? interfaceType = null) =>

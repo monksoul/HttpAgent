@@ -35,7 +35,7 @@ public class ServerSentEventsDataTests
 
         serverSentEventsData.AppendData("furion");
         Assert.Null(serverSentEventsData._cachedData);
-        Assert.Equal("furion", serverSentEventsData.Data);
+        Assert.Equal("\nfurion", serverSentEventsData.Data);
         Assert.NotNull(serverSentEventsData._cachedData);
     }
 

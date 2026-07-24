@@ -62,53 +62,43 @@ public class ServerSentEventsManagerTests(ITestOutputHelper output)
             new HttpServerSentEventsBuilder(new Uri("http://localhost:5000")));
 
         ServerSentEventsData? serverSentEventsData = null;
-        var result = serverSentEventsManager.TryParseEventLine(null!, ref serverSentEventsData);
-        Assert.False(result);
+        serverSentEventsManager.TryParseEventLine(null!, ref serverSentEventsData);
         Assert.Null(serverSentEventsData);
 
         ServerSentEventsData? serverSentEventsData2 = null;
-        var result2 = serverSentEventsManager.TryParseEventLine(string.Empty, ref serverSentEventsData2);
-        Assert.False(result2);
+        serverSentEventsManager.TryParseEventLine(string.Empty, ref serverSentEventsData2);
         Assert.Null(serverSentEventsData2);
 
         ServerSentEventsData? serverSentEventsData3 = null;
-        var result3 = serverSentEventsManager.TryParseEventLine(" ", ref serverSentEventsData3);
-        Assert.False(result3);
+        serverSentEventsManager.TryParseEventLine(" ", ref serverSentEventsData3);
         Assert.Null(serverSentEventsData3);
 
         ServerSentEventsData? serverSentEventsData4 = null;
-        var result4 = serverSentEventsManager.TryParseEventLine(":这是一行注释", ref serverSentEventsData4);
-        Assert.False(result4);
+        serverSentEventsManager.TryParseEventLine(":这是一行注释", ref serverSentEventsData4);
         Assert.Null(serverSentEventsData4);
 
         ServerSentEventsData? serverSentEventsData5 = null;
-        var result5 = serverSentEventsManager.TryParseEventLine("data: 这是一行数据", ref serverSentEventsData5);
-        Assert.True(result5);
+        serverSentEventsManager.TryParseEventLine("data: 这是一行数据", ref serverSentEventsData5);
         Assert.NotNull(serverSentEventsData5);
         Assert.Equal("这是一行数据", serverSentEventsData5.Data);
 
-        var result6 = serverSentEventsManager.TryParseEventLine("event: myname", ref serverSentEventsData5);
-        Assert.True(result6);
+        serverSentEventsManager.TryParseEventLine("event: myname", ref serverSentEventsData5);
         Assert.NotNull(serverSentEventsData5);
         Assert.Equal("myname", serverSentEventsData5.Event);
 
-        var result7 = serverSentEventsManager.TryParseEventLine("id: myid", ref serverSentEventsData5);
-        Assert.True(result7);
+        serverSentEventsManager.TryParseEventLine("id: myid", ref serverSentEventsData5);
         Assert.NotNull(serverSentEventsData5);
         Assert.Equal("myid", serverSentEventsData5.Id);
 
-        var result8 = serverSentEventsManager.TryParseEventLine("retry: 1000", ref serverSentEventsData5);
-        Assert.True(result8);
+        serverSentEventsManager.TryParseEventLine("retry: 1000", ref serverSentEventsData5);
         Assert.NotNull(serverSentEventsData5);
         Assert.Equal(1000, serverSentEventsData5.Retry);
 
-        var result9 = serverSentEventsManager.TryParseEventLine("retry: some", ref serverSentEventsData5);
-        Assert.True(result9);
+        serverSentEventsManager.TryParseEventLine("retry: some", ref serverSentEventsData5);
         Assert.NotNull(serverSentEventsData5);
         Assert.Equal(2000, serverSentEventsData5.Retry);
 
-        var result10 = serverSentEventsManager.TryParseEventLine("some: ok", ref serverSentEventsData5);
-        Assert.True(result10);
+        serverSentEventsManager.TryParseEventLine("some: ok", ref serverSentEventsData5);
         Assert.NotNull(serverSentEventsData5);
         Assert.Equal("这是一行数据", serverSentEventsData5.Data);
 
@@ -377,10 +367,10 @@ public class ServerSentEventsManagerTests(ITestOutputHelper output)
         using var cancellationTokenSource = new CancellationTokenSource();
         cancellationTokenSource.CancelAfter(50);
 
+        Assert.Throws<TaskCanceledException>(() => { serverSentEventsManager.Start(cancellationTokenSource.Token); });
         // ReSharper disable once MethodHasAsyncOverload
-        serverSentEventsManager.Start(cancellationTokenSource.Token);
 
-        Assert.Equal(1, i);
+        Assert.Equal(0, i);
 
         await app.StopAsync();
         await serviceProvider.DisposeAsync();
@@ -706,7 +696,7 @@ public class ServerSentEventsManagerTests(ITestOutputHelper output)
     }
 
     [Fact]
-    public async Task Retry_ReturnOK()
+    public async Task StartAsAsyncEnumerable_ReturnOK()
     {
         var port = NetworkUtility.FindAvailableTcpPort();
         var urls = new[] { "--urls", $"http://localhost:{port}" };
@@ -736,73 +726,15 @@ public class ServerSentEventsManagerTests(ITestOutputHelper output)
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
-        var httpServerSentEventsBuilder =
-            new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test")).SetOnMessage(async (data, _) =>
-            {
-                i++;
-                await Task.CompletedTask;
-            });
+        var httpServerSentEventsBuilder = new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test"));
         var serverSentEventsManager = new ServerSentEventsManager(httpRemoteService, httpServerSentEventsBuilder);
 
-        var stopwatch = Stopwatch.StartNew();
-        // ReSharper disable once MethodHasAsyncOverload
-        serverSentEventsManager.Retry();
-        stopwatch.Stop();
-        Assert.True(stopwatch.ElapsedMilliseconds > 2000);
-
-        Assert.Equal(5, i);
-        Assert.Equal(0, serverSentEventsManager.CurrentRetries);
-
-        await app.StopAsync();
-        await serviceProvider.DisposeAsync();
-    }
-
-    [Fact]
-    public async Task RetryAsync_ReturnOK()
-    {
-        var port = NetworkUtility.FindAvailableTcpPort();
-        var urls = new[] { "--urls", $"http://localhost:{port}" };
-        var builder = WebApplication.CreateBuilder(urls);
-        await using var app = builder.Build();
-
-        app.MapGet("/test", async context =>
+        await foreach (var data in serverSentEventsManager.StartAsAsyncEnumerable())
         {
-            context.Response.ContentType = "text/event-stream";
-            context.Response.Headers.CacheControl = "no-cache";
-            context.Response.Headers.Connection = "keep-alive";
-            context.Response.Headers["X-Accel-Buffering"] = "no";
-
-            var eventId = 0;
-            while (eventId < 5)
-            {
-                eventId++;
-
-                var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
-                await context.Response.WriteAsync(message);
-
-                await Task.Delay(10);
-            }
-        });
-
-        await app.StartAsync();
-
-        var i = 0;
-        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
-        var httpServerSentEventsBuilder =
-            new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test")).SetOnMessage(async (data, _) =>
-            {
-                i++;
-                await Task.CompletedTask;
-            });
-        var serverSentEventsManager = new ServerSentEventsManager(httpRemoteService, httpServerSentEventsBuilder);
-
-        var stopwatch = Stopwatch.StartNew();
-        await serverSentEventsManager.RetryAsync();
-        stopwatch.Stop();
-        Assert.True(stopwatch.ElapsedMilliseconds > 2000);
+            i++;
+        }
 
         Assert.Equal(5, i);
-        Assert.Equal(0, serverSentEventsManager.CurrentRetries);
 
         await app.StopAsync();
         await serviceProvider.DisposeAsync();

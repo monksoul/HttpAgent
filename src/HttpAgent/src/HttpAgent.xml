@@ -600,7 +600,6 @@
             <summary>
                 创建 <c>GET</c> 请求的 <see cref="T:HttpAgent.HttpRequestBuilder" /> 构建器
             </summary>
-            <remarks>用于简化 <see cref="T:HttpAgent.HttpRequestBuilder" /> 名字过长。</remarks>
             <param name="requestUri">请求地址</param>
             <param name="configure">自定义配置委托</param>
             <returns>
@@ -939,13 +938,21 @@
                 <see cref="T:HttpAgent.HttpFileUploadBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpBuilder.ServerSentEvents(System.Net.Http.HttpMethod,System.Uri,System.Func{HttpAgent.ServerSentEventsData,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Action{HttpAgent.HttpServerSentEventsBuilder})">
+        <member name="M:HttpAgent.HttpBuilder.ServerSentEvents(System.Uri,System.Action{HttpAgent.HttpServerSentEventsBuilder})">
             <summary>
                 创建 <see cref="T:HttpAgent.HttpServerSentEventsBuilder" /> 构建器
             </summary>
-            <param name="httpMethod">请求方式</param>
             <param name="requestUri">请求地址</param>
-            <param name="onMessage">用于在从事件源接收到数据时的操作</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpServerSentEventsBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.ServerSentEvents(System.String,System.Action{HttpAgent.HttpServerSentEventsBuilder})">
+            <summary>
+                创建 <see cref="T:HttpAgent.HttpServerSentEventsBuilder" /> 构建器
+            </summary>
+            <param name="requestUri">请求地址</param>
             <param name="configure">自定义配置委托</param>
             <returns>
                 <see cref="T:HttpAgent.HttpServerSentEventsBuilder" />
@@ -966,6 +973,29 @@
             <summary>
                 创建 <see cref="T:HttpAgent.HttpServerSentEventsBuilder" /> 构建器
             </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="onMessage">用于在从事件源接收到数据时的操作</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpServerSentEventsBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.ServerSentEvents(System.Net.Http.HttpMethod,System.Uri,System.Action{HttpAgent.HttpServerSentEventsBuilder})">
+            <summary>
+                创建 <see cref="T:HttpAgent.HttpServerSentEventsBuilder" /> 构建器
+            </summary>
+            <param name="httpMethod">请求方式</param>
+            <param name="requestUri">请求地址</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpServerSentEventsBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.ServerSentEvents(System.Net.Http.HttpMethod,System.Uri,System.Func{HttpAgent.ServerSentEventsData,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Action{HttpAgent.HttpServerSentEventsBuilder})">
+            <summary>
+                创建 <see cref="T:HttpAgent.HttpServerSentEventsBuilder" /> 构建器
+            </summary>
+            <param name="httpMethod">请求方式</param>
             <param name="requestUri">请求地址</param>
             <param name="onMessage">用于在从事件源接收到数据时的操作</param>
             <param name="configure">自定义配置委托</param>
@@ -1007,13 +1037,21 @@
                 <see cref="T:HttpAgent.HttpStressTestHarnessBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpBuilder.LongPolling(System.Net.Http.HttpMethod,System.Uri,System.Func{System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Action{HttpAgent.HttpLongPollingBuilder})">
+        <member name="M:HttpAgent.HttpBuilder.LongPolling(System.Uri,System.Action{HttpAgent.HttpLongPollingBuilder})">
             <summary>
                 创建 <see cref="T:HttpAgent.HttpLongPollingBuilder" /> 构建器
             </summary>
-            <param name="httpMethod">请求方式</param>
             <param name="requestUri">请求地址</param>
-            <param name="onDataReceived">用于接收服务器返回 <c>200~299</c> 状态码的数据的操作</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpLongPollingBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.LongPolling(System.String,System.Action{HttpAgent.HttpLongPollingBuilder})">
+            <summary>
+                创建 <see cref="T:HttpAgent.HttpLongPollingBuilder" /> 构建器
+            </summary>
+            <param name="requestUri">请求地址</param>
             <param name="configure">自定义配置委托</param>
             <returns>
                 <see cref="T:HttpAgent.HttpLongPollingBuilder" />
@@ -1041,6 +1079,29 @@
                 <see cref="T:HttpAgent.HttpLongPollingBuilder" />
             </returns>
         </member>
+        <member name="M:HttpAgent.HttpBuilder.LongPolling(System.Net.Http.HttpMethod,System.Uri,System.Action{HttpAgent.HttpLongPollingBuilder})">
+            <summary>
+                创建 <see cref="T:HttpAgent.HttpLongPollingBuilder" /> 构建器
+            </summary>
+            <param name="httpMethod">请求方式</param>
+            <param name="requestUri">请求地址</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpLongPollingBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpBuilder.LongPolling(System.Net.Http.HttpMethod,System.Uri,System.Func{System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Action{HttpAgent.HttpLongPollingBuilder})">
+            <summary>
+                创建 <see cref="T:HttpAgent.HttpLongPollingBuilder" /> 构建器
+            </summary>
+            <param name="httpMethod">请求方式</param>
+            <param name="requestUri">请求地址</param>
+            <param name="onDataReceived">用于接收服务器返回 <c>200~299</c> 状态码的数据的操作</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpLongPollingBuilder" />
+            </returns>
+        </member>
         <member name="M:HttpAgent.HttpBuilder.Declarative(System.Reflection.MethodInfo,System.Object[],System.Type)">
             <summary>
                 创建 <see cref="T:HttpAgent.HttpDeclarativeBuilder" /> 构建器
@@ -1052,7 +1113,7 @@
                 <see cref="T:HttpAgent.HttpDeclarativeBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpBuilder.FromJson(System.String,System.Action{System.Text.Json.Nodes.JsonObject})">
+        <member name="M:HttpAgent.HttpBuilder.FromJson(System.String,System.Action{System.Text.Json.Nodes.JsonObject,HttpAgent.HttpRequestBuilder})">
             <summary>
                 从 JSON 中创建 <see cref="T:HttpAgent.HttpRequestBuilder" /> 实例
             </summary>
@@ -1061,8 +1122,6 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
-            <exception cref="T:System.ArgumentException"></exception>
-            <exception cref="T:System.InvalidOperationException"></exception>
         </member>
         <member name="T:HttpAgent.HttpFileDownloadBuilder">
             <summary>
@@ -4762,13 +4821,21 @@
                 <see cref="T:HttpAgent.HttpFileUploadBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpRequestBuilder.ServerSentEvents(System.Net.Http.HttpMethod,System.Uri,System.Func{HttpAgent.ServerSentEventsData,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Action{HttpAgent.HttpServerSentEventsBuilder})">
+        <member name="M:HttpAgent.HttpRequestBuilder.ServerSentEvents(System.Uri,System.Action{HttpAgent.HttpServerSentEventsBuilder})">
             <summary>
                 创建 <see cref="T:HttpAgent.HttpServerSentEventsBuilder" /> 构建器
             </summary>
-            <param name="httpMethod">请求方式</param>
             <param name="requestUri">请求地址</param>
-            <param name="onMessage">用于在从事件源接收到数据时的操作</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpServerSentEventsBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.ServerSentEvents(System.String,System.Action{HttpAgent.HttpServerSentEventsBuilder})">
+            <summary>
+                创建 <see cref="T:HttpAgent.HttpServerSentEventsBuilder" /> 构建器
+            </summary>
+            <param name="requestUri">请求地址</param>
             <param name="configure">自定义配置委托</param>
             <returns>
                 <see cref="T:HttpAgent.HttpServerSentEventsBuilder" />
@@ -4789,6 +4856,29 @@
             <summary>
                 创建 <see cref="T:HttpAgent.HttpServerSentEventsBuilder" /> 构建器
             </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="onMessage">用于在从事件源接收到数据时的操作</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpServerSentEventsBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.ServerSentEvents(System.Net.Http.HttpMethod,System.Uri,System.Action{HttpAgent.HttpServerSentEventsBuilder})">
+            <summary>
+                创建 <see cref="T:HttpAgent.HttpServerSentEventsBuilder" /> 构建器
+            </summary>
+            <param name="httpMethod">请求方式</param>
+            <param name="requestUri">请求地址</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpServerSentEventsBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.ServerSentEvents(System.Net.Http.HttpMethod,System.Uri,System.Func{HttpAgent.ServerSentEventsData,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Action{HttpAgent.HttpServerSentEventsBuilder})">
+            <summary>
+                创建 <see cref="T:HttpAgent.HttpServerSentEventsBuilder" /> 构建器
+            </summary>
+            <param name="httpMethod">请求方式</param>
             <param name="requestUri">请求地址</param>
             <param name="onMessage">用于在从事件源接收到数据时的操作</param>
             <param name="configure">自定义配置委托</param>
@@ -4830,13 +4920,21 @@
                 <see cref="T:HttpAgent.HttpStressTestHarnessBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpRequestBuilder.LongPolling(System.Net.Http.HttpMethod,System.Uri,System.Func{System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Action{HttpAgent.HttpLongPollingBuilder})">
+        <member name="M:HttpAgent.HttpRequestBuilder.LongPolling(System.Uri,System.Action{HttpAgent.HttpLongPollingBuilder})">
             <summary>
                 创建 <see cref="T:HttpAgent.HttpLongPollingBuilder" /> 构建器
             </summary>
-            <param name="httpMethod">请求方式</param>
             <param name="requestUri">请求地址</param>
-            <param name="onDataReceived">用于接收服务器返回 <c>200~299</c> 状态码的数据的操作</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpLongPollingBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.LongPolling(System.String,System.Action{HttpAgent.HttpLongPollingBuilder})">
+            <summary>
+                创建 <see cref="T:HttpAgent.HttpLongPollingBuilder" /> 构建器
+            </summary>
+            <param name="requestUri">请求地址</param>
             <param name="configure">自定义配置委托</param>
             <returns>
                 <see cref="T:HttpAgent.HttpLongPollingBuilder" />
@@ -4864,6 +4962,29 @@
                 <see cref="T:HttpAgent.HttpLongPollingBuilder" />
             </returns>
         </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.LongPolling(System.Net.Http.HttpMethod,System.Uri,System.Action{HttpAgent.HttpLongPollingBuilder})">
+            <summary>
+                创建 <see cref="T:HttpAgent.HttpLongPollingBuilder" /> 构建器
+            </summary>
+            <param name="httpMethod">请求方式</param>
+            <param name="requestUri">请求地址</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpLongPollingBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.LongPolling(System.Net.Http.HttpMethod,System.Uri,System.Func{System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Action{HttpAgent.HttpLongPollingBuilder})">
+            <summary>
+                创建 <see cref="T:HttpAgent.HttpLongPollingBuilder" /> 构建器
+            </summary>
+            <param name="httpMethod">请求方式</param>
+            <param name="requestUri">请求地址</param>
+            <param name="onDataReceived">用于接收服务器返回 <c>200~299</c> 状态码的数据的操作</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpLongPollingBuilder" />
+            </returns>
+        </member>
         <member name="M:HttpAgent.HttpRequestBuilder.Declarative(System.Reflection.MethodInfo,System.Object[],System.Type)">
             <summary>
                 创建 <see cref="T:HttpAgent.HttpDeclarativeBuilder" /> 构建器
@@ -4875,7 +4996,7 @@
                 <see cref="T:HttpAgent.HttpDeclarativeBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpRequestBuilder.FromJson(System.String,System.Action{System.Text.Json.Nodes.JsonObject})">
+        <member name="M:HttpAgent.HttpRequestBuilder.FromJson(System.String,System.Action{System.Text.Json.Nodes.JsonObject,HttpAgent.HttpRequestBuilder})">
             <summary>
                 从 JSON 中创建 <see cref="T:HttpAgent.HttpRequestBuilder" /> 实例
             </summary>
@@ -5914,7 +6035,7 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Match the string "/Date(".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [+-] atomically any number of times.<br/>
+                ○ Match a character in the set [+\-] atomically any number of times.<br/>
                 ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match the string ")/".<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
@@ -5943,10 +6064,10 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Match the string "/Date(".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [+-] atomically any number of times.<br/>
+                ○ Match a character in the set [+\-] atomically any number of times.<br/>
                 ○ Match a Unicode digit atomically at least once.<br/>
             ○ 2nd capture group.<br/>
-                ○ Match a character in the set [+-].<br/>
+                ○ Match a character in the set [+\-].<br/>
             ○ 3rd capture group.<br/>
                 ○ Match a Unicode digit exactly 2 times.<br/>
             ○ 4th capture group.<br/>
@@ -6641,13 +6762,13 @@
                 ○ Match the string "**".<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [-:\w] greedily at least once.<br/>
+                ○ Match a character in the set [\-:\w] greedily at least once.<br/>
             ○ 2nd capture group.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match a whitespace character atomically any number of times.<br/>
                     ○ Match '|'.<br/>
                     ○ Match a whitespace character greedily any number of times.<br/>
-                    ○ Match a character in the set [-:\w] greedily at least once.<br/>
+                    ○ Match a character in the set [\-:\w] greedily at least once.<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ Optional (greedy).<br/>
                 ○ Match the string "||".<br/>
@@ -6674,32 +6795,32 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Loop greedily at least once.<br/>
                 ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
+                    ○ Match a character in the set [\-.0-9A-Z_a-z~].<br/>
                     ○ Match a sequence of expressions.<br/>
                         ○ Match '%'.<br/>
-                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
+                        ○ Match a hexadecimal digit exactly 2 times.<br/>
             ○ Match '='.<br/>
             ○ Loop greedily any number of times.<br/>
                 ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
+                    ○ Match a character in the set [+\-.0-9A-Z_a-z~].<br/>
                     ○ Match a sequence of expressions.<br/>
                         ○ Match '%'.<br/>
-                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
+                        ○ Match a hexadecimal digit exactly 2 times.<br/>
             ○ Loop greedily any number of times.<br/>
                 ○ Match '&amp;'.<br/>
                 ○ Loop greedily at least once.<br/>
                     ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
+                        ○ Match a character in the set [\-.0-9A-Z_a-z~].<br/>
                         ○ Match a sequence of expressions.<br/>
                             ○ Match '%'.<br/>
-                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
+                            ○ Match a hexadecimal digit exactly 2 times.<br/>
                 ○ Match '='.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
+                        ○ Match a character in the set [+\-.0-9A-Z_a-z~].<br/>
                         ○ Match a sequence of expressions.<br/>
                             ○ Match '%'.<br/>
-                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
+                            ○ Match a hexadecimal digit exactly 2 times.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
             </remarks>
@@ -9678,7 +9799,7 @@
             <code>
             ○ Match the string "\\u".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [0-9A-Fa-f] exactly 4 times.<br/>
+                ○ Match a hexadecimal digit exactly 4 times.<br/>
             </code>
             </remarks>
         </member>
@@ -10473,24 +10594,6 @@
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
         </member>
-        <member name="M:HttpAgent.FileDownloadManager.DownloadInChunks(System.Int64,System.IO.FileStream,HttpAgent.FileTransferProgress,System.Diagnostics.Stopwatch,System.Threading.CancellationToken)">
-            <summary>
-                多线程分块下载（同步）
-            </summary>
-            <param name="contentLength">文件总大小</param>
-            <param name="fileStream">
-                <see cref="T:System.IO.FileStream" />
-            </param>
-            <param name="fileTransferProgress">
-                <see cref="T:HttpAgent.FileTransferProgress" />
-            </param>
-            <param name="stopwatch">
-                <see cref="T:System.Diagnostics.Stopwatch" />
-            </param>
-            <param name="cancellationToken">
-                <see cref="T:System.Threading.CancellationToken" />
-            </param>
-        </member>
         <member name="M:HttpAgent.FileDownloadManager.DownloadChunkAsync(System.Int64,System.Int64,System.IO.FileStream,System.Threading.SemaphoreSlim,HttpAgent.FileTransferProgress,System.Diagnostics.Stopwatch,System.Threading.CancellationToken)">
             <summary>
                 下载单个分块
@@ -10514,54 +10617,9 @@
             </param>
             <exception cref="T:System.InvalidOperationException"></exception>
         </member>
-        <member name="M:HttpAgent.FileDownloadManager.DownloadChunk(System.Int64,System.Int64,System.IO.FileStream,System.Object,HttpAgent.FileTransferProgress,System.Diagnostics.Stopwatch,System.Threading.CancellationToken)">
-            <summary>
-                下载单个分块（同步）
-            </summary>
-            <param name="start">分块起始字节位置</param>
-            <param name="end">分块结束字节位置</param>
-            <param name="fileStream">
-                <see cref="T:System.IO.FileStream" />
-            </param>
-            <param name="fileWriteLock">同步锁</param>
-            <param name="fileTransferProgress">
-                <see cref="T:HttpAgent.FileTransferProgress" />
-            </param>
-            <param name="stopwatch">
-                <see cref="T:System.Diagnostics.Stopwatch" />
-            </param>
-            <param name="cancellationToken">
-                <see cref="T:System.Threading.CancellationToken" />
-            </param>
-            <exception cref="T:System.InvalidOperationException"></exception>
-        </member>
         <member name="M:HttpAgent.FileDownloadManager.DownloadSingleThreadedAsync(System.Net.Http.HttpResponseMessage,System.IO.FileStream,HttpAgent.FileTransferProgress,System.Diagnostics.Stopwatch,System.Threading.CancellationToken)">
             <summary>
                 单线程下载
-            </summary>
-            <remarks>仅在单线程下载或服务器不支持 <c>Range</c> 请求时使用。</remarks>
-            <param name="httpResponseMessage">
-                <see cref="T:System.Net.Http.HttpResponseMessage" />
-            </param>
-            <param name="fileStream">
-                <see cref="T:System.IO.FileStream" />
-            </param>
-            <param name="fileTransferProgress">
-                <see cref="T:HttpAgent.FileTransferProgress" />
-            </param>
-            <param name="stopwatch">
-                <see cref="T:System.Diagnostics.Stopwatch" />
-            </param>
-            <param name="cancellationToken">
-                <see cref="T:System.Threading.CancellationToken" />
-            </param>
-            <returns>
-                <see cref="T:System.Int64" />
-            </returns>
-        </member>
-        <member name="M:HttpAgent.FileDownloadManager.DownloadSingleThreaded(System.Net.Http.HttpResponseMessage,System.IO.FileStream,HttpAgent.FileTransferProgress,System.Diagnostics.Stopwatch,System.Threading.CancellationToken)">
-            <summary>
-                单线程下载（同步）
             </summary>
             <remarks>仅在单线程下载或服务器不支持 <c>Range</c> 请求时使用。</remarks>
             <param name="httpResponseMessage">
@@ -10830,18 +10888,24 @@
             </param>
             <exception cref="T:System.InvalidOperationException"></exception>
         </member>
-        <member name="M:HttpAgent.LongPollingManager.Retry(System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.LongPollingManager.StartAsAsyncEnumerable(System.Threading.CancellationToken)">
             <summary>
-                重新开始请求
+                开始请求
             </summary>
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
+            <returns>
+                <see cref="T:System.Collections.Generic.IAsyncEnumerable`1" />
+            </returns>
         </member>
-        <member name="M:HttpAgent.LongPollingManager.RetryAsync(System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.LongPollingManager.StartCoreAsync(System.Threading.Channels.ChannelWriter{System.Net.Http.HttpResponseMessage},System.Threading.CancellationToken)">
             <summary>
-                重新开始请求
+                开始接收（核心）
             </summary>
+            <param name="writer">
+                <see cref="T:System.Threading.Channels.ChannelWriter`1" />
+            </param>
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
@@ -10972,18 +11036,24 @@
             </param>
             <exception cref="T:System.InvalidOperationException"></exception>
         </member>
-        <member name="M:HttpAgent.ServerSentEventsManager.Retry(System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.ServerSentEventsManager.StartAsAsyncEnumerable(System.Threading.CancellationToken)">
             <summary>
-                重新开始接收
+                开始接收
             </summary>
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
+            <returns>
+                <see cref="T:System.Collections.Generic.IAsyncEnumerable`1" />
+            </returns>
         </member>
-        <member name="M:HttpAgent.ServerSentEventsManager.RetryAsync(System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.ServerSentEventsManager.StartCoreAsync(System.Threading.Channels.ChannelWriter{HttpAgent.ServerSentEventsData},System.Threading.CancellationToken)">
             <summary>
-                重新开始接收
+                开始接收（核心）
             </summary>
+            <param name="writer">
+                <see cref="T:System.Threading.Channels.ChannelWriter`1" />
+            </param>
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
@@ -11007,9 +11077,6 @@
             <param name="serverSentEventsData">
                 <see cref="T:HttpAgent.ServerSentEventsData" />
             </param>
-            <returns>
-                <see cref="T:System.Boolean" />
-            </returns>
         </member>
         <member name="M:HttpAgent.ServerSentEventsManager.ReceiveDataAsync(System.Threading.Channels.Channel{HttpAgent.ServerSentEventsData},System.Threading.CancellationToken)">
             <summary>
@@ -11425,7 +11492,7 @@
             <code>
             ○ Match the string "\u001b[".<br/>
             ○ Match a character in the set [;\d] atomically any number of times.<br/>
-            ○ Match a character in the set [A-Za-z].<br/>
+            ○ Match an ASCII letter.<br/>
             </code>
             </remarks>
         </member>
@@ -12365,7 +12432,7 @@
             <summary>
                 事件 ID
             </summary>
-            <remarks>事件 ID，会成为当前 <c>EventSource</c> 对象的内部属性“最后一个事件 ID 的属性值。</remarks>
+            <remarks>事件 ID，会成为当前 <c>EventSource</c> 对象的内部属性最后一个事件 ID 的属性值。</remarks>
         </member>
         <member name="P:HttpAgent.ServerSentEventsData.Retry">
             <summary>
@@ -13109,7 +13176,7 @@
             <code>
             ○ Match if at the beginning of the string.<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
-            ○ Match a character in the set [-~].<br/>
+            ○ Match a character in the set [\-~].<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
@@ -14170,10 +14237,16 @@
         <member name="M:HttpAgent.HttpRemoteService.ServerSentEventsAsync(System.String,System.Func{HttpAgent.ServerSentEventsData,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Action{HttpAgent.HttpServerSentEventsBuilder},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
+        <member name="M:HttpAgent.HttpRemoteService.ServerSentEventsAsAsyncEnumerable(System.String,System.Action{HttpAgent.HttpServerSentEventsBuilder},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
         <member name="M:HttpAgent.HttpRemoteService.Send(HttpAgent.HttpServerSentEventsBuilder,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="M:HttpAgent.HttpRemoteService.SendAsync(HttpAgent.HttpServerSentEventsBuilder,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.HttpRemoteService.SendAsAsyncEnumerable(HttpAgent.HttpServerSentEventsBuilder,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="M:HttpAgent.HttpRemoteService.StressTestHarness(System.String,System.Int32,System.Action{HttpAgent.HttpStressTestHarnessBuilder},System.Net.Http.HttpCompletionOption,System.Threading.CancellationToken)">
@@ -14194,10 +14267,16 @@
         <member name="M:HttpAgent.HttpRemoteService.LongPollingAsync(System.String,System.Func{System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Action{HttpAgent.HttpLongPollingBuilder},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
+        <member name="M:HttpAgent.HttpRemoteService.LongPollingAsAsyncEnumerable(System.String,System.Action{HttpAgent.HttpLongPollingBuilder},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
         <member name="M:HttpAgent.HttpRemoteService.Send(HttpAgent.HttpLongPollingBuilder,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="M:HttpAgent.HttpRemoteService.SendAsync(HttpAgent.HttpLongPollingBuilder,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.HttpRemoteService.SendAsAsyncEnumerable(HttpAgent.HttpLongPollingBuilder,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="M:HttpAgent.HttpRemoteService.Declarative(System.Reflection.MethodInfo,System.Object[],System.Type)">
@@ -15510,6 +15589,19 @@
                 <see cref="T:System.Threading.Tasks.Task" />
             </returns>
         </member>
+        <member name="M:HttpAgent.IHttpRemoteService.ServerSentEventsAsAsyncEnumerable(System.String,System.Action{HttpAgent.HttpServerSentEventsBuilder},System.Threading.CancellationToken)">
+            <summary>
+                发送 Server-Sent Events 请求
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="configure">自定义配置委托</param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns>
+                <see cref="T:System.Collections.Generic.IAsyncEnumerable`1" />
+            </returns>
+        </member>
         <member name="M:HttpAgent.IHttpRemoteService.Send(HttpAgent.HttpServerSentEventsBuilder,System.Threading.CancellationToken)">
             <summary>
                 发送 Server-Sent Events 请求
@@ -15533,6 +15625,20 @@
             </param>
             <returns>
                 <see cref="T:System.Threading.Tasks.Task" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.IHttpRemoteService.SendAsAsyncEnumerable(HttpAgent.HttpServerSentEventsBuilder,System.Threading.CancellationToken)">
+            <summary>
+                发送 Server-Sent Events 请求
+            </summary>
+            <param name="httpServerSentEventsBuilder">
+                <see cref="T:HttpAgent.HttpServerSentEventsBuilder" />
+            </param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns>
+                <see cref="T:System.Collections.Generic.IAsyncEnumerable`1" />
             </returns>
         </member>
         <member name="M:HttpAgent.IHttpRemoteService.StressTestHarness(System.String,System.Int32,System.Action{HttpAgent.HttpStressTestHarnessBuilder},System.Net.Http.HttpCompletionOption,System.Threading.CancellationToken)">
@@ -15628,6 +15734,19 @@
                 <see cref="T:System.Threading.Tasks.Task" />
             </returns>
         </member>
+        <member name="M:HttpAgent.IHttpRemoteService.LongPollingAsAsyncEnumerable(System.String,System.Action{HttpAgent.HttpLongPollingBuilder},System.Threading.CancellationToken)">
+            <summary>
+                发送长轮询请求
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <param name="configure">自定义配置委托</param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns>
+                <see cref="T:System.Collections.Generic.IAsyncEnumerable`1" />
+            </returns>
+        </member>
         <member name="M:HttpAgent.IHttpRemoteService.Send(HttpAgent.HttpLongPollingBuilder,System.Threading.CancellationToken)">
             <summary>
                 发送长轮询请求
@@ -15651,6 +15770,20 @@
             </param>
             <returns>
                 <see cref="T:System.Threading.Tasks.Task" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.IHttpRemoteService.SendAsAsyncEnumerable(HttpAgent.HttpLongPollingBuilder,System.Threading.CancellationToken)">
+            <summary>
+                发送长轮询请求
+            </summary>
+            <param name="httpLongPollingBuilder">
+                <see cref="T:HttpAgent.HttpLongPollingBuilder" />
+            </param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns>
+                <see cref="T:System.Collections.Generic.IAsyncEnumerable`1" />
             </returns>
         </member>
         <member name="M:HttpAgent.IHttpRemoteService.Declarative(System.Reflection.MethodInfo,System.Object[],System.Type)">
@@ -19871,6 +20004,21 @@
         <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32,System.Int32,System.Int32)">
             <summary>Pushes 3 values onto the backtracking stack.</summary>
         </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.WordCategoriesMask">
+            <summary>Provides a mask of Unicode categories that combine to form [\w].</summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.Generated.Utilities.WordCharBitmap">
+            <summary>Gets a bitmap for whether each character 0 through 127 is in [\w]</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_1F52B1A4D2E82B6FEDE25EC8C55F85BB36775196837076691C96925040F90D32">
+            <summary>Supports searching for the string "\\u".</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_4A5B154448624742176A7AE18EDA0762C946CBB1B19F68418DD573D0A698E642">
+            <summary>Supports searching for the string "\u001b[".</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_EBC667BDABA1472FA863B5B39B31251EF2B4C95DD643BDECF694CB1CE7BDC178">
+            <summary>Supports searching for the string "[[".</summary>
+        </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions">
             <summary>
                 HTTP 远程请求模块 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" /> 扩展类
@@ -19880,31 +20028,6 @@
             <summary>
                 添加 HTTP 远程请求服务
             </summary>
-            <param name="services">
-                <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
-            </param>
-            <param name="configure">自定义配置委托</param>
-            <returns>
-                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
-            </returns>
-        </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions.AddHttpRemote(Microsoft.Extensions.DependencyInjection.IServiceCollection,HttpAgent.HttpRemoteBuilder)">
-            <summary>
-                添加 HTTP 远程请求服务
-            </summary>
-            <param name="services">
-                <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
-            </param>
-            <param name="httpRemoteBuilder">
-                <see cref="T:HttpAgent.HttpRemoteBuilder" />
-            </param>
-            <returns>
-                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
-            </returns>
-        </member>
-    </members>
-</doc>
-ummary>
             <param name="services">
                 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
             </param>

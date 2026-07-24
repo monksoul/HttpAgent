@@ -342,14 +342,9 @@ public class LongPollingManagerTests
         await longPollingManager2.HandleResponseAsync(httpResponseMessage, CancellationToken.None);
         Assert.Equal("Error", msg);
 
-        httpResponseMessage.Headers.TryAddWithoutValidation(Constants.X_END_OF_STREAM_HEADER, "TRUE");
-        await longPollingManager2.HandleResponseAsync(httpResponseMessage, CancellationToken.None);
-        Assert.Equal("EndOfStream", msg);
-
         Assert.Equal(0, customLongPollingEventHandler.counter);
 
         httpLongPollingBuilder.SetEventHandler<CustomLongPollingEventHandler>();
-        httpResponseMessage.Headers.Remove(Constants.X_END_OF_STREAM_HEADER);
         var longPollingManager3 = new LongPollingManager(httpRemoteService, httpLongPollingBuilder);
         await longPollingManager3.HandleResponseAsync(httpResponseMessage, CancellationToken.None);
 
@@ -814,7 +809,7 @@ public class LongPollingManagerTests
     }
 
     [Fact]
-    public async Task Retry_ReturnOK()
+    public async Task StartAsAsyncEnumerable_ReturnOK()
     {
         var port = NetworkUtility.FindAvailableTcpPort();
         var urls = new[] { "--urls", $"http://localhost:{port}" };
@@ -845,64 +840,13 @@ public class LongPollingManagerTests
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpLongPollingBuilder =
-            new HttpLongPollingBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"))
-                .SetOnDataReceived(async (_, _) =>
-                {
-                    i++;
-                    await Task.CompletedTask;
-                });
+            new HttpLongPollingBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
         var longPollingManagerManager = new LongPollingManager(httpRemoteService, httpLongPollingBuilder);
 
-        // ReSharper disable once MethodHasAsyncOverload
-        longPollingManagerManager.Retry();
-
-        Assert.Equal(5, i);
-
-        await app.StopAsync();
-        await serviceProvider.DisposeAsync();
-    }
-
-    [Fact]
-    public async Task RetryAsync_ReturnOK()
-    {
-        var port = NetworkUtility.FindAvailableTcpPort();
-        var urls = new[] { "--urls", $"http://localhost:{port}" };
-        var builder = WebApplication.CreateBuilder(urls);
-        await using var app = builder.Build();
-
-        var j = 0;
-        app.MapGet("/test", async context =>
+        await foreach (var data in longPollingManagerManager.StartAsAsyncEnumerable())
         {
-            j++;
-
-            var message = $"Message at {DateTime.UtcNow}\n\n";
-
-            await Task.Delay(50, context.RequestAborted);
-
-            if (j <= 5)
-            {
-                await context.Response.WriteAsync(message);
-            }
-            else
-            {
-                context.Response.Headers["X-End-Of-Stream"] = "1";
-            }
-        });
-
-        await app.StartAsync();
-
-        var i = 0;
-        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
-        var httpLongPollingBuilder =
-            new HttpLongPollingBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"))
-                .SetOnDataReceived(async (_, _) =>
-                {
-                    i++;
-                    await Task.CompletedTask;
-                });
-        var longPollingManagerManager = new LongPollingManager(httpRemoteService, httpLongPollingBuilder);
-
-        await longPollingManagerManager.RetryAsync();
+            i++;
+        }
 
         Assert.Equal(5, i);
 

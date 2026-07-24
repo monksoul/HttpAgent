@@ -13,8 +13,7 @@ public class GetStartController(
     {
         var fileTransferResult = await httpRemoteService.DownloadFileAsync(
             "https://apply1.81890.org.cn/upload/2025/09/20/720153914265669.png", "C:\\Workspaces\\",
-            progress => progress.UpdateConsoleProgressAsync(), FileExistsBehavior.Overwrite,
-            builder => builder.SetMaxThreads(4).Profiler(false));
+            progress => progress.UpdateConsoleProgressAsync(), FileExistsBehavior.Overwrite);
 
         return 0;
     }
@@ -446,27 +445,28 @@ public class GetStartController(
                 // 连接打开时操作
                 .SetOnOpen(() => { Console.WriteLine("连接成功。"); })
                 // 连接未打开时操作
-                .SetOnError(ex => { Console.WriteLine("连接错误。" + ex.Message); }), cancellationToken);
+                .SetOnError(ex => { Console.WriteLine("连接错误。" + ex.Message); }),
+            cancellationToken);
 
         // 使用构建器模式
-        //await httpRemoteService.SendAsync(HttpRequestBuilder
-        //   .ServerSentEvents("https://localhost:7044/HttpRemote/Events"
-        //   // 接收到数据时的操作
-        //   , async (data, token) =>
-        //   {
-        //       Console.WriteLine(data.Data.ToString());
-        //       await Task.CompletedTask;
-        //   })
-        //   // 连接打开时操作
-        //   .SetOnOpen(() =>
-        //   {
-        //       Console.WriteLine("连接成功。");
-        //   })
-        //   // 连接未打开时操作
-        //   .SetOnError((ex) =>
-        //   {
-        //       Console.WriteLine("连接错误。" + ex.Message);
-        //   }), cancellationToken: cancellationToken);
+        // await httpRemoteService.SendAsync(HttpRequestBuilder
+        //    .ServerSentEvents("https://localhost:7044/HttpRemote/Events"
+        //    // 接收到数据时的操作
+        //    , async (data, token) =>
+        //    {
+        //        Console.WriteLine(data.Data.ToString());
+        //        await Task.CompletedTask;
+        //    })
+        //    // 连接打开时操作
+        //    .SetOnOpen(() =>
+        //    {
+        //        Console.WriteLine("连接成功。");
+        //    })
+        //    // 连接未打开时操作
+        //    .SetOnError((ex) =>
+        //    {
+        //        Console.WriteLine("连接错误。" + ex.Message);
+        //    }).WithRequest(c=>c.Profiler(false)), cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -680,11 +680,10 @@ public class GetStartController(
     {
         var result = await httpRemoteService.SendAsync<string>(HttpRequestBuilder
             .Post("https://api.deepseek.com/chat/completions")
-            .Profiler(false) // 建议关闭请求分析工具
             .AddJwtBearerAuthentication("您的 APIKEY")
             .SetJsonContent("""
                             {
-                                "model": "deepseek-chat",
+                                "model": "deepseek-v4-pro",
                                 "messages": [
                                     {"role": "system", "content": "你是一个专业的 C# 领域人才。"},
                                     {"role": "user", "content": "Furion 框架未来前景？"}
@@ -723,11 +722,10 @@ public class GetStartController(
 
                 Console.WriteLine(content);
             }).WithRequest(builder => builder
-            .Profiler(false) // 建议关闭请求分析工具
             .AddJwtBearerAuthentication("您的 APIKEY")
             .SetJsonContent("""
                             {
-                                "model": "deepseek-chat",
+                                "model": "deepseek-v4-pro",
                                 "messages": [
                                     {"role": "system", "content": "你是一个专业的 C# 领域人才。"},
                                     {"role": "user", "content": "Furion 框架的作者是谁？"}
@@ -769,11 +767,10 @@ public class GetStartController(
                 await httpContext.Response.Body.WriteAsync(Encoding.UTF8.GetBytes(content), token);
                 await httpContext.Response.Body.FlushAsync(token);
             }).WithRequest(builder => builder
-            .Profiler(false) // 建议关闭请求分析工具
             .AddJwtBearerAuthentication("您的 APIKEY")
             .SetJsonContent($$"""
                               {
-                              "model": "deepseek-chat",
+                              "model": "deepseek-v4-pro",
                               "messages": [
                                   {"role": "system", "content": "你是一个专业的 C# 领域人才。"},
                                   {"role": "user", "content": "{{message}}"}
@@ -867,6 +864,6 @@ public class GetStartController(
             , @"C:\Workspaces\"
             , progress => progress.UpdateConsoleProgressAsync()
             , FileExistsBehavior.Overwrite,
-            builder => builder.SetBufferSize(1024 * 1024).SetMaxThreads(4).Profiler(false), cancellationToken);
+            builder => builder.SetBufferSize(1024 * 1024).SetMaxThreads(4), cancellationToken);
     }
 }

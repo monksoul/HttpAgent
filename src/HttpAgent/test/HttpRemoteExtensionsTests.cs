@@ -695,10 +695,8 @@ public class HttpRemoteExtensionsTests
     }
 
     [Fact]
-    public void GetResponseMessage_Invalid_Parameters()
-    {
+    public void GetResponseMessage_Invalid_Parameters() =>
         Assert.Throws<ArgumentNullException>(() => HttpRemoteExtensions.GetResponseMessage(null!));
-    }
 
     [Fact]
     public void GetResponseMessage_ReturnOK()

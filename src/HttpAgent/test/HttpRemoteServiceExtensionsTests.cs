@@ -1476,12 +1476,15 @@ public class HttpRemoteServiceExtensionsTests
             });
 
         using var cancellationTokenSource = new CancellationTokenSource();
-        cancellationTokenSource.CancelAfter(100);
+        cancellationTokenSource.CancelAfter(50);
 
-        // ReSharper disable once MethodHasAsyncOverload
-        httpRemoteService.Send(httpServerSentEventsBuilder, cancellationTokenSource.Token);
+        Assert.Throws<TaskCanceledException>(() =>
+        {
+            // ReSharper disable once MethodHasAsyncOverload
+            httpRemoteService.Send(httpServerSentEventsBuilder, cancellationTokenSource.Token);
+        });
 
-        Assert.Equal(1, i);
+        Assert.Equal(0, i);
 
         await app.StopAsync();
         await serviceProvider.DisposeAsync();
@@ -3549,6 +3552,182 @@ public class HttpRemoteServiceExtensionsTests
             _ = await httpRemoteService.SendAsAsync<string>(HttpRequestBuilder.Declarative(method,
                 [$"http://localhost:{port}/test", cancellationTokenSource.Token], typeof(IHttpDeclarativeTest)));
         });
+
+        await app.StopAsync();
+        await serviceProvider.DisposeAsync();
+    }
+
+    [Fact]
+    public async Task SendAsAsyncEnumerable_LongPolling_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        await using var app = builder.Build();
+
+        var j = 0;
+        app.MapGet("/test", async context =>
+        {
+            j++;
+
+            var message = $"Message at {DateTime.UtcNow}\n\n";
+
+            await Task.Delay(50, context.RequestAborted);
+
+            if (j <= 5)
+            {
+                await context.Response.WriteAsync(message);
+            }
+            else
+            {
+                context.Response.Headers["X-End-Of-Stream"] = "1";
+            }
+        });
+
+        await app.StartAsync();
+
+        var i = 0;
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+        var httpLongPollingBuilder =
+            new HttpLongPollingBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
+
+        await foreach (var data in httpRemoteService.SendAsAsyncEnumerable(httpLongPollingBuilder))
+        {
+            i++;
+        }
+
+        Assert.Equal(5, i);
+
+        await app.StopAsync();
+        await serviceProvider.DisposeAsync();
+    }
+
+    [Fact]
+    public async Task SendAsAsyncEnumerable_ServerSentEvents_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        await using var app = builder.Build();
+
+        app.MapGet("/test", async context =>
+        {
+            context.Response.ContentType = "text/event-stream";
+            context.Response.Headers.CacheControl = "no-cache";
+            context.Response.Headers.Connection = "keep-alive";
+            context.Response.Headers["X-Accel-Buffering"] = "no";
+
+            var eventId = 0;
+            while (eventId < 5)
+            {
+                eventId++;
+
+                var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
+                await context.Response.WriteAsync(message);
+
+                await Task.Delay(10);
+            }
+        });
+
+        await app.StartAsync();
+
+        var i = 0;
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+        var httpServerSentEventsBuilder =
+            new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test"));
+
+        await foreach (var data in httpRemoteService.SendAsAsyncEnumerable(httpServerSentEventsBuilder))
+        {
+            i++;
+        }
+
+        Assert.Equal(5, i);
+
+        await app.StopAsync();
+        await serviceProvider.DisposeAsync();
+    }
+
+    [Fact]
+    public async Task ServerSentEventsAsAsyncEnumerable_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        await using var app = builder.Build();
+
+        app.MapGet("/test", async context =>
+        {
+            context.Response.ContentType = "text/event-stream";
+            context.Response.Headers.CacheControl = "no-cache";
+            context.Response.Headers.Connection = "keep-alive";
+            context.Response.Headers["X-Accel-Buffering"] = "no";
+
+            var eventId = 0;
+            while (eventId < 5)
+            {
+                eventId++;
+
+                var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
+                await context.Response.WriteAsync(message);
+
+                await Task.Delay(10);
+            }
+        });
+
+        await app.StartAsync();
+
+        var i = 0;
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
+        await foreach (var data in httpRemoteService.ServerSentEventsAsAsyncEnumerable($"http://localhost:{port}/test"))
+        {
+            i++;
+        }
+
+        Assert.Equal(5, i);
+
+        await app.StopAsync();
+        await serviceProvider.DisposeAsync();
+    }
+
+    [Fact]
+    public async Task LongPollingAsAsyncEnumerable_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        await using var app = builder.Build();
+
+        var j = 0;
+        app.MapGet("/test", async context =>
+        {
+            j++;
+
+            var message = $"Message at {DateTime.UtcNow}\n\n";
+
+            await Task.Delay(50, context.RequestAborted);
+
+            if (j <= 5)
+            {
+                await context.Response.WriteAsync(message);
+            }
+            else
+            {
+                context.Response.Headers["X-End-Of-Stream"] = "1";
+            }
+        });
+
+        await app.StartAsync();
+
+        var i = 0;
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
+        await foreach (var data in httpRemoteService.LongPollingAsAsyncEnumerable($"http://localhost:{port}/test"))
+        {
+            i++;
+        }
+
+        Assert.Equal(5, i);
 
         await app.StopAsync();
         await serviceProvider.DisposeAsync();

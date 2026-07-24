@@ -402,6 +402,31 @@ public class HttpBuilderTests
             HttpBuilder.ServerSentEvents(HttpMethod.Post, null!, (_, _) => Task.CompletedTask);
         Assert.Null(httpServerSentEventsBuilder5.RequestUri);
         Assert.Equal(HttpMethod.Post, httpServerSentEventsBuilder5.HttpMethod);
+
+        var httpServerSentEventsBuilder6 =
+            HttpBuilder.ServerSentEvents(new Uri("http://localhost"));
+        Assert.NotNull(httpServerSentEventsBuilder6);
+        Assert.NotNull(httpServerSentEventsBuilder6.RequestUri);
+        Assert.Equal("http://localhost/", httpServerSentEventsBuilder6.RequestUri.ToString());
+
+        var httpServerSentEventsBuilder7 =
+            HttpBuilder.ServerSentEvents((Uri)null!);
+        Assert.Null(httpServerSentEventsBuilder7.RequestUri);
+
+        var httpServerSentEventsBuilder8 =
+            HttpBuilder.ServerSentEvents("http://localhost");
+        Assert.NotNull(httpServerSentEventsBuilder8);
+        Assert.NotNull(httpServerSentEventsBuilder8.RequestUri);
+        Assert.Equal("http://localhost/", httpServerSentEventsBuilder8.RequestUri.ToString());
+
+        var httpServerSentEventsBuilder9 =
+            HttpBuilder.ServerSentEvents((string)null!);
+        Assert.Null(httpServerSentEventsBuilder9.RequestUri);
+
+        var httpServerSentEventsBuilder10 =
+            HttpBuilder.ServerSentEvents(HttpMethod.Post, null!);
+        Assert.Null(httpServerSentEventsBuilder10.RequestUri);
+        Assert.Equal(HttpMethod.Post, httpServerSentEventsBuilder10.HttpMethod);
     }
 
     [Fact]
@@ -477,6 +502,38 @@ public class HttpBuilderTests
         Assert.Equal(HttpMethod.Get, httpLongPollingBuilder6.HttpMethod);
         Assert.NotNull(httpLongPollingBuilder6.RequestUri);
         Assert.Equal("http://localhost/", httpLongPollingBuilder6.RequestUri.ToString());
+
+        var httpLongPollingBuilder7 =
+            HttpBuilder.LongPolling(HttpMethod.Get, new Uri("http://localhost"));
+
+        Assert.NotNull(httpLongPollingBuilder7);
+        Assert.Equal(HttpMethod.Get, httpLongPollingBuilder7.HttpMethod);
+        Assert.NotNull(httpLongPollingBuilder7.RequestUri);
+        Assert.Equal("http://localhost/", httpLongPollingBuilder7.RequestUri.ToString());
+
+        var httpLongPollingBuilder8 =
+            HttpBuilder.LongPolling(HttpMethod.Get, null);
+        Assert.Equal(HttpMethod.Get, httpLongPollingBuilder8.HttpMethod);
+        Assert.Null(httpLongPollingBuilder8.RequestUri);
+
+        var httpLongPollingBuilder9 = HttpBuilder.LongPolling((string)null!);
+        Assert.Equal(HttpMethod.Get, httpLongPollingBuilder9.HttpMethod);
+        Assert.Null(httpLongPollingBuilder9.RequestUri);
+
+        var httpLongPollingBuilder10 = HttpBuilder.LongPolling("http://localhost");
+        Assert.Equal(HttpMethod.Get, httpLongPollingBuilder10.HttpMethod);
+        Assert.NotNull(httpLongPollingBuilder10.RequestUri);
+        Assert.Equal("http://localhost/", httpLongPollingBuilder10.RequestUri.ToString());
+
+        var httpLongPollingBuilder11 = HttpBuilder.LongPolling((Uri)null!);
+        Assert.Equal(HttpMethod.Get, httpLongPollingBuilder11.HttpMethod);
+        Assert.Null(httpLongPollingBuilder11.RequestUri);
+
+        var httpLongPollingBuilder12 =
+            HttpBuilder.LongPolling(new Uri("http://localhost"));
+        Assert.Equal(HttpMethod.Get, httpLongPollingBuilder12.HttpMethod);
+        Assert.NotNull(httpLongPollingBuilder12.RequestUri);
+        Assert.Equal("http://localhost/", httpLongPollingBuilder12.RequestUri.ToString());
     }
 
     [Fact]

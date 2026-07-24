@@ -1190,32 +1190,6 @@ public class FileDownloadManagerTests(ITestOutputHelper output)
     }
 
     [Fact]
-    public void DownloadInChunks_ReturnOK()
-    {
-        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
-
-        var httpFileDownloadBuilder =
-            new HttpFileDownloadBuilder(HttpMethod.Get,
-                    new Uri(
-                        "https://ts1.tc.mm.bing.net/th/id/R-C.987f582c510be58755c4933cda68d525?rik=C0D21hJDYvXosw&riu=http%3a%2f%2fimg.pconline.com.cn%2fimages%2fupload%2fupc%2ftx%2fwallpaper%2f1305%2f16%2fc4%2f20990657_1368686545122.jpg&ehk=netN2qzcCVS4ALUQfDOwxAwFcy41oxC%2b0xTFvOYy5ds%3d&risl=&pid=ImgRaw&r=0"))
-                .SetDestinationPath(
-                    @"C:\Workspaces\R-C.jpg").SetMaxThreads(2);
-        var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
-
-        var httpResponseMessage = new HttpResponseMessage();
-        httpResponseMessage.Content = new StringContent("测试文件内容", Encoding.UTF8, "text/plain");
-
-        using var fileStream = new FileStream(Path.GetTempFileName(), FileMode.Create, FileAccess.Write,
-            FileShare.Read,
-            httpFileDownloadBuilder.BufferSize, true);
-
-        fileDownloadManager.DownloadInChunks(840749, fileStream,
-            new FileTransferProgress(@"C:\Workspaces\R-C.jpg", 21), new Stopwatch(), CancellationToken.None);
-
-        serviceProvider.Dispose();
-    }
-
-    [Fact]
     public async Task DownloadChunkAsync_ReturnOK()
     {
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
@@ -1244,34 +1218,6 @@ public class FileDownloadManagerTests(ITestOutputHelper output)
     }
 
     [Fact]
-    public void DownloadChunk_ReturnOK()
-    {
-        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
-
-        var httpFileDownloadBuilder =
-            new HttpFileDownloadBuilder(HttpMethod.Get,
-                    new Uri(
-                        "https://ts1.tc.mm.bing.net/th/id/R-C.987f582c510be58755c4933cda68d525?rik=C0D21hJDYvXosw&riu=http%3a%2f%2fimg.pconline.com.cn%2fimages%2fupload%2fupc%2ftx%2fwallpaper%2f1305%2f16%2fc4%2f20990657_1368686545122.jpg&ehk=netN2qzcCVS4ALUQfDOwxAwFcy41oxC%2b0xTFvOYy5ds%3d&risl=&pid=ImgRaw&r=0"))
-                .SetDestinationPath(
-                    @"C:\Workspaces\R-C.jpg").SetMaxThreads(2);
-        var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
-
-        var httpResponseMessage = new HttpResponseMessage();
-        httpResponseMessage.Content = new StringContent("测试文件内容", Encoding.UTF8, "text/plain");
-
-        using var fileStream = new FileStream(Path.GetTempFileName(), FileMode.Create, FileAccess.Write,
-            FileShare.Read,
-            httpFileDownloadBuilder.BufferSize, true);
-
-        var fileWriteLock = new SemaphoreSlim(1, 1);
-
-        fileDownloadManager.DownloadChunk(0, 420374, fileStream, fileWriteLock,
-            new FileTransferProgress(@"C:\Workspaces\R-C.jpg", 21), new Stopwatch(), CancellationToken.None);
-
-        serviceProvider.Dispose();
-    }
-
-    [Fact]
     public async Task DownloadSingleThreadedAsync_ReturnOK()
     {
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
@@ -1292,29 +1238,6 @@ public class FileDownloadManagerTests(ITestOutputHelper output)
             new FileTransferProgress(@"C:\Workspaces\index.html", 21), new Stopwatch(), CancellationToken.None);
 
         await serviceProvider.DisposeAsync();
-    }
-
-    [Fact]
-    public void DownloadSingleThreaded_ReturnOK()
-    {
-        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
-
-        var httpFileDownloadBuilder =
-            new HttpFileDownloadBuilder(HttpMethod.Get, new Uri("https://furion.net")).SetDestinationPath(
-                @"C:\Workspaces\index.html");
-        var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
-
-        var httpResponseMessage = new HttpResponseMessage();
-        httpResponseMessage.Content = new StringContent("测试文件内容", Encoding.UTF8, "text/plain");
-
-        using var fileStream = new FileStream(Path.GetTempFileName(), FileMode.Create, FileAccess.Write,
-            FileShare.Read,
-            httpFileDownloadBuilder.BufferSize, true);
-
-        fileDownloadManager.DownloadSingleThreaded(httpResponseMessage, fileStream,
-            new FileTransferProgress(@"C:\Workspaces\index.html", 21), new Stopwatch(), CancellationToken.None);
-
-        serviceProvider.Dispose();
     }
 
     [Fact]
