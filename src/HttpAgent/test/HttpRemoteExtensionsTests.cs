@@ -694,6 +694,22 @@ public class HttpRemoteExtensionsTests
         Assert.Equal("furion", objectModel.Name);
     }
 
+    [Fact]
+    public void GetResponseMessage_Invalid_Parameters()
+    {
+        Assert.Throws<ArgumentNullException>(() => HttpRemoteExtensions.GetResponseMessage(null!));
+    }
+
+    [Fact]
+    public void GetResponseMessage_ReturnOK()
+    {
+        var exception = new Exception("出错了");
+        Assert.Null(exception.GetResponseMessage());
+
+        exception.Data[nameof(HttpResponseMessage)] = new HttpResponseMessage();
+        Assert.NotNull(exception.GetResponseMessage());
+    }
+
     public class JsonModel
     {
         public int Id { get; set; }

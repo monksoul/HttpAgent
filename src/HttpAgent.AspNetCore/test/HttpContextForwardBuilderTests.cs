@@ -1251,7 +1251,7 @@ public class HttpContextForwardBuilderTests
             var httpRequestBuilder =
                 httpContextForwardBuilder.Build(u => u.SetTimeout(TimeSpan.FromSeconds(150)));
             Assert.True(httpRequestBuilder.DisableCacheEnabled);
-            Assert.Equal(TimeSpan.FromSeconds(150), httpRequestBuilder.TimeoutOptions.Timeout);
+            Assert.Equal(TimeSpan.FromSeconds(150), httpRequestBuilder.TimeoutOptions?.Timeout);
 
             Assert.NotNull(httpRequestBuilder.Headers);
             Assert.Equal(3, httpRequestBuilder.Headers.Count);

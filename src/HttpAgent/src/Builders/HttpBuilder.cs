@@ -541,12 +541,12 @@ public sealed class HttpBuilder
     ///     从 JSON 中创建 <see cref="HttpRequestBuilder" /> 实例
     /// </summary>
     /// <param name="json">JSON 字符串</param>
-    /// <param name="configure">自定义配置委托</param>
+    /// <param name="jsonProcess">自定义 JSON 解析委托</param>
     /// <returns>
     ///     <see cref="HttpRequestBuilder" />
     /// </returns>
     /// <exception cref="ArgumentException"></exception>
     /// <exception cref="InvalidOperationException"></exception>
-    public static HttpRequestBuilder FromJson(string json, Action<HttpRequestBuilder>? configure = null) =>
-        HttpRequestBuilder.FromJson(json, configure);
+    public static HttpRequestBuilder FromJson(string json, Action<JsonObject>? jsonProcess = null) =>
+        HttpRequestBuilder.FromJson(json, jsonProcess);
 }

@@ -1643,6 +1643,39 @@ public class HttpRemoteServiceTests
         await app.StopAsync();
     }
 
+    [Fact]
+    public async Task SendCore_WithExceptionData_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        await using var app = builder.Build();
+
+        app.MapGet("/test", async () =>
+        {
+            await Task.Delay(50);
+            throw new Exception("出错了");
+        });
+
+        await app.StartAsync();
+
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"))
+            .EnsureSuccessStatusCode();
+
+        try
+        {
+            _ = await httpRemoteService.SendCoreAsync(httpRequestBuilder, HttpCompletionOption.ResponseContentRead);
+        }
+        catch (Exception e)
+        {
+            Assert.NotNull(e.GetResponseMessage());
+            Assert.Equal(HttpStatusCode.InternalServerError, e.GetResponseMessage()?.StatusCode);
+        }
+
+        await serviceProvider.DisposeAsync();
+    }
+
     private sealed class HttpAccessTokenProvider : IHttpAccessTokenProvider
     {
         /// <inheritdoc />
