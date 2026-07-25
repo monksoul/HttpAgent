@@ -28,7 +28,7 @@ public class HttpLongPollingBuilderTests
         Assert.Null(builder2.OnError);
         Assert.Null(builder2.OnEndOfStream);
         Assert.Null(builder2.LongPollingEventHandlerType);
-        Assert.Null(builder2._requestConfigure);
+        Assert.Null(builder2._configureRequest);
     }
 
     [Fact]
@@ -154,9 +154,9 @@ public class HttpLongPollingBuilderTests
     public void WithRequest_ReturnOK()
     {
         var builder = new HttpLongPollingBuilder(HttpMethod.Get, new Uri("http://localhost"));
-        Assert.Null(builder._requestConfigure);
+        Assert.Null(builder._configureRequest);
         builder.WithRequest(requestBuilder => requestBuilder.WithHeader("framework", "Furion"));
-        Assert.NotNull(builder._requestConfigure);
+        Assert.NotNull(builder._configureRequest);
     }
 
     [Fact]
@@ -166,15 +166,15 @@ public class HttpLongPollingBuilderTests
         builder.Profiler();
 
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, null);
-        builder._requestConfigure?.Invoke(httpRequestBuilder);
+        builder._configureRequest?.Invoke(httpRequestBuilder);
         Assert.True(httpRequestBuilder.ProfilerEnabled);
 
         builder.Profiler(false);
-        builder._requestConfigure?.Invoke(httpRequestBuilder);
+        builder._configureRequest?.Invoke(httpRequestBuilder);
         Assert.False(httpRequestBuilder.ProfilerEnabled);
 
         builder.Profiler(_ => { });
-        builder._requestConfigure?.Invoke(httpRequestBuilder);
+        builder._configureRequest?.Invoke(httpRequestBuilder);
         Assert.True(httpRequestBuilder.ProfilerEnabled);
     }
 

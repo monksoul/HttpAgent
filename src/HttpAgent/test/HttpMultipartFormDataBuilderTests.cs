@@ -21,7 +21,6 @@ public class HttpMultipartFormDataBuilderTests
         Assert.NotNull(builder.Boundary);
         Assert.StartsWith("--------------------------", builder.Boundary);
         Assert.True(builder.OmitContentType);
-        Assert.Null(builder._onPreAddContent);
         Assert.Null(builder.OnPreAddContent);
         Assert.Null(builder.FormNameTransformer);
         Assert.Null(builder.FormItemsSorter);
@@ -949,7 +948,7 @@ public class HttpMultipartFormDataBuilderTests
         Assert.True(stringContentForFormUrlEncodedContentProcessor.UrlEncode);
 
         var builder2 = new HttpMultipartFormDataBuilder(HttpRequestBuilder.Get("http://localhost"));
-        builder2.AddFormUrlEncoded(new Dictionary<string, string>(), "test", Encoding.UTF8, useUrlEncode: false);
+        builder2.AddFormUrlEncoded(new Dictionary<string, string>(), "test", Encoding.UTF8, urlEncode: false);
         Assert.NotNull(builder2._httpRequestBuilder.HttpContentProcessorProviders);
         Assert.Single(builder2._httpRequestBuilder.HttpContentProcessorProviders);
         var stringContentForFormUrlEncodedContentProcessor2 =

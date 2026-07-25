@@ -172,5 +172,5 @@ public interface IBodyDeclarativeTest : IHttpDeclarative
     Task Test10([Body(RawString = true)] string body);
 
     [Post("http://localhost:5000")]
-    Task Test11([Body("application/x-www-form-urlencoded; charset=utf-8", UseUrlEncode = false)] object body);
+    Task Test11([Body("application/x-www-form-urlencoded; charset=utf-8", UrlEncode = false)] object body);
 }

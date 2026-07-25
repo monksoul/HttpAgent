@@ -13,7 +13,7 @@ public sealed class HttpStressTestHarnessBuilder
     /// <summary>
     ///     <see cref="HttpRequestBuilder" /> 配置委托
     /// </summary>
-    internal Action<HttpRequestBuilder>? _requestConfigure;
+    internal Action<HttpRequestBuilder>? _configureRequest;
 
     /// <summary>
     ///     <inheritdoc cref="HttpStressTestHarnessBuilder" />
@@ -131,9 +131,13 @@ public sealed class HttpStressTestHarnessBuilder
     /// <returns>
     ///     <see cref="HttpStressTestHarnessBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public HttpStressTestHarnessBuilder WithRequest(Action<HttpRequestBuilder> configure)
     {
-        configure.Combine(ref _requestConfigure);
+        // 空检查
+        ArgumentNullException.ThrowIfNull(configure);
+
+        _configureRequest += configure;
 
         return this;
     }
@@ -178,7 +182,7 @@ public sealed class HttpStressTestHarnessBuilder
             .PerformanceOptimization().UseHttpClientPool();
 
         // 调用自定义配置委托
-        _requestConfigure?.Invoke(httpRequestBuilder);
+        _configureRequest?.Invoke(httpRequestBuilder);
 
         return httpRequestBuilder;
     }

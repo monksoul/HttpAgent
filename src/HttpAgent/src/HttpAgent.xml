@@ -1129,7 +1129,7 @@
             </summary>
             <remarks>使用 <c>HttpRequestBuilder.DownloadFile(requestUri, destinationPath)</c> 静态方法创建。</remarks>
         </member>
-        <member name="F:HttpAgent.HttpFileDownloadBuilder._requestConfigure">
+        <member name="F:HttpAgent.HttpFileDownloadBuilder._configureRequest">
             <summary>
                 <see cref="T:HttpAgent.HttpRequestBuilder" /> 配置委托
             </summary>
@@ -1354,6 +1354,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpFileDownloadBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpFileDownloadBuilder.Profiler">
             <summary>
@@ -1400,7 +1401,7 @@
             </summary>
             <remarks>使用 <c>HttpRequestBuilder.UploadFile(requestUri, filePath, name)</c> 静态方法创建。</remarks>
         </member>
-        <member name="F:HttpAgent.HttpFileUploadBuilder._requestConfigure">
+        <member name="F:HttpAgent.HttpFileUploadBuilder._configureRequest">
             <summary>
                 <see cref="T:HttpAgent.HttpRequestBuilder" /> 配置委托
             </summary>
@@ -1609,6 +1610,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpFileUploadBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpFileUploadBuilder.Profiler">
             <summary>
@@ -1664,7 +1666,7 @@
             </summary>
             <remarks>使用 <c>HttpRequestBuilder.LongPolling(httpMethod, requestUri, onDataReceived)</c> 静态方法创建。</remarks>
         </member>
-        <member name="F:HttpAgent.HttpLongPollingBuilder._requestConfigure">
+        <member name="F:HttpAgent.HttpLongPollingBuilder._configureRequest">
             <summary>
                 <see cref="T:HttpAgent.HttpRequestBuilder" /> 配置委托
             </summary>
@@ -1800,6 +1802,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpLongPollingBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpLongPollingBuilder.Profiler">
             <summary>
@@ -1866,9 +1869,6 @@
                 用于处理在添加 <see cref="T:System.Net.Http.HttpContent" /> 表单项内容前，对表单名称进行自定义转换的转换器
             </summary>
         </member>
-        <member name="F:HttpAgent.HttpMultipartFormDataBuilder._onPreAddContent">
-            <inheritdoc cref="P:HttpAgent.HttpMultipartFormDataBuilder.OnPreAddContent" />
-        </member>
         <member name="M:HttpAgent.HttpMultipartFormDataBuilder.#ctor(HttpAgent.HttpRequestBuilder)">
             <summary>
                 <inheritdoc cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
@@ -1912,6 +1912,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpMultipartFormDataBuilder.SetFormNameTransformer(System.Func{System.String,System.String})">
             <summary>
@@ -2195,7 +2196,7 @@
                 是否使用 <see cref="T:System.Net.Http.StringContent" /> 构建
                 <see cref="T:System.Net.Http.FormUrlEncodedContent" />。默认值为： <c>false</c>
             </param>
-            <param name="useUrlEncode">是否对表单数据进行 URL 编码，默认值为： <c>true</c></param>
+            <param name="urlEncode">是否对表单数据进行 URL 编码，默认值为： <c>true</c></param>
             <returns>
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
@@ -2543,11 +2544,6 @@
                 <see cref="T:System.Net.Http.HttpRequestMessage" /> 构建器
             </summary>
         </member>
-        <member name="F:HttpAgent.HttpRequestBuilder._stringContentForFormUrlEncodedContentProcessor">
-            <summary>
-                <see cref="T:HttpAgent.StringContentForFormUrlEncodedContentProcessor" /> 实例
-            </summary>
-        </member>
         <member name="M:HttpAgent.HttpRequestBuilder.#ctor">
             <summary>
                 <inheritdoc cref="T:HttpAgent.HttpRequestBuilder" />
@@ -2712,13 +2708,7 @@
             </summary>
             <param name="defaultContentType">默认请求内容类型</param>
         </member>
-        <member name="F:HttpAgent.HttpRequestBuilder._lock">
-            <summary>
-                线程锁
-            </summary>
-            <remarks>用于保证 <see cref="M:HttpAgent.HttpRequestBuilder.AddStringContentForFormUrlEncodedContentProcessor" /> 方法调用是线程安全的。</remarks>
-        </member>
-        <member name="F:HttpAgent.HttpRequestBuilder._isAddedStringContentForFormUrlEncodedContentProcessor">
+        <member name="F:HttpAgent.HttpRequestBuilder._formUrlEncodedStringContentProcessorAdded">
             <summary>
                 表示是否已添加了 <see cref="T:HttpAgent.StringContentForFormUrlEncodedContentProcessor" /> 处理器
             </summary>
@@ -2845,7 +2835,7 @@
                 是否使用 <see cref="T:System.Net.Http.StringContent" /> 构建
                 <see cref="T:System.Net.Http.FormUrlEncodedContent" />。默认值为： <c>false</c>
             </param>
-            <param name="useUrlEncode">是否对表单数据进行 URL 编码，默认值为： <c>true</c></param>
+            <param name="urlEncode">是否对表单数据进行 URL 编码，默认值为： <c>true</c></param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
@@ -3916,10 +3906,12 @@
                 释放可释放的对象集合
             </summary>
         </member>
-        <member name="M:HttpAgent.HttpRequestBuilder.AddStringContentForFormUrlEncodedContentProcessor">
+        <member name="M:HttpAgent.HttpRequestBuilder.AddStringContentForFormUrlEncodedContentProcessor(System.Boolean)">
             <summary>
                 添加 <see cref="T:HttpAgent.StringContentForFormUrlEncodedContentProcessor" /> 处理器
             </summary>
+            <remarks>仅首次调用时有效。</remarks>
+            <param name="urlEncode">是否对表单数据进行 URL 编码，默认值为： <c>true</c></param>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.ConfigureForRedirect(System.Uri,System.Net.Http.HttpMethod)">
             <summary>
@@ -3937,18 +3929,6 @@
                 <see cref="T:HttpAgent.HttpRequestBuilder" /> 类型的所有实例属性信息
             </summary>
             <remarks>避免在每次调用 <see cref="M:HttpAgent.HttpRequestBuilder.Clone" /> 方法时重复进行反射操作，提升性能。</remarks>
-        </member>
-        <member name="F:HttpAgent.HttpRequestBuilder._onPostReceiveResponse">
-            <inheritdoc cref="P:HttpAgent.HttpRequestBuilder.OnPostReceiveResponse" />
-        </member>
-        <member name="F:HttpAgent.HttpRequestBuilder._onPreSendRequest">
-            <inheritdoc cref="P:HttpAgent.HttpRequestBuilder.OnPreSendRequest" />
-        </member>
-        <member name="F:HttpAgent.HttpRequestBuilder._onPreSetContent">
-            <inheritdoc cref="P:HttpAgent.HttpRequestBuilder.OnPreSetContent" />
-        </member>
-        <member name="F:HttpAgent.HttpRequestBuilder._uriBuilderConfigure">
-            <inheritdoc cref="P:HttpAgent.HttpRequestBuilder.UriBuilderConfigure" />
         </member>
         <member name="P:HttpAgent.HttpRequestBuilder.RequestUri">
             <summary>
@@ -4251,7 +4231,7 @@
                 断言委托集合
             </summary>
         </member>
-        <member name="P:HttpAgent.HttpRequestBuilder.UriBuilderConfigure">
+        <member name="P:HttpAgent.HttpRequestBuilder.OnUriBuilding">
             <summary>
                 用于处理在构建最终请求 URL 的操作
             </summary>
@@ -5029,7 +5009,7 @@
                 <para>参考文献：https://developer.mozilla.org/zh-CN/docs/Web/API/Server-sent_events/Using_server-sent_events。</para>
             </remarks>
         </member>
-        <member name="F:HttpAgent.HttpServerSentEventsBuilder._requestConfigure">
+        <member name="F:HttpAgent.HttpServerSentEventsBuilder._configureRequest">
             <summary>
                 <see cref="T:HttpAgent.HttpRequestBuilder" /> 配置委托
             </summary>
@@ -5172,6 +5152,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpServerSentEventsBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpServerSentEventsBuilder.Profiler">
             <summary>
@@ -5217,7 +5198,7 @@
             </summary>
             <remarks>使用 <c>HttpRequestBuilder.StressTestHarness(requestUri, numberOfRequests)</c> 静态方法创建。</remarks>
         </member>
-        <member name="F:HttpAgent.HttpStressTestHarnessBuilder._requestConfigure">
+        <member name="F:HttpAgent.HttpStressTestHarnessBuilder._configureRequest">
             <summary>
                 <see cref="T:HttpAgent.HttpRequestBuilder" /> 配置委托
             </summary>
@@ -5297,6 +5278,7 @@
             <returns>
                 <see cref="T:HttpAgent.HttpStressTestHarnessBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpStressTestHarnessBuilder.DisableCache">
             <summary>
@@ -6033,7 +6015,7 @@
         <member name="M:HttpAgent.Core.Converters.Json.FlexibleDateTimeConverter.Regex">
             <remarks>
             Pattern:<br/>
-            <code>^/Date\(([+-]*\d+)\)/$</code><br/>
+            <code>^/Date\\(([+-]*\\d+)\\)/$</code><br/>
             Options:<br/>
             <code>RegexOptions.CultureInvariant</code><br/>
             Explanation:<br/>
@@ -6041,7 +6023,7 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Match the string "/Date(".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [+\-] atomically any number of times.<br/>
+                ○ Match a character in the set [+-] atomically any number of times.<br/>
                 ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match the string ")/".<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
@@ -6062,7 +6044,7 @@
         <member name="M:HttpAgent.Core.Converters.Json.FlexibleDateTimeOffsetConverter.Regex">
             <remarks>
             Pattern:<br/>
-            <code>^/Date\(([+-]*\d+)([+-])(\d{2})(\d{2})\)/$</code><br/>
+            <code>^/Date\\(([+-]*\\d+)([+-])(\\d{2})(\\d{2})\\)/$</code><br/>
             Options:<br/>
             <code>RegexOptions.CultureInvariant</code><br/>
             Explanation:<br/>
@@ -6070,10 +6052,10 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Match the string "/Date(".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [+\-] atomically any number of times.<br/>
+                ○ Match a character in the set [+-] atomically any number of times.<br/>
                 ○ Match a Unicode digit atomically at least once.<br/>
             ○ 2nd capture group.<br/>
-                ○ Match a character in the set [+\-].<br/>
+                ○ Match a character in the set [+-].<br/>
             ○ 3rd capture group.<br/>
                 ○ Match a Unicode digit exactly 2 times.<br/>
             ○ 4th capture group.<br/>
@@ -6141,25 +6123,6 @@
                 尝试执行同步委托
             </summary>
             <param name="action">同步委托</param>
-        </member>
-        <member name="M:HttpAgent.Core.Extensions.DelegateExtensions.Combine``1(System.Action{``0},System.Action{``0}@)">
-            <summary>
-                将当前配置委托合并到目标委托字段中
-            </summary>
-            <remarks>支持多次调用。</remarks>
-            <param name="configure">自定义配置委托</param>
-            <param name="field">目标委托字段</param>
-            <typeparam name="T">委托参数类型</typeparam>
-        </member>
-        <member name="M:HttpAgent.Core.Extensions.DelegateExtensions.Combine``2(System.Action{``0,``1},System.Action{``0,``1}@)">
-            <summary>
-                将当前配置委托合并到目标委托字段中
-            </summary>
-            <remarks>支持多次调用。</remarks>
-            <param name="configure">自定义配置委托</param>
-            <param name="field">目标委托字段</param>
-            <typeparam name="T1">委托参数类型</typeparam>
-            <typeparam name="T2">委托参数类型</typeparam>
         </member>
         <member name="T:HttpAgent.Core.Extensions.EventHandlerExtensions">
             <summary>
@@ -6237,21 +6200,6 @@
             <remarks>其中键是由值通过给定的选择器函数生成的。</remarks>
             <param name="dictionary">
                 <see cref="T:System.Collections.Generic.IDictionary`2" />
-            </param>
-            <param name="values">
-                <see cref="T:System.Collections.Generic.IEnumerable`1" />
-            </param>
-            <param name="keySelector">键选择器</param>
-            <typeparam name="TKey">字典键类型</typeparam>
-            <typeparam name="TValue">字典值类型</typeparam>
-        </member>
-        <member name="M:HttpAgent.Core.Extensions.IDictionaryExtensions.TryAdd``2(System.Collections.Concurrent.ConcurrentDictionary{``0,``1},System.Collections.Generic.IEnumerable{``1},System.Func{``1,``0})">
-            <summary>
-                尝试添加（线程安全）
-            </summary>
-            <remarks>其中键是由值通过给定的选择器函数生成的。</remarks>
-            <param name="dictionary">
-                <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2" />
             </param>
             <param name="values">
                 <see cref="T:System.Collections.Generic.IEnumerable`1" />
@@ -6404,18 +6352,6 @@
                 <see cref="T:System.String" />
             </returns>
         </member>
-        <member name="M:HttpAgent.Core.Extensions.ObjectExtensions.TryGetCount(System.Object,System.Int32@)">
-            <summary>
-                尝试获取对象的数量
-            </summary>
-            <param name="obj">
-                <see cref="T:System.Object" />
-            </param>
-            <param name="count">数量</param>
-            <returns>
-                <see cref="T:System.Boolean" />
-            </returns>
-        </member>
         <member name="M:HttpAgent.Core.Extensions.ObjectExtensions.ObjectToDictionary(System.Object,System.Boolean)">
             <summary>
                 将对象转换为 <see cref="T:System.Collections.Generic.IDictionary`2" /> 类型对象
@@ -6431,23 +6367,6 @@
                 <see cref="T:System.Collections.Generic.IDictionary`2" />
             </returns>
             <exception cref="T:System.NotSupportedException"></exception>
-        </member>
-        <member name="M:HttpAgent.Core.Extensions.ObjectExtensions.GetPropertyValueFromPath(System.Object,System.String,System.Boolean@,System.String,System.Reflection.BindingFlags)">
-            <summary>
-                根据模板路径从对象中获取属性值
-            </summary>
-            <param name="obj">
-                <see cref="T:System.Object" />
-            </param>
-            <param name="path">模板路径。支持 <c>{Key}</c> 或 <c>{Key.Property}</c> 或 {Key.Property.NestProperty} 语法格式。</param>
-            <param name="prefix">模板字符串前缀；默认值为：<c>model</c>。</param>
-            <param name="isMatch">用于检查是否以 <c>prefix.</c> 开头</param>
-            <param name="bindingFlags">
-                <see cref="T:System.Reflection.BindingFlags" />
-            </param>
-            <returns>
-                <see cref="T:System.Object" />
-            </returns>
         </member>
         <member name="T:HttpAgent.Core.Extensions.StreamExtensions">
             <summary>
@@ -6723,7 +6642,7 @@
         <member name="M:HttpAgent.Core.Extensions.StringExtensions.PlaceholderRegex">
             <remarks>
             Pattern:<br/>
-            <code>\{\s*(?:\*\*)?\s*(\w+(?:\s*\.\s*\w+|\s*\[\s*\d+\s*\])*)\s*(\?)?\s*\}</code><br/>
+            <code>\\{\\s*(?:\\*\\*)?\\s*(\\w+(?:\\s*\\.\\s*\\w+|\\s*\\[\\s*\\d+\\s*\\])*)\\s*(\\?)?\\s*\\}</code><br/>
             Explanation:<br/>
             <code>
             ○ Match '{'.<br/>
@@ -6734,13 +6653,14 @@
             ○ 1st capture group.<br/>
                 ○ Match a word character greedily at least once.<br/>
                 ○ Loop greedily any number of times.<br/>
-                    ○ Match a whitespace character atomically any number of times.<br/>
                     ○ Match with 2 alternative expressions.<br/>
                         ○ Match a sequence of expressions.<br/>
+                            ○ Match a whitespace character atomically any number of times.<br/>
                             ○ Match '.'.<br/>
                             ○ Match a whitespace character atomically any number of times.<br/>
                             ○ Match a word character greedily at least once.<br/>
                         ○ Match a sequence of expressions.<br/>
+                            ○ Match a whitespace character atomically any number of times.<br/>
                             ○ Match '['.<br/>
                             ○ Match a whitespace character atomically any number of times.<br/>
                             ○ Match a Unicode digit atomically at least once.<br/>
@@ -6758,7 +6678,7 @@
         <member name="M:HttpAgent.Core.Extensions.StringExtensions.ConfigurationKeyRegex">
             <remarks>
             Pattern:<br/>
-            <code>\[\[\s*(?:\*\*)?\s*([\w\-:]+)((?:\s*\|\s*[\w\-:]+)*)\s*(?:\|\|\s*([^\]]*))?\s*(\?)?\s*\]\]</code><br/>
+            <code>\\[\\[\\s*(?:\\*\\*)?\\s*([\\w\\-:]+)((?:\\s*\\|\\s*[\\w\\-:]+)*)\\s*(?:\\|\\|\\s*([^\\]]*))?\\s*(\\?)?\\s*\\]\\]</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "[[".<br/>
@@ -6767,13 +6687,13 @@
                 ○ Match the string "**".<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [\-:\w] greedily at least once.<br/>
+                ○ Match a character in the set [-:\w] greedily at least once.<br/>
             ○ 2nd capture group.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match a whitespace character atomically any number of times.<br/>
                     ○ Match '|'.<br/>
                     ○ Match a whitespace character greedily any number of times.<br/>
-                    ○ Match a character in the set [\-:\w] greedily at least once.<br/>
+                    ○ Match a character in the set [-:\w] greedily at least once.<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ Optional (greedy).<br/>
                 ○ Match the string "||".<br/>
@@ -6800,32 +6720,32 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Loop greedily at least once.<br/>
                 ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [\-.0-9A-Z_a-z~].<br/>
+                    ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
                     ○ Match a sequence of expressions.<br/>
                         ○ Match '%'.<br/>
-                        ○ Match a hexadecimal digit exactly 2 times.<br/>
+                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
             ○ Match '='.<br/>
             ○ Loop greedily any number of times.<br/>
                 ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [+\-.0-9A-Z_a-z~].<br/>
+                    ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
                     ○ Match a sequence of expressions.<br/>
                         ○ Match '%'.<br/>
-                        ○ Match a hexadecimal digit exactly 2 times.<br/>
+                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
             ○ Loop greedily any number of times.<br/>
                 ○ Match '&amp;'.<br/>
                 ○ Loop greedily at least once.<br/>
                     ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [\-.0-9A-Z_a-z~].<br/>
+                        ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
                         ○ Match a sequence of expressions.<br/>
                             ○ Match '%'.<br/>
-                            ○ Match a hexadecimal digit exactly 2 times.<br/>
+                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
                 ○ Match '='.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [+\-.0-9A-Z_a-z~].<br/>
+                        ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
                         ○ Match a sequence of expressions.<br/>
                             ○ Match '%'.<br/>
-                            ○ Match a hexadecimal digit exactly 2 times.<br/>
+                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
             </remarks>
@@ -7008,21 +6928,6 @@
                 <see cref="T:System.Tuple`2" />
             </returns>
             <exception cref="T:System.InvalidOperationException"></exception>
-        </member>
-        <member name="M:HttpAgent.Core.Extensions.TypeExtensions.CreatePropertySetter(System.Type,System.Reflection.PropertyInfo)">
-            <summary>
-                创建实例属性值设置器
-            </summary>
-            <param name="type">
-                <see cref="T:System.Type" />
-            </param>
-            <remarks>不支持 <c>struct</c> 类型设置属性值。</remarks>
-            <param name="propertyInfo">
-                <see cref="T:System.Reflection.PropertyInfo" />
-            </param>
-            <returns>
-                <see cref="T:System.Action`2" />
-            </returns>
         </member>
         <member name="M:HttpAgent.Core.Extensions.TypeExtensions.CreatePropertyGetter(System.Type,System.Reflection.PropertyInfo)">
             <summary>
@@ -7715,7 +7620,7 @@
             </summary>
             <remarks>当 <see cref="P:HttpAgent.BodyAttribute.ContentType" /> 值为 <c>application/x-www-form-urlencoded</c> 时有效。默认值为：<c>fale</c>。</remarks>
         </member>
-        <member name="P:HttpAgent.BodyAttribute.UseUrlEncode">
+        <member name="P:HttpAgent.BodyAttribute.UrlEncode">
             <summary>
                 是否对表单数据进行 URL 编码
             </summary>
@@ -9784,12 +9689,12 @@
         <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.UnicodeEscapeRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\u([0-9a-fA-F]{4})</code><br/>
+            <code>\\\\u([0-9a-fA-F]{4})</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "\\u".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a hexadecimal digit exactly 4 times.<br/>
+                ○ Match a character in the set [0-9A-Fa-f] exactly 4 times.<br/>
             </code>
             </remarks>
         </member>
@@ -11477,12 +11382,12 @@
         <member name="M:HttpAgent.FileTransferProgress.AnsiRegex">
             <remarks>
             Pattern:<br/>
-            <code>\e\[[\d;]*[a-zA-Z]</code><br/>
+            <code>\\e\\[[\\d;]*[a-zA-Z]</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "\u001b[".<br/>
             ○ Match a character in the set [;\d] atomically any number of times.<br/>
-            ○ Match an ASCII letter.<br/>
+            ○ Match a character in the set [A-Za-z].<br/>
             </code>
             </remarks>
         </member>
@@ -13161,12 +13066,12 @@
         <member name="M:HttpAgent.StatusCodePipelineHandler.StatusCodeRangeRegex">
             <remarks>
             Pattern:<br/>
-            <code>^\d+[-~]\d+$</code><br/>
+            <code>^\\d+[-~]\\d+$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
-            ○ Match a character in the set [\-~].<br/>
+            ○ Match a character in the set [-~].<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
@@ -13175,7 +13080,7 @@
         <member name="M:HttpAgent.StatusCodePipelineHandler.StatusCodeCompareRegex">
             <remarks>
             Pattern:<br/>
-            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\d+)$</code><br/>
+            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\\d+)$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
@@ -19994,21 +19899,6 @@
         <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32,System.Int32,System.Int32)">
             <summary>Pushes 3 values onto the backtracking stack.</summary>
         </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.WordCategoriesMask">
-            <summary>Provides a mask of Unicode categories that combine to form [\w].</summary>
-        </member>
-        <member name="P:System.Text.RegularExpressions.Generated.Utilities.WordCharBitmap">
-            <summary>Gets a bitmap for whether each character 0 through 127 is in [\w]</summary>
-        </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_1F52B1A4D2E82B6FEDE25EC8C55F85BB36775196837076691C96925040F90D32">
-            <summary>Supports searching for the string "\\u".</summary>
-        </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_4A5B154448624742176A7AE18EDA0762C946CBB1B19F68418DD573D0A698E642">
-            <summary>Supports searching for the string "\u001b[".</summary>
-        </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_EBC667BDABA1472FA863B5B39B31251EF2B4C95DD643BDECF694CB1CE7BDC178">
-            <summary>Supports searching for the string "[[".</summary>
-        </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions">
             <summary>
                 HTTP 远程请求模块 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" /> 扩展类
@@ -20036,13 +19926,6 @@
             <param name="httpRemoteBuilder">
                 <see cref="T:HttpAgent.HttpRemoteBuilder" />
             </param>
-            <returns>
-                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
-            </returns>
-        </member>
-    </members>
-</doc>
-   </param>
             <returns>
                 <see cref="T:HttpAgent.IHttpRemoteBuilder" />
             </returns>

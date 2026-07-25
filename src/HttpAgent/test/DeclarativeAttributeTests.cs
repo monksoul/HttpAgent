@@ -18,7 +18,7 @@ public class DeclarativeAttributeTests
         Assert.Null(attribute.ContentType);
         Assert.Null(attribute.ContentEncoding);
         Assert.False(attribute.UseStringContent);
-        Assert.True(attribute.UseUrlEncode);
+        Assert.True(attribute.UrlEncode);
         Assert.False(attribute.RawString);
         Assert.False(attribute.DisposeResourcesOnRequestCompletion);
 

@@ -25,7 +25,6 @@ public class FurionAccessTokenProviderTests
             new HttpAccessToken("new token value", DateTimeOffset.Now.AddMinutes(20)));
 
         Assert.NotNull(httpRequestBuilder.AuthenticationHeader);
-        Assert.NotNull(httpRequestBuilder._onPostReceiveResponse);
         Assert.NotNull(httpRequestBuilder.OnPostReceiveResponse);
     }
 

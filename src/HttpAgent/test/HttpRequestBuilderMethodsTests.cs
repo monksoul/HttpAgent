@@ -280,7 +280,7 @@ public class HttpRequestBuilderMethodsTests
         Assert.True(stringContentForFormUrlEncodedContentProcessor.UrlEncode);
 
         var httpRequestBuilder3 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
-        httpRequestBuilder3.SetFormUrlEncodedContent(new { id = 1, name = "中文" }, useUrlEncode: false);
+        httpRequestBuilder3.SetFormUrlEncodedContent(new { id = 1, name = "中文" }, urlEncode: false);
         Assert.NotNull(httpRequestBuilder3.HttpContentProcessorProviders);
         Assert.Single(httpRequestBuilder3.HttpContentProcessorProviders);
         var stringContentForFormUrlEncodedContentProcessor2 =
@@ -291,7 +291,7 @@ public class HttpRequestBuilderMethodsTests
 
         var httpRequestBuilder4 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
         httpRequestBuilder4.SetFormUrlEncodedContent(new { id = 1, name = "中文" }, useStringContent: true,
-            useUrlEncode: false);
+            urlEncode: false);
         Assert.NotNull(httpRequestBuilder4.HttpContentProcessorProviders);
         Assert.Single(httpRequestBuilder4.HttpContentProcessorProviders);
         var stringContentForFormUrlEncodedContentProcessor3 =
@@ -1616,9 +1616,11 @@ public class HttpRequestBuilderMethodsTests
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
 
         Assert.Throws<ArgumentNullException>(() => httpRequestBuilder.WithStatusCodeHandler(null!, null!));
+        Assert.Throws<ArgumentNullException>(() => httpRequestBuilder.WithStatusCodeHandler([], null!));
+
         var exception =
             Assert.Throws<ArgumentException>(() =>
-                httpRequestBuilder.WithStatusCodeHandler([], null!));
+                httpRequestBuilder.WithStatusCodeHandler([], (_, _) => Task.CompletedTask));
 
         Assert.Equal(
             "The status codes array cannot be empty. At least one status code must be provided. (Parameter 'statusCodes')",
@@ -2106,9 +2108,9 @@ public class HttpRequestBuilderMethodsTests
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
 
         httpRequestBuilder.SetUriBuilder(uriBuilder => { i++; }).SetUriBuilder(uriBuilder => { i++; });
-        Assert.NotNull(httpRequestBuilder.UriBuilderConfigure);
+        Assert.NotNull(httpRequestBuilder.OnUriBuilding);
 
-        httpRequestBuilder.UriBuilderConfigure.Invoke(null!);
+        httpRequestBuilder.OnUriBuilding.Invoke(null!);
         Assert.Equal(2, i);
     }
 

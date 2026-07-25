@@ -13,13 +13,10 @@ public class HttpRequestBuilderTests
     [Fact]
     public void New_ReturnOK()
     {
-        Assert.NotNull(HttpRequestBuilder._stringContentForFormUrlEncodedContentProcessor);
-
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, null!);
         Assert.Equal(HttpMethod.Get, httpRequestBuilder.HttpMethod);
         Assert.Null(httpRequestBuilder.RequestUri);
-        Assert.False(httpRequestBuilder._isAddedStringContentForFormUrlEncodedContentProcessor);
-        Assert.NotNull(httpRequestBuilder._lock);
+        Assert.False(httpRequestBuilder._formUrlEncodedStringContentProcessorAdded);
 
         var httpRequestBuilder2 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
         Assert.Equal(HttpMethod.Get, httpRequestBuilder2.HttpMethod);

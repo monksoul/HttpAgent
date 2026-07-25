@@ -77,7 +77,8 @@ public class ConstantsTests
 
     [Fact]
     public void REQUEST_EVENT_HANDLER_KEY() => Assert.Equal("RequestEventHandler", Constants.REQUEST_EVENT_HANDLER_KEY);
-    
+
     [Fact]
-    public void HTTP_COMPLETION_OPTION_KEY() => Assert.Equal("__HTTP_COMPLETION_OPTION__", Constants.HTTP_COMPLETION_OPTION_KEY);
+    public void HTTP_COMPLETION_OPTION_KEY() =>
+        Assert.Equal("__HTTP_COMPLETION_OPTION__", Constants.HTTP_COMPLETION_OPTION_KEY);
 }
