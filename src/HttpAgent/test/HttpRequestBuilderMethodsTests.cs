@@ -126,10 +126,8 @@ public class HttpRequestBuilderMethodsTests
         Assert.NotNull(httpRequestBuilder.RawContent);
         Assert.Equal("application/json", httpRequestBuilder.ContentType);
         Assert.Null(httpRequestBuilder.ContentEncoding);
-        Assert.True(httpRequestBuilder.RawContent is JsonDocument);
-        Assert.NotNull(httpRequestBuilder.Disposables);
-        Assert.Single(httpRequestBuilder.Disposables);
-        Assert.True(httpRequestBuilder.Disposables.Single() is JsonDocument);
+        Assert.True(httpRequestBuilder.RawContent is JsonElement);
+        Assert.Null(httpRequestBuilder.Disposables);
 
         httpRequestBuilder.SetJsonContent(new { Id = 1, Name = "furion" },
             jsonSerializerOptions: new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });

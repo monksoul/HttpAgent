@@ -709,9 +709,7 @@ public class HttpRequestBuilderStaticMethodsTests
         Assert.Equal("text/plain", multipartBuilder._partContents[1].ContentType);
         Assert.Null(multipartBuilder._partContents[1].ContentEncoding);
         Assert.Equal("furion", multipartBuilder._partContents[1].RawContent?.ToString());
-        Assert.NotNull(multipartBuilder._httpRequestBuilder.Disposables);
-        Assert.Single(multipartBuilder._httpRequestBuilder.Disposables);
-        Assert.True(multipartBuilder._httpRequestBuilder.Disposables.First() is JsonDocument);
+        Assert.Null(multipartBuilder._httpRequestBuilder.Disposables);
     }
 
     [Fact]
