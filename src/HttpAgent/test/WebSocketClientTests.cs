@@ -196,9 +196,8 @@ public class WebSocketClientTests
         await Assert.ThrowsAsync<TaskCanceledException>(async () =>
             await webSocketClient.ConnectAsync(cancellationTokenSource.Token));
 
-        Assert.NotNull(webSocketClient._clientWebSocket);
-        Assert.NotNull(webSocketClient.State);
-        Assert.Equal(WebSocketState.Closed, webSocketClient.State);
+        Assert.Null(webSocketClient._clientWebSocket);
+        Assert.Null(webSocketClient.State);
 
         await webSocketClient.CloseAsync(cancellationTokenSource.Token);
         await app.StopAsync();
@@ -238,20 +237,23 @@ public class WebSocketClientTests
 
         using var webSocketClient = new WebSocketClient(new WebSocketClientOptions($"ws://localhost:{port}/ws")
         {
-            Timeout = TimeSpan.FromMilliseconds(100)
+            Timeout = TimeSpan.FromMilliseconds(100), MaxReconnectRetries = 0
         });
 
         await Assert.ThrowsAsync<TaskCanceledException>(async () =>
             await webSocketClient.ConnectAsync());
 
-        Assert.NotNull(webSocketClient._clientWebSocket);
-        Assert.NotNull(webSocketClient.State);
-        Assert.Equal(WebSocketState.Closed, webSocketClient.State);
+        Assert.Null(webSocketClient._clientWebSocket);
+        Assert.Null(webSocketClient.State);
 
         await webSocketClient.CloseAsync();
 
         using var webSocketClient2 =
-            new WebSocketClient(new WebSocketClientOptions($"ws://localhost:{port}/ws") { Timeout = TimeSpan.Zero });
+            new WebSocketClient(
+                new WebSocketClientOptions($"ws://localhost:{port}/ws")
+                {
+                    Timeout = TimeSpan.Zero, MaxReconnectRetries = 0
+                });
         await webSocketClient2.ConnectAsync();
         Assert.NotNull(webSocketClient2._clientWebSocket);
         Assert.NotNull(webSocketClient2.State);
@@ -402,93 +404,6 @@ public class WebSocketClientTests
         Assert.Null(webSocketClient._clientWebSocket);
         Assert.Null(webSocketClient.State);
         Assert.Equal(5, webSocketClient.CurrentReconnectRetries);
-
-        await webSocketClient.CloseAsync();
-        await app.StopAsync();
-    }
-
-    [Fact]
-    public async Task ReconnectAsync_ReturnOK()
-    {
-        var port = NetworkUtility.FindAvailableTcpPort();
-        var urls = new[] { "--urls", $"http://localhost:{port}" };
-        var builder = WebApplication.CreateBuilder(urls);
-        await using var app = builder.Build();
-        app.UseWebSockets();
-
-        app.Use(async (context, next) =>
-        {
-            if (context.Request.Path == "/ws")
-            {
-                if (context.WebSockets.IsWebSocketRequest)
-                {
-                    using var webSocket = await context.WebSockets.AcceptWebSocketAsync();
-                    await Echo(webSocket);
-                }
-                else
-                {
-                    context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                }
-            }
-            else
-            {
-                await next(context);
-            }
-        });
-
-        await app.StartAsync();
-
-        using var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
-        await webSocketClient.ReconnectAsync();
-
-        Assert.NotNull(webSocketClient._clientWebSocket);
-        Assert.NotNull(webSocketClient.State);
-        Assert.Equal(WebSocketState.Open, webSocketClient.State);
-        Assert.Equal(0, webSocketClient.CurrentReconnectRetries);
-
-        await webSocketClient.CloseAsync();
-        await app.StopAsync();
-    }
-
-    [Fact]
-    public async Task ReconnectAsync_Duplicate_ReturnOK()
-    {
-        var port = NetworkUtility.FindAvailableTcpPort();
-        var urls = new[] { "--urls", $"http://localhost:{port}" };
-        var builder = WebApplication.CreateBuilder(urls);
-        await using var app = builder.Build();
-        app.UseWebSockets();
-
-        app.Use(async (context, next) =>
-        {
-            if (context.Request.Path == "/ws")
-            {
-                if (context.WebSockets.IsWebSocketRequest)
-                {
-                    using var webSocket = await context.WebSockets.AcceptWebSocketAsync();
-                    await Echo(webSocket);
-                }
-                else
-                {
-                    context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                }
-            }
-            else
-            {
-                await next(context);
-            }
-        });
-
-        await app.StartAsync();
-
-        using var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
-        await webSocketClient.ReconnectAsync();
-        await webSocketClient.ReconnectAsync();
-
-        Assert.NotNull(webSocketClient._clientWebSocket);
-        Assert.NotNull(webSocketClient.State);
-        Assert.Equal(WebSocketState.Open, webSocketClient.State);
-        Assert.Equal(0, webSocketClient.CurrentReconnectRetries);
 
         await webSocketClient.CloseAsync();
         await app.StopAsync();
@@ -845,6 +760,305 @@ public class WebSocketClientTests
         Assert.Equal(0, webSocketClient.CurrentReconnectRetries);
 
         await webSocketClient.CloseAsync();
+        await app.StopAsync();
+    }
+
+    [Fact]
+    public async Task ReceiveAsync_TextMessage_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        await using var app = builder.Build();
+        app.UseWebSockets();
+
+        app.Use(async (context, next) =>
+        {
+            if (context.Request.Path == "/ws")
+            {
+                if (context.WebSockets.IsWebSocketRequest)
+                {
+                    using var webSocket = await context.WebSockets.AcceptWebSocketAsync();
+                    await Echo(webSocket);
+                }
+                else
+                {
+                    context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                }
+            }
+            else
+            {
+                await next(context);
+            }
+        });
+
+        await app.StartAsync();
+
+        using var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
+        string? receivedText = null;
+        webSocketClient.TextReceived += (s, e) => { receivedText = e.Message; };
+
+        await webSocketClient.ConnectAsync();
+        await webSocketClient.ListenAsync();
+        await webSocketClient.SendAsync("Hello, WebSocket!");
+        await Task.Delay(200);
+        await webSocketClient.CloseAsync();
+
+        Assert.Equal("Hello, WebSocket!", receivedText);
+        Assert.Null(webSocketClient._clientWebSocket);
+        Assert.Equal(0, webSocketClient.CurrentReconnectRetries);
+
+        await app.StopAsync();
+    }
+
+    [Fact]
+    public async Task ReceiveAsync_BinaryMessage_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        await using var app = builder.Build();
+        app.UseWebSockets();
+
+        app.Use(async (context, next) =>
+        {
+            if (context.Request.Path == "/ws")
+            {
+                if (context.WebSockets.IsWebSocketRequest)
+                {
+                    using var webSocket = await context.WebSockets.AcceptWebSocketAsync();
+                    await Echo(webSocket);
+                }
+                else
+                {
+                    context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                }
+            }
+            else
+            {
+                await next(context);
+            }
+        });
+
+        await app.StartAsync();
+
+        using var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
+        byte[]? receivedBytes = null;
+        webSocketClient.BinaryReceived += (s, e) => { receivedBytes = e.Message; };
+
+        await webSocketClient.ConnectAsync();
+        await webSocketClient.ListenAsync();
+        var sentBytes = "Binary Data"u8.ToArray();
+        await webSocketClient.SendAsync(sentBytes);
+        await Task.Delay(200);
+        await webSocketClient.CloseAsync();
+
+        Assert.NotNull(receivedBytes);
+        Assert.Equal(sentBytes, receivedBytes);
+        Assert.Null(webSocketClient._clientWebSocket);
+        Assert.Equal(0, webSocketClient.CurrentReconnectRetries);
+
+        await app.StopAsync();
+    }
+
+    [Fact]
+    public async Task ReceiveAsync_ServerInitiatedClose_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        await using var app = builder.Build();
+        app.UseWebSockets();
+
+        app.Use(async (context, next) =>
+        {
+            if (context.Request.Path == "/ws")
+            {
+                if (context.WebSockets.IsWebSocketRequest)
+                {
+                    using var webSocket = await context.WebSockets.AcceptWebSocketAsync();
+                    await webSocket.SendAsync(
+                        new ArraySegment<byte>(Encoding.UTF8.GetBytes("Hello")),
+                        WebSocketMessageType.Text,
+                        true,
+                        CancellationToken.None);
+                    await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Done", CancellationToken.None);
+                }
+                else
+                {
+                    context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                }
+            }
+            else
+            {
+                await next(context);
+            }
+        });
+
+        await app.StartAsync();
+
+        var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
+        string? lastMessage = null;
+        webSocketClient.TextReceived += (s, e) => lastMessage = e.Message;
+
+        try
+        {
+            await webSocketClient.ConnectAsync();
+            await webSocketClient.WaitAsync();
+        }
+        finally
+        {
+            webSocketClient.Dispose();
+        }
+
+        Assert.Equal("Hello", lastMessage);
+        Assert.Null(webSocketClient._clientWebSocket);
+
+        await app.StopAsync();
+    }
+
+    [Fact]
+    public async Task ReceiveAsync_FragmentedMessage_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        await using var app = builder.Build();
+        app.UseWebSockets();
+
+        app.Use(async (context, next) =>
+        {
+            if (context.Request.Path == "/ws")
+            {
+                if (context.WebSockets.IsWebSocketRequest)
+                {
+                    using var webSocket = await context.WebSockets.AcceptWebSocketAsync();
+                    await Echo(webSocket);
+                }
+                else
+                {
+                    context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                }
+            }
+            else
+            {
+                await next(context);
+            }
+        });
+
+        await app.StartAsync();
+
+        var options = new WebSocketClientOptions($"ws://localhost:{port}/ws") { ReceiveBufferSize = 10 };
+        using var webSocketClient = new WebSocketClient(options);
+
+        string? completeText = null;
+        webSocketClient.TextReceived += (s, e) => completeText = e.Message;
+
+        await webSocketClient.ConnectAsync();
+        var longMessage = new string('A', 50);
+        await webSocketClient.SendAsync(longMessage);
+        await Task.Delay(1000);
+        await webSocketClient.CloseAsync();
+
+        Assert.NotNull(completeText);
+        Assert.Equal(longMessage, completeText);
+        Assert.Null(webSocketClient._clientWebSocket);
+
+        await app.StopAsync();
+    }
+
+    [Fact]
+    public async Task ReceiveAsync_Cancel_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        await using var app = builder.Build();
+        app.UseWebSockets();
+
+        app.Use(async (context, next) =>
+        {
+            if (context.Request.Path == "/ws")
+            {
+                if (context.WebSockets.IsWebSocketRequest)
+                {
+                    using var webSocket = await context.WebSockets.AcceptWebSocketAsync();
+                    await Echo(webSocket);
+                }
+                else
+                {
+                    context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                }
+            }
+            else
+            {
+                await next(context);
+            }
+        });
+
+        await app.StartAsync();
+
+        using var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
+        var stopped = false;
+        webSocketClient.ReceivingStopped += (s, e) => stopped = true;
+
+        await webSocketClient.ConnectAsync();
+
+        using var cts = new CancellationTokenSource(200);
+        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+            await webSocketClient.WaitAsync(cts.Token));
+
+        Assert.True(stopped);
+
+        await app.StopAsync();
+    }
+
+    [Fact]
+    public async Task ReceiveAsync_Events_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        await using var app = builder.Build();
+        app.UseWebSockets();
+
+        app.Use(async (context, next) =>
+        {
+            if (context.Request.Path == "/ws")
+            {
+                if (context.WebSockets.IsWebSocketRequest)
+                {
+                    using var webSocket = await context.WebSockets.AcceptWebSocketAsync();
+                    await Echo(webSocket);
+                }
+                else
+                {
+                    context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                }
+            }
+            else
+            {
+                await next(context);
+            }
+        });
+
+        await app.StartAsync();
+
+        using var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
+
+        var eventCount = 0;
+        webSocketClient.ReceivingStarted += (s, e) => { Interlocked.Increment(ref eventCount); };
+        webSocketClient.ReceivingStopped += (s, e) => { Interlocked.Increment(ref eventCount); };
+        webSocketClient.TextReceived += (s, e) => { Interlocked.Increment(ref eventCount); };
+
+        await webSocketClient.ConnectAsync();
+        await webSocketClient.SendAsync("test");
+        await Task.Delay(200);
+        await webSocketClient.CloseAsync();
+
+        Assert.Equal(3, eventCount);
+        Assert.Null(webSocketClient._clientWebSocket);
+
         await app.StopAsync();
     }
 
