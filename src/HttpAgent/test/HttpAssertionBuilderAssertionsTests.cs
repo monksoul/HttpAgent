@@ -135,6 +135,105 @@ public class HttpAssertionBuilderAssertionsTests
     }
 
     [Fact]
+    public void ContentEquals_Invalid_Parameters()
+    {
+        var httpAssertionBuilder = new HttpAssertionBuilder();
+
+        Assert.Throws<ArgumentNullException>(() => httpAssertionBuilder.ContentEquals(null!));
+        Assert.Throws<ArgumentException>(() => httpAssertionBuilder.ContentEquals(string.Empty));
+    }
+
+    [Fact]
+    public async Task ContentEquals_ReturnOK()
+    {
+        var httpAssertionBuilder = new HttpAssertionBuilder();
+        Assert.Empty(httpAssertionBuilder._assertions);
+
+        httpAssertionBuilder.ContentEquals("Hello World!");
+        Assert.Single(httpAssertionBuilder._assertions);
+
+        var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK);
+        httpResponseMessage.Content = new StringContent("Hello World!");
+        var services = new ServiceCollection();
+        await using var serviceProvider = services.BuildServiceProvider();
+        var httpAssertionContext = new HttpAssertionContext(httpResponseMessage, 100, serviceProvider);
+
+        var assertion = httpAssertionBuilder._assertions[0];
+        await assertion(httpAssertionContext);
+
+        httpResponseMessage.Content = new StringContent("Furion YYDS!");
+        httpAssertionContext = new HttpAssertionContext(httpResponseMessage, 100, serviceProvider);
+
+        var exception =
+            await Assert.ThrowsAsync<HttpAssertionException>(async () => await assertion(httpAssertionContext));
+        Assert.Equal("Expected response content to be 'Hello World!', but found 'Furion YYDS!'.",
+            exception.Message);
+    }
+
+    [Fact]
+    public void ContentMatches_Invalid_Parameters()
+    {
+        var httpAssertionBuilder = new HttpAssertionBuilder();
+
+        Assert.Throws<ArgumentNullException>(() => httpAssertionBuilder.ContentMatches(null!));
+        Assert.Throws<ArgumentException>(() => httpAssertionBuilder.ContentMatches(string.Empty));
+        Assert.Throws<ArgumentException>(() => httpAssertionBuilder.ContentMatches(" "));
+    }
+
+    [Fact]
+    public async Task ContentMatches_ReturnOK()
+    {
+        var httpAssertionBuilder = new HttpAssertionBuilder();
+        Assert.Empty(httpAssertionBuilder._assertions);
+
+        httpAssertionBuilder.ContentMatches(@".ello\s*World!");
+        Assert.Single(httpAssertionBuilder._assertions);
+
+        var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK);
+        httpResponseMessage.Content = new StringContent("Hello World!");
+        var services = new ServiceCollection();
+        await using var serviceProvider = services.BuildServiceProvider();
+        var httpAssertionContext = new HttpAssertionContext(httpResponseMessage, 100, serviceProvider);
+
+        var assertion = httpAssertionBuilder._assertions[0];
+        await assertion(httpAssertionContext);
+
+        httpResponseMessage.Content = new StringContent("Furion YYDS!");
+        httpAssertionContext = new HttpAssertionContext(httpResponseMessage, 100, serviceProvider);
+
+        var exception =
+            await Assert.ThrowsAsync<HttpAssertionException>(async () => await assertion(httpAssertionContext));
+        Assert.Equal(@"Expected response content to match regex '.ello\s*World!', but it did not.",
+            exception.Message);
+    }
+
+    [Fact]
+    public async Task ContentNotEmpty_ReturnOK()
+    {
+        var httpAssertionBuilder = new HttpAssertionBuilder();
+        Assert.Empty(httpAssertionBuilder._assertions);
+
+        httpAssertionBuilder.ContentNotEmpty();
+        Assert.Single(httpAssertionBuilder._assertions);
+
+        var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK);
+        httpResponseMessage.Content = new StringContent("Hello World!");
+        var services = new ServiceCollection();
+        await using var serviceProvider = services.BuildServiceProvider();
+        var httpAssertionContext = new HttpAssertionContext(httpResponseMessage, 100, serviceProvider);
+
+        var assertion = httpAssertionBuilder._assertions[0];
+        await assertion(httpAssertionContext);
+
+        httpResponseMessage.Content = new StringContent("");
+        httpAssertionContext = new HttpAssertionContext(httpResponseMessage, 100, serviceProvider);
+
+        var exception =
+            await Assert.ThrowsAsync<HttpAssertionException>(async () => await assertion(httpAssertionContext));
+        Assert.Equal("Expected response content not to be empty.", exception.Message);
+    }
+
+    [Fact]
     public void HeaderExists_Invalid_Parameters()
     {
         var httpAssertionBuilder = new HttpAssertionBuilder();
@@ -278,6 +377,42 @@ public class HttpAssertionBuilderAssertionsTests
         Assert.Equal(
             "Expected response header 'framework' to contain 'furion', but actual values were: [aspnetcore, dotnetcore].",
             exception2.Message);
+    }
+
+    [Fact]
+    public void HeaderNotExists_Invalid_Parameters()
+    {
+        var httpAssertionBuilder = new HttpAssertionBuilder();
+
+        Assert.Throws<ArgumentNullException>(() => httpAssertionBuilder.HeaderNotExists(null!));
+        Assert.Throws<ArgumentException>(() => httpAssertionBuilder.HeaderNotExists(string.Empty));
+        Assert.Throws<ArgumentException>(() => httpAssertionBuilder.HeaderNotExists(" "));
+    }
+
+    [Fact]
+    public async Task HeaderNotExists_ReturnOK()
+    {
+        var httpAssertionBuilder = new HttpAssertionBuilder();
+        Assert.Empty(httpAssertionBuilder._assertions);
+
+        httpAssertionBuilder.HeaderNotExists("framework");
+        Assert.Single(httpAssertionBuilder._assertions);
+
+        var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK);
+        var services = new ServiceCollection();
+        await using var serviceProvider = services.BuildServiceProvider();
+        var httpAssertionContext = new HttpAssertionContext(httpResponseMessage, 100, serviceProvider);
+
+        var assertion = httpAssertionBuilder._assertions[0];
+        await assertion(httpAssertionContext);
+
+        httpAssertionContext = new HttpAssertionContext(httpResponseMessage, 100, serviceProvider);
+
+        httpResponseMessage.Headers.TryAddWithoutValidation("framework", "Furion");
+        var exception =
+            await Assert.ThrowsAsync<HttpAssertionException>(async () => await assertion(httpAssertionContext));
+        Assert.Equal("Expected response header 'framework' not to exist, but it was found.",
+            exception.Message);
     }
 
     [Fact]
