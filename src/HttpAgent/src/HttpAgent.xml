@@ -12,10 +12,10 @@
         <member name="M:HttpAgent.FurionAccessTokenProvider.Configure(HttpAgent.HttpRequestBuilder,HttpAgent.HttpAccessToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.FurionAccessTokenProvider.GetTokenAsync(HttpAgent.HttpAccessTokenContext,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.FurionAccessTokenProvider.GetAsync(HttpAgent.HttpAccessTokenContext,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.FurionAccessTokenProvider.RefreshTokenAsync(HttpAgent.HttpAccessTokenContext,HttpAgent.HttpAccessToken,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.FurionAccessTokenProvider.RefreshAsync(HttpAgent.HttpAccessTokenContext,HttpAgent.HttpAccessToken,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="T:HttpAgent.HttpAccessToken">
@@ -137,7 +137,7 @@
         </member>
         <member name="T:HttpAgent.HttpAccessTokenManager">
             <summary>
-                Access Token 管理器
+                基于内存缓存的 Access Token 管理器
             </summary>
         </member>
         <member name="F:HttpAgent.HttpAccessTokenManager._httpClientNameCaches">
@@ -145,41 +145,17 @@
                 <see cref="T:System.Net.Http.HttpClient" /> 实例的配置名称的 Access Token 缓存字典
             </summary>
         </member>
-        <member name="M:HttpAgent.HttpAccessTokenManager.SetTokenAsync(System.String,HttpAgent.HttpAccessToken,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.HttpAccessTokenManager.GetAsync(System.String,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpAccessTokenManager.GetTokenAsync(System.String,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.HttpAccessTokenManager.SetAsync(System.String,HttpAgent.HttpAccessToken,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="M:HttpAgent.HttpAccessTokenManager.GetOrRefreshAsync(HttpAgent.HttpAccessTokenContext,System.Threading.CancellationToken)">
-            <summary>
-                获取或刷新指定 <see cref="T:System.Net.Http.HttpClient" /> 实例的配置名称的 Access Token
-            </summary>
-            <param name="context">
-                <see cref="T:HttpAgent.HttpAccessTokenContext" />
-            </param>
-            <param name="cancellationToken">
-                <see cref="T:System.Threading.CancellationToken" />
-            </param>
-            <returns>
-                <see cref="T:HttpAgent.HttpAccessToken" />
-            </returns>
-            <exception cref="T:System.ArgumentNullException"></exception>
+            <inheritdoc />
         </member>
         <member name="M:HttpAgent.HttpAccessTokenManager.ForceRefreshAsync(HttpAgent.HttpAccessTokenContext,System.Threading.CancellationToken)">
-            <summary>
-                强制刷新指定 <see cref="T:System.Net.Http.HttpClient" /> 实例的配置名称的 Access Token
-            </summary>
-            <param name="context">
-                <see cref="T:HttpAgent.HttpAccessTokenContext" />
-            </param>
-            <param name="cancellationToken">
-                <see cref="T:System.Threading.CancellationToken" />
-            </param>
-            <returns>
-                <see cref="T:HttpAgent.HttpAccessToken" />
-            </returns>
-            <exception cref="T:System.ArgumentNullException"></exception>
+            <inheritdoc />
         </member>
         <member name="T:HttpAgent.HttpAccessTokenManager.AccessTokenCache">
             <summary>
@@ -263,9 +239,22 @@
                 Access Token 管理器接口
             </summary>
         </member>
-        <member name="M:HttpAgent.IHttpAccessTokenManager.SetTokenAsync(System.String,HttpAgent.HttpAccessToken,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.IHttpAccessTokenManager.GetAsync(System.String,System.Threading.CancellationToken)">
             <summary>
-                设置 Access Token
+                获取指定 <see cref="T:System.Net.Http.HttpClient" /> 实例的配置名称的缓存 Access Token
+            </summary>
+            <remarks>此方法不会触发刷新操作。</remarks>
+            <param name="httpClientName"><see cref="T:System.Net.Http.HttpClient" /> 实例的配置名称</param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.HttpAccessToken" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.IHttpAccessTokenManager.SetAsync(System.String,HttpAgent.HttpAccessToken,System.Threading.CancellationToken)">
+            <summary>
+                设置指定 <see cref="T:System.Net.Http.HttpClient" /> 实例的配置名称的 Access Token
             </summary>
             <remarks>用于首次获取或常规获取。</remarks>
             <param name="httpClientName"><see cref="T:System.Net.Http.HttpClient" /> 实例的配置名称</param>
@@ -275,16 +264,36 @@
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
+        </member>
+        <member name="M:HttpAgent.IHttpAccessTokenManager.GetOrRefreshAsync(HttpAgent.HttpAccessTokenContext,System.Threading.CancellationToken)">
+            <summary>
+                获取或刷新指定 <see cref="T:System.Net.Http.HttpClient" /> 实例的配置名称的 Access Token
+            </summary>
+            <remarks>
+                内部实现中，若缓存中已存在有效的 <see cref="T:HttpAgent.HttpAccessToken" />，则直接返回；否则调用
+                <see cref="M:HttpAgent.IHttpAccessTokenProvider.RefreshAsync(HttpAgent.HttpAccessTokenContext,HttpAgent.HttpAccessToken,System.Threading.CancellationToken)" /> 方法获取新的 <see cref="T:HttpAgent.HttpAccessToken" /> 实例，并将其缓存后再返回。
+            </remarks>
+            <param name="context">
+                <see cref="T:HttpAgent.HttpAccessTokenContext" />
+            </param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
             <returns>
-                <see cref="T:System.Threading.Tasks.Task" />
+                <see cref="T:HttpAgent.HttpAccessToken" />
             </returns>
         </member>
-        <member name="M:HttpAgent.IHttpAccessTokenManager.GetTokenAsync(System.String,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.IHttpAccessTokenManager.ForceRefreshAsync(HttpAgent.HttpAccessTokenContext,System.Threading.CancellationToken)">
             <summary>
-                获取当前缓存的 Access Token
+                强制刷新指定 <see cref="T:System.Net.Http.HttpClient" /> 实例的配置名称的 Access Token
             </summary>
-            <remarks>此方法不会触发刷新操作。</remarks>
-            <param name="httpClientName"><see cref="T:System.Net.Http.HttpClient" /> 实例的配置名称</param>
+            <remarks>
+                内部实现中，直接调用 <see cref="M:HttpAgent.IHttpAccessTokenProvider.RefreshAsync(HttpAgent.HttpAccessTokenContext,HttpAgent.HttpAccessToken,System.Threading.CancellationToken)" /> 方法获取新的 <see cref="T:HttpAgent.HttpAccessToken" />
+                实例，并将其缓存后再返回。
+            </remarks>
+            <param name="context">
+                <see cref="T:HttpAgent.HttpAccessTokenContext" />
+            </param>
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
@@ -301,11 +310,11 @@
                 <para>实现该接口的类型也可以同时实现 <see cref="T:HttpAgent.IHttpAccessTokenConfigurator" />。</para>
             </remarks>
         </member>
-        <member name="M:HttpAgent.IHttpAccessTokenProvider.GetTokenAsync(HttpAgent.HttpAccessTokenContext,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.IHttpAccessTokenProvider.GetAsync(HttpAgent.HttpAccessTokenContext,System.Threading.CancellationToken)">
             <summary>
                 获取 Access Token
             </summary>
-            <remarks>若使用 <see cref="M:HttpAgent.IHttpAccessTokenManager.SetTokenAsync(System.String,HttpAgent.HttpAccessToken,System.Threading.CancellationToken)" /> 设置 Access Token，那么该方法可以空实现或抛出异常。</remarks>
+            <remarks>若使用 <see cref="M:HttpAgent.IHttpAccessTokenManager.SetAsync(System.String,HttpAgent.HttpAccessToken,System.Threading.CancellationToken)" /> 设置 Access Token，那么该方法可以空实现或抛出异常。</remarks>
             <param name="context">
                 <see cref="T:HttpAgent.HttpAccessTokenContext" />
             </param>
@@ -316,11 +325,11 @@
                 <see cref="T:HttpAgent.HttpAccessToken" />
             </returns>
         </member>
-        <member name="M:HttpAgent.IHttpAccessTokenProvider.RefreshTokenAsync(HttpAgent.HttpAccessTokenContext,HttpAgent.HttpAccessToken,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.IHttpAccessTokenProvider.RefreshAsync(HttpAgent.HttpAccessTokenContext,HttpAgent.HttpAccessToken,System.Threading.CancellationToken)">
             <summary>
                 刷新 Access Token
             </summary>
-            <remarks>默认实现直接调用 <see cref="M:HttpAgent.IHttpAccessTokenProvider.GetTokenAsync(HttpAgent.HttpAccessTokenContext,System.Threading.CancellationToken)" />。若认证流程中“首次获取 Token”与“刷新 Token”使用不同的接口（如登录接口 vs 刷新专用接口），可重写此方法并提供专用的刷新逻辑。</remarks>
+            <remarks>默认实现直接调用 <see cref="M:HttpAgent.IHttpAccessTokenProvider.GetAsync(HttpAgent.HttpAccessTokenContext,System.Threading.CancellationToken)" />。若认证流程中“首次获取 Token”与“刷新 Token”使用不同的接口（如登录接口 vs 刷新专用接口），可重写此方法并提供专用的刷新逻辑。</remarks>
             <param name="context">
                 <see cref="T:HttpAgent.HttpAccessTokenContext" />
             </param>
@@ -332,7 +341,7 @@
                 <see cref="T:HttpAgent.HttpAccessToken" />
             </returns>
         </member>
-        <member name="M:HttpAgent.IHttpAccessTokenProvider.ShouldRefreshTokenAsync(HttpAgent.HttpAccessTokenContext,System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.IHttpAccessTokenProvider.ShouldRefreshAsync(HttpAgent.HttpAccessTokenContext,System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
             <summary>
                 指示是否需要强制刷新 Access Token 并重试请求
             </summary>
@@ -13148,10 +13157,10 @@
                 <see cref="T:HttpAgent.IHttpRemoteLogger" />
             </param>
             <param name="accessTokenManager">
-                <see cref="T:HttpAgent.HttpAccessTokenManager" />
+                <see cref="T:HttpAgent.IHttpAccessTokenManager" />
             </param>
         </member>
-        <member name="M:HttpAgent.TokenManagementPipelineHandler.#ctor(System.IServiceProvider,HttpAgent.IHttpRemoteLogger,HttpAgent.HttpAccessTokenManager)">
+        <member name="M:HttpAgent.TokenManagementPipelineHandler.#ctor(System.IServiceProvider,HttpAgent.IHttpRemoteLogger,HttpAgent.IHttpAccessTokenManager)">
             <summary>
                 Access Token 自动管理管道处理器
             </summary>
@@ -13162,7 +13171,7 @@
                 <see cref="T:HttpAgent.IHttpRemoteLogger" />
             </param>
             <param name="accessTokenManager">
-                <see cref="T:HttpAgent.HttpAccessTokenManager" />
+                <see cref="T:HttpAgent.IHttpAccessTokenManager" />
             </param>
         </member>
         <member name="M:HttpAgent.TokenManagementPipelineHandler.HandleAsync(HttpAgent.HttpRequestPipelineContext,System.Func{System.Threading.Tasks.Task{System.Net.Http.HttpResponseMessage}})">
@@ -19926,6 +19935,38 @@
             <param name="httpRemoteBuilder">
                 <see cref="T:HttpAgent.HttpRemoteBuilder" />
             </param>
+            <returns>
+                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
+            </returns>
+        </member>
+    </members>
+</doc>
+     </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions.AddHttpRemote(Microsoft.Extensions.DependencyInjection.IServiceCollection,HttpAgent.HttpRemoteBuilder)">
+            <summary>
+                添加 HTTP 远程请求服务
+            </summary>
+            <param name="services">
+                <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
+            </param>
+            <param name="httpRemoteBuilder">
+                <see cref="T:HttpAgent.HttpRemoteBuilder" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
+            </returns>
+        </member>
+    </members>
+</doc>
+
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
+            </returns>
+        </member>
+    </members>
+</doc>
+   </param>
             <returns>
                 <see cref="T:HttpAgent.IHttpRemoteBuilder" />
             </returns>

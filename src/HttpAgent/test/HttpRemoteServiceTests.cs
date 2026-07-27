@@ -94,7 +94,7 @@ public class HttpRemoteServiceTests
         Assert.NotNull(httpClient);
         Assert.Null(httpClientPooling.Release);
         Assert.Equal(
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36 Edg/150.0.0.0",
             httpClient.DefaultRequestHeaders.UserAgent.ToString());
 
         var httpRequestBuilder2 =
@@ -107,7 +107,7 @@ public class HttpRemoteServiceTests
         Assert.Equal("http://localhost/test/", httpClient2.BaseAddress.ToString());
         Assert.Null(httpClientPooling2.Release);
         Assert.Equal(
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36 Edg/150.0.0.0",
             httpClient2.DefaultRequestHeaders.UserAgent.ToString());
 
         var httpClient3 = new HttpClient { BaseAddress = new Uri("http://localhost/custom") };
@@ -122,7 +122,7 @@ public class HttpRemoteServiceTests
         var httpClient4 = httpClientPooling3.Instance;
         Assert.Equal(httpClient3, httpClient4);
         Assert.Equal(
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36 Edg/150.0.0.0",
             httpClient4.DefaultRequestHeaders.UserAgent.ToString());
         Assert.NotNull(httpClientPooling3.Release);
         httpClientPooling3.Release(httpClient3);
@@ -165,7 +165,7 @@ public class HttpRemoteServiceTests
         Assert.NotNull(httpClient);
         Assert.Null(httpClientPooling.Release);
         Assert.Equal(
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36 Edg/150.0.0.0",
             httpClient.DefaultRequestHeaders.UserAgent.ToString());
 
         var httpRequestBuilder2 =
@@ -178,7 +178,7 @@ public class HttpRemoteServiceTests
         Assert.Equal("http://localhost/test/", httpClient2.BaseAddress.ToString());
         Assert.Null(httpClientPooling2.Release);
         Assert.Equal(
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36 Edg/150.0.0.0",
             httpClient2.DefaultRequestHeaders.UserAgent.ToString());
 
         var httpClient3 = new HttpClient { BaseAddress = new Uri("http://localhost/custom") };
@@ -193,7 +193,7 @@ public class HttpRemoteServiceTests
         var httpClient4 = httpClientPooling3.Instance;
         Assert.Equal(httpClient3, httpClient4);
         Assert.Equal(
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36 Edg/150.0.0.0",
             httpClient4.DefaultRequestHeaders.UserAgent.ToString());
         Assert.NotNull(httpClientPooling3.Release);
         httpClientPooling3.Release(httpClient3);
@@ -209,7 +209,7 @@ public class HttpRemoteServiceTests
         HttpRemoteService.AddDefaultUserAgentHeader(httpClient, httpRequestBuilder);
 
         Assert.Equal(
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36 Edg/150.0.0.0",
             httpClient.DefaultRequestHeaders.UserAgent.ToString());
 
         var httpClient2 = new HttpClient();
@@ -1679,8 +1679,7 @@ public class HttpRemoteServiceTests
     private sealed class HttpAccessTokenProvider : IHttpAccessTokenProvider
     {
         /// <inheritdoc />
-        public Task<HttpAccessToken?>
-            GetTokenAsync(HttpAccessTokenContext context, CancellationToken cancellationToken) =>
+        public Task<HttpAccessToken?> GetAsync(HttpAccessTokenContext context, CancellationToken cancellationToken) =>
             Task.FromResult<HttpAccessToken?>(new HttpAccessToken("accessToken", DateTimeOffset.Now.AddMinutes(10)));
     }
 }

@@ -98,10 +98,10 @@ public class HttpRemoteExtensionsTests
         httpClient.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", UserAgents.Edge.PC);
 
         Assert.Equal(
-            "[36m[1mRequest Headers:[0m \r\n  User-Agent:          Mozilla/5.0, (Windows NT 10.0; Win64; x64), AppleWebKit/537.36, (KHTML, like Gecko), Chrome/145.0.0.0, Safari/537.36, Edg/145.0.0.0\r\n  Accept:              application/json\r\n  Accept-Encoding:     gzip, deflate",
+            "[36m[1mRequest Headers:[0m \r\n  User-Agent:          Mozilla/5.0, (Windows NT 10.0; Win64; x64), AppleWebKit/537.36, (KHTML, like Gecko), Chrome/150.0.0.0, Safari/537.36, Edg/150.0.0.0\r\n  Accept:              application/json\r\n  Accept-Encoding:     gzip, deflate",
             httpRequestMessage.ProfilerHeaders(httpClient));
         Assert.Equal(
-            "User-Agent:          Mozilla/5.0, (Windows NT 10.0; Win64; x64), AppleWebKit/537.36, (KHTML, like Gecko), Chrome/145.0.0.0, Safari/537.36, Edg/145.0.0.0\r\nAccept:              application/json\r\nAccept-Encoding:     gzip, deflate",
+            "User-Agent:          Mozilla/5.0, (Windows NT 10.0; Win64; x64), AppleWebKit/537.36, (KHTML, like Gecko), Chrome/150.0.0.0, Safari/537.36, Edg/150.0.0.0\r\nAccept:              application/json\r\nAccept-Encoding:     gzip, deflate",
             httpRequestMessage.ProfilerHeaders(httpClient, null));
     }
 

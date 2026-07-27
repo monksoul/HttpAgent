@@ -68,9 +68,7 @@ public class Helpers
         services.TryAddSingleton<RequestProfilerPipelineHandler>();
         services.TryAddSingleton<SendCorePipelineHandler>();
 
-        services.TryAddSingleton<HttpAccessTokenManager>();
-        services.TryAddSingleton<IHttpAccessTokenManager>(serviceProvider =>
-            serviceProvider.GetRequiredService<HttpAccessTokenManager>());
+        services.TryAddSingleton<IHttpAccessTokenManager, HttpAccessTokenManager>();
 
         if (requestEventHandler is not null)
         {

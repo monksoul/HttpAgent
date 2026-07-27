@@ -29,24 +29,24 @@ public class FurionAccessTokenProviderTests
     }
 
     [Fact]
-    public async Task GetTokenAsync_ReturnOK()
+    public async Task GetAsync_ReturnOK()
     {
         var provider = new FurionAccessTokenProvider();
         var accessToken =
-            await provider.GetTokenAsync(new HttpAccessTokenContext(null, provider), CancellationToken.None);
+            await provider.GetAsync(new HttpAccessTokenContext(null, provider), CancellationToken.None);
         Assert.Null(accessToken);
     }
 
     [Fact]
-    public async Task RefreshTokenAsync_ReturnOK()
+    public async Task RefreshAsync_ReturnOK()
     {
         var provider = new FurionAccessTokenProvider();
         var accessToken =
-            await provider.RefreshTokenAsync(new HttpAccessTokenContext(null, provider), null, CancellationToken.None);
+            await provider.RefreshAsync(new HttpAccessTokenContext(null, provider), null, CancellationToken.None);
         Assert.Null(accessToken);
 
         var accessToken2 =
-            await provider.RefreshTokenAsync(new HttpAccessTokenContext(null, provider),
+            await provider.RefreshAsync(new HttpAccessTokenContext(null, provider),
                 new HttpAccessToken("new token value", DateTimeOffset.Now.AddMinutes(20)), CancellationToken.None);
         Assert.NotNull(accessToken2);
         Assert.Equal("new token value", accessToken2.Value);

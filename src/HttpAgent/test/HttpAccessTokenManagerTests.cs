@@ -15,35 +15,35 @@ public class HttpAccessTokenManagerTests
     }
 
     [Fact]
-    public async Task SetTokenAsync_Invalid_Parameters()
+    public async Task SetAsync_Invalid_Parameters()
     {
         var tokenManager = new HttpAccessTokenManager();
         await Assert.ThrowsAsync<ArgumentNullException>(() =>
-            tokenManager.SetTokenAsync(null, null!, CancellationToken.None));
+            tokenManager.SetAsync(null, null!, CancellationToken.None));
     }
 
     [Fact]
-    public async Task SetTokenAsync_ReturnOK()
+    public async Task SetAsync_ReturnOK()
     {
         var tokenManager = new HttpAccessTokenManager();
         Assert.Empty(tokenManager._httpClientNameCaches);
 
-        await tokenManager.SetTokenAsync(null, new HttpAccessToken("new token", DateTimeOffset.Now.AddMinutes(10)),
+        await tokenManager.SetAsync(null, new HttpAccessToken("new token", DateTimeOffset.Now.AddMinutes(10)),
             CancellationToken.None);
 
         Assert.Single(tokenManager._httpClientNameCaches);
     }
 
     [Fact]
-    public async Task GetTokenAsync_ReturnOK()
+    public async Task GetAsync_ReturnOK()
     {
         var tokenManager = new HttpAccessTokenManager();
         Assert.Empty(tokenManager._httpClientNameCaches);
 
-        await tokenManager.SetTokenAsync(null, new HttpAccessToken("new token", DateTimeOffset.Now.AddMinutes(10)),
+        await tokenManager.SetAsync(null, new HttpAccessToken("new token", DateTimeOffset.Now.AddMinutes(10)),
             CancellationToken.None);
 
-        var accessToken = await tokenManager.GetTokenAsync(null, CancellationToken.None);
+        var accessToken = await tokenManager.GetAsync(null, CancellationToken.None);
         Assert.NotNull(accessToken);
         Assert.Equal("new token", accessToken.Value);
     }
@@ -121,8 +121,7 @@ public class HttpAccessTokenManagerTests
     private sealed class HttpAccessTokenProvider : IHttpAccessTokenProvider
     {
         /// <inheritdoc />
-        public Task<HttpAccessToken?>
-            GetTokenAsync(HttpAccessTokenContext context, CancellationToken cancellationToken) =>
+        public Task<HttpAccessToken?> GetAsync(HttpAccessTokenContext context, CancellationToken cancellationToken) =>
             Task.FromResult<HttpAccessToken?>(new HttpAccessToken("new token", DateTimeOffset.Now.AddMinutes(10)));
     }
 }

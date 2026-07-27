@@ -32,8 +32,7 @@ public class HttpAccessTokenContextTests
     private sealed class HttpAccessTokenProvider : IHttpAccessTokenProvider
     {
         /// <inheritdoc />
-        public Task<HttpAccessToken?>
-            GetTokenAsync(HttpAccessTokenContext context, CancellationToken cancellationToken) =>
+        public Task<HttpAccessToken?> GetAsync(HttpAccessTokenContext context, CancellationToken cancellationToken) =>
             throw new NotImplementedException();
     }
 }
