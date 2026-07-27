@@ -2160,6 +2160,18 @@ public class HttpRequestBuilderMethodsTests
     }
 
     [Fact]
+    public void RemoveTrailingSlash_ReturnOK()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+
+        httpRequestBuilder.RemoveTrailingSlash();
+        Assert.True(httpRequestBuilder.RemoveTrailingSlashEnabled);
+
+        httpRequestBuilder.RemoveTrailingSlash(false);
+        Assert.False(httpRequestBuilder.RemoveTrailingSlashEnabled);
+    }
+
+    [Fact]
     public void MergeHeaders_Invalid_Parameters() =>
         Assert.Throws<ArgumentNullException>(() => HttpRequestBuilder.MergeHeaders(null, null!, false, false));
 

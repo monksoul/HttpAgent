@@ -693,6 +693,21 @@ public class DeclarativeAttributeTests
         Assert.NotNull(attribute);
     }
 
+    [Fact]
+    public void RemoveTrailingSlashAttribute_ReturnOK()
+    {
+        var attributeUsage = typeof(RemoveTrailingSlashAttribute).GetCustomAttribute<AttributeUsageAttribute>();
+        Assert.NotNull(attributeUsage);
+        Assert.Equal(AttributeTargets.Method | AttributeTargets.Interface, attributeUsage.ValidOn);
+        Assert.False(attributeUsage.AllowMultiple);
+
+        var attribute = new RemoveTrailingSlashAttribute();
+        Assert.True(attribute.Enabled);
+
+        var attribute2 = new RemoveTrailingSlashAttribute(false);
+        Assert.False(attribute2.Enabled);
+    }
+
     public class MyRequestEventHandler : IHttpRequestEventHandler
     {
         /// <inheritdoc />

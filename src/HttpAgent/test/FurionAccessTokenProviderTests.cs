@@ -13,6 +13,11 @@ public class FurionAccessTokenProviderTests
         Assert.NotNull(provider);
         Assert.True(typeof(IHttpAccessTokenProvider).IsAssignableFrom(typeof(FurionAccessTokenProvider)));
         Assert.True(typeof(IHttpAccessTokenConfigurator).IsAssignableFrom(typeof(FurionAccessTokenProvider)));
+
+        Assert.Equal("X-Authorization", FurionAccessTokenProvider.XAuthorizationHeaderName);
+        Assert.Equal("access-token", FurionAccessTokenProvider.AccessTokenHeaderName);
+        Assert.Equal("x-access-token", FurionAccessTokenProvider.XAccessTokenHeaderName);
+        Assert.Equal("Bearer {0}", FurionAccessTokenProvider.BearerTokenFormat);
     }
 
     [Fact]

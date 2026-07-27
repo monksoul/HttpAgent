@@ -167,6 +167,12 @@ public class HttpRequestBuilderTests
         var finalRequestUri15 =
             httpRequestBuilder14.BuildFinalRequestUri(new Uri("http://localhost/abc/"), httpRemoteOptions);
         Assert.Equal("http://localhost/abc/api/test", finalRequestUri15);
+
+        var httpRequestBuilder15 =
+            new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost/api/", UriKind.RelativeOrAbsolute))
+                .RemoveTrailingSlash();
+        var finalRequestUri16 = httpRequestBuilder15.BuildFinalRequestUri(null, httpRemoteOptions);
+        Assert.Equal("http://localhost/api", finalRequestUri16);
     }
 
     [Fact]

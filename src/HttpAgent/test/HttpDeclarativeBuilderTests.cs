@@ -72,6 +72,7 @@ public class HttpDeclarativeBuilderTests
                 typeof(SuppressTokenManagementDeclarativeExtractor),
                 new SuppressTokenManagementDeclarativeExtractor()
             },
+            { typeof(RemoveTrailingSlashDeclarativeExtractor), new RemoveTrailingSlashDeclarativeExtractor() },
             { typeof(BodyDeclarativeExtractor), new BodyDeclarativeExtractor() }
         };
 
@@ -191,6 +192,7 @@ public class HttpDeclarativeBuilderTests
                 typeof(SuppressTokenManagementDeclarativeExtractor),
                 new SuppressTokenManagementDeclarativeExtractor()
             },
+            { typeof(RemoveTrailingSlashDeclarativeExtractor), new RemoveTrailingSlashDeclarativeExtractor() },
             { typeof(BodyDeclarativeExtractor), new BodyDeclarativeExtractor() },
             { typeof(CustomHttpDeclarativeExtractor), new CustomHttpDeclarativeExtractor() }
         };
