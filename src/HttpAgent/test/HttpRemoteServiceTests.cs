@@ -1676,6 +1676,46 @@ public class HttpRemoteServiceTests
         await serviceProvider.DisposeAsync();
     }
 
+    [Fact]
+    public async Task SendCoreAsync_WithQuotaLimit_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        builder.Services.AddHttpClient(string.Empty).ConfigureOptions(options =>
+        {
+            options.QuotaLimits = new Dictionary<string, HttpQuotaLimit>
+            {
+                { "test/quota", new HttpQuotaLimit("daily", 2) }
+            };
+        });
+        builder.Services.AddHttpRemote(builder => builder.AddDefaultQuotaStrategies());
+        await using var app = builder.Build();
+
+        app.MapGet("/test", async () =>
+        {
+            await Task.Delay(50);
+            return "Hello World!";
+        });
+
+        await app.StartAsync();
+
+        var httpRemoteService = app.Services.GetRequiredService<IHttpRemoteService>();
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get,
+            new Uri($"http://localhost:{port}/test", UriKind.RelativeOrAbsolute)).SetQuotaKey("test/quota");
+
+        await httpRemoteService.SendAsync(httpRequestBuilder);
+        await httpRemoteService.SendAsync(httpRequestBuilder);
+
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            httpRemoteService.SendAsync(httpRequestBuilder));
+
+        Assert.Equal("Request aborted due to quota limit. Key: 'test/quota', Strategy: 'daily', Max: 2, Attempted: 3.",
+            exception.Message);
+
+        await app.StopAsync();
+    }
+
     private sealed class HttpAccessTokenProvider : IHttpAccessTokenProvider
     {
         /// <inheritdoc />

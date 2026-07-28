@@ -230,17 +230,18 @@ public class HttpRequestBuilderMethodsTests
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Post, new Uri("http://localhost"));
 
-        Assert.Throws<ArgumentNullException>(() => httpRequestBuilder.SetRawStringContent(null!, null!));
-
-        Assert.Throws<ArgumentNullException>(() => httpRequestBuilder.SetRawStringContent(string.Empty, null!));
-        Assert.Throws<ArgumentException>(() => httpRequestBuilder.SetRawStringContent(string.Empty, string.Empty));
-        Assert.Throws<ArgumentException>(() => httpRequestBuilder.SetRawStringContent(string.Empty, " "));
+        Assert.Throws<ArgumentNullException>(() => httpRequestBuilder.SetRawStringContent(null!));
     }
 
     [Fact]
     public void SetRawStringContent_ReturnOK()
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Post, new Uri("http://localhost"));
+
+        httpRequestBuilder.SetRawStringContent("furion");
+        Assert.Equal("\"furion\"", httpRequestBuilder.RawContent);
+        Assert.Null(httpRequestBuilder.ContentType);
+        Assert.Null(httpRequestBuilder.ContentEncoding);
 
         httpRequestBuilder.SetRawStringContent(string.Empty, "application/json");
         Assert.Equal("\"\"", httpRequestBuilder.RawContent);
@@ -2174,6 +2175,19 @@ public class HttpRequestBuilderMethodsTests
     [Fact]
     public void MergeHeaders_Invalid_Parameters() =>
         Assert.Throws<ArgumentNullException>(() => HttpRequestBuilder.MergeHeaders(null, null!, false, false));
+
+    [Fact]
+    public void SetQuotaKey_ReturnOK()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        Assert.Null(httpRequestBuilder.QuotaKey);
+
+        httpRequestBuilder.SetQuotaKey("weixin/login");
+        Assert.Equal("weixin/login", httpRequestBuilder.QuotaKey);
+
+        httpRequestBuilder.SetQuotaKey(null);
+        Assert.Null(httpRequestBuilder.QuotaKey);
+    }
 
     [Fact]
     public void MergeHeaders_ReturnOK()

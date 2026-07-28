@@ -708,6 +708,21 @@ public class DeclarativeAttributeTests
         Assert.False(attribute2.Enabled);
     }
 
+    [Fact]
+    public void QuotaKeyAttribute_ReturnOK()
+    {
+        var attributeUsage = typeof(QuotaKeyAttribute).GetCustomAttribute<AttributeUsageAttribute>();
+        Assert.NotNull(attributeUsage);
+        Assert.Equal(AttributeTargets.Method | AttributeTargets.Interface, attributeUsage.ValidOn);
+        Assert.False(attributeUsage.AllowMultiple);
+
+        var attribute = new QuotaKeyAttribute(null);
+        Assert.Null(attribute.Key);
+
+        var attribute2 = new QuotaKeyAttribute("weixin/login");
+        Assert.Equal("weixin/login", attribute2.Key);
+    }
+
     public class MyRequestEventHandler : IHttpRequestEventHandler
     {
         /// <inheritdoc />

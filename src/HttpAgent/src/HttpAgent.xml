@@ -2383,6 +2383,11 @@
                 <see cref="T:HttpAgent.IHttpDeclarative" /> 类型集合
             </summary>
         </member>
+        <member name="F:HttpAgent.HttpRemoteBuilder._httpQuotaStrategyTypes">
+            <summary>
+                <see cref="T:HttpAgent.IHttpQuotaStrategy" /> 类型集合
+            </summary>
+        </member>
         <member name="F:HttpAgent.HttpRemoteBuilder._httpRequestPipelineHandlerTypes">
             <summary>
                 <see cref="T:HttpAgent.IHttpRequestPipelineHandler" /> 类型集合
@@ -2548,6 +2553,39 @@
             <exception cref="T:System.ArgumentException"></exception>
             <exception cref="T:System.ArgumentOutOfRangeException"></exception>
         </member>
+        <member name="M:HttpAgent.HttpRemoteBuilder.AddQuotaStrategy``1">
+            <summary>
+                添加 HTTP 请求配额策略服务
+            </summary>
+            <typeparam name="TStrategy">
+                <see cref="T:HttpAgent.IHttpQuotaStrategy" />
+            </typeparam>
+            <returns>
+                <see cref="T:HttpAgent.HttpRemoteBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRemoteBuilder.AddDefaultQuotaStrategies">
+            <summary>
+                添加内置的 HTTP 请求配额策略服务
+            </summary>
+            <remarks>包含每日、每周、每月和生命周期配额策略。</remarks>
+            <returns>
+                <see cref="T:HttpAgent.HttpRemoteBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRemoteBuilder.AddQuotaStrategy(System.Type)">
+            <summary>
+                添加 HTTP 请求配额策略服务
+            </summary>
+            <param name="strategyType">
+                <see cref="T:HttpAgent.IHttpQuotaStrategy" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRemoteBuilder" />
+            </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
         <member name="M:HttpAgent.HttpRemoteBuilder.Build(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
             <summary>
                 构建模块服务
@@ -2558,7 +2596,7 @@
         </member>
         <member name="M:HttpAgent.HttpRemoteBuilder.RegisterContentProviders(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
             <summary>
-                注册内容提供器
+                注册内容提供器服务
             </summary>
             <remarks>处理重复注册远程请求服务时不能合并多个提供器问题。</remarks>
             <param name="services">
@@ -2568,6 +2606,14 @@
         <member name="M:HttpAgent.HttpRemoteBuilder.BuildHttpDeclarativeServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
             <summary>
                 构建 HTTP 声明式远程请求服务
+            </summary>
+            <param name="services">
+                <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
+            </param>
+        </member>
+        <member name="M:HttpAgent.HttpRemoteBuilder.RegisterQuotaStrategies(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+                注册配额策略服务
             </summary>
             <param name="services">
                 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
@@ -2879,7 +2925,6 @@
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
             <exception cref="T:System.ArgumentNullException"></exception>
-            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.SetFormUrlEncodedContent(System.Object,System.Text.Encoding,System.Boolean,System.Boolean)">
             <summary>
@@ -3961,6 +4006,15 @@
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
         </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.SetQuotaKey(System.String)">
+            <summary>
+                设置当前请求的配额键
+            </summary>
+            <param name="key">配额标识，通常为接口路径或自定义名称</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
         <member name="M:HttpAgent.HttpRequestBuilder.MergeHeaders(System.Collections.Generic.IDictionary{System.String,System.Collections.Generic.List{System.String}},System.Collections.Generic.IDictionary{System.String,System.Object},System.Boolean,System.Boolean)">
             <summary>
                 将一组标头合并到现有标头字典中
@@ -4219,6 +4273,12 @@
                 获取 Access Token 时传递的自定义数据
             </summary>
             <remarks>该数据将被复制到 <see cref="P:HttpAgent.HttpAccessTokenContext.Items" /> 中，供 <see cref="T:HttpAgent.IHttpAccessTokenProvider" /> 使用。</remarks>
+        </member>
+        <member name="P:HttpAgent.HttpRequestBuilder.QuotaKey">
+            <summary>
+                配额键
+            </summary>
+            <remarks>用于标识当前请求属于哪个配额组，例如接口路径。</remarks>
         </member>
         <member name="P:HttpAgent.HttpRequestBuilder.EnsureSuccessStatusCodeEnabled">
             <summary>
@@ -8433,6 +8493,23 @@
                 是否设置了值
             </summary>
         </member>
+        <member name="T:HttpAgent.QuotaKeyAttribute">
+            <summary>
+                HTTP 声明式配额键特性
+            </summary>
+        </member>
+        <member name="M:HttpAgent.QuotaKeyAttribute.#ctor(System.String)">
+            <summary>
+                <inheritdoc cref="T:HttpAgent.QuotaKeyAttribute" />
+            </summary>
+            <param name="key">配额键</param>
+        </member>
+        <member name="P:HttpAgent.QuotaKeyAttribute.Key">
+            <summary>
+                配额键
+            </summary>
+            <remarks>用于标识当前请求属于哪个配额组，例如接口路径。</remarks>
+        </member>
         <member name="T:HttpAgent.RefererAttribute">
             <summary>
                 HTTP 声明式请求来源地址特性
@@ -9088,6 +9165,14 @@
         <member name="M:HttpAgent.QueryParamDeclarativeExtractor.Extract(HttpAgent.HttpRequestBuilder,HttpAgent.HttpDeclarativeExtractorContext)">
             <inheritdoc />
         </member>
+        <member name="T:HttpAgent.QuotaKeyDeclarativeExtractor">
+            <summary>
+                HTTP 声明式 <see cref="T:HttpAgent.QuotaKeyAttribute" /> 特性提取器
+            </summary>
+        </member>
+        <member name="M:HttpAgent.QuotaKeyDeclarativeExtractor.Extract(HttpAgent.HttpRequestBuilder,HttpAgent.HttpDeclarativeExtractorContext)">
+            <inheritdoc />
+        </member>
         <member name="T:HttpAgent.RefererDeclarativeExtractor">
             <summary>
                 HTTP 声明式 <see cref="T:HttpAgent.RefererAttribute" /> 特性提取器
@@ -9396,7 +9481,7 @@
             <param name="remoteOptions">
                 <see cref="T:HttpAgent.HttpRemoteOptions" />
             </param>
-            <param name="request">
+            <param name="httpRequestMessage">
                 <see cref="T:System.Net.Http.HttpRequestMessage" />
             </param>
             <param name="httpRemoteAnalyzer">
@@ -9576,7 +9661,7 @@
                 <see cref="T:System.String" />
             </returns>
         </member>
-        <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.ProfilerAsync(System.Net.Http.HttpContent,System.String,System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.ProfilerAsync(System.Net.Http.HttpContent,System.String,System.Net.Http.HttpResponseMessage,System.Net.Http.HttpRequestMessage,System.Threading.CancellationToken)">
             <summary>
                 分析 <see cref="T:System.Net.Http.HttpContent" /> 内容
             </summary>
@@ -9588,19 +9673,23 @@
             <param name="httpResponseMessage">
                 <see cref="T:System.Net.Http.HttpResponseMessage" />
             </param>
+            <param name="httpRequestMessage">
+                <see cref="T:System.Net.Http.HttpRequestMessage" />
+            </param>
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
             <returns>
                 <see cref="T:System.String" />
             </returns>
+            <exception cref="T:System.InvalidOperationException"></exception>
         </member>
         <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.ReadAndDecompressFirstBytesAsync(System.IO.Stream,System.String,System.Int32,System.Threading.CancellationToken)">
             <summary>
                 从流中读取最多指定数量的解压后字节
             </summary>
             <param name="compressedStream">压缩数据流</param>
-            <param name="contentEncoding">内容编码（gzip, deflate, br 等）</param>
+            <param name="contentEncoding">内容编码（gzip, deflate, br, zstd 等）</param>
             <param name="maxBytes">最多读取的字节数（解压后）</param>
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
@@ -10725,7 +10814,7 @@
             <summary>
                 根据 Content-Encoding 自动包装解压流
             </summary>
-            <remarks>支持 gzip/deflate/br 解压。</remarks>
+            <remarks>支持 gzip/deflate/br/zstd 解压。</remarks>
             <param name="rawContentStream">
                 <see cref="T:System.IO.Stream" />
             </param>
@@ -12745,6 +12834,26 @@
                 事件处理程序提供器配置
             </summary>
         </member>
+        <member name="P:HttpAgent.HttpClientOptions.QuotaLimits">
+            <summary>
+                接口调用配额限制配置
+            </summary>
+            <remarks>
+                <para>用于对接像微信 API 这样对不同接口有独立调用限制的场景。需配合 <see cref="M:HttpAgent.HttpRequestBuilder.SetQuotaKey(System.String)" /> 为每个请求指定对应的配额键。</para>
+                <para>推荐在 <c>appsettings.json</c> 等配置文件中定义，避免在代码中硬编码大量键值。示例如下：</para>
+                <code>
+                {
+                  "HttpQuotas": {
+                    "weixin": {
+                      "wechat/accesstoken": { "MaxCount": 2000, "Strategy": "daily" },
+                      "wechat/menu_create":  { "MaxCount": 1000, "Strategy": "weekly" },
+                      "wechat/upload_media": { "MaxCount": 50000, "Strategy": "monthly" }
+                    }
+                  }
+                }
+                </code>
+            </remarks>
+        </member>
         <member name="P:HttpAgent.HttpClientOptions.IsDefault">
             <summary>
                 标识选项是否配置为默认值（未配置）
@@ -12882,6 +12991,31 @@
                 <see cref="T:System.Net.Http.HttpResponseMessage" />
             </param>
             <exception cref="T:System.Net.Http.HttpRequestException"></exception>
+        </member>
+        <member name="T:HttpAgent.QuotaPipelineHandler">
+            <summary>
+                配额管道处理器
+            </summary>
+            <param name="serviceProvider">
+                <see cref="T:System.IServiceProvider" />
+            </param>
+            <param name="quotaManager">
+                <see cref="T:HttpAgent.IHttpQuotaManager" />
+            </param>
+        </member>
+        <member name="M:HttpAgent.QuotaPipelineHandler.#ctor(System.IServiceProvider,HttpAgent.IHttpQuotaManager)">
+            <summary>
+                配额管道处理器
+            </summary>
+            <param name="serviceProvider">
+                <see cref="T:System.IServiceProvider" />
+            </param>
+            <param name="quotaManager">
+                <see cref="T:HttpAgent.IHttpQuotaManager" />
+            </param>
+        </member>
+        <member name="M:HttpAgent.QuotaPipelineHandler.HandleAsync(HttpAgent.HttpRequestPipelineContext,System.Func{System.Threading.Tasks.Task{System.Net.Http.HttpResponseMessage}})">
+            <inheritdoc />
         </member>
         <member name="T:HttpAgent.RequestBuilderPipelineHandler">
             <summary>
@@ -13678,6 +13812,165 @@
             <inheritdoc />
         </member>
         <member name="M:HttpAgent.StringContentProcessor.Process(HttpAgent.HttpContentProcessorContext)">
+            <inheritdoc />
+        </member>
+        <member name="T:HttpAgent.HttpQuotaCounter">
+            <summary>
+                配额计数器
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpQuotaCounter.Count">
+            <summary>
+                当前窗口内的调用次数
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpQuotaCounter.WindowKey">
+            <summary>
+                当前窗口的字符串标识
+            </summary>
+            <remarks>用来区分不同的配额周期，当这个标识改变时，配额计数器会自动归零，从新周期开始计算。</remarks>
+        </member>
+        <member name="T:HttpAgent.HttpQuotaLimit">
+            <summary>
+                单个配额限制的配置
+            </summary>
+        </member>
+        <member name="M:HttpAgent.HttpQuotaLimit.#ctor">
+            <summary>
+                <inheritdoc cref="T:HttpAgent.HttpQuotaLimit" />
+            </summary>
+        </member>
+        <member name="M:HttpAgent.HttpQuotaLimit.#ctor(System.String,System.Int32)">
+            <summary>
+                <inheritdoc cref="T:HttpAgent.HttpQuotaLimit" />
+            </summary>
+            <param name="strategy">使用的配额策略名称</param>
+            <param name="maxCount">最大允许调用次数</param>
+        </member>
+        <member name="P:HttpAgent.HttpQuotaLimit.Strategy">
+            <summary>
+                使用的配额策略名称
+            </summary>
+            <remarks>必须与已注册的 <see cref="P:HttpAgent.IHttpQuotaStrategy.Name" /> 匹配，否则将抛出 <see cref="T:System.InvalidOperationException" />。</remarks>
+        </member>
+        <member name="P:HttpAgent.HttpQuotaLimit.MaxCount">
+            <summary>
+                最大允许调用次数
+            </summary>
+        </member>
+        <member name="T:HttpAgent.HttpQuotaManager">
+            <summary>
+                基于内存缓存的配额管理器
+            </summary>
+        </member>
+        <member name="F:HttpAgent.HttpQuotaManager._counters">
+            <summary>
+                计数器缓存字典
+            </summary>
+            <remarks>键格式：{httpClientName}:{quotaKey}。</remarks>
+        </member>
+        <member name="F:HttpAgent.HttpQuotaManager._strategies">
+            <summary>
+                策略名称到策略实例的映射（忽略大小写）
+            </summary>
+        </member>
+        <member name="M:HttpAgent.HttpQuotaManager.#ctor(System.Collections.Generic.IEnumerable{HttpAgent.IHttpQuotaStrategy})">
+            <summary>
+                <inheritdoc cref="T:HttpAgent.HttpQuotaManager" />
+            </summary>
+            <param name="strategies"><see cref="T:HttpAgent.IHttpQuotaStrategy" /> 集合</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:HttpAgent.HttpQuotaManager.TryIncrement(System.String,System.String,HttpAgent.HttpQuotaLimit,System.Int32@)">
+            <inheritdoc />
+        </member>
+        <member name="T:HttpAgent.IHttpQuotaManager">
+            <summary>
+                配额管理器接口
+            </summary>
+        </member>
+        <member name="M:HttpAgent.IHttpQuotaManager.TryIncrement(System.String,System.String,HttpAgent.HttpQuotaLimit,System.Int32@)">
+            <summary>
+                尝试递增调用计数，并检查是否超过配额
+            </summary>
+            <param name="httpClientName"><see cref="T:System.Net.Http.HttpClient" /> 实例的配置名称</param>
+            <param name="quotaKey">配额键</param>
+            <param name="quotaLimit">
+                <see cref="T:HttpAgent.HttpQuotaLimit" />
+            </param>
+            <param name="current">递增后的当前调用次数</param>
+            <returns>
+                <see cref="T:System.Boolean" />
+            </returns>
+            <exception cref="T:System.InvalidOperationException"></exception>
+        </member>
+        <member name="T:HttpAgent.DailyQuotaStrategy">
+            <summary>
+                每日配额策略
+            </summary>
+        </member>
+        <member name="P:HttpAgent.DailyQuotaStrategy.Name">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.DailyQuotaStrategy.TryAcquire(HttpAgent.HttpQuotaCounter,System.Int32,System.Int32@)">
+            <inheritdoc />
+        </member>
+        <member name="T:HttpAgent.IHttpQuotaStrategy">
+            <summary>
+                配额策略接口
+            </summary>
+        </member>
+        <member name="P:HttpAgent.IHttpQuotaStrategy.Name">
+            <summary>
+                策略的唯一名称
+            </summary>
+            <remarks>用于配置中的 <see cref="P:HttpAgent.HttpQuotaLimit.Strategy" /> 字段进行匹配。</remarks>
+        </member>
+        <member name="M:HttpAgent.IHttpQuotaStrategy.TryAcquire(HttpAgent.HttpQuotaCounter,System.Int32,System.Int32@)">
+            <summary>
+                尝试获取一个配额，并更新 <paramref name="quotaCounter" /> 的计数和窗口标识
+            </summary>
+            <param name="quotaCounter">
+                <see cref="T:HttpAgent.HttpQuotaCounter" />
+            </param>
+            <param name="maxCount">最大允许调用次数</param>
+            <param name="current">申请后的当前计数</param>
+            <returns>
+                <see cref="T:System.Boolean" />
+            </returns>
+        </member>
+        <member name="T:HttpAgent.LifetimeQuotaStrategy">
+            <summary>
+                生命周期总配额策略
+            </summary>
+            <remarks>不按时间重置。</remarks>
+        </member>
+        <member name="P:HttpAgent.LifetimeQuotaStrategy.Name">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.LifetimeQuotaStrategy.TryAcquire(HttpAgent.HttpQuotaCounter,System.Int32,System.Int32@)">
+            <inheritdoc />
+        </member>
+        <member name="T:HttpAgent.MonthlyQuotaStrategy">
+            <summary>
+                每月配额策略
+            </summary>
+        </member>
+        <member name="P:HttpAgent.MonthlyQuotaStrategy.Name">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.MonthlyQuotaStrategy.TryAcquire(HttpAgent.HttpQuotaCounter,System.Int32,System.Int32@)">
+            <inheritdoc />
+        </member>
+        <member name="T:HttpAgent.WeeklyQuotaStrategy">
+            <summary>
+                每周配额策略
+            </summary>
+        </member>
+        <member name="P:HttpAgent.WeeklyQuotaStrategy.Name">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.WeeklyQuotaStrategy.TryAcquire(HttpAgent.HttpQuotaCounter,System.Int32,System.Int32@)">
             <inheritdoc />
         </member>
         <member name="T:HttpAgent.HttpRetryContext">
@@ -19299,6 +19592,7 @@
             <param name="options">
                 <see cref="T:HttpAgent.WebSocketClientOptions" />
             </param>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="P:HttpAgent.WebSocketClient.State">
             <inheritdoc cref="T:System.Net.WebSockets.WebSocketState" />
@@ -19354,6 +19648,8 @@
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:System.InvalidOperationException"></exception>
         </member>
         <member name="M:HttpAgent.WebSocketClient.SendAsync(System.Byte[],System.Boolean,System.Threading.CancellationToken)">
             <summary>
@@ -19364,6 +19660,8 @@
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:System.InvalidOperationException"></exception>
         </member>
         <member name="M:HttpAgent.WebSocketClient.CloseAsync(System.Threading.CancellationToken)">
             <summary>
@@ -19384,6 +19682,7 @@
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.WebSocketClient.CleanupResources">
             <summary>
@@ -19405,6 +19704,7 @@
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
+            <exception cref="T:System.ArgumentNullException"></exception>
             <exception cref="T:System.InvalidOperationException"></exception>
         </member>
         <member name="E:HttpAgent.WebSocketClient.Connecting">
@@ -19997,15 +20297,6 @@
         <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32,System.Int32,System.Int32)">
             <summary>Pushes 3 values onto the backtracking stack.</summary>
         </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_1F52B1A4D2E82B6FEDE25EC8C55F85BB36775196837076691C96925040F90D32">
-            <summary>Supports searching for the string "\\u".</summary>
-        </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_4A5B154448624742176A7AE18EDA0762C946CBB1B19F68418DD573D0A698E642">
-            <summary>Supports searching for the string "\u001b[".</summary>
-        </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_EBC667BDABA1472FA863B5B39B31251EF2B4C95DD643BDECF694CB1CE7BDC178">
-            <summary>Supports searching for the string "[[".</summary>
-        </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions">
             <summary>
                 HTTP 远程请求模块 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" /> 扩展类
@@ -20039,7 +20330,16 @@
         </member>
     </members>
 </doc>
-
+     </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions.AddHttpRemote(Microsoft.Extensions.DependencyInjection.IServiceCollection,HttpAgent.HttpRemoteBuilder)">
+            <summary>
+                添加 HTTP 远程请求服务
+            </summary>
+            <param name="services">
+                <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
+            </param>
+            <param name="httpRemoteBuilder">
+                <see cref="T:HttpAgent.HttpRemoteBuilder" />
             </param>
             <returns>
                 <see cref="T:HttpAgent.IHttpRemoteBuilder" />

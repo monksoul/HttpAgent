@@ -11,14 +11,14 @@ public class TokenManagementPipelineHandlerTests
     {
         var services = new ServiceCollection();
         services.AddLogging();
-        services.TryAddSingleton<HttpAccessTokenManager>();
+        services.TryAddSingleton<IHttpAccessTokenManager, HttpAccessTokenManager>();
         services.TryAddSingleton<IHttpRemoteLogger>(provider =>
             ActivatorUtilities.CreateInstance<HttpRemoteLogger>(provider, true));
         using var serviceProvider = services.BuildServiceProvider();
 
         var handler = new TokenManagementPipelineHandler(serviceProvider,
             serviceProvider.GetRequiredService<IHttpRemoteLogger>(),
-            serviceProvider.GetRequiredService<HttpAccessTokenManager>());
+            serviceProvider.GetRequiredService<IHttpAccessTokenManager>());
 
         Assert.NotNull(handler);
     }
@@ -28,14 +28,14 @@ public class TokenManagementPipelineHandlerTests
     {
         var services = new ServiceCollection();
         services.AddLogging();
-        services.TryAddSingleton<HttpAccessTokenManager>();
+        services.TryAddSingleton<IHttpAccessTokenManager, HttpAccessTokenManager>();
         services.TryAddSingleton<IHttpRemoteLogger>(provider =>
             ActivatorUtilities.CreateInstance<HttpRemoteLogger>(provider, true));
         using var serviceProvider = services.BuildServiceProvider();
 
         var handler = new TokenManagementPipelineHandler(serviceProvider,
             serviceProvider.GetRequiredService<IHttpRemoteLogger>(),
-            serviceProvider.GetRequiredService<HttpAccessTokenManager>());
+            serviceProvider.GetRequiredService<IHttpAccessTokenManager>());
 
         Assert.Throws<ArgumentNullException>(() => handler.ApplyAccessToken(null!, null!, null!));
         Assert.Throws<ArgumentNullException>(() =>
@@ -49,14 +49,14 @@ public class TokenManagementPipelineHandlerTests
     {
         var services = new ServiceCollection();
         services.AddLogging();
-        services.TryAddSingleton<HttpAccessTokenManager>();
+        services.TryAddSingleton<IHttpAccessTokenManager, HttpAccessTokenManager>();
         services.TryAddSingleton<IHttpRemoteLogger>(provider =>
             ActivatorUtilities.CreateInstance<HttpRemoteLogger>(provider, true));
         using var serviceProvider = services.BuildServiceProvider();
 
         var handler = new TokenManagementPipelineHandler(serviceProvider,
             serviceProvider.GetRequiredService<IHttpRemoteLogger>(),
-            serviceProvider.GetRequiredService<HttpAccessTokenManager>());
+            serviceProvider.GetRequiredService<IHttpAccessTokenManager>());
 
         var httpRequestBuilder = HttpRequestBuilder.Get("http://localhost");
         var httpAccessTokenProvider = new HttpAccessTokenProvider();
@@ -73,14 +73,14 @@ public class TokenManagementPipelineHandlerTests
         Assert.Equal("new token", httpRequestBuilder.AuthenticationHeader.Parameter);
 
         var services2 = new ServiceCollection();
-        services2.TryAddSingleton<HttpAccessTokenManager>();
+        services2.TryAddSingleton<IHttpAccessTokenManager, HttpAccessTokenManager>();
         services2.TryAddSingleton<IHttpAccessTokenConfigurator, HttpAccessTokenConfigurator>();
 
         using var serviceProvider2 = services2.BuildServiceProvider();
 
         var handler2 = new TokenManagementPipelineHandler(serviceProvider2,
             serviceProvider.GetRequiredService<IHttpRemoteLogger>(),
-            serviceProvider2.GetRequiredService<HttpAccessTokenManager>());
+            serviceProvider2.GetRequiredService<IHttpAccessTokenManager>());
 
         var httpRequestBuilder2 = HttpRequestBuilder.Get("http://localhost");
         var httpAccessTokenProvider2 = new HttpAccessTokenProvider();

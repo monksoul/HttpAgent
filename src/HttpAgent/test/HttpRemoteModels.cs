@@ -92,6 +92,18 @@ public class CustomPipelineHandler : IHttpRequestPipelineHandler
         Func<Task<HttpResponseMessage?>> next) => throw new NotImplementedException();
 }
 
+public class NotImplementHttpQuotaStrategy;
+
+public class CustomQuotaStrategy : IHttpQuotaStrategy
+{
+    /// <inheritdoc />
+    public string Name => "test";
+
+    /// <inheritdoc />
+    public bool TryAcquire(HttpQuotaCounter quotaCounter, int maxCount, out int current) =>
+        throw new NotImplementedException();
+}
+
 public class MultipartModel
 {
     public int Id { get; set; }

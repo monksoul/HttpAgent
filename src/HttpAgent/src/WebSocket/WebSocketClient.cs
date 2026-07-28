@@ -66,6 +66,7 @@ public sealed partial class WebSocketClient : IDisposable
     /// <param name="options">
     ///     <see cref="WebSocketClientOptions" />
     /// </param>
+    /// <exception cref="ArgumentNullException"></exception>
     public WebSocketClient(WebSocketClientOptions options)
     {
         // 空检查
@@ -207,6 +208,8 @@ public sealed partial class WebSocketClient : IDisposable
 
                 // 重新创建 ClientWebSocket 实例
                 _clientWebSocket = new ClientWebSocket();
+
+                // 调用用于配置 ClientWebSocketOptions 的操作
                 Options.Configure?.Invoke(_clientWebSocket.Options);
             }
         }
@@ -252,7 +255,7 @@ public sealed partial class WebSocketClient : IDisposable
                         await _messageCancellationTokenSource.CancelAsync();
                     }
 
-                    // 等待接收任务自然结束
+                    // 等待接收任务结束
                     await _receiveMessageTask.ConfigureAwait(false);
 
                     // 抛出 OperationCanceledException
@@ -262,6 +265,7 @@ public sealed partial class WebSocketClient : IDisposable
         }
         else
         {
+            // 等待接收任务结束
             await _receiveMessageTask.ConfigureAwait(false);
         }
     }
@@ -288,6 +292,8 @@ public sealed partial class WebSocketClient : IDisposable
     /// <param name="cancellationToken">
     ///     <see cref="CancellationToken" />
     /// </param>
+    /// <exception cref="ArgumentNullException"></exception>
+    /// <exception cref="InvalidOperationException"></exception>
     public async Task SendAsync(string message, WebSocketMessageType webSocketMessageType, bool endOfMessage = true,
         CancellationToken cancellationToken = default)
     {
@@ -322,6 +328,8 @@ public sealed partial class WebSocketClient : IDisposable
     /// <param name="cancellationToken">
     ///     <see cref="CancellationToken" />
     /// </param>
+    /// <exception cref="ArgumentNullException"></exception>
+    /// <exception cref="InvalidOperationException"></exception>
     public async Task SendAsync(byte[] byteArray, bool endOfMessage = true,
         CancellationToken cancellationToken = default)
     {
@@ -364,6 +372,7 @@ public sealed partial class WebSocketClient : IDisposable
     /// <param name="cancellationToken">
     ///     <see cref="CancellationToken" />
     /// </param>
+    /// <exception cref="ArgumentNullException"></exception>
     public async Task CloseAsync(WebSocketCloseStatus closeStatus, string closeDescription,
         CancellationToken cancellationToken = default)
     {
@@ -462,6 +471,7 @@ public sealed partial class WebSocketClient : IDisposable
     /// <param name="cancellationToken">
     ///     <see cref="CancellationToken" />
     /// </param>
+    /// <exception cref="ArgumentNullException"></exception>
     /// <exception cref="InvalidOperationException"></exception>
     internal async Task ReceiveAsync(CancellationToken cancellationToken = default)
     {

@@ -30,6 +30,7 @@ public class Helpers
                 typeof(ResponseAssertionPipelineHandler),
                 typeof(ResponseProfilerPipelineHandler),
                 typeof(RequestEventPipelineHandler),
+                typeof(QuotaPipelineHandler),
                 typeof(TimeoutPipelineHandler),
                 typeof(RetryPipelineHandler),
                 typeof(TokenManagementPipelineHandler),
@@ -58,6 +59,7 @@ public class Helpers
         services.TryAddSingleton<ResponseAssertionPipelineHandler>();
         services.TryAddSingleton<ResponseProfilerPipelineHandler>();
         services.TryAddSingleton<RequestEventPipelineHandler>();
+        services.TryAddSingleton<QuotaPipelineHandler>();
         services.TryAddSingleton<TimeoutPipelineHandler>();
         services.TryAddSingleton<RetryPipelineHandler>();
         services.TryAddSingleton<TokenManagementPipelineHandler>();
@@ -69,6 +71,11 @@ public class Helpers
         services.TryAddSingleton<SendCorePipelineHandler>();
 
         services.TryAddSingleton<IHttpAccessTokenManager, HttpAccessTokenManager>();
+        services.TryAddSingleton<IHttpQuotaManager, HttpQuotaManager>();
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IHttpQuotaStrategy, DailyQuotaStrategy>());
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IHttpQuotaStrategy, WeeklyQuotaStrategy>());
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IHttpQuotaStrategy, MonthlyQuotaStrategy>());
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IHttpQuotaStrategy, LifetimeQuotaStrategy>());
 
         if (requestEventHandler is not null)
         {

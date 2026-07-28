@@ -17,14 +17,16 @@ public class HttpRemoteBuilderTests
         Assert.Null(builder._httpDeclarativeExtractors);
         Assert.Null(builder._objectContentConverterFactoryType);
         Assert.Null(builder._httpDeclarativeTypes);
+        Assert.Null(builder._httpQuotaStrategyTypes);
 
         Assert.NotNull(builder._httpRequestPipelineHandlerTypes);
-        Assert.Equal(13, builder._httpRequestPipelineHandlerTypes.Count);
+        Assert.Equal(14, builder._httpRequestPipelineHandlerTypes.Count);
         Assert.Equal([
             typeof(SuppressExceptionPipelineHandler),
             typeof(ResponseAssertionPipelineHandler),
             typeof(ResponseProfilerPipelineHandler),
             typeof(RequestEventPipelineHandler),
+            typeof(QuotaPipelineHandler),
             typeof(TimeoutPipelineHandler),
             typeof(RetryPipelineHandler),
             typeof(TokenManagementPipelineHandler),
@@ -235,7 +237,7 @@ public class HttpRemoteBuilderTests
         builder.AddHttpDeclarativesFromAssemblies([typeof(HttpRemoteBuilderTests).Assembly, null]);
 
         Assert.NotNull(builder._httpDeclarativeTypes);
-        Assert.Equal(57, builder._httpDeclarativeTypes.Count);
+        Assert.Equal(59, builder._httpDeclarativeTypes.Count);
     }
 
     [Fact]
@@ -301,7 +303,7 @@ public class HttpRemoteBuilderTests
 
         var exception2 = Assert.Throws<ArgumentOutOfRangeException>(() =>
             builder.AddPipelineHandler(typeof(CustomPipelineHandler), -1));
-        Assert.Equal("Index must be between 0 and 13. (Parameter 'index')", exception2.Message);
+        Assert.Equal("Index must be between 0 and 14. (Parameter 'index')", exception2.Message);
     }
 
     [Fact]
@@ -310,12 +312,52 @@ public class HttpRemoteBuilderTests
         var builder = new HttpRemoteBuilder();
         builder.AddPipelineHandler(typeof(CustomPipelineHandler)).AddPipelineHandler<CustomPipelineHandler>();
 
-        Assert.Equal(15, builder._httpRequestPipelineHandlerTypes.Count);
+        Assert.Equal(16, builder._httpRequestPipelineHandlerTypes.Count);
         Assert.Equal(typeof(CustomPipelineHandler), builder._httpRequestPipelineHandlerTypes.First());
         Assert.Equal(typeof(CustomPipelineHandler), builder._httpRequestPipelineHandlerTypes.Skip(1).First());
 
         builder.AddPipelineHandler<CustomPipelineHandler>(builder._httpRequestPipelineHandlerTypes.Count);
         Assert.Equal(typeof(CustomPipelineHandler), builder._httpRequestPipelineHandlerTypes.Last());
+    }
+
+    [Fact]
+    public void AddQuotaStrategy_Invalid_Parameters()
+    {
+        var builder = new HttpRemoteBuilder();
+
+        Assert.Throws<ArgumentNullException>(() => builder.AddQuotaStrategy(null!));
+
+        var exception = Assert.Throws<ArgumentException>(() =>
+            builder.AddQuotaStrategy(typeof(NotImplementHttpQuotaStrategy)));
+        Assert.Equal(
+            $"`{typeof(NotImplementHttpQuotaStrategy)}` type is not assignable from `{typeof(IHttpQuotaStrategy)}`. (Parameter 'strategyType')",
+            exception.Message);
+    }
+
+    [Fact]
+    public void AddQuotaStrategy_ReturnOK()
+    {
+        var builder = new HttpRemoteBuilder();
+        builder.AddQuotaStrategy(typeof(CustomQuotaStrategy)).AddQuotaStrategy<CustomQuotaStrategy>();
+
+        Assert.NotNull(builder._httpQuotaStrategyTypes);
+        Assert.Single(builder._httpQuotaStrategyTypes);
+        Assert.Equal(typeof(CustomQuotaStrategy), builder._httpQuotaStrategyTypes.First());
+    }
+
+    [Fact]
+    public void AddDefaultQuotaStrategies_ReturnOK()
+    {
+        var builder = new HttpRemoteBuilder();
+        builder.AddDefaultQuotaStrategies().AddDefaultQuotaStrategies();
+
+        Assert.NotNull(builder._httpQuotaStrategyTypes);
+        Assert.Equal(4, builder._httpQuotaStrategyTypes.Count);
+        Assert.Equal(
+        [
+            typeof(DailyQuotaStrategy), typeof(WeeklyQuotaStrategy), typeof(MonthlyQuotaStrategy),
+            typeof(LifetimeQuotaStrategy)
+        ], builder._httpQuotaStrategyTypes);
     }
 
     [Fact]
@@ -337,6 +379,7 @@ public class HttpRemoteBuilderTests
         Assert.Contains(services, u => u.ServiceType == typeof(ResponseAssertionPipelineHandler));
         Assert.Contains(services, u => u.ServiceType == typeof(ResponseProfilerPipelineHandler));
         Assert.Contains(services, u => u.ServiceType == typeof(RequestEventPipelineHandler));
+        Assert.Contains(services, u => u.ServiceType == typeof(QuotaPipelineHandler));
         Assert.Contains(services, u => u.ServiceType == typeof(TimeoutPipelineHandler));
         Assert.Contains(services, u => u.ServiceType == typeof(RetryPipelineHandler));
         Assert.Contains(services, u => u.ServiceType == typeof(TokenManagementPipelineHandler));
@@ -348,8 +391,9 @@ public class HttpRemoteBuilderTests
         Assert.Contains(services, u => u.ServiceType == typeof(SendCorePipelineHandler));
 
         Assert.Contains(services, u => u.ServiceType == typeof(IHttpAccessTokenManager));
+        Assert.Contains(services, u => u.ServiceType == typeof(IHttpQuotaManager));
 
-        Assert.Equal(46, services.Count);
+        Assert.Equal(48, services.Count);
     }
 
     [Fact]
@@ -369,7 +413,7 @@ public class HttpRemoteBuilderTests
         Assert.Contains(services, u => u.ServiceType == typeof(IHttpRemoteService));
         Assert.True(services.First(u => u.ServiceType == typeof(IObjectContentConverterFactory)).ImplementationType ==
                     typeof(ObjectContentConverterFactory));
-        Assert.Equal(48, services.Count);
+        Assert.Equal(50, services.Count);
     }
 
     [Fact]
@@ -387,7 +431,7 @@ public class HttpRemoteBuilderTests
         Assert.Contains(services, u => u.ServiceType == typeof(IObjectContentConverterFactory));
         Assert.True(services.First(u => u.ServiceType == typeof(IObjectContentConverterFactory)).ImplementationType ==
                     typeof(CustomObjectContentConverterFactory));
-        Assert.Equal(46, services.Count);
+        Assert.Equal(48, services.Count);
     }
 
     [Fact]
@@ -407,7 +451,7 @@ public class HttpRemoteBuilderTests
         Assert.Contains(services, u => u.ServiceType == typeof(IObjectContentConverterFactory));
         Assert.True(services.First(u => u.ServiceType == typeof(IObjectContentConverterFactory)).ImplementationType ==
                     typeof(CustomObjectContentConverterFactory));
-        Assert.Equal(48, services.Count);
+        Assert.Equal(50, services.Count);
     }
 
     [Fact]
@@ -486,12 +530,13 @@ public class HttpRemoteBuilderTests
         Assert.NotNull(remoteOptions.HttpDeclarativeExtractors);
         Assert.Single(remoteOptions.HttpDeclarativeExtractors);
         Assert.NotNull(remoteOptions.PipelineHandlerTypes);
-        Assert.Equal(13, remoteOptions.PipelineHandlerTypes.Count);
+        Assert.Equal(14, remoteOptions.PipelineHandlerTypes.Count);
         Assert.Equal([
             typeof(SuppressExceptionPipelineHandler),
             typeof(ResponseAssertionPipelineHandler),
             typeof(ResponseProfilerPipelineHandler),
             typeof(RequestEventPipelineHandler),
+            typeof(QuotaPipelineHandler),
             typeof(TimeoutPipelineHandler),
             typeof(RetryPipelineHandler),
             typeof(TokenManagementPipelineHandler),
@@ -524,6 +569,24 @@ public class HttpRemoteBuilderTests
 
         builder.RegisterContentProviders(services);
         Assert.Equal(3, services.Count);
+    }
+
+    [Fact]
+    public void RegisterQuotaStrategies_ReturnOK()
+    {
+        var services = new ServiceCollection();
+        var builder = new HttpRemoteBuilder();
+
+        builder.RegisterQuotaStrategies(services);
+        Assert.Empty(services);
+
+        builder.AddQuotaStrategy<CustomQuotaStrategy>();
+        builder.RegisterQuotaStrategies(services);
+        Assert.Single(services);
+
+        builder.AddDefaultQuotaStrategies();
+        builder.RegisterQuotaStrategies(services);
+        Assert.Equal(5, services.Count);
     }
 
     [Fact]

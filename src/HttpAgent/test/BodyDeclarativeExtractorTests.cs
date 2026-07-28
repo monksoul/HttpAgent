@@ -26,15 +26,6 @@ public class BodyDeclarativeExtractorTests
 
         Assert.Throws<InvalidOperationException>(() =>
             new BodyDeclarativeExtractor().Extract(httpRequestBuilder, context));
-
-        var method10 = typeof(IBodyDeclarativeTest).GetMethod(nameof(IBodyDeclarativeTest.Test10))!;
-        var context2 =
-            new HttpDeclarativeExtractorContext(method10, ["str1"],
-                new HttpDeclarativeMethodMetadata(method10, typeof(IBodyDeclarativeTest)));
-        var httpRequestBuilder2 = HttpRequestBuilder.Post("http://localhost");
-
-        Assert.Throws<ArgumentNullException>(() =>
-            new BodyDeclarativeExtractor().Extract(httpRequestBuilder2, context2));
     }
 
     [Fact]
