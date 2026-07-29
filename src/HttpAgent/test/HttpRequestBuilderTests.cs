@@ -490,7 +490,7 @@ public class HttpRequestBuilderTests
         var builder = WebApplication.CreateBuilder(urls);
         await using var app = builder.Build();
 
-        app.MapGet("/test", async context =>
+        app.MapMethods("/test", ["GET", "HEAD"], async context =>
         {
             context.Response.StatusCode = 401;
             context.Response.Headers.WWWAuthenticate =

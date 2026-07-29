@@ -168,7 +168,7 @@ public class HttpRemoteExtensionsTests
     }
 
     [Fact]
-    public async Task LogHttpContentAsync_ReturnOK()
+    public async Task ProfilerAsync_ReturnOK()
     {
         Assert.Null(await HttpRemoteExtensions.ProfilerAsync(null));
 
@@ -221,6 +221,69 @@ public class HttpRemoteExtensionsTests
         httpResponseMessage2.Content = stringContent4;
         Assert.Equal("[36m[1mRequest Body (StringContent, total: 11 bytes):[0m \r\n  [33mHello World[0m",
             await stringContent4.ProfilerAsync(httpResponseMessage: httpResponseMessage2));
+
+        var largeNoLengthContent = new LargeContentWithoutLength(11 * 1024 * 1024);
+        var exReq = await Assert.ThrowsAsync<InvalidOperationException>(() => largeNoLengthContent.ProfilerAsync());
+        Assert.Contains("The request body for request", exReq.Message);
+        Assert.Contains("10 MB", exReq.Message);
+
+        using var reqMsg = new HttpRequestMessage(HttpMethod.Post, "https://furion.net/api/data");
+        var largeNoLengthContent2 = new LargeContentWithoutLength(11 * 1024 * 1024);
+        var exReqWithUrl = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            largeNoLengthContent2.ProfilerAsync(httpRequestMessage: reqMsg));
+        Assert.Contains("for request 'https://furion.net/api/data'", exReqWithUrl.Message);
+
+        using var respMsg = new HttpResponseMessage();
+        respMsg.RequestMessage = new HttpRequestMessage(HttpMethod.Get, "https://furion.net/api/response");
+        var largeNoLengthContent3 = new LargeContentWithoutLength(11 * 1024 * 1024);
+        var exResp = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            largeNoLengthContent3.ProfilerAsync(httpResponseMessage: respMsg));
+        Assert.Contains("The response body for request 'https://furion.net/api/response'", exResp.Message);
+
+        var streamingResp = new HttpResponseMessage();
+        streamingResp.RequestMessage = new HttpRequestMessage();
+        streamingResp.RequestMessage.Options.Set(
+            new HttpRequestOptionsKey<HttpCompletionOption>(Constants.HTTP_COMPLETION_OPTION_KEY),
+            HttpCompletionOption.ResponseHeadersRead);
+        streamingResp.Content = new NoLengthStreamContent("ignored"u8.ToArray());
+        var streamSkipResult = await streamingResp.Content.ProfilerAsync(httpResponseMessage: streamingResp);
+        Assert.Contains("Skipped due to streaming", streamSkipResult);
+
+        var longText = new string('A', 9 * 1024);
+        var truncContent = new StringContent(longText);
+        var truncResult = await truncContent.ProfilerAsync();
+        Assert.NotNull(truncResult);
+        Assert.Contains("[truncated, > 8192 bytes]", truncResult);
+        Assert.True(truncResult.Length < longText.Length + 100);
+
+        const string rawText = "Hello, this is a test content!";
+        var compressedBytes = GzipCompress(Encoding.UTF8.GetBytes(rawText));
+        var compressedContent = new ByteArrayContent(compressedBytes);
+        compressedContent.Headers.ContentEncoding.Add("gzip");
+        compressedContent.Headers.ContentType = new MediaTypeHeaderValue("text/plain") { CharSet = "utf-8" };
+        var gzipResp = new HttpResponseMessage();
+        gzipResp.Content = compressedContent;
+        var gzipResult = await compressedContent.ProfilerAsync(httpResponseMessage: gzipResp);
+        Assert.Contains(rawText, gzipResult);
+
+        var largeWithLengthContent = new StringContent(new string('B', 11 * 1024 * 1024));
+        var skipResult = await largeWithLengthContent.ProfilerAsync();
+        Assert.Contains("[Skipped: content too large", skipResult);
+        Assert.DoesNotContain("BBBB", skipResult);
+
+        var successResp = new HttpResponseMessage(HttpStatusCode.OK);
+        var successContent = new StringContent("Success");
+        successResp.Content = successContent;
+        var successResult = await successContent.ProfilerAsync(httpResponseMessage: successResp);
+        Assert.Contains("\e[32m", successResult);
+        Assert.Contains("Success", successResult);
+
+        var redirectResp = new HttpResponseMessage(HttpStatusCode.Redirect);
+        var redirectContent = new StringContent("Redirect");
+        redirectResp.Content = redirectContent;
+        var redirectResult = await redirectContent.ProfilerAsync(httpResponseMessage: redirectResp);
+        Assert.Contains("\e[33m", redirectResult);
+        Assert.Contains("Redirect", redirectResult);
     }
 
     [Fact]
@@ -323,13 +386,9 @@ public class HttpRemoteExtensionsTests
             "hBSH5yRDI1a0Fzb2lMWllDYk0tRkZ0UEc2OW1URjBvLUtVckNMeFUyaUNxdWxtRVFBQUFBJCQAAAAAAAAAAAEAAADeGZbRsNnHqc34xcwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIIdwmaCHcJmUm",
             cookies.Value.ToString());
 
-        // ===============
-
         httpResponseMessage.TryGetSetCookies(out var setCookies3, out var rawSetCookies3);
-
         Assert.Null(setCookies3);
         Assert.Null(rawSetCookies3);
-
         httpResponseMessage2.TryGetSetCookies(out var setCookies4, out var rawSetCookies4);
 
         Assert.NotNull(rawSetCookies4);
@@ -559,7 +618,6 @@ public class HttpRemoteExtensionsTests
         var originalBytes = Encoding.UTF8.GetBytes(originalText);
         var originalLength = originalBytes.Length;
 
-        // gzip 全量解压
         using var gzipCompressedStream = new MemoryStream();
         await using (var gzip = new GZipStream(gzipCompressedStream, CompressionMode.Compress, true))
         {
@@ -574,9 +632,8 @@ public class HttpRemoteExtensionsTests
         var gzipResult = Encoding.UTF8.GetString(gzipBuffer, 0, gzipRead);
         Assert.Equal(originalText, gzipResult);
         Assert.Equal(originalLength, gzipRead);
-        Assert.False(gzipTruncated); // 未截断
+        Assert.False(gzipTruncated);
 
-        // deflate 全量解压
         using var deflateCompressedStream = new MemoryStream();
         await using (var deflate = new DeflateStream(deflateCompressedStream, CompressionMode.Compress, true))
         {
@@ -594,7 +651,6 @@ public class HttpRemoteExtensionsTests
         Assert.Equal(originalLength, deflateRead);
         Assert.False(deflateTruncated);
 
-        // brotli 全量解压
         using var brCompressedStream = new MemoryStream();
         await using (var brotli = new BrotliStream(brCompressedStream, CompressionMode.Compress, true))
         {
@@ -611,7 +667,6 @@ public class HttpRemoteExtensionsTests
         Assert.Equal(originalLength, brRead);
         Assert.False(brTruncated);
 
-        // 未知编码（无压缩）
         using var unknownStream = new MemoryStream(originalBytes);
         unknownStream.Position = 0;
 
@@ -624,7 +679,6 @@ public class HttpRemoteExtensionsTests
         Assert.Equal(originalLength, unknownRead);
         Assert.False(unknownTruncated);
 
-        // 空编码（无压缩）
         using var nullEncodingStream = new MemoryStream(originalBytes);
         nullEncodingStream.Position = 0;
 
@@ -708,9 +762,59 @@ public class HttpRemoteExtensionsTests
         Assert.NotNull(exception.GetResponseMessage());
     }
 
+    private static byte[] GzipCompress(byte[] data)
+    {
+        using var output = new MemoryStream();
+        using (var gzip = new GZipStream(output, CompressionMode.Compress, true))
+        {
+            gzip.Write(data, 0, data.Length);
+        }
+
+        return output.ToArray();
+    }
+
     public class JsonModel
     {
         public int Id { get; set; }
         public string? Name { get; set; }
+    }
+
+    internal class NoLengthStreamContent : HttpContent
+    {
+        private readonly byte[] _data;
+        public NoLengthStreamContent(byte[] data) => _data = data;
+
+        protected override Task SerializeToStreamAsync(Stream stream, TransportContext? context)
+            => stream.WriteAsync(_data, 0, _data.Length);
+
+        protected override bool TryComputeLength(out long length)
+        {
+            length = 0;
+            return false;
+        }
+    }
+
+    internal class LargeContentWithoutLength : HttpContent
+    {
+        private readonly int _sizeInBytes;
+        public LargeContentWithoutLength(int sizeInBytes) => _sizeInBytes = sizeInBytes;
+
+        protected override async Task SerializeToStreamAsync(Stream stream, TransportContext? context)
+        {
+            var buffer = new byte[8192];
+            var remaining = _sizeInBytes;
+            while (remaining > 0)
+            {
+                var toWrite = Math.Min(remaining, buffer.Length);
+                await stream.WriteAsync(buffer.AsMemory(0, toWrite));
+                remaining -= toWrite;
+            }
+        }
+
+        protected override bool TryComputeLength(out long length)
+        {
+            length = 0;
+            return false;
+        }
     }
 }

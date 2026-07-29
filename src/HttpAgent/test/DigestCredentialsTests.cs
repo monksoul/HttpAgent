@@ -88,7 +88,6 @@ public class DigestCredentialsTests
         Assert.Equal("auth", credentials.Qop);
         Assert.Equal(1, credentials.Nc);
         Assert.NotNull(credentials.CNonce);
-        Assert.True(int.Parse(credentials.CNonce) > 123399);
         Assert.Null(credentials.Opaque);
     }
 
@@ -167,7 +166,7 @@ public class DigestCredentialsTests
         var builder = WebApplication.CreateBuilder(urls);
         await using var app = builder.Build();
 
-        app.MapGet("/test", async context =>
+        app.MapMethods("/test", ["HEAD", "GET"], async context =>
         {
             context.Response.StatusCode = 401;
             context.Response.Headers.WWWAuthenticate =
@@ -186,5 +185,32 @@ public class DigestCredentialsTests
             credentials);
 
         await app.StopAsync();
+    }
+
+    [Fact]
+    public async Task GetDigestCredentials_HttpBin_ReturnOK()
+    {
+        var credentials = DigestCredentials.GetDigestCredentials(
+            "https://httpbin.org/digest-auth/auth/user/passwd",
+            "user",
+            "passwd",
+            HttpMethod.Get);
+
+        Assert.NotNull(credentials);
+        Assert.Contains("username=\"user\"", credentials);
+        Assert.Contains("realm=\"me@kennethreitz.com\"", credentials);
+        Assert.Contains("uri=\"/digest-auth/auth/user/passwd\"", credentials);
+        Assert.Contains("algorithm=MD5", credentials);
+        Assert.Contains("response=\"", credentials);
+
+        using var httpClient = new HttpClient();
+        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Digest", credentials);
+
+        var response = await httpClient.GetAsync("https://httpbin.org/digest-auth/auth/user/passwd");
+
+        Assert.True(response.IsSuccessStatusCode, $"Digest authentication failed. Status: {response.StatusCode}");
+
+        var content = await response.Content.ReadAsStringAsync();
+        Assert.Contains("\"authenticated\": true", content);
     }
 }

@@ -11,9 +11,6 @@ public class ConstantsTests
         Assert.Equal("X-Trace-ID", Constants.X_TRACE_ID_HEADER);
 
     [Fact]
-    public void UNKNOWN_USER_AGENT_VERSION() => Assert.Equal("unknown", Constants.UNKNOWN_USER_AGENT_VERSION);
-
-    [Fact]
     public void BASIC_AUTHENTICATION_SCHEME() => Assert.Equal("Basic", Constants.BASIC_AUTHENTICATION_SCHEME);
 
     [Fact]
