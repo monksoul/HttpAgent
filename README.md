@@ -26,9 +26,16 @@ consumption and high test coverage.
   compatible with `WebSocket` protocol.
 - **Request Management and Log Auditing**: Includes built-in request interception mechanisms and `HTTP` request log
   auditing functions.
+- **Request Resilience & Fault Tolerance**: Built-in retry mechanism (triggered by status codes/exceptions, with
+  exponential backoff) and timeout control; extensible to circuit breaker, fallback, and other advanced resilience
+  patterns.
 - **Automatic `Access Token` Management**: Built-in automatic `Access Token` refresh and injection mechanism, supports
   custom `Token` providers and configurators, automatically attaches `Token` to requests, and retries automatically on
   `401` responses.
+- **API Call Quota Limitation**: Supports daily, weekly, monthly, and lifetime window strategies, with customizable
+  quota strategies; immediately aborts requests when limits are exceeded, preventing abuse of third-party APIs.
+- **`ETag` Response Caching**: Automatically caches responses with `ETag`, and reuses cached responses when the server
+  returns `304 Not Modified`, reducing data transfer.
 - **Media Type Handling**: Provides predefined handling mechanisms for mainstream `MediaTypes` and offers an open
   interface for custom handling.
 - **Declarative Requests**: Specifying the behavior of requests through simple attribute annotations or interface
@@ -43,6 +50,8 @@ consumption and high test coverage.
   logic.
 - **High Performance and Resource Management**: Employs memory optimization techniques and connection pool management to
   ensure low resource consumption and high performance.
+- **Response Automatic Decompression**: Built-in support for `gzip`, `deflate`, `brotli` and `zstd` automatic
+  decompression of response content, reducing manual handling and saving bandwidth.
 - **Architecture Design**: Flexible architecture design that is easy to use and extend.
 - **Cross-Platform Independence**: Supports cross-platform operation without external dependencies.
 - **Application Type Support**: Supports any application type, including but not limited to Console, Web, WebAssembly,

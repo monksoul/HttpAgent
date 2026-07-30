@@ -723,6 +723,21 @@ public class DeclarativeAttributeTests
         Assert.Equal("weixin/login", attribute2.Key);
     }
 
+    [Fact]
+    public void UseETagAttribute_ReturnOK()
+    {
+        var attributeUsage = typeof(UseETagAttribute).GetCustomAttribute<AttributeUsageAttribute>();
+        Assert.NotNull(attributeUsage);
+        Assert.Equal(AttributeTargets.Method | AttributeTargets.Interface, attributeUsage.ValidOn);
+        Assert.False(attributeUsage.AllowMultiple);
+
+        var attribute = new UseETagAttribute();
+        Assert.True(attribute.Enabled);
+
+        var attribute2 = new UseETagAttribute(false);
+        Assert.False(attribute2.Enabled);
+    }
+
     public class MyRequestEventHandler : IHttpRequestEventHandler
     {
         /// <inheritdoc />

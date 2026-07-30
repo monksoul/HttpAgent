@@ -38,6 +38,7 @@ public class Helpers
                 typeof(StatusCodePipelineHandler),
                 typeof(ContentLengthValidationPipelineHandler),
                 typeof(RequestBuilderPipelineHandler),
+                typeof(ETagPipelineHandler),
                 typeof(RequestProfilerPipelineHandler),
                 typeof(SendCorePipelineHandler)
             ];
@@ -67,6 +68,7 @@ public class Helpers
         services.TryAddSingleton<StatusCodePipelineHandler>();
         services.TryAddSingleton<ContentLengthValidationPipelineHandler>();
         services.TryAddSingleton<RequestBuilderPipelineHandler>();
+        services.TryAddSingleton<ETagPipelineHandler>();
         services.TryAddSingleton<RequestProfilerPipelineHandler>();
         services.TryAddSingleton<SendCorePipelineHandler>();
 
@@ -76,6 +78,8 @@ public class Helpers
         services.TryAddEnumerable(ServiceDescriptor.Singleton<IHttpQuotaStrategy, WeeklyQuotaStrategy>());
         services.TryAddEnumerable(ServiceDescriptor.Singleton<IHttpQuotaStrategy, MonthlyQuotaStrategy>());
         services.TryAddEnumerable(ServiceDescriptor.Singleton<IHttpQuotaStrategy, LifetimeQuotaStrategy>());
+
+        services.TryAddSingleton<IHttpETagCache, MemoryETagCache>();
 
         if (requestEventHandler is not null)
         {

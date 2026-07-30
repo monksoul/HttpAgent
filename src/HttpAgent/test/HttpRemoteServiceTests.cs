@@ -747,7 +747,7 @@ public class HttpRemoteServiceTests
 
         app.MapPost("/test", async context =>
         {
-            // 获取请求体中的内容
+            // 获取请求内容中的内容
             context.Request.Body.Position = 0;
 
             using var memoryStream = new MemoryStream();
@@ -1712,6 +1712,60 @@ public class HttpRemoteServiceTests
 
         Assert.Equal("Request aborted due to quota limit. Key: 'test/quota', Strategy: 'daily', Max: 2, Attempted: 3.",
             exception.Message);
+
+        await app.StopAsync();
+    }
+
+    [Fact]
+    public async Task SendCoreAsync_UseETag_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        builder.Services.AddHttpRemote();
+        await using var app = builder.Build();
+
+        var actualRequests = 0;
+
+        app.MapGet("/test", async httpContext =>
+        {
+            var count = Interlocked.Increment(ref actualRequests);
+            await Task.Delay(50);
+
+            httpContext.Response.Headers.ETag = "\"abc123\"";
+
+            var ifNoneMatch = httpContext.Request.Headers.IfNoneMatch;
+            if (ifNoneMatch.Count > 0 && ifNoneMatch[0] == "\"abc123\"")
+            {
+                httpContext.Response.StatusCode = 304;
+                return;
+            }
+
+            var content = count == 1 ? "Hello World! (first)" : "Hello World! (should not be seen)";
+            await httpContext.Response.WriteAsync(content);
+        });
+
+        await app.StartAsync();
+
+        var httpRemoteService = app.Services.GetRequiredService<IHttpRemoteService>();
+
+        var request1 = new HttpRequestBuilder(HttpMethod.Get,
+            new Uri($"http://localhost:{port}/test")).UseETag();
+        var response1 = await httpRemoteService.SendAsync(request1);
+        Assert.NotNull(response1);
+        Assert.Equal(HttpStatusCode.OK, response1.StatusCode);
+        Assert.Equal("Hello World! (first)", await response1.Content.ReadAsStringAsync());
+        Assert.Equal("\"abc123\"", response1.Headers.ETag?.Tag);
+
+        var request2 = new HttpRequestBuilder(HttpMethod.Get,
+            new Uri($"http://localhost:{port}/test")).UseETag();
+        var response2 = await httpRemoteService.SendAsync(request2);
+        Assert.NotNull(response2);
+        Assert.Equal(HttpStatusCode.OK, response2.StatusCode);
+        Assert.Equal("Hello World! (first)", await response2.Content.ReadAsStringAsync());
+        Assert.Equal("\"abc123\"", response2.Headers.ETag?.Tag);
+
+        Assert.Equal(2, actualRequests);
 
         await app.StopAsync();
     }

@@ -53,7 +53,12 @@ public class HttpRemoteExtensionsTests
 
         Assert.NotEmpty(httpClient.DefaultRequestHeaders);
         Assert.Equal("*/*", httpClient.DefaultRequestHeaders.Accept.ToString());
+#if NET11_0_OR_GREATER
+        Assert.Equal("gzip, deflate, br, zstd", httpClient.DefaultRequestHeaders.AcceptEncoding.ToString());
+#else
         Assert.Equal("gzip, deflate, br", httpClient.DefaultRequestHeaders.AcceptEncoding.ToString());
+
+#endif
         Assert.False(httpClient.DefaultRequestHeaders.ConnectionClose);
     }
 

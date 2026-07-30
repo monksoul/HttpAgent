@@ -2173,10 +2173,6 @@ public class HttpRequestBuilderMethodsTests
     }
 
     [Fact]
-    public void MergeHeaders_Invalid_Parameters() =>
-        Assert.Throws<ArgumentNullException>(() => HttpRequestBuilder.MergeHeaders(null, null!, false, false));
-
-    [Fact]
     public void SetQuotaKey_ReturnOK()
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
@@ -2188,6 +2184,22 @@ public class HttpRequestBuilderMethodsTests
         httpRequestBuilder.SetQuotaKey(null);
         Assert.Null(httpRequestBuilder.QuotaKey);
     }
+
+    [Fact]
+    public void UseETag_ReturnOK()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+
+        httpRequestBuilder.UseETag();
+        Assert.True(httpRequestBuilder.ETagEnabled);
+
+        httpRequestBuilder.UseETag(false);
+        Assert.False(httpRequestBuilder.ETagEnabled);
+    }
+
+    [Fact]
+    public void MergeHeaders_Invalid_Parameters() =>
+        Assert.Throws<ArgumentNullException>(() => HttpRequestBuilder.MergeHeaders(null, null!, false, false));
 
     [Fact]
     public void MergeHeaders_ReturnOK()

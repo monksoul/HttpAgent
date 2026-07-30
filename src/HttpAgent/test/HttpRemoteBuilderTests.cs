@@ -20,7 +20,7 @@ public class HttpRemoteBuilderTests
         Assert.Null(builder._httpQuotaStrategyTypes);
 
         Assert.NotNull(builder._httpRequestPipelineHandlerTypes);
-        Assert.Equal(14, builder._httpRequestPipelineHandlerTypes.Count);
+        Assert.Equal(15, builder._httpRequestPipelineHandlerTypes.Count);
         Assert.Equal([
             typeof(SuppressExceptionPipelineHandler),
             typeof(ResponseAssertionPipelineHandler),
@@ -34,6 +34,7 @@ public class HttpRemoteBuilderTests
             typeof(StatusCodePipelineHandler),
             typeof(ContentLengthValidationPipelineHandler),
             typeof(RequestBuilderPipelineHandler),
+            typeof(ETagPipelineHandler),
             typeof(RequestProfilerPipelineHandler),
             typeof(SendCorePipelineHandler)
         ], builder._httpRequestPipelineHandlerTypes);
@@ -237,7 +238,7 @@ public class HttpRemoteBuilderTests
         builder.AddHttpDeclarativesFromAssemblies([typeof(HttpRemoteBuilderTests).Assembly, null]);
 
         Assert.NotNull(builder._httpDeclarativeTypes);
-        Assert.Equal(59, builder._httpDeclarativeTypes.Count);
+        Assert.Equal(61, builder._httpDeclarativeTypes.Count);
     }
 
     [Fact]
@@ -303,7 +304,7 @@ public class HttpRemoteBuilderTests
 
         var exception2 = Assert.Throws<ArgumentOutOfRangeException>(() =>
             builder.AddPipelineHandler(typeof(CustomPipelineHandler), -1));
-        Assert.Equal("Index must be between 0 and 14. (Parameter 'index')", exception2.Message);
+        Assert.Equal("Index must be between 0 and 15. (Parameter 'index')", exception2.Message);
     }
 
     [Fact]
@@ -312,7 +313,7 @@ public class HttpRemoteBuilderTests
         var builder = new HttpRemoteBuilder();
         builder.AddPipelineHandler(typeof(CustomPipelineHandler)).AddPipelineHandler<CustomPipelineHandler>();
 
-        Assert.Equal(16, builder._httpRequestPipelineHandlerTypes.Count);
+        Assert.Equal(17, builder._httpRequestPipelineHandlerTypes.Count);
         Assert.Equal(typeof(CustomPipelineHandler), builder._httpRequestPipelineHandlerTypes.First());
         Assert.Equal(typeof(CustomPipelineHandler), builder._httpRequestPipelineHandlerTypes.Skip(1).First());
 
@@ -392,8 +393,9 @@ public class HttpRemoteBuilderTests
 
         Assert.Contains(services, u => u.ServiceType == typeof(IHttpAccessTokenManager));
         Assert.Contains(services, u => u.ServiceType == typeof(IHttpQuotaManager));
+        Assert.Contains(services, u => u.ServiceType == typeof(IHttpETagCache));
 
-        Assert.Equal(48, services.Count);
+        Assert.Equal(50, services.Count);
     }
 
     [Fact]
@@ -413,7 +415,7 @@ public class HttpRemoteBuilderTests
         Assert.Contains(services, u => u.ServiceType == typeof(IHttpRemoteService));
         Assert.True(services.First(u => u.ServiceType == typeof(IObjectContentConverterFactory)).ImplementationType ==
                     typeof(ObjectContentConverterFactory));
-        Assert.Equal(50, services.Count);
+        Assert.Equal(52, services.Count);
     }
 
     [Fact]
@@ -431,7 +433,7 @@ public class HttpRemoteBuilderTests
         Assert.Contains(services, u => u.ServiceType == typeof(IObjectContentConverterFactory));
         Assert.True(services.First(u => u.ServiceType == typeof(IObjectContentConverterFactory)).ImplementationType ==
                     typeof(CustomObjectContentConverterFactory));
-        Assert.Equal(48, services.Count);
+        Assert.Equal(50, services.Count);
     }
 
     [Fact]
@@ -451,7 +453,7 @@ public class HttpRemoteBuilderTests
         Assert.Contains(services, u => u.ServiceType == typeof(IObjectContentConverterFactory));
         Assert.True(services.First(u => u.ServiceType == typeof(IObjectContentConverterFactory)).ImplementationType ==
                     typeof(CustomObjectContentConverterFactory));
-        Assert.Equal(50, services.Count);
+        Assert.Equal(52, services.Count);
     }
 
     [Fact]
@@ -530,7 +532,7 @@ public class HttpRemoteBuilderTests
         Assert.NotNull(remoteOptions.HttpDeclarativeExtractors);
         Assert.Single(remoteOptions.HttpDeclarativeExtractors);
         Assert.NotNull(remoteOptions.PipelineHandlerTypes);
-        Assert.Equal(14, remoteOptions.PipelineHandlerTypes.Count);
+        Assert.Equal(15, remoteOptions.PipelineHandlerTypes.Count);
         Assert.Equal([
             typeof(SuppressExceptionPipelineHandler),
             typeof(ResponseAssertionPipelineHandler),
@@ -544,6 +546,7 @@ public class HttpRemoteBuilderTests
             typeof(StatusCodePipelineHandler),
             typeof(ContentLengthValidationPipelineHandler),
             typeof(RequestBuilderPipelineHandler),
+            typeof(ETagPipelineHandler),
             typeof(RequestProfilerPipelineHandler),
             typeof(SendCorePipelineHandler)
         ], remoteOptions.PipelineHandlerTypes);

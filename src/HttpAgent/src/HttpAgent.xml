@@ -29,6 +29,11 @@
                 刷新 Token 常量
             </summary>
         </member>
+        <member name="M:HttpAgent.HttpAccessToken.#ctor">
+            <summary>
+                <inheritdoc cref="T:HttpAgent.HttpAccessToken" />
+            </summary>
+        </member>
         <member name="M:HttpAgent.HttpAccessToken.#ctor(System.String,System.DateTimeOffset)">
             <summary>
                 <inheritdoc cref="T:HttpAgent.HttpAccessToken" />
@@ -347,7 +352,7 @@
                 指示是否需要强制刷新 Access Token 并重试请求
             </summary>
             <remarks>
-                默认实现仅在状态码为 <see cref="F:System.Net.HttpStatusCode.Unauthorized" />（401）时返回 <c>true</c>。可重写此方法以自定义刷新策略（例如检查 403、响应头、响应体等）。
+                默认实现仅在状态码为 <see cref="F:System.Net.HttpStatusCode.Unauthorized" />（401）时返回 <c>true</c>。可重写此方法以自定义刷新策略（例如检查 403、响应头、响应内容等）。
             </remarks>
             <param name="context">
                 <see cref="T:HttpAgent.HttpAccessTokenContext" />
@@ -4009,10 +4014,27 @@
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.SetQuotaKey(System.String)">
             <summary>
-                设置当前请求的配额键
+                设置配额键
             </summary>
             <param name="key">配额标识，通常为接口路径或自定义名称</param>
             <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.UseETag">
+            <summary>
+                启用 ETag 缓存处理
+            </summary>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.UseETag(System.Boolean)">
+            <summary>
+                设置是否启用 ETag 缓存处理
+            </summary>
+            <returns>
+                <param name="enabled">是否启用</param>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
         </member>
@@ -4279,7 +4301,7 @@
             <summary>
                 配额键
             </summary>
-            <remarks>用于标识当前请求属于哪个配额组，例如接口路径。</remarks>
+            <remarks>用于标识属于哪个配额组，例如接口路径。</remarks>
         </member>
         <member name="P:HttpAgent.HttpRequestBuilder.EnsureSuccessStatusCodeEnabled">
             <summary>
@@ -4397,6 +4419,11 @@
                 是否移除 URL 地址末尾的 "/"
             </summary>
             <remarks>默认值为：<c>false</c>。</remarks>
+        </member>
+        <member name="P:HttpAgent.HttpRequestBuilder.ETagEnabled">
+            <summary>
+                是否启用 ETag 缓存处理
+            </summary>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.SetRetryIndefinitely(System.Nullable{System.TimeSpan},System.TimeSpan[])">
             <summary>
@@ -6158,7 +6185,7 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Match the string "/Date(".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [+-] atomically any number of times.<br/>
+                ○ Match a character in the set [+\-] atomically any number of times.<br/>
                 ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match the string ")/".<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
@@ -6187,10 +6214,10 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Match the string "/Date(".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [+-] atomically any number of times.<br/>
+                ○ Match a character in the set [+\-] atomically any number of times.<br/>
                 ○ Match a Unicode digit atomically at least once.<br/>
             ○ 2nd capture group.<br/>
-                ○ Match a character in the set [+-].<br/>
+                ○ Match a character in the set [+\-].<br/>
             ○ 3rd capture group.<br/>
                 ○ Match a Unicode digit exactly 2 times.<br/>
             ○ 4th capture group.<br/>
@@ -6822,13 +6849,13 @@
                 ○ Match the string "**".<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [-:\w] greedily at least once.<br/>
+                ○ Match a character in the set [\-:\w] greedily at least once.<br/>
             ○ 2nd capture group.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match a whitespace character atomically any number of times.<br/>
                     ○ Match '|'.<br/>
                     ○ Match a whitespace character greedily any number of times.<br/>
-                    ○ Match a character in the set [-:\w] greedily at least once.<br/>
+                    ○ Match a character in the set [\-:\w] greedily at least once.<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ Optional (greedy).<br/>
                 ○ Match the string "||".<br/>
@@ -6855,32 +6882,32 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Loop greedily at least once.<br/>
                 ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
+                    ○ Match a character in the set [\-.0-9A-Z_a-z~].<br/>
                     ○ Match a sequence of expressions.<br/>
                         ○ Match '%'.<br/>
-                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
+                        ○ Match a hexadecimal digit exactly 2 times.<br/>
             ○ Match '='.<br/>
             ○ Loop greedily any number of times.<br/>
                 ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
+                    ○ Match a character in the set [+\-.0-9A-Z_a-z~].<br/>
                     ○ Match a sequence of expressions.<br/>
                         ○ Match '%'.<br/>
-                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
+                        ○ Match a hexadecimal digit exactly 2 times.<br/>
             ○ Loop greedily any number of times.<br/>
                 ○ Match '&amp;'.<br/>
                 ○ Loop greedily at least once.<br/>
                     ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
+                        ○ Match a character in the set [\-.0-9A-Z_a-z~].<br/>
                         ○ Match a sequence of expressions.<br/>
                             ○ Match '%'.<br/>
-                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
+                            ○ Match a hexadecimal digit exactly 2 times.<br/>
                 ○ Match '='.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
+                        ○ Match a character in the set [+\-.0-9A-Z_a-z~].<br/>
                         ○ Match a sequence of expressions.<br/>
                             ○ Match '%'.<br/>
-                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
+                            ○ Match a hexadecimal digit exactly 2 times.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
             </remarks>
@@ -8504,7 +8531,7 @@
             <summary>
                 配额键
             </summary>
-            <remarks>用于标识当前请求属于哪个配额组，例如接口路径。</remarks>
+            <remarks>用于标识属于哪个配额组，例如接口路径。</remarks>
         </member>
         <member name="T:HttpAgent.RefererAttribute">
             <summary>
@@ -8763,6 +8790,27 @@
         <member name="P:HttpAgent.TraceIdentifierAttribute.Identifier">
             <summary>
                 跟踪标识
+            </summary>
+        </member>
+        <member name="T:HttpAgent.UseETagAttribute">
+            <summary>
+                HTTP 声明式启用 ETag 缓存处理特性
+            </summary>
+        </member>
+        <member name="M:HttpAgent.UseETagAttribute.#ctor">
+            <summary>
+                <inheritdoc cref="T:HttpAgent.UseETagAttribute" />
+            </summary>
+        </member>
+        <member name="M:HttpAgent.UseETagAttribute.#ctor(System.Boolean)">
+            <summary>
+                <inheritdoc cref="T:HttpAgent.UseETagAttribute" />
+            </summary>
+            <param name="enabled">是否启用</param>
+        </member>
+        <member name="P:HttpAgent.UseETagAttribute.Enabled">
+            <summary>
+                是否启用
             </summary>
         </member>
         <member name="T:HttpAgent.HttpDeclarativeBuilder">
@@ -9241,6 +9289,14 @@
         <member name="M:HttpAgent.TraceIdentifierDeclarativeExtractor.Extract(HttpAgent.HttpRequestBuilder,HttpAgent.HttpDeclarativeExtractorContext)">
             <inheritdoc />
         </member>
+        <member name="T:HttpAgent.UseETagDeclarativeExtractor">
+            <summary>
+                HTTP 声明式 <see cref="T:HttpAgent.UseETagAttribute" /> 特性提取器
+            </summary>
+        </member>
+        <member name="M:HttpAgent.UseETagDeclarativeExtractor.Extract(HttpAgent.HttpRequestBuilder,HttpAgent.HttpDeclarativeExtractorContext)">
+            <inheritdoc />
+        </member>
         <member name="T:HttpAgent.ValidationDeclarativeExtractor">
             <summary>
                 HTTP 声明式 <see cref="T:System.ComponentModel.DataAnnotations.ValidationAttribute" /> 特性提取器
@@ -9553,6 +9609,93 @@
             <returns>
                 <see cref="T:System.Net.CookieContainer" />
             </returns>
+        </member>
+        <member name="T:HttpAgent.HttpETagCacheItem">
+            <summary>
+                ETag 缓存项
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpETagCacheItem.ETag">
+            <summary>
+                服务器返回的 ETag 值
+            </summary>
+            <remarks>无前后双引号。</remarks>
+        </member>
+        <member name="P:HttpAgent.HttpETagCacheItem.StatusCode">
+            <summary>
+                响应状态码
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpETagCacheItem.ContentBytes">
+            <summary>
+                响应内容的字节数组
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpETagCacheItem.ContentHeaders">
+            <summary>
+                响应内容标头
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpETagCacheItem.ResponseHeaders">
+            <summary>
+                响应标头
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpETagCacheItem.ReasonPhrase">
+            <summary>
+                原因短语
+            </summary>
+        </member>
+        <member name="T:HttpAgent.IHttpETagCache">
+            <summary>
+                ETag 缓存接口
+            </summary>
+        </member>
+        <member name="M:HttpAgent.IHttpETagCache.TryGet(System.String,HttpAgent.HttpETagCacheItem@)">
+            <summary>
+                尝试获取指定键的缓存项
+            </summary>
+            <param name="cacheKey">缓存键</param>
+            <param name="eTagCacheItem">
+                <see cref="T:HttpAgent.HttpETagCacheItem" />
+            </param>
+            <returns>
+                <see cref="T:System.Boolean" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.IHttpETagCache.Set(System.String,HttpAgent.HttpETagCacheItem)">
+            <summary>
+                设置或更新指定键的缓存项
+            </summary>
+            <param name="cacheKey">缓存键</param>
+            <param name="eTagCacheItem">
+                <see cref="T:HttpAgent.HttpETagCacheItem" />
+            </param>
+        </member>
+        <member name="M:HttpAgent.IHttpETagCache.Remove(System.String)">
+            <summary>
+                移除指定键的缓存项
+            </summary>
+            <param name="cacheKey">缓存键</param>
+        </member>
+        <member name="T:HttpAgent.MemoryETagCache">
+            <summary>
+                基于内存的 ETag 缓存
+            </summary>
+        </member>
+        <member name="F:HttpAgent.MemoryETagCache._cache">
+            <summary>
+                内部缓存字典
+            </summary>
+        </member>
+        <member name="M:HttpAgent.MemoryETagCache.TryGet(System.String,HttpAgent.HttpETagCacheItem@)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.MemoryETagCache.Set(System.String,HttpAgent.HttpETagCacheItem)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.MemoryETagCache.Remove(System.String)">
+            <inheritdoc />
         </member>
         <member name="T:HttpAgent.Extensions.HttpRemoteExtensions">
             <summary>
@@ -9887,7 +10030,7 @@
             <code>
             ○ Match the string "\\u".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [0-9A-Fa-f] exactly 4 times.<br/>
+                ○ Match a hexadecimal digit exactly 4 times.<br/>
             </code>
             </remarks>
         </member>
@@ -11581,7 +11724,7 @@
             <code>
             ○ Match the string "\u001b[".<br/>
             ○ Match a character in the set [;\d] atomically any number of times.<br/>
-            ○ Match a character in the set [A-Za-z].<br/>
+            ○ Match an ASCII letter.<br/>
             </code>
             </remarks>
         </member>
@@ -11869,7 +12012,7 @@
         </member>
         <member name="P:HttpAgent.HttpRemoteResult.ContentHeaders">
             <summary>
-                响应体标头
+                响应内容标头
             </summary>
         </member>
         <member name="P:HttpAgent.HttpRemoteResult.Version">
@@ -11902,7 +12045,7 @@
         </member>
         <member name="M:HttpAgent.HttpRemoteResult.ParseContentMetadata(System.Net.Http.Headers.HttpContentHeaders)">
             <summary>
-                解析响应体标头元数据
+                解析响应内容标头元数据
             </summary>
             <param name="contentHeaders">
                 <see cref="T:System.Net.Http.Headers.HttpContentHeaders" />
@@ -11935,7 +12078,7 @@
             <summary>
                 <typeparamref name="TResult" />
             </summary>
-            <remarks>注意 <c>HEAD</c> 请求不包含响应体。</remarks>
+            <remarks>注意 <c>HEAD</c> 请求不包含响应内容。</remarks>
         </member>
         <member name="M:HttpAgent.HttpRemoteResult`1.Dispose">
             <inheritdoc />
@@ -12989,6 +13132,65 @@
             </param>
             <exception cref="T:System.Net.Http.HttpRequestException"></exception>
         </member>
+        <member name="T:HttpAgent.ETagPipelineHandler">
+            <summary>
+                ETag 缓存管道处理器
+            </summary>
+            <remarks>参考文献：https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Reference/Headers/ETag。</remarks>
+            <param name="etagCache">
+                <see cref="T:HttpAgent.IHttpETagCache" />
+            </param>
+        </member>
+        <member name="M:HttpAgent.ETagPipelineHandler.#ctor(HttpAgent.IHttpETagCache)">
+            <summary>
+                ETag 缓存管道处理器
+            </summary>
+            <remarks>参考文献：https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Reference/Headers/ETag。</remarks>
+            <param name="etagCache">
+                <see cref="T:HttpAgent.IHttpETagCache" />
+            </param>
+        </member>
+        <member name="M:HttpAgent.ETagPipelineHandler.HandleAsync(HttpAgent.HttpRequestPipelineContext,System.Func{System.Threading.Tasks.Task{System.Net.Http.HttpResponseMessage}})">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.ETagPipelineHandler.GenerateCacheKey(System.Net.Http.HttpRequestMessage)">
+            <summary>
+                生成缓存键
+            </summary>
+            <param name="httpRequestMessage">
+                <see cref="T:System.Net.Http.HttpRequestMessage" />
+            </param>
+            <returns>
+                <see cref="T:System.String" />
+            </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:HttpAgent.ETagPipelineHandler.CacheResponseAsync(System.String,System.Net.Http.HttpResponseMessage,System.Net.Http.Headers.EntityTagHeaderValue)">
+            <summary>
+                缓存 <see cref="T:System.Net.Http.HttpResponseMessage" /> 信息
+            </summary>
+            <param name="cacheKey">缓存键</param>
+            <param name="httpResponseMessage">
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </param>
+            <param name="entityTagHeaderValue">
+                <see cref="T:System.Net.Http.Headers.EntityTagHeaderValue" />
+            </param>
+            <exception cref="T:System.ArgumentException"></exception>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:HttpAgent.ETagPipelineHandler.BuildResponseFromCacheItem(HttpAgent.HttpETagCacheItem)">
+            <summary>
+                从缓存项重建 <see cref="T:System.Net.Http.HttpResponseMessage" /> 对象
+            </summary>
+            <param name="eTagCacheItem">
+                <see cref="T:HttpAgent.HttpETagCacheItem" />
+            </param>
+            <returns>
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
         <member name="T:HttpAgent.QuotaPipelineHandler">
             <summary>
                 配额管道处理器
@@ -13310,7 +13512,7 @@
             <code>
             ○ Match if at the beginning of the string.<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
-            ○ Match a character in the set [-~].<br/>
+            ○ Match a character in the set [\-~].<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
@@ -20294,6 +20496,21 @@
         <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32,System.Int32,System.Int32)">
             <summary>Pushes 3 values onto the backtracking stack.</summary>
         </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.WordCategoriesMask">
+            <summary>Provides a mask of Unicode categories that combine to form [\w].</summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.Generated.Utilities.WordCharBitmap">
+            <summary>Gets a bitmap for whether each character 0 through 127 is in [\w]</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_1F52B1A4D2E82B6FEDE25EC8C55F85BB36775196837076691C96925040F90D32">
+            <summary>Supports searching for the string "\\u".</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_4A5B154448624742176A7AE18EDA0762C946CBB1B19F68418DD573D0A698E642">
+            <summary>Supports searching for the string "\u001b[".</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_EBC667BDABA1472FA863B5B39B31251EF2B4C95DD643BDECF694CB1CE7BDC178">
+            <summary>Supports searching for the string "[[".</summary>
+        </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions">
             <summary>
                 HTTP 远程请求模块 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" /> 扩展类
@@ -20317,34 +20534,6 @@
             </summary>
             <param name="services">
                 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
-            </param>
-            <param name="httpRemoteBuilder">
-                <see cref="T:HttpAgent.HttpRemoteBuilder" />
-            </param>
-            <returns>
-                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
-            </returns>
-        </member>
-    </members>
-</doc>
-     </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions.AddHttpRemote(Microsoft.Extensions.DependencyInjection.IServiceCollection,HttpAgent.HttpRemoteBuilder)">
-            <summary>
-                添加 HTTP 远程请求服务
-            </summary>
-            <param name="services">
-                <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
-            </param>
-            <param name="httpRemoteBuilder">
-                <see cref="T:HttpAgent.HttpRemoteBuilder" />
-            </param>
-            <returns>
-                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
-            </returns>
-        </member>
-    </members>
-</doc>
-ncyInjection.IServiceCollection" />
             </param>
             <param name="httpRemoteBuilder">
                 <see cref="T:HttpAgent.HttpRemoteBuilder" />

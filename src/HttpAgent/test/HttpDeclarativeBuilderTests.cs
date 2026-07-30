@@ -74,6 +74,7 @@ public class HttpDeclarativeBuilderTests
             },
             { typeof(RemoveTrailingSlashDeclarativeExtractor), new RemoveTrailingSlashDeclarativeExtractor() },
             { typeof(QuotaKeyDeclarativeExtractor), new QuotaKeyDeclarativeExtractor() },
+            { typeof(UseETagDeclarativeExtractor), new UseETagDeclarativeExtractor() },
             { typeof(BodyDeclarativeExtractor), new BodyDeclarativeExtractor() }
         };
 
@@ -195,6 +196,7 @@ public class HttpDeclarativeBuilderTests
             },
             { typeof(RemoveTrailingSlashDeclarativeExtractor), new RemoveTrailingSlashDeclarativeExtractor() },
             { typeof(QuotaKeyDeclarativeExtractor), new QuotaKeyDeclarativeExtractor() },
+            { typeof(UseETagDeclarativeExtractor), new UseETagDeclarativeExtractor() },
             { typeof(BodyDeclarativeExtractor), new BodyDeclarativeExtractor() },
             { typeof(CustomHttpDeclarativeExtractor), new CustomHttpDeclarativeExtractor() }
         };

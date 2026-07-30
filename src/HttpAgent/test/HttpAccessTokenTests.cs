@@ -40,6 +40,10 @@ public class HttpAccessTokenTests
         var accessToken3 = new HttpAccessToken(token);
         Assert.Equal(token, accessToken3.Value);
         Assert.Equal("2026/7/21 8:31:06 +00:00", accessToken3.ExpiresAt.ToString());
+
+        var accessToken4 = new HttpAccessToken();
+        Assert.Null(accessToken4.Value);
+        Assert.Equal(DateTimeOffset.MinValue, accessToken4.ExpiresAt);
     }
 
     [Fact]
