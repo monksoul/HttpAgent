@@ -874,7 +874,7 @@ public class GetStartController(
     }
 
     /// <summary>
-    ///     获取网站内容
+    ///     ETag 缓存
     /// </summary>
     /// <returns></returns>
     [HttpGet]
