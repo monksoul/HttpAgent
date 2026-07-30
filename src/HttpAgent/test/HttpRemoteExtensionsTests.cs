@@ -566,6 +566,12 @@ public class HttpRemoteExtensionsTests
         httpResponseMessage.FixInvalidCharset();
 
         Assert.Equal("utf-8", httpResponseMessage.Content.Headers.ContentType?.CharSet);
+
+        httpResponseMessage.Content.Headers.ContentType =
+            new MediaTypeHeaderValue("application/json") { CharSet = "utf" };
+        httpResponseMessage.FixInvalidCharset();
+
+        Assert.Equal("utf-8", httpResponseMessage.Content.Headers.ContentType?.CharSet);
     }
 
     [Fact]

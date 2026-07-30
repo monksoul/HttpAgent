@@ -6177,7 +6177,7 @@
         <member name="M:HttpAgent.Core.Converters.Json.FlexibleDateTimeConverter.Regex">
             <remarks>
             Pattern:<br/>
-            <code>^/Date\\(([+-]*\\d+)\\)/$</code><br/>
+            <code>^/Date\(([+-]*\d+)\)/$</code><br/>
             Options:<br/>
             <code>RegexOptions.CultureInvariant</code><br/>
             Explanation:<br/>
@@ -6206,7 +6206,7 @@
         <member name="M:HttpAgent.Core.Converters.Json.FlexibleDateTimeOffsetConverter.Regex">
             <remarks>
             Pattern:<br/>
-            <code>^/Date\\(([+-]*\\d+)([+-])(\\d{2})(\\d{2})\\)/$</code><br/>
+            <code>^/Date\(([+-]*\d+)([+-])(\d{2})(\d{2})\)/$</code><br/>
             Options:<br/>
             <code>RegexOptions.CultureInvariant</code><br/>
             Explanation:<br/>
@@ -6804,7 +6804,7 @@
         <member name="M:HttpAgent.Core.Extensions.StringExtensions.PlaceholderRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\{\\s*(?:\\*\\*)?\\s*(\\w+(?:\\s*\\.\\s*\\w+|\\s*\\[\\s*\\d+\\s*\\])*)\\s*(\\?)?\\s*\\}</code><br/>
+            <code>\{\s*(?:\*\*)?\s*(\w+(?:\s*\.\s*\w+|\s*\[\s*\d+\s*\])*)\s*(\?)?\s*\}</code><br/>
             Explanation:<br/>
             <code>
             ○ Match '{'.<br/>
@@ -6815,14 +6815,13 @@
             ○ 1st capture group.<br/>
                 ○ Match a word character greedily at least once.<br/>
                 ○ Loop greedily any number of times.<br/>
+                    ○ Match a whitespace character atomically any number of times.<br/>
                     ○ Match with 2 alternative expressions.<br/>
                         ○ Match a sequence of expressions.<br/>
-                            ○ Match a whitespace character atomically any number of times.<br/>
                             ○ Match '.'.<br/>
                             ○ Match a whitespace character atomically any number of times.<br/>
                             ○ Match a word character greedily at least once.<br/>
                         ○ Match a sequence of expressions.<br/>
-                            ○ Match a whitespace character atomically any number of times.<br/>
                             ○ Match '['.<br/>
                             ○ Match a whitespace character atomically any number of times.<br/>
                             ○ Match a Unicode digit atomically at least once.<br/>
@@ -6840,7 +6839,7 @@
         <member name="M:HttpAgent.Core.Extensions.StringExtensions.ConfigurationKeyRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\[\\[\\s*(?:\\*\\*)?\\s*([\\w\\-:]+)((?:\\s*\\|\\s*[\\w\\-:]+)*)\\s*(?:\\|\\|\\s*([^\\]]*))?\\s*(\\?)?\\s*\\]\\]</code><br/>
+            <code>\[\[\s*(?:\*\*)?\s*([\w\-:]+)((?:\s*\|\s*[\w\-:]+)*)\s*(?:\|\|\s*([^\]]*))?\s*(\?)?\s*\]\]</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "[[".<br/>
@@ -10025,7 +10024,7 @@
         <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.UnicodeEscapeRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\\\u([0-9a-fA-F]{4})</code><br/>
+            <code>\\u([0-9a-fA-F]{4})</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "\\u".<br/>
@@ -11719,7 +11718,7 @@
         <member name="M:HttpAgent.FileTransferProgress.AnsiRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\e\\[[\\d;]*[a-zA-Z]</code><br/>
+            <code>\e\[[\d;]*[a-zA-Z]</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "\u001b[".<br/>
@@ -13507,7 +13506,7 @@
         <member name="M:HttpAgent.StatusCodePipelineHandler.StatusCodeRangeRegex">
             <remarks>
             Pattern:<br/>
-            <code>^\\d+[-~]\\d+$</code><br/>
+            <code>^\d+[-~]\d+$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
@@ -13521,7 +13520,7 @@
         <member name="M:HttpAgent.StatusCodePipelineHandler.StatusCodeCompareRegex">
             <remarks>
             Pattern:<br/>
-            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\\d+)$</code><br/>
+            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\d+)$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>

@@ -636,7 +636,8 @@ public static partial class HttpRemoteExtensions
         var noWhitespace = Regex.Replace(normalized, @"\s+", "");
 
         if (noWhitespace.Equals("utf-8", StringComparison.OrdinalIgnoreCase) ||
-            noWhitespace.Equals("utf8", StringComparison.OrdinalIgnoreCase))
+            noWhitespace.Equals("utf8", StringComparison.OrdinalIgnoreCase) ||
+            noWhitespace.Equals("utf", StringComparison.OrdinalIgnoreCase))
         {
             httpContent.Headers.ContentType.CharSet = "utf-8";
         }
