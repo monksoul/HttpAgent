@@ -872,4 +872,16 @@ public class GetStartController(
             , FileExistsBehavior.Overwrite,
             builder => builder.SetBufferSize(1024 * 1024).SetMaxThreads(4), cancellationToken);
     }
+
+    /// <summary>
+    ///     获取网站内容
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    public async Task<string?> UseETag()
+    {
+        var content =
+            await httpRemoteService.GetAsStringAsync("https://furion.net", builder => builder.UseETag().Profiler());
+        return content;
+    }
 }

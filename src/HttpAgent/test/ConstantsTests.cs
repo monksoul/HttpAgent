@@ -78,4 +78,8 @@ public class ConstantsTests
     [Fact]
     public void HTTP_COMPLETION_OPTION_KEY() =>
         Assert.Equal("__HTTP_COMPLETION_OPTION__", Constants.HTTP_COMPLETION_OPTION_KEY);
+
+    [Fact]
+    public void ETAG_CACHED_KEY() =>
+        Assert.Equal("__ETAG_CACHED__", Constants.ETAG_CACHED_KEY);
 }

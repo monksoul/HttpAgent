@@ -87,8 +87,12 @@ public class ETagPipelineHandlerTests
     }
 
     [Fact]
-    public void BuildResponseFromCacheItem_Invalid_Parameters() =>
-        Assert.Throws<ArgumentNullException>(() => ETagPipelineHandler.BuildResponseFromCacheItem(null!));
+    public void BuildResponseFromCacheItem_Invalid_Parameters()
+    {
+        Assert.Throws<ArgumentNullException>(() => ETagPipelineHandler.BuildResponseFromCacheItem(null!, null!));
+        Assert.Throws<ArgumentNullException>(() =>
+            ETagPipelineHandler.BuildResponseFromCacheItem(new HttpETagCacheItem(), null!));
+    }
 
     [Fact]
     public void BuildResponseFromCacheItem_ReturnOK()
@@ -114,7 +118,9 @@ public class ETagPipelineHandlerTests
         Assert.Single(memoryCache._cache);
         var item = memoryCache._cache.First().Value;
 
-        var newHttpResponseMessage = ETagPipelineHandler.BuildResponseFromCacheItem(item);
+        var newHttpResponseMessage =
+            ETagPipelineHandler.BuildResponseFromCacheItem(item,
+                new HttpRequestMessage(HttpMethod.Get, "http://furion.net/"));
         Assert.NotNull(newHttpResponseMessage);
         Assert.Equal(HttpStatusCode.OK, newHttpResponseMessage.StatusCode);
         Assert.NotNull(newHttpResponseMessage.Content);
@@ -123,5 +129,10 @@ public class ETagPipelineHandlerTests
         Assert.Equal("OK", newHttpResponseMessage.ReasonPhrase);
         Assert.Equal("text/plain; charset=utf-8", newHttpResponseMessage.Content.Headers.ContentType?.ToString());
         Assert.Equal("Furion", newHttpResponseMessage.Headers.GetValues("framework").First());
+        Assert.NotNull(newHttpResponseMessage.RequestMessage);
+        Assert.True(
+            newHttpResponseMessage.RequestMessage.Options.TryGetValue(
+                new HttpRequestOptionsKey<bool>(Constants.ETAG_CACHED_KEY), out var value));
+        Assert.True(value);
     }
 }
