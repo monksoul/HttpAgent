@@ -7,6 +7,15 @@ namespace HttpAgent.Tests;
 public class HttpBuilderTests
 {
     [Fact]
+    public void Setup_ReturnOK()
+    {
+        var httpRequestBuilder = HttpRequestBuilder.Setup;
+        Assert.NotNull(httpRequestBuilder);
+        Assert.Null(httpRequestBuilder.HttpMethod);
+        Assert.Null(httpRequestBuilder.RequestUri);
+    }
+
+    [Fact]
     public void Get_ReturnOK()
     {
         var httpRequestBuilder1 = HttpBuilder.Get((string)null!);

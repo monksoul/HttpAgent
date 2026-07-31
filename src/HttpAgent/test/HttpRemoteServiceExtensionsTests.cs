@@ -119,7 +119,7 @@ public class HttpRemoteServiceExtensionsTests
         var i = 0;
         // ReSharper disable once MethodHasAsyncOverload
         var fileTransferResult = httpRemoteService.DownloadFile($"http://localhost:{port}/test", destinationPath,
-            configure: downloadBuilder => downloadBuilder.WithRequest(requestBuilder =>
+            configure: downloadBuilder => downloadBuilder.With(requestBuilder =>
                 requestBuilder.SetOnPreSendRequest(_ =>
                 {
                     i += 1;
@@ -254,7 +254,7 @@ public class HttpRemoteServiceExtensionsTests
         var i = 0;
         var fileTransferResult = await httpRemoteService.DownloadFileAsync($"http://localhost:{port}/test",
             destinationPath,
-            configure: downloadBuilder => downloadBuilder.WithRequest(requestBuilder =>
+            configure: downloadBuilder => downloadBuilder.With(requestBuilder =>
                 requestBuilder.SetOnPreSendRequest(_ =>
                 {
                     i += 1;
@@ -454,7 +454,7 @@ public class HttpRemoteServiceExtensionsTests
 
         var i = 0;
         // ReSharper disable once MethodHasAsyncOverload
-        var fileTransferResult = httpRemoteService.Send(httpFileDownloadBuilder.WithRequest(requestBuilder =>
+        var fileTransferResult = httpRemoteService.Send(httpFileDownloadBuilder.With(requestBuilder =>
             requestBuilder.SetOnPreSendRequest(_ =>
             {
                 i += 1;
@@ -702,7 +702,7 @@ public class HttpRemoteServiceExtensionsTests
             HttpRequestBuilder.DownloadFile(new Uri($"http://localhost:{port}/test"), destinationPath);
 
         var i = 0;
-        var fileTransferResult = await httpRemoteService.SendAsync(httpFileDownloadBuilder.WithRequest(requestBuilder =>
+        var fileTransferResult = await httpRemoteService.SendAsync(httpFileDownloadBuilder.With(requestBuilder =>
             requestBuilder.SetOnPreSendRequest(_ =>
             {
                 i += 1;
@@ -867,7 +867,7 @@ public class HttpRemoteServiceExtensionsTests
         var i = 0;
         // ReSharper disable once MethodHasAsyncOverload
         var httpResponseMessage = httpRemoteService.UploadFile($"http://localhost:{port}/test", filePath,
-            configure: uploadBuilder => uploadBuilder.WithRequest(requestBuilder =>
+            configure: uploadBuilder => uploadBuilder.With(requestBuilder =>
                 requestBuilder.SetOnPreSendRequest(_ =>
                 {
                     i += 1;
@@ -974,7 +974,7 @@ public class HttpRemoteServiceExtensionsTests
 
         var i = 0;
         var httpResponseMessage = await httpRemoteService.UploadFileAsync($"http://localhost:{port}/test",
-            filePath, configure: uploadBuilder => uploadBuilder.WithRequest(requestBuilder =>
+            filePath, configure: uploadBuilder => uploadBuilder.With(requestBuilder =>
                 requestBuilder.SetOnPreSendRequest(_ =>
                 {
                     i += 1;
@@ -1135,7 +1135,7 @@ public class HttpRemoteServiceExtensionsTests
 
         var i = 0;
         // ReSharper disable once MethodHasAsyncOverload
-        var httpResponseMessage = httpRemoteService.Send(httpFileUploadBuilder.WithRequest(requestBuilder =>
+        var httpResponseMessage = httpRemoteService.Send(httpFileUploadBuilder.With(requestBuilder =>
             requestBuilder.SetOnPreSendRequest(_ =>
             {
                 i += 1;
@@ -1336,7 +1336,7 @@ public class HttpRemoteServiceExtensionsTests
             HttpRequestBuilder.UploadFile(new Uri($"http://localhost:{port}/test"), filePath);
 
         var i = 0;
-        var httpResponseMessage = await httpRemoteService.SendAsync(httpFileUploadBuilder.WithRequest(requestBuilder =>
+        var httpResponseMessage = await httpRemoteService.SendAsync(httpFileUploadBuilder.With(requestBuilder =>
             requestBuilder.SetOnPreSendRequest(_ =>
             {
                 i += 1;
@@ -1633,7 +1633,7 @@ public class HttpRemoteServiceExtensionsTests
             });
 
         // ReSharper disable once MethodHasAsyncOverload
-        httpRemoteService.Send(httpServerSentEventsBuilder.WithRequest(b => b.SetOnPreSendRequest(_ =>
+        httpRemoteService.Send(httpServerSentEventsBuilder.With(b => b.SetOnPreSendRequest(_ =>
         {
             i++;
         })));
@@ -1882,7 +1882,7 @@ public class HttpRemoteServiceExtensionsTests
                 await Task.CompletedTask;
             });
 
-        await httpRemoteService.SendAsync(httpServerSentEventsBuilder.WithRequest(b => b.SetOnPreSendRequest(_ =>
+        await httpRemoteService.SendAsync(httpServerSentEventsBuilder.With(b => b.SetOnPreSendRequest(_ =>
         {
             i++;
         })));
@@ -2031,7 +2031,7 @@ public class HttpRemoteServiceExtensionsTests
         {
             i++;
             await Task.CompletedTask;
-        }, sseBuilder => sseBuilder.WithRequest(b => b.SetOnPreSendRequest(_ =>
+        }, sseBuilder => sseBuilder.With(b => b.SetOnPreSendRequest(_ =>
         {
             i++;
         })));
@@ -2172,7 +2172,7 @@ public class HttpRemoteServiceExtensionsTests
         {
             i++;
             await Task.CompletedTask;
-        }, sseBuilder => sseBuilder.WithRequest(b => b.SetOnPreSendRequest(_ =>
+        }, sseBuilder => sseBuilder.With(b => b.SetOnPreSendRequest(_ =>
         {
             i++;
         })));
@@ -2276,7 +2276,7 @@ public class HttpRemoteServiceExtensionsTests
                 .SetNumberOfRequests(10);
 
         // ReSharper disable once MethodHasAsyncOverload
-        var result = httpRemoteService.Send(httpStressTestHarnessBuilder.WithRequest(b => b.SetOnPreSendRequest(_ =>
+        var result = httpRemoteService.Send(httpStressTestHarnessBuilder.With(b => b.SetOnPreSendRequest(_ =>
         {
             i++;
         })));
@@ -2382,7 +2382,7 @@ public class HttpRemoteServiceExtensionsTests
                 .SetNumberOfRequests(10);
 
         var i = 0;
-        var result = await httpRemoteService.SendAsync(httpStressTestHarnessBuilder.WithRequest(b =>
+        var result = await httpRemoteService.SendAsync(httpStressTestHarnessBuilder.With(b =>
             b.SetOnPreSendRequest(_ =>
             {
                 i++;
@@ -2485,7 +2485,7 @@ public class HttpRemoteServiceExtensionsTests
 
         // ReSharper disable once MethodHasAsyncOverload
         var result = httpRemoteService.StressTestHarness($"http://localhost:{port}/test", 10, sthBuilder =>
-            sthBuilder.WithRequest(b => b.SetOnPreSendRequest(_ =>
+            sthBuilder.With(b => b.SetOnPreSendRequest(_ =>
             {
                 i++;
             })));
@@ -2583,7 +2583,7 @@ public class HttpRemoteServiceExtensionsTests
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var result = await httpRemoteService.StressTestHarnessAsync($"http://localhost:{port}/test", 10,
-            sthBuilder => sthBuilder.WithRequest(b => b.SetOnPreSendRequest(_ =>
+            sthBuilder => sthBuilder.With(b => b.SetOnPreSendRequest(_ =>
             {
                 i++;
             })));
@@ -2799,7 +2799,7 @@ public class HttpRemoteServiceExtensionsTests
                 });
 
         // ReSharper disable once MethodHasAsyncOverload
-        httpRemoteService.Send(httpLongPollingBuilder.WithRequest(b => b.SetOnPreSendRequest(_ =>
+        httpRemoteService.Send(httpLongPollingBuilder.With(b => b.SetOnPreSendRequest(_ =>
         {
             i++;
         })));
@@ -3001,7 +3001,7 @@ public class HttpRemoteServiceExtensionsTests
                     await Task.CompletedTask;
                 });
 
-        await httpRemoteService.SendAsync(httpLongPollingBuilder.WithRequest(b => b.SetOnPreSendRequest(_ =>
+        await httpRemoteService.SendAsync(httpLongPollingBuilder.With(b => b.SetOnPreSendRequest(_ =>
         {
             i++;
         })));
@@ -3149,7 +3149,7 @@ public class HttpRemoteServiceExtensionsTests
         {
             i++;
             await Task.CompletedTask;
-        }, lpBuilder => lpBuilder.WithRequest(b => b.SetOnPreSendRequest(_ =>
+        }, lpBuilder => lpBuilder.With(b => b.SetOnPreSendRequest(_ =>
         {
             i++;
         })));
@@ -3290,7 +3290,7 @@ public class HttpRemoteServiceExtensionsTests
         {
             i++;
             await Task.CompletedTask;
-        }, lpBuilder => lpBuilder.WithRequest(b => b.SetOnPreSendRequest(_ =>
+        }, lpBuilder => lpBuilder.With(b => b.SetOnPreSendRequest(_ =>
         {
             i++;
         })));

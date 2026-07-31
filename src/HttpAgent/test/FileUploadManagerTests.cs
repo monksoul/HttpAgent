@@ -35,7 +35,7 @@ public class FileUploadManagerTests(ITestOutputHelper output)
 
         var fileUploadManager2 = new FileUploadManager(httpRemoteService,
             new HttpFileUploadBuilder(HttpMethod.Post, new Uri("http://localhost:5000"), filePath, "file")
-                .WithRequest(builder => builder.SetTimeout(100)));
+                .With(builder => builder.SetTimeout(100)));
         Assert.NotNull(fileUploadManager2.RequestBuilder);
         Assert.Equal(TimeSpan.FromMilliseconds(100), fileUploadManager2.RequestBuilder.TimeoutOptions?.Timeout);
 
@@ -484,7 +484,7 @@ public class FileUploadManagerTests(ITestOutputHelper output)
                 {
                     i += 1;
                     output.WriteLine($"上传出错 {e.Message}");
-                }).WithRequest(b =>
+                }).With(b =>
                 {
                     b.EnsureSuccessStatusCode();
                 });
@@ -751,7 +751,7 @@ public class FileUploadManagerTests(ITestOutputHelper output)
                 {
                     i += 1;
                     output.WriteLine($"上传出错 {e.Message}");
-                }).WithRequest(b =>
+                }).With(b =>
                 {
                     b.EnsureSuccessStatusCode();
                 });

@@ -31,7 +31,7 @@ public class LongPollingManagerTests
         Assert.Equal(0, longPollingManager.CurrentRetries);
 
         var longPollingManager2 = new LongPollingManager(httpRemoteService,
-            new HttpLongPollingBuilder(HttpMethod.Get, new Uri("http://localhost:5000")).WithRequest(builder =>
+            new HttpLongPollingBuilder(HttpMethod.Get, new Uri("http://localhost:5000")).With(builder =>
                 builder.SetTimeout(100)));
         Assert.NotNull(longPollingManager2.RequestBuilder);
         Assert.Equal(TimeSpan.FromMilliseconds(100), longPollingManager2.RequestBuilder.TimeoutOptions?.Timeout);

@@ -7,6 +7,41 @@ namespace HttpAgent.Tests;
 public class HttpRequestBuilderStaticMethodsTests
 {
     [Fact]
+    public void Setup_ReturnOK()
+    {
+        var httpRequestBuilder = HttpRequestBuilder.Setup;
+        Assert.NotNull(httpRequestBuilder);
+        Assert.Null(httpRequestBuilder.HttpMethod);
+        Assert.Null(httpRequestBuilder.RequestUri);
+    }
+
+    [Fact]
+    public void Operator_Action_Invalid_Parameters()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        var exception = Assert.Throws<InvalidOperationException>(() =>
+        {
+            Action<HttpRequestBuilder> _ = httpRequestBuilder;
+        });
+
+        Assert.Equal(
+            "The 'Setup' builder must not have an HTTP method set. It is intended to be used as a configuration delegate for predicate-style methods (e.g., GetAsync, PostAsync).",
+            exception.Message);
+    }
+
+    [Fact]
+    public void Operator_Action_ReturnOK()
+    {
+        Action<HttpRequestBuilder> action = HttpRequestBuilder.Setup.UseETag();
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        action(httpRequestBuilder);
+
+        Assert.Equal(HttpMethod.Get, httpRequestBuilder.HttpMethod);
+        Assert.Equal("http://localhost/", httpRequestBuilder.RequestUri?.ToString());
+        Assert.True(httpRequestBuilder.ETagEnabled);
+    }
+
+    [Fact]
     public void Get_ReturnOK()
     {
         var httpRequestBuilder1 = HttpRequestBuilder.Get((string)null!);

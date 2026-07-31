@@ -704,7 +704,7 @@ public class GetStartController(
     {
         var serverSentEventsBuilder = HttpRequestBuilder
             .ServerSentEvents(HttpMethod.Post, new Uri("https://api.deepseek.com/chat/completions"))
-            .WithRequest(builder => builder
+            .With(builder => builder
                 .AddJwtBearerAuthentication("您的 APIKEY")
                 .SetJsonContent("""
                                 {
@@ -752,7 +752,7 @@ public class GetStartController(
 
         var serverSentEventsBuilder = HttpRequestBuilder
             .ServerSentEvents(HttpMethod.Post, new Uri("https://api.deepseek.com/chat/completions"))
-            .WithRequest(builder => builder
+            .With(builder => builder
                 .AddJwtBearerAuthentication("您的 APIKEY")
                 .SetJsonContent($$"""
                                   {

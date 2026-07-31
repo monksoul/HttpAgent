@@ -2037,6 +2037,32 @@ public class HttpRequestBuilderMethodsTests
         Assert.Equal(HttpMethod.Get, builder.HttpMethod);
         Assert.Equal("http://localhost/", builder.RequestUri?.ToString());
         Assert.Equal("User", builder.Fragment);
+
+        var builder2 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost")).SetFragment("User")
+            .Clone("Fragment");
+        Assert.Null(builder2.Fragment);
+    }
+
+    [Fact]
+    public void CopyTo_Invalid_Parameters()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        Assert.Throws<ArgumentNullException>(() => httpRequestBuilder.CopyTo(null!));
+    }
+
+    [Fact]
+    public void CopyTo_ReturnOK()
+    {
+        var builder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost")).SetFragment("User");
+        var emptyBuilder = new HttpRequestBuilder(HttpMethod.Get, null);
+        builder.CopyTo(emptyBuilder);
+        Assert.Equal(HttpMethod.Get, emptyBuilder.HttpMethod);
+        Assert.Equal("http://localhost/", emptyBuilder.RequestUri?.ToString());
+        Assert.Equal("User", emptyBuilder.Fragment);
+
+        var emptyBuilder2 = new HttpRequestBuilder(HttpMethod.Get, null);
+        builder.CopyTo(emptyBuilder2, "Fragment");
+        Assert.Null(emptyBuilder2.Fragment);
     }
 
     [Fact]

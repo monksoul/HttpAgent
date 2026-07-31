@@ -233,18 +233,18 @@ public class HttpFileDownloadBuilderTests
     }
 
     [Fact]
-    public void WithRequest_Invalid_Parameters()
+    public void With_Invalid_Parameters()
     {
         var builder = new HttpFileDownloadBuilder(HttpMethod.Get, null);
-        Assert.Throws<ArgumentNullException>(() => builder.WithRequest(null!));
+        Assert.Throws<ArgumentNullException>(() => builder.With(null!));
     }
 
     [Fact]
-    public void WithRequest_ReturnOK()
+    public void With_ReturnOK()
     {
         var builder = new HttpFileDownloadBuilder(HttpMethod.Get, null);
         Assert.Null(builder._configureRequest);
-        builder.WithRequest(requestBuilder => requestBuilder.WithHeader("framework", "Furion"));
+        builder.With(requestBuilder => requestBuilder.WithHeader("framework", "Furion"));
         Assert.NotNull(builder._configureRequest);
     }
 
@@ -299,7 +299,7 @@ public class HttpFileDownloadBuilderTests
         Assert.True(httpRequestBuilder.ProfilerEnabled);
 
         var httpRequestBuilder2 = httpFileDownloadBuilder.SetEventHandler<CustomFileTransferEventHandler2>()
-            .WithRequest(builder =>
+            .With(builder =>
             {
                 builder.SetTimeout(100);
             }).Build(httpRemoteOptions);

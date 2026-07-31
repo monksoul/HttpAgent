@@ -32,7 +32,7 @@ public class ServerSentEventsManagerTests(ITestOutputHelper output)
         Assert.Equal(0, serverSentEventsManager.CurrentRetries);
 
         var serverSentEventsManager2 = new ServerSentEventsManager(httpRemoteService,
-            new HttpServerSentEventsBuilder(new Uri("http://localhost:5000")).WithRequest(builder =>
+            new HttpServerSentEventsBuilder(new Uri("http://localhost:5000")).With(builder =>
                 builder.SetTimeout(100)));
         Assert.NotNull(serverSentEventsManager2.RequestBuilder);
         Assert.Equal(TimeSpan.FromMilliseconds(100), serverSentEventsManager2.RequestBuilder.TimeoutOptions?.Timeout);

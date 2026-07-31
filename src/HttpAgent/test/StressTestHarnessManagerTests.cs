@@ -29,7 +29,7 @@ public class StressTestHarnessManagerTests
         Assert.NotNull(stressTestHarnessManager.RequestBuilder);
 
         var stressTestHarnessManager2 = new StressTestHarnessManager(httpRemoteService,
-            new HttpStressTestHarnessBuilder(HttpMethod.Get, new Uri("http://localhost:5000")).WithRequest(builder =>
+            new HttpStressTestHarnessBuilder(HttpMethod.Get, new Uri("http://localhost:5000")).With(builder =>
                 builder.SetTimeout(100)));
         Assert.NotNull(stressTestHarnessManager2.RequestBuilder);
         Assert.Equal(TimeSpan.FromMilliseconds(100), stressTestHarnessManager2.RequestBuilder.TimeoutOptions?.Timeout);
