@@ -66,19 +66,14 @@ public static partial class HttpRemoteExtensions
     /// <returns>
     ///     <see cref="IHttpClientBuilder" />
     /// </returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public static IHttpClientBuilder ConfigureOptions(this IHttpClientBuilder builder,
         Action<HttpClientOptions> configure)
     {
         // 空检查
         ArgumentNullException.ThrowIfNull(configure);
 
-        builder.Services.AddOptions<HttpClientOptions>(builder.Name).Configure(options =>
-        {
-            options.IsDefault = false;
-            configure.Invoke(options);
-        });
-
-        return builder;
+        return builder.ConfigureOptions((options, _) => configure(options));
     }
 
     /// <summary>
@@ -99,7 +94,12 @@ public static partial class HttpRemoteExtensions
 
         builder.Services.AddOptions<HttpClientOptions>(builder.Name).Configure<IServiceProvider>((options, provider) =>
         {
-            options.IsDefault = false;
+            // 获取 HttpRemoteOptions 的 JsonSerializerOptions 选项
+            options.JsonSerializerOptions = new JsonSerializerOptions(
+                provider.GetRequiredService<IOptionsMonitor<HttpRemoteOptions>>().CurrentValue.JsonSerializerOptions ??
+                // ReSharper disable once NullCoalescingConditionIsAlwaysNotNullAccordingToAPIContract
+                HttpRemoteOptions.JsonSerializerOptionsDefault);
+
             configure.Invoke(options, provider);
         });
 

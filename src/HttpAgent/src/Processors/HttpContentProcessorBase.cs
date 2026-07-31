@@ -60,18 +60,6 @@ public abstract class HttpContentProcessorBase : IHttpContentProcessor, IService
     /// <returns>
     ///     <see cref="JsonSerializerOptions" />
     /// </returns>
-    public virtual JsonSerializerOptions ResolveJsonSerializerOptions(string? httpClientName)
-    {
-        // 获取 HttpClientOptions 实例
-        var httpClientOptions = this.GetService<IOptionsMonitor<HttpClientOptions>>()?.Get(httpClientName);
-
-        // 获取 JsonSerializerOptions 配置
-        // 优先级：指定名称的 HttpClientOptions -> HttpRemoteOptions -> 默认值
-        var jsonSerializerOptions =
-            (httpClientOptions?.IsDefault != false ? null : httpClientOptions.JsonSerializerOptions) ??
-            this.GetService<IOptions<HttpRemoteOptions>>()?.Value.JsonSerializerOptions ??
-            HttpRemoteOptions.JsonSerializerOptionsDefault;
-
-        return jsonSerializerOptions;
-    }
+    public virtual JsonSerializerOptions ResolveJsonSerializerOptions(string? httpClientName) =>
+        HttpRemoteUtility.ResolveJsonSerializerOptions(this, httpClientName, out _);
 }

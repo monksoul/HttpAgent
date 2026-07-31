@@ -11,14 +11,11 @@ public class HttpClientOptionsTests
     {
         var httpClientOptions = new HttpClientOptions();
         Assert.NotNull(httpClientOptions);
-        Assert.True(httpClientOptions.IsDefault);
+        Assert.Null(httpClientOptions.JsonSerializerOptions);
         Assert.Null(httpClientOptions.JsonResponseWrapper);
         Assert.Null(httpClientOptions.UseJsonResponseWrapper);
         Assert.Null(httpClientOptions.HttpAccessTokenProvider);
         Assert.Null(httpClientOptions.HttpRequestEventHandler);
         Assert.Null(httpClientOptions.QuotaLimits);
-
-        Assert.NotNull(httpClientOptions.JsonSerializerOptions);
-        Assert.NotEqual(HttpRemoteOptions.JsonSerializerOptionsDefault, httpClientOptions.JsonSerializerOptions);
     }
 }

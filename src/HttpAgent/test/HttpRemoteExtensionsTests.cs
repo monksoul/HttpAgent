@@ -454,19 +454,16 @@ public class HttpRemoteExtensionsTests
 
         var serviceProvider = services.BuildServiceProvider();
 
-        var httpClientOptionsAccessor = serviceProvider.GetRequiredService<IOptionsSnapshot<HttpClientOptions>>();
+        var httpClientOptionsAccessor = serviceProvider.GetRequiredService<IOptionsMonitor<HttpClientOptions>>();
 
         var httpClientOptions = httpClientOptionsAccessor.Get(string.Empty);
         Assert.True(httpClientOptions.JsonSerializerOptions.IncludeFields);
-        Assert.False(httpClientOptions.IsDefault);
 
         var httpClientOptions2 = httpClientOptionsAccessor.Get("github");
         Assert.True(httpClientOptions2.JsonSerializerOptions.IncludeFields);
-        Assert.False(httpClientOptions2.IsDefault);
 
         var httpClientOptions3 = httpClientOptionsAccessor.Get("notfound");
-        Assert.False(httpClientOptions3.JsonSerializerOptions.IncludeFields);
-        Assert.True(httpClientOptions3.IsDefault);
+        Assert.Null(httpClientOptions3.JsonSerializerOptions);
 
         serviceProvider.Dispose();
     }

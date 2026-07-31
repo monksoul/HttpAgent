@@ -45,7 +45,7 @@ internal sealed class ServerSentEventsManager
 
         // 构建 HttpRequestBuilder 实例
         RequestBuilder = httpServerSentEventsBuilder.Build(httpRemoteService.ServiceProvider
-            .GetRequiredService<IOptions<HttpRemoteOptions>>().Value);
+            .GetRequiredService<IOptionsMonitor<HttpRemoteOptions>>().CurrentValue);
     }
 
     /// <summary>

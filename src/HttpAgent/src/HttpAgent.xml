@@ -6194,7 +6194,7 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Match the string "/Date(".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [+\-] atomically any number of times.<br/>
+                ○ Match a character in the set [+-] atomically any number of times.<br/>
                 ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match the string ")/".<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
@@ -6223,10 +6223,10 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Match the string "/Date(".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [+\-] atomically any number of times.<br/>
+                ○ Match a character in the set [+-] atomically any number of times.<br/>
                 ○ Match a Unicode digit atomically at least once.<br/>
             ○ 2nd capture group.<br/>
-                ○ Match a character in the set [+\-].<br/>
+                ○ Match a character in the set [+-].<br/>
             ○ 3rd capture group.<br/>
                 ○ Match a Unicode digit exactly 2 times.<br/>
             ○ 4th capture group.<br/>
@@ -6858,13 +6858,13 @@
                 ○ Match the string "**".<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [\-:\w] greedily at least once.<br/>
+                ○ Match a character in the set [-:\w] greedily at least once.<br/>
             ○ 2nd capture group.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match a whitespace character atomically any number of times.<br/>
                     ○ Match '|'.<br/>
                     ○ Match a whitespace character greedily any number of times.<br/>
-                    ○ Match a character in the set [\-:\w] greedily at least once.<br/>
+                    ○ Match a character in the set [-:\w] greedily at least once.<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ Optional (greedy).<br/>
                 ○ Match the string "||".<br/>
@@ -6891,32 +6891,32 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Loop greedily at least once.<br/>
                 ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [\-.0-9A-Z_a-z~].<br/>
+                    ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
                     ○ Match a sequence of expressions.<br/>
                         ○ Match '%'.<br/>
-                        ○ Match a hexadecimal digit exactly 2 times.<br/>
+                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
             ○ Match '='.<br/>
             ○ Loop greedily any number of times.<br/>
                 ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [+\-.0-9A-Z_a-z~].<br/>
+                    ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
                     ○ Match a sequence of expressions.<br/>
                         ○ Match '%'.<br/>
-                        ○ Match a hexadecimal digit exactly 2 times.<br/>
+                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
             ○ Loop greedily any number of times.<br/>
                 ○ Match '&amp;'.<br/>
                 ○ Loop greedily at least once.<br/>
                     ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [\-.0-9A-Z_a-z~].<br/>
+                        ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
                         ○ Match a sequence of expressions.<br/>
                             ○ Match '%'.<br/>
-                            ○ Match a hexadecimal digit exactly 2 times.<br/>
+                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
                 ○ Match '='.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [+\-.0-9A-Z_a-z~].<br/>
+                        ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
                         ○ Match a sequence of expressions.<br/>
                             ○ Match '%'.<br/>
-                            ○ Match a hexadecimal digit exactly 2 times.<br/>
+                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
             </remarks>
@@ -9503,7 +9503,7 @@
                 <see cref="T:Microsoft.Extensions.Options.IOptions`1" />
             </param>
         </member>
-        <member name="M:HttpAgent.ProfilerDelegatingHandler.#ctor(HttpAgent.IHttpRemoteLogger,Microsoft.Extensions.Options.IOptions{HttpAgent.HttpRemoteOptions})">
+        <member name="M:HttpAgent.ProfilerDelegatingHandler.#ctor(HttpAgent.IHttpRemoteLogger,Microsoft.Extensions.Options.IOptionsMonitor{HttpAgent.HttpRemoteOptions})">
             <summary>
                 HTTP 远程请求分析工具处理委托
             </summary>
@@ -9747,6 +9747,7 @@
             <returns>
                 <see cref="T:Microsoft.Extensions.DependencyInjection.IHttpClientBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.ConfigureOptions(Microsoft.Extensions.DependencyInjection.IHttpClientBuilder,System.Action{HttpAgent.HttpClientOptions,System.IServiceProvider})">
             <summary>
@@ -10040,7 +10041,7 @@
             <code>
             ○ Match the string "\\u".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a hexadecimal digit exactly 4 times.<br/>
+                ○ Match a character in the set [0-9A-Fa-f] exactly 4 times.<br/>
             </code>
             </remarks>
         </member>
@@ -10638,7 +10639,7 @@
             </param>
             <param name="isLoggingRegistered">是否配置（注册）了日志程序</param>
         </member>
-        <member name="M:HttpAgent.HttpRemoteLogger.#ctor(Microsoft.Extensions.Logging.ILogger{HttpAgent.Logging},Microsoft.Extensions.Options.IOptions{HttpAgent.HttpRemoteOptions},System.Boolean)">
+        <member name="M:HttpAgent.HttpRemoteLogger.#ctor(Microsoft.Extensions.Logging.ILogger{HttpAgent.Logging},Microsoft.Extensions.Options.IOptionsMonitor{HttpAgent.HttpRemoteOptions},System.Boolean)">
             <inheritdoc />
             <param name="logger">
                 <see cref="T:Microsoft.Extensions.Logging.Logger`1" />
@@ -11734,7 +11735,7 @@
             <code>
             ○ Match the string "\u001b[".<br/>
             ○ Match a character in the set [;\d] atomically any number of times.<br/>
-            ○ Match an ASCII letter.<br/>
+            ○ Match a character in the set [A-Za-z].<br/>
             </code>
             </remarks>
         </member>
@@ -13006,12 +13007,6 @@
                 </code>
             </remarks>
         </member>
-        <member name="P:HttpAgent.HttpClientOptions.IsDefault">
-            <summary>
-                标识选项是否配置为默认值（未配置）
-            </summary>
-            <remarks>用于避免通过 <see cref="T:Microsoft.Extensions.Options.IOptionsSnapshot`1" /> 获取选项时无法确定是否已配置该选项。默认值为：<c>true</c>。</remarks>
-        </member>
         <member name="T:HttpAgent.HttpRemoteOptions">
             <summary>
                 HTTP 远程请求选项
@@ -13110,7 +13105,7 @@
                 <see cref="T:HttpAgent.HttpRemoteOptions" />
             </param>
         </member>
-        <member name="M:HttpAgent.AutoRedirectPipelineHandler.#ctor(HttpAgent.IHttpContentProcessorFactory,Microsoft.Extensions.Options.IOptions{HttpAgent.HttpRemoteOptions})">
+        <member name="M:HttpAgent.AutoRedirectPipelineHandler.#ctor(HttpAgent.IHttpContentProcessorFactory,Microsoft.Extensions.Options.IOptionsMonitor{HttpAgent.HttpRemoteOptions})">
             <summary>
                 自动重定向管道处理器
             </summary>
@@ -13245,7 +13240,7 @@
                 <see cref="T:HttpAgent.HttpRemoteOptions" />
             </param>
         </member>
-        <member name="M:HttpAgent.RequestBuilderPipelineHandler.#ctor(System.IServiceProvider,HttpAgent.IHttpContentProcessorFactory,Microsoft.Extensions.Options.IOptions{HttpAgent.HttpRemoteOptions})">
+        <member name="M:HttpAgent.RequestBuilderPipelineHandler.#ctor(System.IServiceProvider,HttpAgent.IHttpContentProcessorFactory,Microsoft.Extensions.Options.IOptionsMonitor{HttpAgent.HttpRemoteOptions})">
             <summary>
                 构建 <see cref="T:System.Net.Http.HttpRequestMessage" /> 管道处理器
             </summary>
@@ -13346,7 +13341,7 @@
                 <see cref="T:HttpAgent.HttpRemoteOptions" />
             </param>
         </member>
-        <member name="M:HttpAgent.RequestProfilerPipelineHandler.#ctor(HttpAgent.IHttpRemoteLogger,Microsoft.Extensions.Options.IOptions{HttpAgent.HttpRemoteOptions})">
+        <member name="M:HttpAgent.RequestProfilerPipelineHandler.#ctor(HttpAgent.IHttpRemoteLogger,Microsoft.Extensions.Options.IOptionsMonitor{HttpAgent.HttpRemoteOptions})">
             <summary>
                 请求分析日志管道处理器
             </summary>
@@ -13405,7 +13400,7 @@
                 <see cref="T:HttpAgent.HttpRemoteOptions" />
             </param>
         </member>
-        <member name="M:HttpAgent.ResponseProfilerPipelineHandler.#ctor(HttpAgent.IHttpRemoteLogger,Microsoft.Extensions.Options.IOptions{HttpAgent.HttpRemoteOptions})">
+        <member name="M:HttpAgent.ResponseProfilerPipelineHandler.#ctor(HttpAgent.IHttpRemoteLogger,Microsoft.Extensions.Options.IOptionsMonitor{HttpAgent.HttpRemoteOptions})">
             <summary>
                 响应分析日志管道处理器
             </summary>
@@ -13527,7 +13522,7 @@
             <code>
             ○ Match if at the beginning of the string.<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
-            ○ Match a character in the set [\-~].<br/>
+            ○ Match a character in the set [-~].<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
@@ -14519,7 +14514,7 @@
                 预构建的请求管道委托链
             </summary>
         </member>
-        <member name="M:HttpAgent.HttpRemoteService.#ctor(System.IServiceProvider,HttpAgent.IHttpRemoteLogger,System.Net.Http.IHttpClientFactory,HttpAgent.IHttpContentProcessorFactory,HttpAgent.IHttpContentConverterFactory,Microsoft.Extensions.Options.IOptions{HttpAgent.HttpRemoteOptions})">
+        <member name="M:HttpAgent.HttpRemoteService.#ctor(System.IServiceProvider,HttpAgent.IHttpRemoteLogger,System.Net.Http.IHttpClientFactory,HttpAgent.IHttpContentProcessorFactory,HttpAgent.IHttpContentConverterFactory,Microsoft.Extensions.Options.IOptionsMonitor{HttpAgent.HttpRemoteOptions})">
             <summary>
                 <inheritdoc cref="T:HttpAgent.HttpRemoteService" />
             </summary>
@@ -19722,6 +19717,21 @@
                 <see cref="T:System.String" />
             </returns>
         </member>
+        <member name="M:HttpAgent.HttpRemoteUtility.ResolveJsonSerializerOptions(System.IServiceProvider,System.String,HttpAgent.HttpClientOptions@)">
+            <summary>
+                解析 JSON 序列化配置
+            </summary>
+            <param name="serviceProvider">
+                <see cref="T:System.IServiceProvider" />
+            </param>
+            <param name="httpClientName"><see cref="T:System.Net.Http.HttpClient" /> 实例的配置名称</param>
+            <param name="clientOptions">
+                <see cref="T:HttpAgent.HttpClientOptions" />
+            </param>
+            <returns>
+                <see cref="T:System.Text.Json.JsonSerializerOptions" />
+            </returns>
+        </member>
         <member name="M:HttpAgent.HttpRemoteUtility.ResolveHttpClientOptions(System.Net.Http.HttpResponseMessage,System.IServiceProvider)">
             <summary>
                 根据 HTTP 响应消息和服务提供器，解析出 <see cref="T:System.Net.Http.HttpClient" /> 客户端配置选项
@@ -20511,12 +20521,6 @@
         <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32,System.Int32,System.Int32)">
             <summary>Pushes 3 values onto the backtracking stack.</summary>
         </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.WordCategoriesMask">
-            <summary>Provides a mask of Unicode categories that combine to form [\w].</summary>
-        </member>
-        <member name="P:System.Text.RegularExpressions.Generated.Utilities.WordCharBitmap">
-            <summary>Gets a bitmap for whether each character 0 through 127 is in [\w]</summary>
-        </member>
         <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_1F52B1A4D2E82B6FEDE25EC8C55F85BB36775196837076691C96925040F90D32">
             <summary>Supports searching for the string "\\u".</summary>
         </member>
@@ -20549,6 +20553,17 @@
             </summary>
             <param name="services">
                 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />
+            </param>
+            <param name="httpRemoteBuilder">
+                <see cref="T:HttpAgent.HttpRemoteBuilder" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
+            </returns>
+        </member>
+    </members>
+</doc>
+ncyInjection.IServiceCollection" />
             </param>
             <param name="httpRemoteBuilder">
                 <see cref="T:HttpAgent.HttpRemoteBuilder" />

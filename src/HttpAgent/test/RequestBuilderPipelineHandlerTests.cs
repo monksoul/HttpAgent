@@ -17,7 +17,7 @@ public class RequestBuilderPipelineHandlerTests
 
         var handler = new RequestBuilderPipelineHandler(serviceProvider,
             serviceProvider.GetRequiredService<IHttpContentProcessorFactory>(),
-            serviceProvider.GetRequiredService<IOptions<HttpRemoteOptions>>());
+            serviceProvider.GetRequiredService<IOptionsMonitor<HttpRemoteOptions>>());
 
         Assert.NotNull(handler);
     }

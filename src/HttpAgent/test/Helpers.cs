@@ -102,7 +102,7 @@ public class Helpers
         }
 
         var serviceProvider = services.BuildServiceProvider();
-        var options = serviceProvider.GetRequiredService<IOptions<HttpRemoteOptions>>();
+        var options = serviceProvider.GetRequiredService<IOptionsMonitor<HttpRemoteOptions>>();
         var logger = serviceProvider.GetRequiredService<IHttpRemoteLogger>();
         var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
 

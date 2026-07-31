@@ -19,7 +19,7 @@ public class RequestProfilerPipelineHandlerTests
 
         var handler = new RequestProfilerPipelineHandler(
             serviceProvider.GetRequiredService<IHttpRemoteLogger>(),
-            serviceProvider.GetRequiredService<IOptions<HttpRemoteOptions>>());
+            serviceProvider.GetRequiredService<IOptionsMonitor<HttpRemoteOptions>>());
 
         Assert.NotNull(handler);
     }

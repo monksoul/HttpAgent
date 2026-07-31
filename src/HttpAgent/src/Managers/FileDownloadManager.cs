@@ -66,7 +66,7 @@ internal sealed class FileDownloadManager
 
         // 构建 HttpRequestBuilder 实例
         RequestBuilder = httpFileDownloadBuilder.Build(httpRemoteService.ServiceProvider
-            .GetRequiredService<IOptions<HttpRemoteOptions>>().Value);
+            .GetRequiredService<IOptionsMonitor<HttpRemoteOptions>>().CurrentValue);
     }
 
     /// <summary>

@@ -19,7 +19,8 @@ public class ProfilerDelegatingHandlerTests
         using var provider = services.BuildServiceProvider();
         var logger = provider.GetRequiredService<IHttpRemoteLogger>();
 
-        var handler = new ProfilerDelegatingHandler(logger, provider.GetRequiredService<IOptions<HttpRemoteOptions>>());
+        var handler =
+            new ProfilerDelegatingHandler(logger, provider.GetRequiredService<IOptionsMonitor<HttpRemoteOptions>>());
         Assert.NotNull(handler);
     }
 

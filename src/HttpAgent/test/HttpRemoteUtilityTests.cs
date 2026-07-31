@@ -255,6 +255,95 @@ public class HttpRemoteUtilityTests
         Assert.NotNull(HttpRemoteUtility.ResolveHttpClientOptions(httpResponseMessage, serviceProvider2));
     }
 
+    [Fact]
+    public void ResolveJsonSerializerOptions_ReturnOK()
+    {
+        var result1 = HttpRemoteUtility.ResolveJsonSerializerOptions(null, null, out var clientOptions1);
+        Assert.Same(HttpRemoteOptions.JsonSerializerOptionsDefault, result1);
+        Assert.Null(clientOptions1);
+
+        var services = new ServiceCollection();
+        using var spEmpty = services.BuildServiceProvider();
+        var result2 = HttpRemoteUtility.ResolveJsonSerializerOptions(spEmpty, null, out var clientOptions2);
+        Assert.Same(HttpRemoteOptions.JsonSerializerOptionsDefault, result2);
+        Assert.Null(clientOptions2);
+
+        services = new ServiceCollection();
+        services.AddHttpRemote();
+        using var spGlobal = services.BuildServiceProvider();
+        var result3 = HttpRemoteUtility.ResolveJsonSerializerOptions(spGlobal, null, out var clientOptions3);
+        Assert.NotNull(result3);
+        Assert.NotNull(clientOptions3);
+        Assert.Null(clientOptions3.JsonSerializerOptions);
+
+        services = new ServiceCollection();
+        services.AddHttpRemote().ConfigureOptions(options => options.JsonSerializerOptions.IncludeFields = true);
+        using var spGlobalCustom = services.BuildServiceProvider();
+        var result4 = HttpRemoteUtility.ResolveJsonSerializerOptions(spGlobalCustom, null, out var clientOptions4);
+        Assert.True(result4.IncludeFields);
+        Assert.NotNull(clientOptions4);
+        Assert.Null(clientOptions4.JsonSerializerOptions);
+
+        services = new ServiceCollection();
+        services.AddHttpClient("test");
+        using var spClientOnly = services.BuildServiceProvider();
+        var result5 = HttpRemoteUtility.ResolveJsonSerializerOptions(spClientOnly, "test", out var clientOptions5);
+        Assert.NotNull(clientOptions5);
+        Assert.Null(clientOptions5.JsonSerializerOptions);
+        Assert.NotNull(result5);
+        Assert.True(result5.PropertyNameCaseInsensitive);
+        Assert.Same(JsonNamingPolicy.CamelCase, result5.PropertyNamingPolicy);
+
+        services = new ServiceCollection();
+        services.AddHttpClient("configured").ConfigureOptions(options =>
+        {
+            options.JsonSerializerOptions.IncludeFields = true;
+            options.JsonSerializerOptions.WriteIndented = true;
+        });
+        using var spConfigured = services.BuildServiceProvider();
+        var result6 =
+            HttpRemoteUtility.ResolveJsonSerializerOptions(spConfigured, "configured", out var clientOptions6);
+        Assert.NotNull(clientOptions6);
+        Assert.NotNull(clientOptions6.JsonSerializerOptions);
+        Assert.True(result6.IncludeFields);
+        Assert.True(result6.WriteIndented);
+        Assert.Same(clientOptions6.JsonSerializerOptions, result6);
+
+        services = new ServiceCollection();
+        services.AddHttpRemote().ConfigureOptions(options => options.JsonSerializerOptions.IncludeFields = false);
+        services.AddHttpClient("override").ConfigureOptions(options =>
+        {
+            options.JsonSerializerOptions.IncludeFields = true;
+        });
+        using var spOverride = services.BuildServiceProvider();
+        var result7 = HttpRemoteUtility.ResolveJsonSerializerOptions(spOverride, "override", out var clientOptions7);
+        Assert.True(result7.IncludeFields);
+        Assert.NotNull(clientOptions7);
+        Assert.NotNull(clientOptions7.JsonSerializerOptions);
+        Assert.Same(clientOptions7.JsonSerializerOptions, result7);
+        var globalOpts = spOverride.GetRequiredService<IOptionsMonitor<HttpRemoteOptions>>().CurrentValue;
+        Assert.False(globalOpts.JsonSerializerOptions.IncludeFields);
+
+        services = new ServiceCollection();
+        services.AddHttpRemote().ConfigureOptions(options => options.JsonSerializerOptions.IncludeFields = true);
+        services.AddHttpClient("unconfigured");
+        services.AddHttpClient("emptyConfig").ConfigureOptions(_ => { });
+        using var spFallback = services.BuildServiceProvider();
+
+        var result8 =
+            HttpRemoteUtility.ResolveJsonSerializerOptions(spFallback, "unconfigured", out var clientOptions8);
+        Assert.True(result8.IncludeFields);
+        Assert.NotNull(clientOptions8);
+        Assert.Null(clientOptions8.JsonSerializerOptions);
+
+        var result9 = HttpRemoteUtility.ResolveJsonSerializerOptions(spFallback, "emptyConfig", out var clientOptions9);
+        Assert.True(result9.IncludeFields);
+        Assert.NotNull(clientOptions9);
+        Assert.NotNull(clientOptions9.JsonSerializerOptions);
+        Assert.True(clientOptions9.JsonSerializerOptions.IncludeFields);
+        Assert.Same(clientOptions9.JsonSerializerOptions, result9);
+    }
+
     public class ApiResult<T>
     {
         public bool Success { get; set; }

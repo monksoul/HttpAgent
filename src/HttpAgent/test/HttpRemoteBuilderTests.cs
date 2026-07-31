@@ -491,7 +491,7 @@ public class HttpRemoteBuilderTests
         builder.Build(services);
 
         using var serviceProvider = services.BuildServiceProvider();
-        var remoteOptions = serviceProvider.GetRequiredService<IOptions<HttpRemoteOptions>>().Value;
+        var remoteOptions = serviceProvider.GetRequiredService<IOptionsMonitor<HttpRemoteOptions>>().CurrentValue;
 
         Assert.Equal("application/json", remoteOptions.DefaultContentType);
         Assert.Equal(@"C:\Workspaces", remoteOptions.DefaultFileDownloadDirectory);
@@ -618,10 +618,11 @@ public class HttpRemoteBuilderTests
         builder.Build(services);
 
         using var serviceProvider = services.BuildServiceProvider();
-        var httpRemoteOptions = serviceProvider.GetRequiredService<IOptions<HttpRemoteOptions>>();
+        var httpRemoteOptions = serviceProvider.GetRequiredService<IOptionsMonitor<HttpRemoteOptions>>();
 
-        Assert.NotNull(httpRemoteOptions.Value.PipelineHandlerTypes);
-        Assert.Equal(typeof(SuppressExceptionPipelineHandler), httpRemoteOptions.Value.PipelineHandlerTypes[0]);
-        Assert.Equal(typeof(CustomPipelineHandler), httpRemoteOptions.Value.PipelineHandlerTypes.Skip(1).First());
+        Assert.NotNull(httpRemoteOptions.CurrentValue.PipelineHandlerTypes);
+        Assert.Equal(typeof(SuppressExceptionPipelineHandler), httpRemoteOptions.CurrentValue.PipelineHandlerTypes[0]);
+        Assert.Equal(typeof(CustomPipelineHandler),
+            httpRemoteOptions.CurrentValue.PipelineHandlerTypes.Skip(1).First());
     }
 }

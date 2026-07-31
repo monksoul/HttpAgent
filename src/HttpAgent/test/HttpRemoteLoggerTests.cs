@@ -15,7 +15,7 @@ public class HttpRemoteLoggerTests
         using var serviceProvider = services.BuildServiceProvider();
 
         var logger = new HttpRemoteLogger(serviceProvider.GetRequiredService<ILogger<Logging>>(),
-            serviceProvider.GetRequiredService<IOptions<HttpRemoteOptions>>(), false);
+            serviceProvider.GetRequiredService<IOptionsMonitor<HttpRemoteOptions>>(), false);
         Assert.NotNull(logger);
         Assert.NotNull(logger._logMessageFormatter);
     }
@@ -29,7 +29,7 @@ public class HttpRemoteLoggerTests
         using var serviceProvider = services.BuildServiceProvider();
 
         var logger = new HttpRemoteLogger(serviceProvider.GetRequiredService<ILogger<Logging>>(),
-            serviceProvider.GetRequiredService<IOptions<HttpRemoteOptions>>(), false);
+            serviceProvider.GetRequiredService<IOptionsMonitor<HttpRemoteOptions>>(), false);
 
         logger.LogInformation("Message");
         logger.LogTrace("Message");
@@ -50,7 +50,7 @@ public class HttpRemoteLoggerTests
         using var serviceProvider = services.BuildServiceProvider();
 
         var logger = new HttpRemoteLogger(serviceProvider.GetRequiredService<ILogger<Logging>>(),
-            serviceProvider.GetRequiredService<IOptions<HttpRemoteOptions>>(), true);
+            serviceProvider.GetRequiredService<IOptionsMonitor<HttpRemoteOptions>>(), true);
 
         logger.LogInformation("Message");
         logger.LogTrace("Message");
@@ -71,7 +71,7 @@ public class HttpRemoteLoggerTests
         using var serviceProvider = services.BuildServiceProvider();
 
         var logger = new HttpRemoteLogger(serviceProvider.GetRequiredService<ILogger<Logging>>(),
-            serviceProvider.GetRequiredService<IOptions<HttpRemoteOptions>>(), false);
+            serviceProvider.GetRequiredService<IOptionsMonitor<HttpRemoteOptions>>(), false);
         Assert.NotNull(logger);
         Assert.NotNull(logger._logMessageFormatter);
 

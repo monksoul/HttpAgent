@@ -17,7 +17,7 @@ public class AutoRedirectPipelineHandlerTests
 
         var handler = new AutoRedirectPipelineHandler(
             serviceProvider.GetRequiredService<IHttpContentProcessorFactory>(),
-            serviceProvider.GetRequiredService<IOptions<HttpRemoteOptions>>());
+            serviceProvider.GetRequiredService<IOptionsMonitor<HttpRemoteOptions>>());
 
         Assert.NotNull(handler);
     }
