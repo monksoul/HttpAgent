@@ -28,7 +28,8 @@ public sealed class HttpRemoteOptions
             new FlexibleDateTimeOffsetConverter(),
             // 允许 Number 或 Boolean 转 String
             new StringJsonConverter()
-        }
+        },
+        TypeInfoResolver = new DefaultJsonTypeInfoResolver()
     };
 
     /// <summary>

@@ -37,6 +37,7 @@ public class HttpRemoteOptionsTests
             HttpRemoteOptions.JsonSerializerOptionsDefault.Converters[1] is
                 FlexibleDateTimeOffsetConverter);
         Assert.True(HttpRemoteOptions.JsonSerializerOptionsDefault.Converters[2] is StringJsonConverter);
+        Assert.NotNull(HttpRemoteOptions.JsonSerializerOptionsDefault.TypeInfoResolver);
 
         Assert.NotNull(httpRemoteOptions.JsonSerializerOptions);
         Assert.NotEqual(HttpRemoteOptions.JsonSerializerOptionsDefault, httpRemoteOptions.JsonSerializerOptions);
