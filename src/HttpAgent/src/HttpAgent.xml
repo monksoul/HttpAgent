@@ -4056,8 +4056,8 @@
             <summary>
                 设置是否启用 ETag 缓存处理
             </summary>
+            <param name="enabled">是否启用</param>
             <returns>
-                <param name="enabled">是否启用</param>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
         </member>
@@ -6008,6 +6008,21 @@
         <member name="M:HttpAgent.HttpContentConverterResult.Dispose">
             <inheritdoc />
         </member>
+        <member name="T:HttpAgent.HttpRemoteResultBaseContentConverter`1">
+            <summary>
+                <see cref="T:HttpAgent.HttpRemoteResultBase`1" /> 内容转换器
+            </summary>
+            <typeparam name="TResult">转换的目标类型</typeparam>
+        </member>
+        <member name="P:HttpAgent.HttpRemoteResultBaseContentConverter`1.KeepsResponseAlive">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.HttpRemoteResultBaseContentConverter`1.Read(HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.HttpRemoteResultBaseContentConverter`1.ReadAsync(HttpAgent.HttpContentConverterContext,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
         <member name="T:HttpAgent.HttpRemoteResultContentConverter`1">
             <summary>
                 <see cref="T:HttpAgent.HttpRemoteResult`1" /> 内容转换器
@@ -6231,7 +6246,7 @@
         <member name="M:HttpAgent.Core.Converters.Json.FlexibleDateTimeConverter.Regex">
             <remarks>
             Pattern:<br/>
-            <code>^/Date\(([+-]*\d+)\)/$</code><br/>
+            <code>^/Date\\(([+-]*\\d+)\\)/$</code><br/>
             Options:<br/>
             <code>RegexOptions.CultureInvariant</code><br/>
             Explanation:<br/>
@@ -6239,7 +6254,7 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Match the string "/Date(".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [+\-] atomically any number of times.<br/>
+                ○ Match a character in the set [+-] atomically any number of times.<br/>
                 ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match the string ")/".<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
@@ -6260,7 +6275,7 @@
         <member name="M:HttpAgent.Core.Converters.Json.FlexibleDateTimeOffsetConverter.Regex">
             <remarks>
             Pattern:<br/>
-            <code>^/Date\(([+-]*\d+)([+-])(\d{2})(\d{2})\)/$</code><br/>
+            <code>^/Date\\(([+-]*\\d+)([+-])(\\d{2})(\\d{2})\\)/$</code><br/>
             Options:<br/>
             <code>RegexOptions.CultureInvariant</code><br/>
             Explanation:<br/>
@@ -6268,10 +6283,10 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Match the string "/Date(".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [+\-] atomically any number of times.<br/>
+                ○ Match a character in the set [+-] atomically any number of times.<br/>
                 ○ Match a Unicode digit atomically at least once.<br/>
             ○ 2nd capture group.<br/>
-                ○ Match a character in the set [+\-].<br/>
+                ○ Match a character in the set [+-].<br/>
             ○ 3rd capture group.<br/>
                 ○ Match a Unicode digit exactly 2 times.<br/>
             ○ 4th capture group.<br/>
@@ -6858,7 +6873,7 @@
         <member name="M:HttpAgent.Core.Extensions.StringExtensions.PlaceholderRegex">
             <remarks>
             Pattern:<br/>
-            <code>\{\s*(?:\*\*)?\s*(\w+(?:\s*\.\s*\w+|\s*\[\s*\d+\s*\])*)\s*(\?)?\s*\}</code><br/>
+            <code>\\{\\s*(?:\\*\\*)?\\s*(\\w+(?:\\s*\\.\\s*\\w+|\\s*\\[\\s*\\d+\\s*\\])*)\\s*(\\?)?\\s*\\}</code><br/>
             Explanation:<br/>
             <code>
             ○ Match '{'.<br/>
@@ -6869,13 +6884,14 @@
             ○ 1st capture group.<br/>
                 ○ Match a word character greedily at least once.<br/>
                 ○ Loop greedily any number of times.<br/>
-                    ○ Match a whitespace character atomically any number of times.<br/>
                     ○ Match with 2 alternative expressions.<br/>
                         ○ Match a sequence of expressions.<br/>
+                            ○ Match a whitespace character atomically any number of times.<br/>
                             ○ Match '.'.<br/>
                             ○ Match a whitespace character atomically any number of times.<br/>
                             ○ Match a word character greedily at least once.<br/>
                         ○ Match a sequence of expressions.<br/>
+                            ○ Match a whitespace character atomically any number of times.<br/>
                             ○ Match '['.<br/>
                             ○ Match a whitespace character atomically any number of times.<br/>
                             ○ Match a Unicode digit atomically at least once.<br/>
@@ -6893,7 +6909,7 @@
         <member name="M:HttpAgent.Core.Extensions.StringExtensions.ConfigurationKeyRegex">
             <remarks>
             Pattern:<br/>
-            <code>\[\[\s*(?:\*\*)?\s*([\w\-:]+)((?:\s*\|\s*[\w\-:]+)*)\s*(?:\|\|\s*([^\]]*))?\s*(\?)?\s*\]\]</code><br/>
+            <code>\\[\\[\\s*(?:\\*\\*)?\\s*([\\w\\-:]+)((?:\\s*\\|\\s*[\\w\\-:]+)*)\\s*(?:\\|\\|\\s*([^\\]]*))?\\s*(\\?)?\\s*\\]\\]</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "[[".<br/>
@@ -6902,13 +6918,13 @@
                 ○ Match the string "**".<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [\-:\w] greedily at least once.<br/>
+                ○ Match a character in the set [-:\w] greedily at least once.<br/>
             ○ 2nd capture group.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match a whitespace character atomically any number of times.<br/>
                     ○ Match '|'.<br/>
                     ○ Match a whitespace character greedily any number of times.<br/>
-                    ○ Match a character in the set [\-:\w] greedily at least once.<br/>
+                    ○ Match a character in the set [-:\w] greedily at least once.<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ Optional (greedy).<br/>
                 ○ Match the string "||".<br/>
@@ -6935,32 +6951,32 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Loop greedily at least once.<br/>
                 ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [\-.0-9A-Z_a-z~].<br/>
+                    ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
                     ○ Match a sequence of expressions.<br/>
                         ○ Match '%'.<br/>
-                        ○ Match a hexadecimal digit exactly 2 times.<br/>
+                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
             ○ Match '='.<br/>
             ○ Loop greedily any number of times.<br/>
                 ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [+\-.0-9A-Z_a-z~].<br/>
+                    ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
                     ○ Match a sequence of expressions.<br/>
                         ○ Match '%'.<br/>
-                        ○ Match a hexadecimal digit exactly 2 times.<br/>
+                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
             ○ Loop greedily any number of times.<br/>
                 ○ Match '&amp;'.<br/>
                 ○ Loop greedily at least once.<br/>
                     ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [\-.0-9A-Z_a-z~].<br/>
+                        ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
                         ○ Match a sequence of expressions.<br/>
                             ○ Match '%'.<br/>
-                            ○ Match a hexadecimal digit exactly 2 times.<br/>
+                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
                 ○ Match '='.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [+\-.0-9A-Z_a-z~].<br/>
+                        ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
                         ○ Match a sequence of expressions.<br/>
                             ○ Match '%'.<br/>
-                            ○ Match a hexadecimal digit exactly 2 times.<br/>
+                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
             </remarks>
@@ -10009,6 +10025,18 @@
             </returns>
             <exception cref="T:System.ArgumentNullException"></exception>
         </member>
+        <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.GetRequestDuration(System.Exception)">
+            <summary>
+                获取与异常关联的请求耗时（毫秒）
+            </summary>
+            <param name="exception">
+                <see cref="T:System.Exception" />
+            </param>
+            <returns>
+                <see cref="T:System.Int64" />
+            </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
         <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.ToJsonString(System.Object,System.Text.Json.JsonSerializerOptions)">
             <summary>
                 将对象转换为 JSON 字符串
@@ -10080,12 +10108,12 @@
         <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.UnicodeEscapeRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\u([0-9a-fA-F]{4})</code><br/>
+            <code>\\\\u([0-9a-fA-F]{4})</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "\\u".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a hexadecimal digit exactly 4 times.<br/>
+                ○ Match a character in the set [0-9A-Fa-f] exactly 4 times.<br/>
             </code>
             </remarks>
         </member>
@@ -11774,12 +11802,12 @@
         <member name="M:HttpAgent.FileTransferProgress.AnsiRegex">
             <remarks>
             Pattern:<br/>
-            <code>\e\[[\d;]*[a-zA-Z]</code><br/>
+            <code>\\e\\[[\\d;]*[a-zA-Z]</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "\u001b[".<br/>
             ○ Match a character in the set [;\d] atomically any number of times.<br/>
-            ○ Match an ASCII letter.<br/>
+            ○ Match a character in the set [A-Za-z].<br/>
             </code>
             </remarks>
         </member>
@@ -11995,152 +12023,58 @@
                 释放服务提供器
             </summary>
         </member>
-        <member name="T:HttpAgent.HttpRemoteResult">
+        <member name="T:HttpAgent.IHttpRemoteResult">
+            <summary>
+                HTTP 远程请求结果接口
+            </summary>
+        </member>
+        <member name="P:HttpAgent.IHttpRemoteResult.ResponseMessage">
+            <inheritdoc cref="T:System.Net.Http.HttpResponseMessage" />
+        </member>
+        <member name="P:HttpAgent.IHttpRemoteResult.Result">
+            <summary>
+                目标结果
+            </summary>
+        </member>
+        <member name="T:HttpAgent.HttpRemoteResultBase`1">
             <summary>
                 HTTP 远程请求结果
             </summary>
             <remarks>用于将原始的 <see cref="T:System.Net.Http.HttpResponseMessage" /> 进行包装。</remarks>
-        </member>
-        <member name="M:HttpAgent.HttpRemoteResult.#ctor(System.Net.Http.HttpResponseMessage)">
-            <summary>
-                <inheritdoc cref="T:HttpAgent.HttpRemoteResult" />
-            </summary>
-            <param name="httpResponseMessage">
-                <see cref="T:System.Net.Http.HttpResponseMessage" />
-            </param>
-        </member>
-        <member name="P:HttpAgent.HttpRemoteResult.ResponseMessage">
-            <inheritdoc cref="T:System.Net.Http.HttpResponseMessage" />
-        </member>
-        <member name="P:HttpAgent.HttpRemoteResult.ContentType">
-            <summary>
-                内容类型
-            </summary>
-        </member>
-        <member name="P:HttpAgent.HttpRemoteResult.CharSet">
-            <summary>
-                字符集
-            </summary>
-        </member>
-        <member name="P:HttpAgent.HttpRemoteResult.ContentEncoding">
-            <summary>
-                内容编码
-            </summary>
-        </member>
-        <member name="P:HttpAgent.HttpRemoteResult.ContentLength">
-            <summary>
-                内容大小
-            </summary>
-        </member>
-        <member name="P:HttpAgent.HttpRemoteResult.Server">
-            <summary>
-                响应 <c>Server</c> 标头
-            </summary>
-        </member>
-        <member name="P:HttpAgent.HttpRemoteResult.RawSetCookies">
-            <summary>
-                原始响应标头 <c>Set-Cookie</c> 集合
-            </summary>
-        </member>
-        <member name="P:HttpAgent.HttpRemoteResult.SetCookies">
-            <summary>
-                <see cref="T:Microsoft.Net.Http.Headers.SetCookieHeaderValue" /> 集合
-            </summary>
-        </member>
-        <member name="P:HttpAgent.HttpRemoteResult.StatusCode">
-            <summary>
-                响应状态码
-            </summary>
-        </member>
-        <member name="P:HttpAgent.HttpRemoteResult.IsSuccessStatusCode">
-            <summary>
-                是否请求成功
-            </summary>
-        </member>
-        <member name="P:HttpAgent.HttpRemoteResult.RequestDuration">
-            <summary>
-                请求耗时（毫秒）
-            </summary>
-        </member>
-        <member name="P:HttpAgent.HttpRemoteResult.Headers">
-            <summary>
-                响应标头
-            </summary>
-        </member>
-        <member name="P:HttpAgent.HttpRemoteResult.ContentHeaders">
-            <summary>
-                响应内容标头
-            </summary>
-        </member>
-        <member name="P:HttpAgent.HttpRemoteResult.Version">
-            <summary>
-                HTTP 版本
-            </summary>
-        </member>
-        <member name="P:HttpAgent.HttpRemoteResult.HttpClientName">
-            <summary>
-                <see cref="T:System.Net.Http.HttpClient" /> 实例的配置名称
-            </summary>
-        </member>
-        <member name="M:HttpAgent.HttpRemoteResult.Dispose">
-            <inheritdoc />
-        </member>
-        <member name="M:HttpAgent.HttpRemoteResult.Initialize">
-            <summary>
-                初始化
-            </summary>
-        </member>
-        <member name="M:HttpAgent.HttpRemoteResult.ParseStatusCode">
-            <summary>
-                解析响应状态码
-            </summary>
-        </member>
-        <member name="M:HttpAgent.HttpRemoteResult.ParseHeaders">
-            <summary>
-                解析响应标头
-            </summary>
-        </member>
-        <member name="M:HttpAgent.HttpRemoteResult.ParseContentMetadata(System.Net.Http.Headers.HttpContentHeaders)">
-            <summary>
-                解析响应内容标头元数据
-            </summary>
-            <param name="contentHeaders">
-                <see cref="T:System.Net.Http.Headers.HttpContentHeaders" />
-            </param>
-        </member>
-        <member name="M:HttpAgent.HttpRemoteResult.ParseSetCookies(System.Net.Http.Headers.HttpResponseHeaders)">
-            <summary>
-                解析响应标头 <c>Set-Cookie</c> 集合
-            </summary>
-            <param name="responseHeaders">
-                <see cref="T:System.Net.Http.Headers.HttpResponseHeaders" />
-            </param>
-        </member>
-        <member name="M:HttpAgent.HttpRemoteResult.ToString">
-            <inheritdoc />
-        </member>
-        <member name="T:HttpAgent.HttpRemoteResult`1">
-            <inheritdoc cref="T:HttpAgent.HttpRemoteResult" />
             <typeparam name="TResult">转换的目标类型</typeparam>
         </member>
-        <member name="M:HttpAgent.HttpRemoteResult`1.#ctor(System.Net.Http.HttpResponseMessage)">
+        <member name="M:HttpAgent.HttpRemoteResultBase`1.#ctor(System.Net.Http.HttpResponseMessage,`0)">
             <summary>
-                <inheritdoc cref="T:HttpAgent.HttpRemoteResult`1" />
+                <inheritdoc cref="T:HttpAgent.HttpRemoteResultBase`1" />
             </summary>
             <param name="httpResponseMessage">
                 <see cref="T:System.Net.Http.HttpResponseMessage" />
             </param>
+            <param name="result">
+                <typeparamref name="TResult" />
+            </param>
         </member>
-        <member name="P:HttpAgent.HttpRemoteResult`1.Result">
+        <member name="P:HttpAgent.HttpRemoteResultBase`1.Result">
             <summary>
                 <typeparamref name="TResult" />
             </summary>
             <remarks>注意 <c>HEAD</c> 请求不包含响应内容。</remarks>
         </member>
-        <member name="M:HttpAgent.HttpRemoteResult`1.Dispose">
+        <member name="P:HttpAgent.HttpRemoteResultBase`1.RequestDuration">
+            <summary>
+                请求耗时（毫秒）
+            </summary>
+        </member>
+        <member name="M:HttpAgent.HttpRemoteResultBase`1.Dispose">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpRemoteResult`1.Deconstruct(`0@,System.Net.Http.HttpResponseMessage@)">
+        <member name="P:HttpAgent.HttpRemoteResultBase`1.ResponseMessage">
+            <inheritdoc cref="T:System.Net.Http.HttpResponseMessage" />
+        </member>
+        <member name="P:HttpAgent.HttpRemoteResultBase`1.HttpAgent#IHttpRemoteResult#Result">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.HttpRemoteResultBase`1.Deconstruct(`0@,System.Net.Http.HttpResponseMessage@)">
             <summary>
                 解构函数
             </summary>
@@ -12150,6 +12084,88 @@
             <param name="httpResponseMessage">
                 <inheritdoc cref="T:System.Net.Http.HttpResponseMessage" />
             </param>
+        </member>
+        <member name="M:HttpAgent.HttpRemoteResultBase`1.ToString">
+            <inheritdoc />
+        </member>
+        <member name="T:HttpAgent.HttpRemoteResult`1">
+            <inheritdoc cref="T:HttpAgent.HttpRemoteResultBase`1" />
+        </member>
+        <member name="M:HttpAgent.HttpRemoteResult`1.#ctor(System.Net.Http.HttpResponseMessage,`0)">
+            <summary>
+                <inheritdoc cref="T:HttpAgent.HttpRemoteResult`1" />
+            </summary>
+            <param name="httpResponseMessage">
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </param>
+            <param name="result">
+                <typeparamref name="TResult" />
+            </param>
+        </member>
+        <member name="P:HttpAgent.HttpRemoteResult`1.ContentType">
+            <summary>
+                内容类型
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpRemoteResult`1.CharSet">
+            <summary>
+                字符集
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpRemoteResult`1.ContentEncoding">
+            <summary>
+                内容编码
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpRemoteResult`1.ContentLength">
+            <summary>
+                内容大小
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpRemoteResult`1.Server">
+            <summary>
+                响应 <c>Server</c> 标头
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpRemoteResult`1.RawSetCookies">
+            <summary>
+                原始响应标头 <c>Set-Cookie</c> 集合
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpRemoteResult`1.SetCookies">
+            <summary>
+                <see cref="T:Microsoft.Net.Http.Headers.SetCookieHeaderValue" /> 集合
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpRemoteResult`1.StatusCode">
+            <summary>
+                响应状态码
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpRemoteResult`1.IsSuccessStatusCode">
+            <summary>
+                是否请求成功
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpRemoteResult`1.Headers">
+            <summary>
+                响应标头
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpRemoteResult`1.ContentHeaders">
+            <summary>
+                响应内容标头
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpRemoteResult`1.Version">
+            <summary>
+                HTTP 版本
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpRemoteResult`1.HttpClientName">
+            <summary>
+                <see cref="T:System.Net.Http.HttpClient" /> 实例的配置名称
+            </summary>
         </member>
         <member name="M:HttpAgent.HttpRemoteResult`1.Deconstruct(`0@,System.Net.Http.HttpResponseMessage@,System.Boolean@)">
             <summary>
@@ -12175,6 +12191,37 @@
             </param>
             <param name="isSuccessStatusCode">是否请求成功</param>
             <param name="statusCode">响应状态码</param>
+        </member>
+        <member name="M:HttpAgent.HttpRemoteResult`1.Initialize">
+            <summary>
+                初始化
+            </summary>
+        </member>
+        <member name="M:HttpAgent.HttpRemoteResult`1.ParseStatusCode">
+            <summary>
+                解析响应状态码
+            </summary>
+        </member>
+        <member name="M:HttpAgent.HttpRemoteResult`1.ParseHeaders">
+            <summary>
+                解析响应标头
+            </summary>
+        </member>
+        <member name="M:HttpAgent.HttpRemoteResult`1.ParseContentMetadata(System.Net.Http.Headers.HttpContentHeaders)">
+            <summary>
+                解析响应内容标头元数据
+            </summary>
+            <param name="contentHeaders">
+                <see cref="T:System.Net.Http.Headers.HttpContentHeaders" />
+            </param>
+        </member>
+        <member name="M:HttpAgent.HttpRemoteResult`1.ParseSetCookies(System.Net.Http.Headers.HttpResponseHeaders)">
+            <summary>
+                解析响应标头 <c>Set-Cookie</c> 集合
+            </summary>
+            <param name="responseHeaders">
+                <see cref="T:System.Net.Http.Headers.HttpResponseHeaders" />
+            </param>
         </member>
         <member name="T:HttpAgent.HttpResponseResult">
             <summary>
@@ -13561,12 +13608,12 @@
         <member name="M:HttpAgent.StatusCodePipelineHandler.StatusCodeRangeRegex">
             <remarks>
             Pattern:<br/>
-            <code>^\d+[-~]\d+$</code><br/>
+            <code>^\\d+[-~]\\d+$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
-            ○ Match a character in the set [\-~].<br/>
+            ○ Match a character in the set [-~].<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
@@ -13575,7 +13622,7 @@
         <member name="M:HttpAgent.StatusCodePipelineHandler.StatusCodeCompareRegex">
             <remarks>
             Pattern:<br/>
-            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\d+)$</code><br/>
+            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\\d+)$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
@@ -14755,6 +14802,35 @@
             <param name="httpRequestBuilder">
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </param>
+        </member>
+        <member name="M:HttpAgent.HttpRemoteService.TryHandleSuppressSend``1(HttpAgent.HttpRequestBuilder,``0@)">
+            <summary>
+                尝试处理无需发送请求的类型
+            </summary>
+            <param name="httpRequestBuilder">
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </param>
+            <param name="result">
+                <typeparamref name="TResult" />
+            </param>
+            <typeparam name="TResult">转换的目标类型</typeparam>
+            <returns>
+                <see cref="T:System.Boolean" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRemoteService.TryHandleSuppressSend(System.Type,HttpAgent.HttpRequestBuilder,System.Object@)">
+            <summary>
+                尝试处理无需发送请求的类型
+            </summary>
+            <param name="resultType">转换的目标类型</param>
+            <param name="httpRequestBuilder">
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </param>
+            <param name="result">目标结果</param>
+            <returns>
+                <see cref="T:System.Boolean" />
+            </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.HttpRemoteService.DownloadFile(System.String,System.String,System.Func{HttpAgent.FileTransferProgress,System.Threading.Tasks.Task},HttpAgent.FileExistsBehavior,System.Action{HttpAgent.HttpFileDownloadBuilder},System.Threading.CancellationToken)">
             <inheritdoc />
@@ -20997,12 +21073,6 @@
         <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32,System.Int32,System.Int32)">
             <summary>Pushes 3 values onto the backtracking stack.</summary>
         </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.WordCategoriesMask">
-            <summary>Provides a mask of Unicode categories that combine to form [\w].</summary>
-        </member>
-        <member name="P:System.Text.RegularExpressions.Generated.Utilities.WordCharBitmap">
-            <summary>Gets a bitmap for whether each character 0 through 127 is in [\w]</summary>
-        </member>
         <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_1F52B1A4D2E82B6FEDE25EC8C55F85BB36775196837076691C96925040F90D32">
             <summary>Supports searching for the string "\\u".</summary>
         </member>
@@ -21038,6 +21108,14 @@
             </param>
             <param name="httpRemoteBuilder">
                 <see cref="T:HttpAgent.HttpRemoteBuilder" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
+            </returns>
+        </member>
+    </members>
+</doc>
+
             </param>
             <returns>
                 <see cref="T:HttpAgent.IHttpRemoteBuilder" />

@@ -770,6 +770,20 @@ public class HttpRemoteExtensionsTests
         Assert.NotNull(exception.GetResponseMessage());
     }
 
+    [Fact]
+    public void GetRequestDuration_Invalid_Parameters() =>
+        Assert.Throws<ArgumentNullException>(() => HttpRemoteExtensions.GetRequestDuration(null!));
+
+    [Fact]
+    public void GetRequestDuration_ReturnOK()
+    {
+        var exception = new Exception("出错了");
+        Assert.Null(exception.GetRequestDuration());
+
+        exception.Data[nameof(HttpRequestPipelineContext.RequestDuration)] = 100L;
+        Assert.Equal(100L, exception.GetRequestDuration());
+    }
+
     private static byte[] GzipCompress(byte[] data)
     {
         using var output = new MemoryStream();

@@ -866,6 +866,40 @@ public class HttpRemoteServiceMethodsTests
     }
 
     [Fact]
+    public void SendAs_HttpRequestBuilderAndHttpRequestMessage_ReturnOK()
+    {
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost/"));
+
+        var result = httpRemoteService.SendAs<HttpRequestBuilder>(httpRequestBuilder);
+        Assert.Same(result, httpRequestBuilder);
+
+        var result2 = httpRemoteService.SendAs<HttpRequestMessage>(httpRequestBuilder);
+        Assert.NotNull(result2);
+        Assert.Equal("GET", result2.Method.Method);
+        Assert.Equal("http://localhost/", result2.RequestUri?.ToString());
+
+        serviceProvider.Dispose();
+    }
+
+    [Fact]
+    public void SendAs_WithType_HttpRequestBuilderAndHttpRequestMessage_ReturnOK()
+    {
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost/"));
+
+        var result = httpRemoteService.SendAs(typeof(HttpRequestBuilder), httpRequestBuilder);
+        Assert.Same(result, httpRequestBuilder);
+
+        var result2 = httpRemoteService.SendAs(typeof(HttpRequestMessage), httpRequestBuilder) as HttpRequestMessage;
+        Assert.NotNull(result2);
+        Assert.Equal("GET", result2.Method.Method);
+        Assert.Equal("http://localhost/", result2.RequestUri?.ToString());
+
+        serviceProvider.Dispose();
+    }
+
+    [Fact]
     public async Task SendAsAsync_HttpRemoteResult_ReturnOK()
     {
         var port = NetworkUtility.FindAvailableTcpPort();
@@ -1190,6 +1224,41 @@ public class HttpRemoteServiceMethodsTests
         Assert.Equal("Hello World!", result?.Result);
 
         await app.StopAsync();
+        await serviceProvider.DisposeAsync();
+    }
+
+    [Fact]
+    public async Task SendAsAsync_HttpRequestBuilderAndHttpRequestMessage_ReturnOK()
+    {
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost/"));
+
+        var result = await httpRemoteService.SendAsAsync<HttpRequestBuilder>(httpRequestBuilder);
+        Assert.Same(result, httpRequestBuilder);
+
+        var result2 = await httpRemoteService.SendAsAsync<HttpRequestMessage>(httpRequestBuilder);
+        Assert.NotNull(result2);
+        Assert.Equal("GET", result2.Method.Method);
+        Assert.Equal("http://localhost/", result2.RequestUri?.ToString());
+
+        await serviceProvider.DisposeAsync();
+    }
+
+    [Fact]
+    public async Task SendAsAsync_WithType_HttpRequestBuilderAndHttpRequestMessage_ReturnOK()
+    {
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost/"));
+
+        var result = await httpRemoteService.SendAsAsync(typeof(HttpRequestBuilder), httpRequestBuilder);
+        Assert.Same(result, httpRequestBuilder);
+
+        var result2 =
+            await httpRemoteService.SendAsAsync(typeof(HttpRequestMessage), httpRequestBuilder) as HttpRequestMessage;
+        Assert.NotNull(result2);
+        Assert.Equal("GET", result2.Method.Method);
+        Assert.Equal("http://localhost/", result2.RequestUri?.ToString());
+
         await serviceProvider.DisposeAsync();
     }
 }

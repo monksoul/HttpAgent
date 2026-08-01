@@ -11,8 +11,11 @@ public class HttpRemoteResultTests
     [Fact]
     public void New_ReturnOK()
     {
+        Assert.True(typeof(IHttpRemoteResult).IsAssignableFrom(typeof(HttpRemoteResultBase<>)));
+        Assert.True(typeof(IHttpRemoteResult).IsAssignableFrom(typeof(HttpRemoteResult<>)));
+
         var httpResponseMessage = new HttpResponseMessage();
-        var httpRemoteResult = new HttpRemoteResult<string>(httpResponseMessage);
+        var httpRemoteResult = new HttpRemoteResult<string>(httpResponseMessage, null);
 
         Assert.NotNull(httpRemoteResult);
         Assert.NotNull(httpRemoteResult.ResponseMessage);
@@ -34,6 +37,11 @@ public class HttpRemoteResultTests
         Assert.NotNull(httpRemoteResult.ContentHeaders);
         Assert.Equal("1.1", httpRemoteResult.Version.ToString());
         Assert.Null(httpRemoteResult.HttpClientName);
+
+        var httpResponseMessage2 = new HttpResponseMessage();
+        var httpRemoteResult2 = new HttpRemoteResultBase<string>(httpResponseMessage2, null);
+        Assert.NotNull(httpRemoteResult2.ResponseMessage);
+        Assert.Null(httpRemoteResult2.Result);
     }
 
     [Fact]
@@ -41,7 +49,7 @@ public class HttpRemoteResultTests
     {
         var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.Unused);
 
-        var httpRemoteResult = new HttpRemoteResult<string>(httpResponseMessage);
+        var httpRemoteResult = new HttpRemoteResult<string>(httpResponseMessage, null);
         httpRemoteResult.ParseStatusCode();
 
         Assert.Equal(HttpStatusCode.Unused, httpRemoteResult.StatusCode);
@@ -58,7 +66,7 @@ public class HttpRemoteResultTests
             new MediaTypeHeaderValue("application/json") { CharSet = "utf-8" });
         httpResponseMessage.Content = stringContent;
 
-        var httpRemoteResult = new HttpRemoteResult<string>(httpResponseMessage);
+        var httpRemoteResult = new HttpRemoteResult<string>(httpResponseMessage, null);
         httpRemoteResult.ParseHeaders();
 
         Assert.Equal("furion", httpRemoteResult.Headers.GetValues("test").FirstOrDefault());
@@ -78,7 +86,7 @@ public class HttpRemoteResultTests
             new MediaTypeHeaderValue("application/json") { CharSet = "utf-8" });
         httpResponseMessage.Content = stringContent;
 
-        var httpRemoteResult = new HttpRemoteResult<string>(httpResponseMessage);
+        var httpRemoteResult = new HttpRemoteResult<string>(httpResponseMessage, null);
         httpRemoteResult.ParseContentMetadata(httpResponseMessage.Content.Headers);
 
         Assert.Equal(6, httpRemoteResult.ContentLength);
@@ -90,7 +98,7 @@ public class HttpRemoteResultTests
     public void ParseSetCookies_ReturnOK()
     {
         var httpResponseMessage = new HttpResponseMessage();
-        var httpRemoteResult = new HttpRemoteResult<string>(httpResponseMessage);
+        var httpRemoteResult = new HttpRemoteResult<string>(httpResponseMessage, null);
         httpRemoteResult.ParseSetCookies(httpResponseMessage.Headers);
 
         Assert.Null(httpRemoteResult.RawSetCookies);
@@ -102,7 +110,7 @@ public class HttpRemoteResultTests
 
         httpResponseMessage2.Headers.Add("Set-Cookie", setCookieHeader);
 
-        var httpRemoteResult2 = new HttpRemoteResult<string>(httpResponseMessage2);
+        var httpRemoteResult2 = new HttpRemoteResult<string>(httpResponseMessage2, null);
         httpRemoteResult2.ParseSetCookies(httpResponseMessage2.Headers);
 
         Assert.NotNull(httpRemoteResult2.RawSetCookies);
@@ -131,7 +139,7 @@ public class HttpRemoteResultTests
         httpResponseMessage.Version = new Version(1, 2);
         httpResponseMessage.RequestMessage = new HttpRequestMessage(HttpMethod.Get, new Uri("https://localhost/"));
         httpResponseMessage.RequestMessage.Options.TryAdd(Constants.HTTP_CLIENT_NAME, "github");
-        var httpRemoteResult = new HttpRemoteResult<string>(httpResponseMessage);
+        var httpRemoteResult = new HttpRemoteResult<string>(httpResponseMessage, null);
         httpRemoteResult.Initialize();
 
         Assert.Equal("1.2", httpRemoteResult.Version.ToString());
@@ -145,7 +153,7 @@ public class HttpRemoteResultTests
 
         httpResponseMessage2.Headers.Add("Set-Cookie", setCookieHeader);
 
-        var httpRemoteResult2 = new HttpRemoteResult<string>(httpResponseMessage2);
+        var httpRemoteResult2 = new HttpRemoteResult<string>(httpResponseMessage2, null);
         httpRemoteResult2.Initialize();
 
         Assert.Equal(HttpStatusCode.OK, httpRemoteResult.StatusCode);
@@ -183,7 +191,7 @@ public class HttpRemoteResultTests
         httpResponseMessage.Headers.TryAddWithoutValidation("Accept-Encoding", "gzip, deflate");
         httpResponseMessage.Content.Headers.TryAddWithoutValidation("Content-Type", "application/json");
 
-        var httpRemoteResult = new HttpRemoteResult<string>(httpResponseMessage) { RequestDuration = 200 };
+        var httpRemoteResult = new HttpRemoteResult<string>(httpResponseMessage, null) { RequestDuration = 200 };
 
         Assert.Equal(
             "[36m[1mRequest Headers:[0m \r\n  Accept:              application/json\r\n  Accept-Encoding:     gzip, deflate\r\n[36m[1mGeneral:[0m \r\n  Request URL:               http://localhost\r\n  Request Method:            GET\r\n  Status Code:               [32m[1m200 OK[0m\r\n  HTTP Version:              1.1\r\n  Request Duration (ms):     200.00\r\n[36m[1mResponse Headers:[0m \r\n  Accept:              application/json\r\n  Accept-Encoding:     gzip, deflate\r\n  Content-Type:        application/json\r\n  Content-Length:      0",
@@ -197,10 +205,11 @@ public class HttpRemoteResultTests
         var stringContent = new StringContent("furion", Encoding.UTF8,
             new MediaTypeHeaderValue("application/json") { CharSet = "utf-8" });
         httpResponseMessage.Content = stringContent;
-        var httpRemoteResult = new HttpRemoteResult<string>(httpResponseMessage)
-        {
-            RequestDuration = 200, Result = await httpResponseMessage.Content.ReadAsStringAsync()
-        };
+        var httpRemoteResult =
+            new HttpRemoteResult<string>(httpResponseMessage, await httpResponseMessage.Content.ReadAsStringAsync())
+            {
+                RequestDuration = 200
+            };
 
         var (result, response) = httpRemoteResult;
         Assert.Equal("furion", result);
@@ -225,10 +234,11 @@ public class HttpRemoteResultTests
         var stringContent = new StringContent("furion", Encoding.UTF8,
             new MediaTypeHeaderValue("application/json") { CharSet = "utf-8" });
         httpResponseMessage.Content = stringContent;
-        var httpRemoteResult = new HttpRemoteResult<string>(httpResponseMessage)
-        {
-            RequestDuration = 200, Result = await httpResponseMessage.Content.ReadAsStringAsync()
-        };
+        var httpRemoteResult =
+            new HttpRemoteResult<string>(httpResponseMessage, await httpResponseMessage.Content.ReadAsStringAsync())
+            {
+                RequestDuration = 200
+            };
 
         httpRemoteResult.Dispose();
 

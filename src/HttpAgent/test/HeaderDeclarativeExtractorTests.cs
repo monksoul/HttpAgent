@@ -132,6 +132,12 @@ public class HeaderDeclarativeExtractorTests
         Assert.Equal("Content-Type", key2);
         Assert.NotNull(value2);
         Assert.Equal("application/json", value2);
+
+        Assert.True(HeaderDeclarativeExtractor.TrySplitHeader("X-Emoji: :rocket:", out var key3,
+            out var value3));
+        Assert.Equal("X-Emoji", key3);
+        Assert.NotNull(value3);
+        Assert.Equal(":rocket:", value3);
     }
 }
 

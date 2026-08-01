@@ -5,6 +5,54 @@
 namespace HttpAgent;
 
 /// <summary>
+///     <see cref="HttpRemoteResultBase{TResult}" /> 内容转换器
+/// </summary>
+/// <typeparam name="TResult">转换的目标类型</typeparam>
+public class HttpRemoteResultBaseContentConverter<TResult> : HttpContentConverterBase<HttpRemoteResultBase<TResult>>
+{
+    /// <inheritdoc />
+    public override bool KeepsResponseAlive => true;
+
+    /// <inheritdoc />
+    public override HttpRemoteResultBase<TResult>? Read(HttpContentConverterContext context,
+        CancellationToken cancellationToken = default)
+    {
+        // 空检查
+        ArgumentNullException.ThrowIfNull(context.Factory);
+
+        // 获取 HttpResponseMessage 实例
+        var httpResponseMessage = context.ResponseMessage;
+
+        // 将 HttpResponseMessage 转换为 TResult 实例
+        var httpContentConverterResult = context.Factory.Read<TResult>(context, cancellationToken);
+
+        return new HttpRemoteResultBase<TResult>(httpResponseMessage, httpContentConverterResult.Result)
+        {
+            RequestDuration = context.RequestDuration
+        };
+    }
+
+    /// <inheritdoc />
+    public override async Task<HttpRemoteResultBase<TResult>?> ReadAsync(HttpContentConverterContext context,
+        CancellationToken cancellationToken = default)
+    {
+        // 空检查
+        ArgumentNullException.ThrowIfNull(context.Factory);
+
+        // 获取 HttpResponseMessage 实例
+        var httpResponseMessage = context.ResponseMessage;
+
+        // 将 HttpResponseMessage 转换为 TResult 实例
+        var httpContentConverterResult = await context.Factory.ReadAsync<TResult>(context, cancellationToken);
+
+        return new HttpRemoteResultBase<TResult>(httpResponseMessage, httpContentConverterResult.Result)
+        {
+            RequestDuration = context.RequestDuration
+        };
+    }
+}
+
+/// <summary>
 ///     <see cref="HttpRemoteResult{TResult}" /> 内容转换器
 /// </summary>
 /// <typeparam name="TResult">转换的目标类型</typeparam>
@@ -26,9 +74,9 @@ public class HttpRemoteResultContentConverter<TResult> : HttpContentConverterBas
         // 将 HttpResponseMessage 转换为 TResult 实例
         var httpContentConverterResult = context.Factory.Read<TResult>(context, cancellationToken);
 
-        return new HttpRemoteResult<TResult>(httpResponseMessage)
+        return new HttpRemoteResult<TResult>(httpResponseMessage, httpContentConverterResult.Result)
         {
-            Result = httpContentConverterResult.Result, RequestDuration = context.RequestDuration
+            RequestDuration = context.RequestDuration
         };
     }
 
@@ -45,9 +93,9 @@ public class HttpRemoteResultContentConverter<TResult> : HttpContentConverterBas
         // 将 HttpResponseMessage 转换为 TResult 实例
         var httpContentConverterResult = await context.Factory.ReadAsync<TResult>(context, cancellationToken);
 
-        return new HttpRemoteResult<TResult>(httpResponseMessage)
+        return new HttpRemoteResult<TResult>(httpResponseMessage, httpContentConverterResult.Result)
         {
-            Result = httpContentConverterResult.Result, RequestDuration = context.RequestDuration
+            RequestDuration = context.RequestDuration
         };
     }
 }

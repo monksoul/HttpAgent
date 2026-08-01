@@ -1671,6 +1671,7 @@ public class HttpRemoteServiceTests
         {
             Assert.NotNull(e.GetResponseMessage());
             Assert.Equal(HttpStatusCode.InternalServerError, e.GetResponseMessage()?.StatusCode);
+            Assert.NotNull(e.GetRequestDuration());
         }
 
         await serviceProvider.DisposeAsync();
@@ -1768,6 +1769,64 @@ public class HttpRemoteServiceTests
         Assert.Equal(2, actualRequests);
 
         await app.StopAsync();
+    }
+
+    [Fact]
+    public void TryHandleSuppressSend_Invalid_Parameters()
+    {
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
+        Assert.Throws<ArgumentNullException>(() => httpRemoteService.TryHandleSuppressSend(null!, null!, out _));
+        Assert.Throws<ArgumentNullException>(() =>
+            httpRemoteService.TryHandleSuppressSend(typeof(ObjectModel), null!, out _));
+
+        serviceProvider.Dispose();
+    }
+
+    [Fact]
+    public void TryHandleSuppressSend_ReturnOK()
+    {
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+        var httpRequestBuilder =
+            new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost/"));
+
+        Assert.True(httpRemoteService.TryHandleSuppressSend(typeof(HttpRequestBuilder), httpRequestBuilder,
+            out var result));
+        Assert.Same(httpRequestBuilder, result);
+
+        Assert.True(httpRemoteService.TryHandleSuppressSend(typeof(HttpRequestMessage), httpRequestBuilder,
+            out var result2));
+        var httpRequestMessage = result2 as HttpRequestMessage;
+        Assert.NotNull(httpRequestMessage);
+        Assert.Equal("GET", httpRequestMessage.Method.Method);
+        Assert.Equal("http://localhost/", httpRequestMessage.RequestUri?.ToString());
+
+        Assert.True(httpRemoteService.TryHandleSuppressSend<HttpRequestBuilder>(httpRequestBuilder,
+            out var genericResult));
+        Assert.Same(httpRequestBuilder, genericResult);
+
+        Assert.True(httpRemoteService.TryHandleSuppressSend<HttpRequestMessage>(httpRequestBuilder,
+            out var genericResult2));
+        Assert.NotNull(genericResult2);
+
+        Assert.False(httpRemoteService.TryHandleSuppressSend(typeof(string), httpRequestBuilder,
+            out var nonMatchResult));
+        Assert.Null(nonMatchResult);
+
+        Assert.False(httpRemoteService.TryHandleSuppressSend<int>(httpRequestBuilder,
+            out var genericNonMatchResult));
+        Assert.Equal(0, genericNonMatchResult);
+
+        var customBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost/"));
+        var released = false;
+        var customClient = new HttpClient();
+        customBuilder.SetHttpClientProvider(() => (customClient, _ => released = true));
+        Assert.True(httpRemoteService.TryHandleSuppressSend(typeof(HttpRequestMessage), customBuilder,
+            out var customResult));
+        Assert.NotNull(customResult);
+        Assert.True(released);
+
+        serviceProvider.Dispose();
     }
 
     private sealed class HttpAccessTokenProvider : IHttpAccessTokenProvider

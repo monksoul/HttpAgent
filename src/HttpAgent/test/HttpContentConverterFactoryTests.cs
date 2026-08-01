@@ -29,14 +29,18 @@ public class HttpContentConverterFactoryTests
             ],
             httpContentConverterFactory1._converters.Select(u => u.Key));
         Assert.NotNull(httpContentConverterFactory1._genericConverters);
-        Assert.Equal(2, httpContentConverterFactory1._genericConverters.Count);
+        Assert.Equal(3, httpContentConverterFactory1._genericConverters.Count);
 
         Assert.Equal(typeof(IAsyncEnumerable<>), httpContentConverterFactory1._genericConverters.Keys.First());
         Assert.NotNull(httpContentConverterFactory1._genericConverters[typeof(IAsyncEnumerable<>)].First()
             .Invoke([typeof(ObjectModel)]));
 
+        Assert.Equal(typeof(HttpRemoteResultBase<>), httpContentConverterFactory1._genericConverters.Keys.ElementAt(1));
+        Assert.NotNull(httpContentConverterFactory1._genericConverters[typeof(HttpRemoteResultBase<>)].First()
+            .Invoke([typeof(ObjectModel)]));
+
         Assert.Equal(typeof(HttpRemoteResult<>), httpContentConverterFactory1._genericConverters.Keys.Last());
-        Assert.NotNull(httpContentConverterFactory1._genericConverters[typeof(HttpRemoteResult<>)].Last()
+        Assert.NotNull(httpContentConverterFactory1._genericConverters[typeof(HttpRemoteResult<>)].First()
             .Invoke([typeof(ObjectModel)]));
 
         Assert.NotNull(httpContentConverterFactory1._genericConverterCache);
@@ -73,7 +77,7 @@ public class HttpContentConverterFactoryTests
                         typeof(CustomAsyncEnumerableContentConverter<>).MakeGenericType(typeArgs[0]))!)
             ]);
         Assert.NotNull(httpContentConverterFactory4._genericConverters);
-        Assert.Equal(2, httpContentConverterFactory4._genericConverters.Count);
+        Assert.Equal(3, httpContentConverterFactory4._genericConverters.Count);
         Assert.Equal(2, httpContentConverterFactory4._genericConverters[typeof(IAsyncEnumerable<>)].Count);
 
         var httpContentConverterFactory5 =
@@ -83,9 +87,10 @@ public class HttpContentConverterFactoryTests
                         typeof(CustomAsyncEnumerableContentConverter<>).MakeGenericType(typeArgs[0]))!)
             ]);
         Assert.NotNull(httpContentConverterFactory5._genericConverters);
-        Assert.Equal(3, httpContentConverterFactory5._genericConverters.Count);
+        Assert.Equal(4, httpContentConverterFactory5._genericConverters.Count);
         Assert.Single(httpContentConverterFactory5._genericConverters[typeof(IAsyncEnumerable<>)]);
         Assert.Single(httpContentConverterFactory5._genericConverters[typeof(HttpRemoteResult<>)]);
+        Assert.Single(httpContentConverterFactory5._genericConverters[typeof(HttpRemoteResultBase<>)]);
         Assert.Single(httpContentConverterFactory5._genericConverters[typeof(IEnumerable<>)]);
     }
 

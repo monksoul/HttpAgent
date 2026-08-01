@@ -92,7 +92,7 @@ public class HttpContextExtensionsTests
     }
 
     [Fact]
-    public void PrepareForwardService_ReturnOK()
+    public void PrepareForwardBuilder_ReturnOK()
     {
         var services = new ServiceCollection();
         services.AddHttpRemote();
@@ -101,14 +101,13 @@ public class HttpContextExtensionsTests
 
         var httpContext = new DefaultHttpContext { RequestServices = provider };
 
-        var tuple = HttpContextExtensions.PrepareForwardService(httpContext, HttpMethod.Get, null);
-        Assert.NotNull(tuple.httpContextForwardBuilder);
-        Assert.NotNull(tuple.httpRequestBuilder);
-        Assert.NotNull(tuple.httpRemoteService);
+        var tuple = HttpContextExtensions.PrepareForwardBuilder(httpContext, HttpMethod.Get, null);
+        Assert.NotNull(tuple.ForwardBuilder);
+        Assert.NotNull(tuple.RequestBuilder);
     }
 
     [Fact]
-    public async Task PrepareForwardServiceAsync_ReturnOK()
+    public async Task PrepareForwardBuilderAsync_ReturnOK()
     {
         var services = new ServiceCollection();
         services.AddHttpRemote();
@@ -117,10 +116,9 @@ public class HttpContextExtensionsTests
 
         var httpContext = new DefaultHttpContext { RequestServices = provider };
 
-        var tuple = await HttpContextExtensions.PrepareForwardServiceAsync(httpContext, HttpMethod.Get, null);
-        Assert.NotNull(tuple.httpContextForwardBuilder);
-        Assert.NotNull(tuple.httpRequestBuilder);
-        Assert.NotNull(tuple.httpRemoteService);
+        var tuple = await HttpContextExtensions.PrepareForwardBuilderAsync(httpContext, HttpMethod.Get, null);
+        Assert.NotNull(tuple.ForwardBuilder);
+        Assert.NotNull(tuple.RequestBuilder);
     }
 
     [Fact]
