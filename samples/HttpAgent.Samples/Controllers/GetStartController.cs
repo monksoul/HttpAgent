@@ -897,9 +897,7 @@ public class GetStartController(
         };
         const string saveDir = @"C:\Workspaces\";
 
-        var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 4 };
-
-        await Parallel.ForEachAsync(urls, parallelOptions,
+        await ParallelUtility.ForEachAsync(urls,
             async (url, token) =>
             {
                 await HttpRemoteClient.Service.DownloadFileWithConsoleProgressAsync(url, saveDir,

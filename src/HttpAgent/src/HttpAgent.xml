@@ -6245,7 +6245,7 @@
         <member name="M:HttpAgent.Core.Converters.Json.FlexibleDateTimeConverter.Regex">
             <remarks>
             Pattern:<br/>
-            <code>^/Date\\(([+-]*\\d+)\\)/$</code><br/>
+            <code>^/Date\(([+-]*\d+)\)/$</code><br/>
             Options:<br/>
             <code>RegexOptions.CultureInvariant</code><br/>
             Explanation:<br/>
@@ -6274,7 +6274,7 @@
         <member name="M:HttpAgent.Core.Converters.Json.FlexibleDateTimeOffsetConverter.Regex">
             <remarks>
             Pattern:<br/>
-            <code>^/Date\\(([+-]*\\d+)([+-])(\\d{2})(\\d{2})\\)/$</code><br/>
+            <code>^/Date\(([+-]*\d+)([+-])(\d{2})(\d{2})\)/$</code><br/>
             Options:<br/>
             <code>RegexOptions.CultureInvariant</code><br/>
             Explanation:<br/>
@@ -6872,7 +6872,7 @@
         <member name="M:HttpAgent.Core.Extensions.StringExtensions.PlaceholderRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\{\\s*(?:\\*\\*)?\\s*(\\w+(?:\\s*\\.\\s*\\w+|\\s*\\[\\s*\\d+\\s*\\])*)\\s*(\\?)?\\s*\\}</code><br/>
+            <code>\{\s*(?:\*\*)?\s*(\w+(?:\s*\.\s*\w+|\s*\[\s*\d+\s*\])*)\s*(\?)?\s*\}</code><br/>
             Explanation:<br/>
             <code>
             ○ Match '{'.<br/>
@@ -6883,14 +6883,13 @@
             ○ 1st capture group.<br/>
                 ○ Match a word character greedily at least once.<br/>
                 ○ Loop greedily any number of times.<br/>
+                    ○ Match a whitespace character atomically any number of times.<br/>
                     ○ Match with 2 alternative expressions.<br/>
                         ○ Match a sequence of expressions.<br/>
-                            ○ Match a whitespace character atomically any number of times.<br/>
                             ○ Match '.'.<br/>
                             ○ Match a whitespace character atomically any number of times.<br/>
                             ○ Match a word character greedily at least once.<br/>
                         ○ Match a sequence of expressions.<br/>
-                            ○ Match a whitespace character atomically any number of times.<br/>
                             ○ Match '['.<br/>
                             ○ Match a whitespace character atomically any number of times.<br/>
                             ○ Match a Unicode digit atomically at least once.<br/>
@@ -6908,7 +6907,7 @@
         <member name="M:HttpAgent.Core.Extensions.StringExtensions.ConfigurationKeyRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\[\\[\\s*(?:\\*\\*)?\\s*([\\w\\-:]+)((?:\\s*\\|\\s*[\\w\\-:]+)*)\\s*(?:\\|\\|\\s*([^\\]]*))?\\s*(\\?)?\\s*\\]\\]</code><br/>
+            <code>\[\[\s*(?:\*\*)?\s*([\w\-:]+)((?:\s*\|\s*[\w\-:]+)*)\s*(?:\|\|\s*([^\]]*))?\s*(\?)?\s*\]\]</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "[[".<br/>
@@ -7240,23 +7239,21 @@
         </member>
         <member name="M:HttpAgent.Core.Utilities.AsyncUtility.RunSync``1(System.Func{System.Threading.Tasks.Task{``0}})">
             <summary>
-                运行带有返回值的异步方法
+                执行带有返回值的异步方法
             </summary>
-            <param name="func">
-                <see cref="T:System.Func`1" />
-            </param>
+            <param name="func">异步操作</param>
             <typeparam name="TResult">返回值类型</typeparam>
             <returns>
                 <typeparamref name="TResult" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.Core.Utilities.AsyncUtility.RunSync(System.Func{System.Threading.Tasks.Task})">
             <summary>
-                运行无返回值的异步方法
+                执行无返回值的异步方法
             </summary>
-            <param name="func">
-                <see cref="T:System.Func`1" />
-            </param>
+            <param name="func">异步操作</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="T:HttpAgent.Core.Utilities.EncodingUtility">
             <summary>
@@ -7581,6 +7578,158 @@
             <returns>
                 <see cref="T:System.Boolean" />
             </returns>
+        </member>
+        <member name="T:HttpAgent.Core.Utilities.ParallelUtility">
+            <summary>
+                并发执行实用方法
+            </summary>
+        </member>
+        <member name="F:HttpAgent.Core.Utilities.ParallelUtility.DefaultMaxDegreeOfParallelism">
+            <summary>
+                默认的最大并发数
+            </summary>
+        </member>
+        <member name="M:HttpAgent.Core.Utilities.ParallelUtility.ForEachAsync``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Int32,System.Threading.CancellationToken)">
+            <summary>
+                对集合中的每个元素并发执行异步操作
+            </summary>
+            <typeparam name="T">集合元素的类型</typeparam>
+            <param name="source">要遍历的集合</param>
+            <param name="action">要对每个元素执行的异步操作，接收元素和取消令牌</param>
+            <param name="maxDegreeOfParallelism">最大并发数，默认值为：4</param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:System.ArgumentOutOfRangeException"></exception>
+        </member>
+        <member name="M:HttpAgent.Core.Utilities.ParallelUtility.ForEachAsync``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Threading.CancellationToken,System.Threading.Tasks.Task{``1}},System.Int32,System.Threading.CancellationToken)">
+            <summary>
+                对集合中的每个元素并发执行异步操作（带返回值）
+            </summary>
+            <typeparam name="T">集合元素的类型</typeparam>
+            <typeparam name="TResult">返回结果的类型</typeparam>
+            <param name="source">要遍历的集合</param>
+            <param name="action">要对每个元素执行的异步操作，接收元素和取消令牌，返回结果</param>
+            <param name="maxDegreeOfParallelism">最大并发数，默认值为：4</param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns><typeparamref name="TResult" /> 集合</returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:System.ArgumentOutOfRangeException"></exception>
+        </member>
+        <member name="M:HttpAgent.Core.Utilities.ParallelUtility.RunAsync(System.Collections.Generic.IEnumerable{System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task}},System.Int32,System.Threading.CancellationToken)">
+            <summary>
+                并发执行多个不同的异步操作
+            </summary>
+            <param name="operations">要并发执行的异步操作集合，每个操作接收取消令牌</param>
+            <param name="maxDegreeOfParallelism">最大并发数，默认值为：4</param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns>
+                <see cref="T:System.Threading.Tasks.Task" />
+            </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:System.ArgumentOutOfRangeException"></exception>
+        </member>
+        <member name="M:HttpAgent.Core.Utilities.ParallelUtility.RunAsync(System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task}[])">
+            <summary>
+                并发执行多个不同的异步操作
+            </summary>
+            <remarks>最大并发数等于操作数量。</remarks>
+            <param name="operations">要并发执行的异步操作，每个操作接收取消令牌</param>
+            <returns>
+                <see cref="T:System.Threading.Tasks.Task" />
+            </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:HttpAgent.Core.Utilities.ParallelUtility.RunAsync``1(System.Collections.Generic.IEnumerable{System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{``0}}},System.Int32,System.Threading.CancellationToken)">
+            <summary>
+                并发执行多个不同的异步操作（带返回值）
+            </summary>
+            <typeparam name="TResult">返回结果的类型</typeparam>
+            <param name="operations">要并发执行的异步操作集合，每个操作接收取消令牌并返回结果</param>
+            <param name="maxDegreeOfParallelism">最大并发数，默认值为：4</param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns><typeparamref name="TResult" /> 集合</returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:System.ArgumentOutOfRangeException"></exception>
+        </member>
+        <member name="M:HttpAgent.Core.Utilities.ParallelUtility.RunAsync``1(System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{``0}}[])">
+            <summary>
+                并发执行多个不同的异步操作（带返回值）
+            </summary>
+            <remarks>最大并发数等于操作数量。</remarks>
+            <typeparam name="TResult">返回结果的类型</typeparam>
+            <param name="operations">要并发执行的异步操作，每个操作接收取消令牌并返回结果</param>
+            <returns><typeparamref name="TResult" /> 集合</returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:HttpAgent.Core.Utilities.ParallelUtility.ForEach``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0},System.Int32)">
+            <summary>
+                对集合中的每个元素并发执行同步操作
+            </summary>
+            <typeparam name="T">集合元素的类型</typeparam>
+            <param name="source">要遍历的集合</param>
+            <param name="action">要对每个元素执行的操作</param>
+            <param name="maxDegreeOfParallelism">最大并发数，默认值为：4</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:System.ArgumentOutOfRangeException"></exception>
+        </member>
+        <member name="M:HttpAgent.Core.Utilities.ParallelUtility.ForEach``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Int32)">
+            <summary>
+                对集合中的每个元素并发执行同步操作（带返回值）
+            </summary>
+            <typeparam name="T">集合元素的类型</typeparam>
+            <typeparam name="TResult">返回结果的类型</typeparam>
+            <param name="source">要遍历的集合</param>
+            <param name="action">要对每个元素执行的操作，返回结果</param>
+            <param name="maxDegreeOfParallelism">最大并发数，默认值为：4</param>
+            <returns><typeparamref name="TResult" /> 集合</returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:System.ArgumentOutOfRangeException"></exception>
+        </member>
+        <member name="M:HttpAgent.Core.Utilities.ParallelUtility.Run(System.Collections.Generic.IEnumerable{System.Action},System.Int32)">
+            <summary>
+                并发执行多个不同的同步操作
+            </summary>
+            <param name="operations">要并发执行的操作集合</param>
+            <param name="maxDegreeOfParallelism">最大并发数，默认值为：4</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:System.ArgumentOutOfRangeException"></exception>
+        </member>
+        <member name="M:HttpAgent.Core.Utilities.ParallelUtility.Run(System.Action[])">
+            <summary>
+                并发执行多个不同的同步操作
+            </summary>
+            <remarks>最大并发数等于操作数量。</remarks>
+            <param name="operations">要并发执行的操作</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:HttpAgent.Core.Utilities.ParallelUtility.Run``1(System.Collections.Generic.IEnumerable{System.Func{``0}},System.Int32)">
+            <summary>
+                并发执行多个不同的同步操作（带返回值）
+            </summary>
+            <typeparam name="TResult">返回结果的类型</typeparam>
+            <param name="operations">要并发执行的操作集合，每个操作返回结果</param>
+            <param name="maxDegreeOfParallelism">最大并发数，默认值为：4</param>
+            <returns><typeparamref name="TResult" /> 集合</returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:System.ArgumentOutOfRangeException"></exception>
+        </member>
+        <member name="M:HttpAgent.Core.Utilities.ParallelUtility.Run``1(System.Func{``0}[])">
+            <summary>
+                并发执行多个不同的同步操作（带返回值）
+            </summary>
+            <remarks>最大并发数等于操作数量。</remarks>
+            <typeparam name="TResult">返回结果的类型</typeparam>
+            <param name="operations">要并发执行的操作，每个操作返回结果</param>
+            <returns><typeparamref name="TResult" /> 集合</returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="T:HttpAgent.Core.Utilities.StringUtility">
             <summary>
@@ -10107,7 +10256,7 @@
         <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.UnicodeEscapeRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\\\u([0-9a-fA-F]{4})</code><br/>
+            <code>\\u([0-9a-fA-F]{4})</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "\\u".<br/>
@@ -11670,6 +11819,16 @@
                 当前活跃的文件传输数量
             </summary>
         </member>
+        <member name="F:HttpAgent.FileTransferProgress._multiLineRegistrations">
+            <summary>
+                多行进度条模式下的已注册文件列表
+            </summary>
+        </member>
+        <member name="F:HttpAgent.FileTransferProgress._multiLineTotalRows">
+            <summary>
+                多行进度条模式下已输出的总行数
+            </summary>
+        </member>
         <member name="F:HttpAgent.FileTransferProgress._historyLock">
             <summary>
                 更新进度临时锁对象
@@ -11684,11 +11843,26 @@
             <summary>
                 标记是否已打印文件头
             </summary>
-            <remarks>仅适用于 <see cref="M:HttpAgent.FileTransferProgress.UpdateConsoleProgress" /> 方法。</remarks>
         </member>
         <member name="F:HttpAgent.FileTransferProgress._lastDisplayLength">
             <summary>
                 上一次输出文本的显示长度
+            </summary>
+        </member>
+        <member name="F:HttpAgent.FileTransferProgress._multiLineCompleted">
+            <summary>
+                多行模式下标记当前文件是否已完成
+            </summary>
+        </member>
+        <member name="F:HttpAgent.FileTransferProgress._multiLineIndex">
+            <summary>
+                多行模式下的注册索引
+            </summary>
+            <remarks>-1 表示尚未注册到多行模式。</remarks>
+        </member>
+        <member name="F:HttpAgent.FileTransferProgress._multiLineProgressRowOffset">
+            <summary>
+                多行模式下进度条行的行偏移量
             </summary>
         </member>
         <member name="M:HttpAgent.FileTransferProgress.#ctor(System.String,System.Int64,System.String)">
@@ -11781,6 +11955,41 @@
             </summary>
             <remarks>需确保应用项目支持 <see cref="T:System.Console" /> 输出。</remarks>
         </member>
+        <member name="M:HttpAgent.FileTransferProgress.UpdateSingleLineProgress(System.Boolean)">
+            <summary>
+                在控制台中更新（打印）文件传输进度条（单行模式）
+            </summary>
+            <param name="isComplete">是否已完成传输</param>
+        </member>
+        <member name="M:HttpAgent.FileTransferProgress.UpdateMultiLineProgress(System.Boolean)">
+            <summary>
+                在控制台中更新（打印）文件传输进度条（多行模式）
+            </summary>
+            <param name="isComplete">是否已完成传输</param>
+        </member>
+        <member name="M:HttpAgent.FileTransferProgress.HandleMultiLineCompleted">
+            <summary>
+                多行模式下的完成处理
+            </summary>
+        </member>
+        <member name="M:HttpAgent.FileTransferProgress.BuildProgressText(System.Boolean,System.Int32)">
+            <summary>
+                构建进度条文本
+            </summary>
+            <param name="isComplete">是否已完成传输</param>
+            <param name="windowWidth">控制台窗口宽度</param>
+            <returns>
+                <see cref="T:System.String" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.FileTransferProgress.GetConsoleWidth">
+            <summary>
+                获取控制台窗口宽度
+            </summary>
+            <returns>
+                <see cref="T:System.Int32" />
+            </returns>
+        </member>
         <member name="M:HttpAgent.FileTransferProgress.UpdateProgress(System.Int64,System.TimeSpan)">
             <summary>
                 更新文件传输进度
@@ -11824,7 +12033,7 @@
         <member name="M:HttpAgent.FileTransferProgress.AnsiRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\e\\[[\\d;]*[a-zA-Z]</code><br/>
+            <code>\e\[[\d;]*[a-zA-Z]</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "\u001b[".<br/>
@@ -12375,6 +12584,7 @@
             <returns>
                 <see cref="T:System.Object" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
             <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="T:HttpAgent.JsonSerializationContext">
@@ -12621,7 +12831,16 @@
         <member name="M:HttpAgent.ProgressFileStream.Flush">
             <inheritdoc />
         </member>
+        <member name="M:HttpAgent.ProgressFileStream.FlushAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
         <member name="M:HttpAgent.ProgressFileStream.Read(System.Byte[],System.Int32,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.ProgressFileStream.ReadAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.ProgressFileStream.ReadAsync(System.Memory{System.Byte},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="M:HttpAgent.ProgressFileStream.Seek(System.Int64,System.IO.SeekOrigin)">
@@ -12631,6 +12850,12 @@
             <inheritdoc />
         </member>
         <member name="M:HttpAgent.ProgressFileStream.Write(System.Byte[],System.Int32,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.ProgressFileStream.WriteAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.ProgressFileStream.WriteAsync(System.ReadOnlyMemory{System.Byte},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="M:HttpAgent.ProgressFileStream.Dispose(System.Boolean)">
@@ -12719,7 +12944,16 @@
         <member name="M:HttpAgent.RateLimitedStream.Flush">
             <inheritdoc />
         </member>
+        <member name="M:HttpAgent.RateLimitedStream.FlushAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
         <member name="M:HttpAgent.RateLimitedStream.Read(System.Byte[],System.Int32,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.RateLimitedStream.ReadAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.RateLimitedStream.ReadAsync(System.Memory{System.Byte},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="M:HttpAgent.RateLimitedStream.Seek(System.Int64,System.IO.SeekOrigin)">
@@ -12729,6 +12963,12 @@
             <inheritdoc />
         </member>
         <member name="M:HttpAgent.RateLimitedStream.Write(System.Byte[],System.Int32,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.RateLimitedStream.WriteAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.RateLimitedStream.WriteAsync(System.ReadOnlyMemory{System.Byte},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="M:HttpAgent.RateLimitedStream.Dispose(System.Boolean)">
@@ -12744,6 +12984,15 @@
                 等待直到有足够令牌可用
             </summary>
             <param name="desiredTokens">需要等待的令牌数量</param>
+        </member>
+        <member name="M:HttpAgent.RateLimitedStream.WaitForTokensAsync(System.Int32,System.Threading.CancellationToken)">
+            <summary>
+                等待直到有足够令牌可用
+            </summary>
+            <param name="desiredTokens">需要等待的令牌数量</param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
         </member>
         <member name="T:HttpAgent.ServerSentEventsData">
             <summary>
@@ -13630,7 +13879,7 @@
         <member name="M:HttpAgent.StatusCodePipelineHandler.StatusCodeRangeRegex">
             <remarks>
             Pattern:<br/>
-            <code>^\\d+[-~]\\d+$</code><br/>
+            <code>^\d+[-~]\d+$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
@@ -13644,7 +13893,7 @@
         <member name="M:HttpAgent.StatusCodePipelineHandler.StatusCodeCompareRegex">
             <remarks>
             Pattern:<br/>
-            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\\d+)$</code><br/>
+            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\d+)$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
@@ -21215,6 +21464,13 @@
             <param name="httpRemoteBuilder">
                 <see cref="T:HttpAgent.HttpRemoteBuilder" />
             </param>
+            <returns>
+                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
+            </returns>
+        </member>
+    </members>
+</doc>
+   </param>
             <returns>
                 <see cref="T:HttpAgent.IHttpRemoteBuilder" />
             </returns>

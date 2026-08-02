@@ -1457,6 +1457,21 @@ public class HttpContextForwardBuilderTests
         var uriHttp443 = new Uri("http://furion.net:443");
         Assert.Throws<InvalidOperationException>(() =>
             HttpContextForwardBuilder.ValidateHost(uriHttp443, optionsSchemeAndPort));
+
+        var optionsIpv6 = new HttpContextForwardOptions { AllowedHosts = new List<string> { "[::1]" } };
+        var uriIpv6Wrong = new Uri("http://[::2]");
+        Assert.Throws<InvalidOperationException>(() =>
+            HttpContextForwardBuilder.ValidateHost(uriIpv6Wrong, optionsIpv6));
+
+        var optionsIpv6Port = new HttpContextForwardOptions { AllowedHosts = new List<string> { "[::1]:8080" } };
+        var uriIpv6WrongPort = new Uri("http://[::1]:9090");
+        Assert.Throws<InvalidOperationException>(() =>
+            HttpContextForwardBuilder.ValidateHost(uriIpv6WrongPort, optionsIpv6Port));
+
+        var optionsIpv6NoPort = new HttpContextForwardOptions { AllowedHosts = new List<string> { "[::1]" } };
+        var uriIpv6NonDefaultPort = new Uri("http://[::1]:8080");
+        Assert.Throws<InvalidOperationException>(() =>
+            HttpContextForwardBuilder.ValidateHost(uriIpv6NonDefaultPort, optionsIpv6NoPort));
     }
 
     [Fact]
@@ -1515,6 +1530,38 @@ public class HttpContextForwardBuilderTests
         var uriMatchSecond = new Uri("http://b.com:8080");
         exception = Record.Exception(() =>
             HttpContextForwardBuilder.ValidateHost(uriMatchSecond, optionsMulti));
+        Assert.Null(exception);
+
+        var optionsIpv6Default = new HttpContextForwardOptions { AllowedHosts = new List<string> { "[::1]" } };
+        var uriIpv6Http = new Uri("http://[::1]");
+        exception = Record.Exception(() =>
+            HttpContextForwardBuilder.ValidateHost(uriIpv6Http, optionsIpv6Default));
+        Assert.Null(exception);
+
+        var uriIpv6Https = new Uri("https://[::1]");
+        exception = Record.Exception(() =>
+            HttpContextForwardBuilder.ValidateHost(uriIpv6Https, optionsIpv6Default));
+        Assert.Null(exception);
+
+        var optionsIpv6Port = new HttpContextForwardOptions { AllowedHosts = new List<string> { "[::1]:8080" } };
+        var uriIpv6Port = new Uri("http://[::1]:8080");
+        exception = Record.Exception(() =>
+            HttpContextForwardBuilder.ValidateHost(uriIpv6Port, optionsIpv6Port));
+        Assert.Null(exception);
+
+        var optionsIpv6PortWildcard = new HttpContextForwardOptions { AllowedHosts = new List<string> { "[::1]:*" } };
+        var uriIpv6AnyPort = new Uri("http://[::1]:9999");
+        exception = Record.Exception(() =>
+            HttpContextForwardBuilder.ValidateHost(uriIpv6AnyPort, optionsIpv6PortWildcard));
+        Assert.Null(exception);
+
+        var optionsIpv6Full = new HttpContextForwardOptions
+        {
+            AllowedHosts = new List<string> { "http://[2001:db8::1]:8080" }
+        };
+        var uriIpv6Full = new Uri("http://[2001:db8::1]:8080");
+        exception = Record.Exception(() =>
+            HttpContextForwardBuilder.ValidateHost(uriIpv6Full, optionsIpv6Full));
         Assert.Null(exception);
     }
 }

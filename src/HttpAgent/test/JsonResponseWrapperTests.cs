@@ -41,6 +41,8 @@ public class JsonResponseWrapperTests
     public void GetResultValue_Invalid_Parameters()
     {
         var wrapper = new JsonResponseWrapper(typeof(ApiResult<>), nameof(ApiResult<>.Data));
+        Assert.Throws<ArgumentNullException>(() => wrapper.GetResultValue(new object(), null!));
+
         var exception =
             Assert.Throws<ArgumentException>(() => wrapper.GetResultValue(new object(), new HttpResponseMessage()));
         Assert.Equal(

@@ -42,6 +42,19 @@ public class RateLimitedStreamTests
     }
 
     [Fact]
+    public void Position_Set_ReturnOK()
+    {
+        var testData = new byte[100];
+        using var memoryStream = new MemoryStream(testData);
+        using var rateLimitedStream = new RateLimitedStream(memoryStream, 4096);
+
+        rateLimitedStream.Position = 50;
+
+        Assert.Equal(50, rateLimitedStream.Position);
+        Assert.Equal(50, memoryStream.Position);
+    }
+
+    [Fact]
     public void Flush_ReturnOK()
     {
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
@@ -52,13 +65,25 @@ public class RateLimitedStreamTests
     }
 
     [Fact]
+    public async Task FlushAsync_ReturnOK()
+    {
+        var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
+        using var fileStream = File.OpenRead(filePath);
+        using var rateLimitedStream = new RateLimitedStream(fileStream, 5);
+
+        await rateLimitedStream.FlushAsync();
+    }
+
+    [Fact]
     public void Seek_ReturnOK()
     {
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
         using var fileStream = File.OpenRead(filePath);
         using var rateLimitedStream = new RateLimitedStream(fileStream, 5);
 
-        rateLimitedStream.Seek(0, SeekOrigin.Begin);
+        var position = rateLimitedStream.Seek(0, SeekOrigin.Begin);
+
+        Assert.Equal(0, position);
     }
 
     [Fact]
@@ -69,6 +94,8 @@ public class RateLimitedStreamTests
         using var rateLimitedStream = new RateLimitedStream(fileStream, 5);
 
         rateLimitedStream.SetLength(21);
+
+        Assert.Equal(21, rateLimitedStream.Length);
     }
 
     [Fact]
@@ -79,6 +106,7 @@ public class RateLimitedStreamTests
         var rateLimitedStream = new RateLimitedStream(fileStream, 5);
 
         rateLimitedStream.Dispose();
+
         Assert.False(fileStream.CanRead);
     }
 
@@ -108,6 +136,42 @@ public class RateLimitedStreamTests
     }
 
     [Fact]
+    public void Read_ZeroCount_ReturnOK()
+    {
+        using var memoryStream = new MemoryStream(new byte[100]);
+        using var rateLimitedStream = new RateLimitedStream(memoryStream, 4096);
+
+        var bytesRead = rateLimitedStream.Read(new byte[10], 0, 0);
+
+        Assert.Equal(0, bytesRead);
+    }
+
+    [Fact]
+    public async Task ReadAsync_ReturnOK()
+    {
+        var testData = new byte[8192];
+        using var memoryStream = new MemoryStream(testData);
+        using var rateLimitedStream = new RateLimitedStream(memoryStream, 4096);
+        var buffer = new byte[4096];
+        var totalBytesRead = 0;
+
+        while (totalBytesRead < testData.Length)
+        {
+            var bytesRead = await rateLimitedStream.ReadAsync(buffer, 0,
+                Math.Min(buffer.Length, testData.Length - totalBytesRead));
+            totalBytesRead += bytesRead;
+            Assert.InRange(bytesRead, 0, 4096);
+
+            if (totalBytesRead < testData.Length)
+            {
+                await Task.Delay(1000);
+            }
+        }
+
+        Assert.Equal(testData.Length, totalBytesRead);
+    }
+
+    [Fact]
     public void Write_ReturnOK()
     {
         var testData = new byte[8192];
@@ -124,13 +188,83 @@ public class RateLimitedStreamTests
     }
 
     [Fact]
+    public void Write_LargerThanChunk_ReturnOK()
+    {
+        var testData = new byte[10000];
+        using var memoryStream = new MemoryStream();
+        using var rateLimitedStream = new RateLimitedStream(memoryStream, 10240);
+
+        rateLimitedStream.Write(testData, 0, testData.Length);
+
+        Assert.Equal(testData.Length, memoryStream.Length);
+    }
+
+    [Fact]
+    public async Task WriteAsync_ReturnOK()
+    {
+        var testData = new byte[8192];
+        using var memoryStream = new MemoryStream();
+        using var rateLimitedStream = new RateLimitedStream(memoryStream, 4096);
+
+        await rateLimitedStream.WriteAsync(testData, 0, testData.Length / 2);
+
+        await Task.Delay(1000);
+
+        await rateLimitedStream.WriteAsync(testData, testData.Length / 2, testData.Length / 2);
+
+        Assert.Equal(testData.Length, memoryStream.Length);
+    }
+
+    [Fact]
+    public async Task WriteAsync_LargerThanChunk_ReturnOK()
+    {
+        var testData = new byte[10000];
+        using var memoryStream = new MemoryStream();
+        using var rateLimitedStream = new RateLimitedStream(memoryStream, 10240);
+
+        await rateLimitedStream.WriteAsync(testData, 0, testData.Length);
+
+        Assert.Equal(testData.Length, memoryStream.Length);
+    }
+
+    [Fact]
     public void RefillTokens_ReturnOK()
     {
         using var memoryStream = new MemoryStream();
         using var rateLimitedStream = new RateLimitedStream(memoryStream, 1024);
+
+        rateLimitedStream._availableTokens = 0;
+        Thread.Sleep(100);
         rateLimitedStream.RefillTokens();
 
-        // 无
+        Assert.True(rateLimitedStream._availableTokens > 0);
+        Assert.True(rateLimitedStream._availableTokens <= 1024);
+    }
+
+    [Fact]
+    public void RefillTokens_NoTimePassed_ReturnOK()
+    {
+        using var memoryStream = new MemoryStream();
+        using var rateLimitedStream = new RateLimitedStream(memoryStream, 1024);
+
+        rateLimitedStream._availableTokens = 0;
+        rateLimitedStream._lastTokenRefillTime = rateLimitedStream._stopwatch.ElapsedMilliseconds;
+        rateLimitedStream.RefillTokens();
+
+        Assert.Equal(0, rateLimitedStream._availableTokens);
+    }
+
+    [Fact]
+    public void RefillTokens_CapAtMax_ReturnOK()
+    {
+        using var memoryStream = new MemoryStream();
+        using var rateLimitedStream = new RateLimitedStream(memoryStream, 1024);
+
+        rateLimitedStream._availableTokens = 1024;
+        Thread.Sleep(100);
+        rateLimitedStream.RefillTokens();
+
+        Assert.Equal(1024, rateLimitedStream._availableTokens);
     }
 
     [Fact]
@@ -139,9 +273,49 @@ public class RateLimitedStreamTests
         using var memoryStream = new MemoryStream();
         using var rateLimitedStream = new RateLimitedStream(memoryStream, 1024);
 
-        rateLimitedStream._availableTokens = 256.0;
-        rateLimitedStream.WaitForTokens(512);
+        rateLimitedStream._availableTokens = 512;
+        rateLimitedStream.WaitForTokens(256);
 
-        // 无
+        Assert.Equal(256, rateLimitedStream._availableTokens);
+    }
+
+    [Fact]
+    public void WaitForTokens_InsufficientTokens_ReturnOK()
+    {
+        using var memoryStream = new MemoryStream();
+        using var rateLimitedStream = new RateLimitedStream(memoryStream, 4096);
+
+        rateLimitedStream._availableTokens = 0;
+        rateLimitedStream._lastTokenRefillTime = rateLimitedStream._stopwatch.ElapsedMilliseconds;
+
+        rateLimitedStream.WaitForTokens(100);
+
+        Assert.True(rateLimitedStream._availableTokens >= 0);
+    }
+
+    [Fact]
+    public async Task WaitForTokensAsync_ReturnOK()
+    {
+        using var memoryStream = new MemoryStream();
+        using var rateLimitedStream = new RateLimitedStream(memoryStream, 1024);
+
+        rateLimitedStream._availableTokens = 512;
+        await rateLimitedStream.WaitForTokensAsync(256);
+
+        Assert.Equal(256, rateLimitedStream._availableTokens);
+    }
+
+    [Fact]
+    public async Task WaitForTokensAsync_InsufficientTokens_ReturnOK()
+    {
+        using var memoryStream = new MemoryStream();
+        using var rateLimitedStream = new RateLimitedStream(memoryStream, 4096);
+
+        rateLimitedStream._availableTokens = 0;
+        rateLimitedStream._lastTokenRefillTime = rateLimitedStream._stopwatch.ElapsedMilliseconds;
+
+        await rateLimitedStream.WaitForTokensAsync(100);
+
+        Assert.True(rateLimitedStream._availableTokens >= 0);
     }
 }

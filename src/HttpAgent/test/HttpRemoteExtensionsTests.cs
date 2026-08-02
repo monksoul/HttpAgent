@@ -254,11 +254,11 @@ public class HttpRemoteExtensionsTests
         var streamSkipResult = await streamingResp.Content.ProfilerAsync(httpResponseMessage: streamingResp);
         Assert.Contains("Skipped due to streaming", streamSkipResult);
 
-        var longText = new string('A', 9 * 1024);
+        var longText = new string('A', 11 * 1024);
         var truncContent = new StringContent(longText);
         var truncResult = await truncContent.ProfilerAsync();
         Assert.NotNull(truncResult);
-        Assert.Contains("[truncated, > 8192 bytes]", truncResult);
+        Assert.Contains("[truncated, > 10240 bytes]", truncResult);
         Assert.True(truncResult.Length < longText.Length + 100);
 
         const string rawText = "Hello, this is a test content!";
