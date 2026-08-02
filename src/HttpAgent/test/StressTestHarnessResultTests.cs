@@ -9,6 +9,7 @@ public class StressTestHarnessResultTests
     [Fact]
     public void New_Invalid_Parameters()
     {
+        Assert.Throws<ArgumentNullException>(() => new StressTestHarnessResult(10, 0.9282536, 10, 0, null!));
         var exception = Assert.Throws<ArgumentException>(() => new StressTestHarnessResult(10,
             0.9282536, 10, 0,
             []));
@@ -73,7 +74,7 @@ public class StressTestHarnessResultTests
             responseTimes);
 
         result.CalculateQueriesPerSecond(100, 0);
-        Assert.Equal(0, result.QueriesPerSecond);
+        Assert.Equal(double.PositiveInfinity, result.QueriesPerSecond);
 
         result.CalculateQueriesPerSecond(10, 2);
         Assert.Equal(5, result.QueriesPerSecond);
@@ -88,7 +89,7 @@ public class StressTestHarnessResultTests
         var result = new StressTestHarnessResult(10, 0.9282536, 10, 0,
             responseTimes);
 
-        result.CalculateMinMaxAvgResponseTime(responseTimes, 10);
+        result.CalculateMinMaxAvgResponseTime(responseTimes);
 
         Assert.Equal(3655751, result.MinResponseTime);
         Assert.Equal(9209802, result.MaxResponseTime);
@@ -104,7 +105,9 @@ public class StressTestHarnessResultTests
         var result = new StressTestHarnessResult(10, 0.9282536, 10, 0,
             responseTimes);
 
-        result.CalculatePercentiles(responseTimes);
+        var sortedResponseTimes = (double[])responseTimes.Clone();
+        Array.Sort(sortedResponseTimes);
+        result.CalculatePercentiles(sortedResponseTimes);
 
         Assert.Equal(3655751, result.Percentile10ResponseTime);
         Assert.Equal(4388344, result.Percentile25ResponseTime);

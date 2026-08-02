@@ -385,7 +385,7 @@ public class GetStartController(
     [HttpGet]
     public async Task StressTestHarness()
     {
-        var stressTestHarnessResult = await httpRemoteService.StressTestHarnessAsync("https://furion.net/");
+        var stressTestHarnessResult = await httpRemoteService.StressTestHarnessAsync("https://furion.net/", 500);
         Console.WriteLine(stressTestHarnessResult.ToString()); // 打印压力测试结果
 
         var stressTestHarnessResult1 = await httpRemoteService.SendAsync(HttpRequestBuilder
@@ -864,10 +864,9 @@ public class GetStartController(
     public async Task DownloadThreaded(CancellationToken cancellationToken)
     {
         // 打印下载进度
-        var fileTransferResult = await httpRemoteService.DownloadFileAsync(
+        var fileTransferResult = await httpRemoteService.DownloadFileWithConsoleProgressAsync(
             "https://buildbot.libretro.com/stable/1.21.0/windows/x86_64/RetroArch-Win64-setup.exe"
             , @"C:\Workspaces\"
-            , progress => progress.UpdateConsoleProgressAsync()
             , FileExistsBehavior.Overwrite,
             builder => builder.SetBufferSize(1024 * 1024).SetMaxThreads(4), cancellationToken);
     }
