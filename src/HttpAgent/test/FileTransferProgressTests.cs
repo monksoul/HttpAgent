@@ -6,6 +6,8 @@ namespace HttpAgent.Tests;
 
 public class FileTransferProgressTests
 {
+    public FileTransferProgressTests() => FileTransferProgress._activeDownloadCount = 0;
+
     [Fact]
     public void New_Invalid_Parameters()
     {
@@ -39,6 +41,8 @@ public class FileTransferProgressTests
         Assert.Equal(2000, FileTransferProgress.SpeedCalculationWindowMs);
         Assert.NotNull(fileTransferProgress._transferHistory);
         Assert.NotNull(fileTransferProgress._historyLock);
+        Assert.NotNull(FileTransferProgress._consoleLock);
+        Assert.Equal(0, FileTransferProgress._activeDownloadCount);
     }
 
     [Fact]

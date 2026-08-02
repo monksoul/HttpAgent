@@ -882,4 +882,28 @@ public class GetStartController(
             await httpRemoteService.GetAsStringAsync("https://furion.net", builder => builder.UseETag().Profiler());
         return content;
     }
+
+    /// <summary>
+    ///     多文件批量下载
+    /// </summary>
+    [HttpGet]
+    public async Task DownloadBatch()
+    {
+        var urls = new[]
+        {
+            "https://img-s.msn.cn/tenant/amp/entityid/AA296jTM.img?w=640&h=1068&m=6",
+            "https://img-s.msn.cn/tenant/amp/entityid/AA297bnQ.img?w=640&h=1240&m=6&x=236&y=233&s=64&d=64",
+            "https://img-s.msn.cn/tenant/amp/entityid/AA296Rr4.img?w=640&h=821&m=6"
+        };
+        const string saveDir = @"C:\Workspaces\";
+
+        var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 4 };
+
+        await Parallel.ForEachAsync(urls, parallelOptions,
+            async (url, token) =>
+            {
+                await HttpRemoteClient.Service.DownloadFileWithConsoleProgressAsync(url, saveDir,
+                    FileExistsBehavior.Overwrite, cancellationToken: token);
+            });
+    }
 }

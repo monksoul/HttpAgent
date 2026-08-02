@@ -11660,6 +11660,16 @@
                 速率计算的时间窗口（毫秒）
             </summary>
         </member>
+        <member name="F:HttpAgent.FileTransferProgress._consoleLock">
+            <summary>
+                控制台输出的全局锁
+            </summary>
+        </member>
+        <member name="F:HttpAgent.FileTransferProgress._activeDownloadCount">
+            <summary>
+                当前活跃的文件传输数量
+            </summary>
+        </member>
         <member name="F:HttpAgent.FileTransferProgress._historyLock">
             <summary>
                 更新进度临时锁对象
@@ -11732,6 +11742,16 @@
                 预估剩余传输时间
             </summary>
         </member>
+        <member name="M:HttpAgent.FileTransferProgress.IncrementActiveCount">
+            <summary>
+                递增活跃传输计数
+            </summary>
+        </member>
+        <member name="M:HttpAgent.FileTransferProgress.DecrementActiveCount">
+            <summary>
+                递减活跃传输计数
+            </summary>
+        </member>
         <member name="M:HttpAgent.FileTransferProgress.ToString">
             <inheritdoc />
         </member>
@@ -11781,7 +11801,7 @@
                 回退输出
             </summary>
             <param name="text">要输出的进度文本</param>
-            <param name="isComplete">是否已完成下载</param>
+            <param name="isComplete">是否已完成传输</param>
         </member>
         <member name="M:HttpAgent.FileTransferProgress.GetDisplayLength(System.String)">
             <summary>
