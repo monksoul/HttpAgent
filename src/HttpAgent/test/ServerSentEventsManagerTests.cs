@@ -4,7 +4,7 @@
 
 namespace HttpAgent.Tests;
 
-public class ServerSentEventsManagerTests(ITestOutputHelper output)
+public class ServerSentEventsManagerTests
 {
     [Fact]
     public void New_Invalid_Parameters()
@@ -411,11 +411,11 @@ public class ServerSentEventsManagerTests(ITestOutputHelper output)
             new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test")).SetOnOpen(() =>
             {
                 i++;
-                output.WriteLine("准备连接...");
+                Console.WriteLine("准备连接...");
             }).SetOnError(e =>
             {
                 i++;
-                output.WriteLine("连接失败...");
+                Console.WriteLine("连接失败...");
             });
         var serverSentEventsManager = new ServerSentEventsManager(httpRemoteService, httpServerSentEventsBuilder);
 
@@ -467,11 +467,11 @@ public class ServerSentEventsManagerTests(ITestOutputHelper output)
                 .SetOnOpen(() =>
                 {
                     i++;
-                    output.WriteLine("准备连接...");
+                    Console.WriteLine("准备连接...");
                 }).SetOnError(e =>
                 {
                     i++;
-                    output.WriteLine("连接失败...");
+                    Console.WriteLine("连接失败...");
                 })
                 .SetEventHandler<CustomServerSentEventsEventHandler>();
         var serverSentEventsManager = new ServerSentEventsManager(httpRemoteService, httpServerSentEventsBuilder);
@@ -622,11 +622,11 @@ public class ServerSentEventsManagerTests(ITestOutputHelper output)
             new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test")).SetOnOpen(() =>
             {
                 i++;
-                output.WriteLine("准备连接...");
+                Console.WriteLine("准备连接...");
             }).SetOnError(e =>
             {
                 i++;
-                output.WriteLine("连接失败...");
+                Console.WriteLine("连接失败...");
             });
         var serverSentEventsManager = new ServerSentEventsManager(httpRemoteService, httpServerSentEventsBuilder);
 
@@ -677,11 +677,11 @@ public class ServerSentEventsManagerTests(ITestOutputHelper output)
                 .SetOnOpen(() =>
                 {
                     i++;
-                    output.WriteLine("准备连接...");
+                    Console.WriteLine("准备连接...");
                 }).SetOnError(e =>
                 {
                     i++;
-                    output.WriteLine("连接失败...");
+                    Console.WriteLine("连接失败...");
                 })
                 .SetEventHandler<CustomServerSentEventsEventHandler>();
         var serverSentEventsManager = new ServerSentEventsManager(httpRemoteService, httpServerSentEventsBuilder);

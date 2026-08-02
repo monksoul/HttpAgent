@@ -38,6 +38,7 @@ global using System.Net.WebSockets;
 global using System.Reflection;
 global using System.Reflection.Emit;
 global using System.Runtime.ExceptionServices;
+global using System.Runtime.InteropServices;
 global using System.Security.Authentication;
 global using System.Security.Cryptography;
 global using System.Security.Cryptography.X509Certificates;

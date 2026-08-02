@@ -194,7 +194,12 @@ public sealed partial class FileTransferProgress
         // 检查是否已打印文件头
         if (!_hasPrintedHeader)
         {
-            Console.WriteLine($"File: {FileName}, Path: {FilePath}");
+            // 构造跨平台的 file:// URL
+            var fileUrl = (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "file:///" : "file://") +
+                          FilePath.Replace("\\", "/");
+
+            // 实现控制台可点击的路径，参考文献：https://learn.microsoft.com/zh-cn/windows/console/console-virtual-terminal-sequences
+            Console.WriteLine($"File: {FileName}, Path: \e]8;;{fileUrl}\a{FilePath}\e]8;;\a");
             _hasPrintedHeader = true;
         }
 

@@ -309,31 +309,31 @@ public class HttpBuilderTests
     public void DownloadFile_ReturnOK()
     {
         var httpFileDownloadBuilder =
-            HttpBuilder.DownloadFile(HttpMethod.Post, new Uri("http://localhost"), null);
+            HttpBuilder.DownloadFile(HttpMethod.Post, new Uri("http://localhost"));
 
         Assert.NotNull(httpFileDownloadBuilder);
         Assert.Equal(HttpMethod.Post, httpFileDownloadBuilder.HttpMethod);
         Assert.NotNull(httpFileDownloadBuilder.RequestUri);
         Assert.Equal("http://localhost/", httpFileDownloadBuilder.RequestUri.ToString());
 
-        var httpFileDownloadBuilder2 = HttpBuilder.DownloadFile(HttpMethod.Post, null, null);
+        var httpFileDownloadBuilder2 = HttpBuilder.DownloadFile(HttpMethod.Post, null);
         Assert.Equal(HttpMethod.Post, httpFileDownloadBuilder2.HttpMethod);
         Assert.Null(httpFileDownloadBuilder2.RequestUri);
 
-        var httpFileDownloadBuilder3 = HttpBuilder.DownloadFile((string)null!, null);
+        var httpFileDownloadBuilder3 = HttpBuilder.DownloadFile((string)null!);
         Assert.Equal(HttpMethod.Get, httpFileDownloadBuilder3.HttpMethod);
         Assert.Null(httpFileDownloadBuilder3.RequestUri);
 
-        var httpFileDownloadBuilder4 = HttpBuilder.DownloadFile("http://localhost", null);
+        var httpFileDownloadBuilder4 = HttpBuilder.DownloadFile("http://localhost");
         Assert.Equal(HttpMethod.Get, httpFileDownloadBuilder4.HttpMethod);
         Assert.NotNull(httpFileDownloadBuilder4.RequestUri);
         Assert.Equal("http://localhost/", httpFileDownloadBuilder4.RequestUri.ToString());
 
-        var httpFileDownloadBuilder5 = HttpBuilder.DownloadFile((Uri)null!, null);
+        var httpFileDownloadBuilder5 = HttpBuilder.DownloadFile((Uri)null!);
         Assert.Equal(HttpMethod.Get, httpFileDownloadBuilder5.HttpMethod);
         Assert.Null(httpFileDownloadBuilder5.RequestUri);
 
-        var httpFileDownloadBuilder6 = HttpBuilder.DownloadFile(new Uri("http://localhost"), null);
+        var httpFileDownloadBuilder6 = HttpBuilder.DownloadFile(new Uri("http://localhost"));
         Assert.Equal(HttpMethod.Get, httpFileDownloadBuilder6.HttpMethod);
         Assert.NotNull(httpFileDownloadBuilder6.RequestUri);
         Assert.Equal("http://localhost/", httpFileDownloadBuilder6.RequestUri.ToString());

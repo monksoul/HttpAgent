@@ -4,7 +4,7 @@
 
 namespace HttpAgent.Tests;
 
-public class ProgressFileStreamTests(ITestOutputHelper output)
+public class ProgressFileStreamTests
 {
     [Fact]
     public void New_Invalid_Parameters()
@@ -77,7 +77,7 @@ public class ProgressFileStreamTests(ITestOutputHelper output)
         await foreach (var fileTransferProgress in progressChannel.Reader.ReadAllAsync())
         {
             Assert.NotNull(fileTransferProgress);
-            output.WriteLine(fileTransferProgress.FileName);
+            Console.WriteLine(fileTransferProgress.FileName);
 
             break;
         }
@@ -111,7 +111,7 @@ public class ProgressFileStreamTests(ITestOutputHelper output)
         await foreach (var fileTransferProgress in progressChannel.Reader.ReadAllAsync())
         {
             Assert.NotNull(fileTransferProgress);
-            output.WriteLine(fileTransferProgress.FileName);
+            Console.WriteLine(fileTransferProgress.FileName);
 
             break;
         }
@@ -156,7 +156,7 @@ public class ProgressFileStreamTests(ITestOutputHelper output)
         await foreach (var fileTransferProgress in progressChannel.Reader.ReadAllAsync())
         {
             Assert.NotNull(fileTransferProgress);
-            output.WriteLine(fileTransferProgress.FileName);
+            Console.WriteLine(fileTransferProgress.FileName);
 
             break;
         }

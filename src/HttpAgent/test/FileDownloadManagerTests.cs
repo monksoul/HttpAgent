@@ -5,7 +5,7 @@
 namespace HttpAgent.Tests;
 
 [Collection("FileDownloadManagerTests")]
-public class FileDownloadManagerTests(ITestOutputHelper output)
+public class FileDownloadManagerTests
 {
     [Fact]
     public void New_Invalid_Parameters()
@@ -686,11 +686,11 @@ public class FileDownloadManagerTests(ITestOutputHelper output)
                 destinationPath).SetOnTransferStarted(() =>
             {
                 i += 1;
-                output.WriteLine("准备下载...");
+                Console.WriteLine("准备下载...");
             }).SetOnTransferCompleted(elapsed =>
             {
                 i += 1;
-                output.WriteLine($"下载完成 {elapsed}");
+                Console.WriteLine($"下载完成 {elapsed}");
             });
         var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
@@ -747,11 +747,11 @@ public class FileDownloadManagerTests(ITestOutputHelper output)
                 destinationPath).SetOnTransferStarted(() =>
             {
                 i += 1;
-                output.WriteLine("准备下载...");
+                Console.WriteLine("准备下载...");
             }).SetOnTransferCompleted(elapsed =>
             {
                 i += 1;
-                output.WriteLine($"下载完成 {elapsed}");
+                Console.WriteLine($"下载完成 {elapsed}");
             }).SetEventHandler<CustomFileTransferEventHandler>();
 
         var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
@@ -811,15 +811,15 @@ public class FileDownloadManagerTests(ITestOutputHelper output)
                 destinationPath).SetOnTransferStarted(() =>
             {
                 i += 1;
-                output.WriteLine("准备下载...");
+                Console.WriteLine("准备下载...");
             }).SetOnTransferCompleted(elapsed =>
             {
                 i += 1;
-                output.WriteLine($"下载完成 {elapsed}");
+                Console.WriteLine($"下载完成 {elapsed}");
             }).SetOnTransferFailed(e =>
             {
                 i += 1;
-                output.WriteLine($"下载出错 {e.Message}");
+                Console.WriteLine($"下载出错 {e.Message}");
             });
         var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
@@ -1016,11 +1016,11 @@ public class FileDownloadManagerTests(ITestOutputHelper output)
                 destinationPath).SetOnTransferStarted(() =>
             {
                 i += 1;
-                output.WriteLine("准备下载...");
+                Console.WriteLine("准备下载...");
             }).SetOnTransferCompleted(elapsed =>
             {
                 i += 1;
-                output.WriteLine($"下载完成 {elapsed}");
+                Console.WriteLine($"下载完成 {elapsed}");
             });
         var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
@@ -1076,11 +1076,11 @@ public class FileDownloadManagerTests(ITestOutputHelper output)
                 destinationPath).SetOnTransferStarted(() =>
             {
                 i += 1;
-                output.WriteLine("准备下载...");
+                Console.WriteLine("准备下载...");
             }).SetOnTransferCompleted(elapsed =>
             {
                 i += 1;
-                output.WriteLine($"下载完成 {elapsed}");
+                Console.WriteLine($"下载完成 {elapsed}");
             }).SetEventHandler<CustomFileTransferEventHandler>();
 
         var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
@@ -1139,15 +1139,15 @@ public class FileDownloadManagerTests(ITestOutputHelper output)
                 destinationPath).SetOnTransferStarted(() =>
             {
                 i += 1;
-                output.WriteLine("准备下载...");
+                Console.WriteLine("准备下载...");
             }).SetOnTransferCompleted(elapsed =>
             {
                 i += 1;
-                output.WriteLine($"下载完成 {elapsed}");
+                Console.WriteLine($"下载完成 {elapsed}");
             }).SetOnTransferFailed(e =>
             {
                 i += 1;
-                output.WriteLine($"下载出错 {e.Message}");
+                Console.WriteLine($"下载出错 {e.Message}");
             });
         var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 

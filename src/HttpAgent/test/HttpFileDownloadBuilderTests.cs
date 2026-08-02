@@ -57,15 +57,6 @@ public class HttpFileDownloadBuilderTests
     }
 
     [Fact]
-    public void SetDestinationPath_Invalid_Parameters()
-    {
-        var builder = new HttpFileDownloadBuilder(HttpMethod.Get, null);
-
-        Assert.Throws<ArgumentException>(() => builder.SetDestinationPath(string.Empty));
-        Assert.Throws<ArgumentException>(() => builder.SetDestinationPath(" "));
-    }
-
-    [Fact]
     public void SetDestinationPath_ReturnOK()
     {
         var builder = new HttpFileDownloadBuilder(HttpMethod.Get, null);
@@ -275,7 +266,6 @@ public class HttpFileDownloadBuilderTests
         var httpRemoteOptions = new HttpRemoteOptions();
 
         Assert.Throws<ArgumentNullException>(() => builder.Build(null!));
-        Assert.Throws<ArgumentNullException>(() => builder.Build(httpRemoteOptions));
         Assert.Throws<ArgumentException>(() => builder.SetDestinationPath(string.Empty).Build(httpRemoteOptions));
         Assert.Throws<ArgumentException>(() => builder.SetDestinationPath(" ").Build(httpRemoteOptions));
     }
@@ -310,5 +300,9 @@ public class HttpFileDownloadBuilderTests
         var httpFileDownloadBuilder3 = new HttpFileDownloadBuilder(HttpMethod.Get, new Uri("http://localhost"));
         httpFileDownloadBuilder3.Build(new HttpRemoteOptions { DefaultFileDownloadDirectory = @"C:\Workspaces" });
         Assert.Equal(@"C:\Workspaces", httpFileDownloadBuilder3.DestinationPath);
+
+        var httpFileDownloadBuilder2 = new HttpFileDownloadBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        _ = httpFileDownloadBuilder2.Build(new HttpRemoteOptions());
+        Assert.Equal(AppContext.BaseDirectory, httpFileDownloadBuilder2.DestinationPath);
     }
 }

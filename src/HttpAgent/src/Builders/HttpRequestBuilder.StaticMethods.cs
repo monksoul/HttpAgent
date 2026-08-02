@@ -358,8 +358,8 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpFileDownloadBuilder" />
     /// </returns>
-    public static HttpFileDownloadBuilder DownloadFile(HttpMethod httpMethod, Uri? requestUri, string? destinationPath,
-        Func<FileTransferProgress, Task>? onProgressChanged = null,
+    public static HttpFileDownloadBuilder DownloadFile(HttpMethod httpMethod, Uri? requestUri,
+        string? destinationPath = null, Func<FileTransferProgress, Task>? onProgressChanged = null,
         FileExistsBehavior fileExistsBehavior = FileExistsBehavior.CreateNew,
         Action<HttpFileDownloadBuilder>? configure = null)
     {
@@ -393,7 +393,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpFileDownloadBuilder" />
     /// </returns>
-    public static HttpFileDownloadBuilder DownloadFile(Uri? requestUri, string? destinationPath,
+    public static HttpFileDownloadBuilder DownloadFile(Uri? requestUri, string? destinationPath = null,
         Func<FileTransferProgress, Task>? onProgressChanged = null,
         FileExistsBehavior fileExistsBehavior = FileExistsBehavior.CreateNew,
         Action<HttpFileDownloadBuilder>? configure = null) =>
@@ -412,7 +412,7 @@ public sealed partial class HttpRequestBuilder
     /// <returns>
     ///     <see cref="HttpFileDownloadBuilder" />
     /// </returns>
-    public static HttpFileDownloadBuilder DownloadFile(string? requestUri, string? destinationPath,
+    public static HttpFileDownloadBuilder DownloadFile(string? requestUri, string? destinationPath = null,
         Func<FileTransferProgress, Task>? onProgressChanged = null,
         FileExistsBehavior fileExistsBehavior = FileExistsBehavior.CreateNew,
         Action<HttpFileDownloadBuilder>? configure = null) =>

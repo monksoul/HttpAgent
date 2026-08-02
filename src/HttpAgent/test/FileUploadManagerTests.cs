@@ -4,7 +4,7 @@
 
 namespace HttpAgent.Tests;
 
-public class FileUploadManagerTests(ITestOutputHelper output)
+public class FileUploadManagerTests
 {
     [Fact]
     public void New_Invalid_Parameters()
@@ -257,7 +257,7 @@ public class FileUploadManagerTests(ITestOutputHelper output)
         // ReSharper disable once MethodHasAsyncOverload
         var httpResponseMessage = fileUploadManager.Start();
         var result = await httpResponseMessage!.Content.ReadAsStringAsync();
-        output.WriteLine(result);
+        Console.WriteLine(result);
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.Equal("test.txt", result);
 
@@ -336,7 +336,7 @@ public class FileUploadManagerTests(ITestOutputHelper output)
         // ReSharper disable once MethodHasAsyncOverload
         var httpResponseMessage = fileUploadManager.Start();
         var result = await httpResponseMessage!.Content.ReadAsStringAsync();
-        output.WriteLine(result);
+        Console.WriteLine(result);
 
         Assert.Equal(1, i);
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
@@ -373,18 +373,18 @@ public class FileUploadManagerTests(ITestOutputHelper output)
                 .SetOnTransferStarted(() =>
                 {
                     i += 1;
-                    output.WriteLine("准备上传...");
+                    Console.WriteLine("准备上传...");
                 }).SetOnTransferCompleted(elapsed =>
                 {
                     i += 1;
-                    output.WriteLine($"上传完成 {elapsed}");
+                    Console.WriteLine($"上传完成 {elapsed}");
                 });
         var fileUploadManager = new FileUploadManager(httpRemoteService, httpFileUploadBuilder);
 
         // ReSharper disable once MethodHasAsyncOverload
         var httpResponseMessage = fileUploadManager.Start();
         var result = await httpResponseMessage!.Content.ReadAsStringAsync();
-        output.WriteLine(result);
+        Console.WriteLine(result);
 
         Assert.Equal(2, i);
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
@@ -423,18 +423,18 @@ public class FileUploadManagerTests(ITestOutputHelper output)
                 .SetOnTransferStarted(() =>
                 {
                     i += 1;
-                    output.WriteLine("准备上传...");
+                    Console.WriteLine("准备上传...");
                 }).SetOnTransferCompleted(elapsed =>
                 {
                     i += 1;
-                    output.WriteLine($"上传完成 {elapsed}");
+                    Console.WriteLine($"上传完成 {elapsed}");
                 }).SetEventHandler<CustomFileTransferEventHandler>();
         var fileUploadManager = new FileUploadManager(httpRemoteService, httpFileUploadBuilder);
 
         // ReSharper disable once MethodHasAsyncOverload
         var httpResponseMessage = fileUploadManager.Start();
         var result = await httpResponseMessage!.Content.ReadAsStringAsync();
-        output.WriteLine(result);
+        Console.WriteLine(result);
 
         Assert.Equal(2, i);
         Assert.Equal(2, customFileTransferEventHandler.counter);
@@ -475,15 +475,15 @@ public class FileUploadManagerTests(ITestOutputHelper output)
                 .SetOnTransferStarted(() =>
                 {
                     i += 1;
-                    output.WriteLine("准备上传...");
+                    Console.WriteLine("准备上传...");
                 }).SetOnTransferCompleted(elapsed =>
                 {
                     i += 1;
-                    output.WriteLine($"上传完成 {elapsed}");
+                    Console.WriteLine($"上传完成 {elapsed}");
                 }).SetOnTransferFailed(e =>
                 {
                     i += 1;
-                    output.WriteLine($"上传出错 {e.Message}");
+                    Console.WriteLine($"上传出错 {e.Message}");
                 }).With(b =>
                 {
                     b.EnsureSuccessStatusCode();
@@ -527,7 +527,7 @@ public class FileUploadManagerTests(ITestOutputHelper output)
 
         var httpResponseMessage = await fileUploadManager.StartAsync();
         var result = await httpResponseMessage!.Content.ReadAsStringAsync();
-        output.WriteLine(result);
+        Console.WriteLine(result);
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.Equal("test.txt", result);
 
@@ -605,7 +605,7 @@ public class FileUploadManagerTests(ITestOutputHelper output)
 
         var httpResponseMessage = await fileUploadManager.StartAsync();
         var result = await httpResponseMessage!.Content.ReadAsStringAsync();
-        output.WriteLine(result);
+        Console.WriteLine(result);
 
         Assert.Equal(1, i);
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
@@ -642,17 +642,17 @@ public class FileUploadManagerTests(ITestOutputHelper output)
                 .SetOnTransferStarted(() =>
                 {
                     i += 1;
-                    output.WriteLine("准备上传...");
+                    Console.WriteLine("准备上传...");
                 }).SetOnTransferCompleted(elapsed =>
                 {
                     i += 1;
-                    output.WriteLine($"上传完成 {elapsed}");
+                    Console.WriteLine($"上传完成 {elapsed}");
                 });
         var fileUploadManager = new FileUploadManager(httpRemoteService, httpFileUploadBuilder);
 
         var httpResponseMessage = await fileUploadManager.StartAsync();
         var result = await httpResponseMessage!.Content.ReadAsStringAsync();
-        output.WriteLine(result);
+        Console.WriteLine(result);
 
         Assert.Equal(2, i);
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
@@ -691,17 +691,17 @@ public class FileUploadManagerTests(ITestOutputHelper output)
                 .SetOnTransferStarted(() =>
                 {
                     i += 1;
-                    output.WriteLine("准备上传...");
+                    Console.WriteLine("准备上传...");
                 }).SetOnTransferCompleted(elapsed =>
                 {
                     i += 1;
-                    output.WriteLine($"上传完成 {elapsed}");
+                    Console.WriteLine($"上传完成 {elapsed}");
                 }).SetEventHandler<CustomFileTransferEventHandler>();
         var fileUploadManager = new FileUploadManager(httpRemoteService, httpFileUploadBuilder);
 
         var httpResponseMessage = await fileUploadManager.StartAsync();
         var result = await httpResponseMessage!.Content.ReadAsStringAsync();
-        output.WriteLine(result);
+        Console.WriteLine(result);
 
         Assert.Equal(2, i);
         Assert.Equal(2, customFileTransferEventHandler.counter);
@@ -742,15 +742,15 @@ public class FileUploadManagerTests(ITestOutputHelper output)
                 .SetOnTransferStarted(() =>
                 {
                     i += 1;
-                    output.WriteLine("准备上传...");
+                    Console.WriteLine("准备上传...");
                 }).SetOnTransferCompleted(elapsed =>
                 {
                     i += 1;
-                    output.WriteLine($"上传完成 {elapsed}");
+                    Console.WriteLine($"上传完成 {elapsed}");
                 }).SetOnTransferFailed(e =>
                 {
                     i += 1;
-                    output.WriteLine($"上传出错 {e.Message}");
+                    Console.WriteLine($"上传出错 {e.Message}");
                 }).With(b =>
                 {
                     b.EnsureSuccessStatusCode();

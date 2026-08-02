@@ -11,9 +11,8 @@ public class GetStartController(
     [HttpGet]
     public async Task<int> DownloadNonContentLengthFile()
     {
-        var fileTransferResult = await httpRemoteService.DownloadFileAsync(
-            "https://apply1.81890.org.cn/upload/2025/09/20/720153914265669.png", "C:\\Workspaces\\",
-            progress => progress.UpdateConsoleProgressAsync(), FileExistsBehavior.Overwrite);
+        var fileTransferResult = await httpRemoteService.DownloadFileWithConsoleProgressAsync(
+            "https://apply1.81890.org.cn/upload/2025/09/20/720153914265669.png", null, FileExistsBehavior.Overwrite);
 
         return 0;
     }

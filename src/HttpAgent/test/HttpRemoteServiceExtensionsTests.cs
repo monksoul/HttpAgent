@@ -143,6 +143,51 @@ public class HttpRemoteServiceExtensionsTests
     }
 
     [Fact]
+    public async Task DownloadFileWithConsoleProgress_ReturnOK()
+    {
+        var destinationPath = Path.Combine(AppContext.BaseDirectory, "downloads", "test.txt");
+        if (File.Exists(destinationPath))
+        {
+            File.Delete(destinationPath);
+        }
+
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        await using var app = builder.Build();
+
+        app.MapGet("/test", async context =>
+        {
+            await Task.Delay(50);
+
+            await context.Response.WriteAsync("Hello World!");
+        });
+
+        await app.StartAsync();
+
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
+        // ReSharper disable once MethodHasAsyncOverload
+        var fileTransferResult =
+            httpRemoteService.DownloadFileWithConsoleProgress($"http://localhost:{port}/test", destinationPath);
+
+        Assert.True(File.Exists(destinationPath));
+        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
+
+        Assert.True(fileTransferResult.IsSuccess);
+        Assert.Equal(12, fileTransferResult.FileSize);
+        Assert.Equal(destinationPath, fileTransferResult.FilePath);
+        Assert.Equal(HttpStatusCode.OK, fileTransferResult.StatusCode);
+        Assert.True(fileTransferResult.ElapsedMilliseconds > 0);
+        Assert.Equal($"http://localhost:{port}/test", fileTransferResult.RequestUri?.ToString());
+
+        File.Delete(destinationPath);
+
+        await app.StopAsync();
+        await serviceProvider.DisposeAsync();
+    }
+
+    [Fact]
     public async Task DownloadFileAsync_ReturnOK()
     {
         var destinationPath = Path.Combine(AppContext.BaseDirectory, "downloads", "test.txt");
@@ -263,6 +308,51 @@ public class HttpRemoteServiceExtensionsTests
         Assert.True(File.Exists(destinationPath));
         Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
         Assert.Equal(1, i);
+
+        Assert.True(fileTransferResult.IsSuccess);
+        Assert.Equal(12, fileTransferResult.FileSize);
+        Assert.Equal(destinationPath, fileTransferResult.FilePath);
+        Assert.Equal(HttpStatusCode.OK, fileTransferResult.StatusCode);
+        Assert.True(fileTransferResult.ElapsedMilliseconds > 0);
+        Assert.Equal($"http://localhost:{port}/test", fileTransferResult.RequestUri?.ToString());
+
+        File.Delete(destinationPath);
+
+        await app.StopAsync();
+        await serviceProvider.DisposeAsync();
+    }
+
+    [Fact]
+    public async Task DownloadFileWithConsoleProgressAsync_ReturnOK()
+    {
+        var destinationPath = Path.Combine(AppContext.BaseDirectory, "downloads", "test.txt");
+        if (File.Exists(destinationPath))
+        {
+            File.Delete(destinationPath);
+        }
+
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        await using var app = builder.Build();
+
+        app.MapGet("/test", async context =>
+        {
+            await Task.Delay(50);
+
+            await context.Response.WriteAsync("Hello World!");
+        });
+
+        await app.StartAsync();
+
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
+        var fileTransferResult =
+            await httpRemoteService.DownloadFileWithConsoleProgressAsync($"http://localhost:{port}/test",
+                destinationPath);
+
+        Assert.True(File.Exists(destinationPath));
+        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
 
         Assert.True(fileTransferResult.IsSuccess);
         Assert.Equal(12, fileTransferResult.FileSize);
@@ -883,6 +973,39 @@ public class HttpRemoteServiceExtensionsTests
     }
 
     [Fact]
+    public async Task UploadFileWithConsoleProgress_ReturnOK()
+    {
+        var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
+
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        await using var app = builder.Build();
+
+        app.MapPost("/test", async (HttpContext context, IFormFile file) =>
+            {
+                await Task.Delay(50);
+
+                await context.Response.WriteAsync(file.FileName);
+            })
+            .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
+
+        await app.StartAsync();
+
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
+        // ReSharper disable once MethodHasAsyncOverload
+        var httpResponseMessage =
+            httpRemoteService.UploadFileWithConsoleProgress($"http://localhost:{port}/test", filePath);
+        var result = await httpResponseMessage!.Content.ReadAsStringAsync();
+        Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
+        Assert.Equal("test.txt", result);
+
+        await app.StopAsync();
+        await serviceProvider.DisposeAsync();
+    }
+
+    [Fact]
     public async Task UploadFileAsync_ReturnOK()
     {
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
@@ -984,6 +1107,39 @@ public class HttpRemoteServiceExtensionsTests
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.Equal("test.txt", result);
         Assert.Equal(1, i);
+
+        await app.StopAsync();
+        await serviceProvider.DisposeAsync();
+    }
+
+    [Fact]
+    public async Task UploadFileWithConsoleProgressAsync_ReturnOK()
+    {
+        var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
+
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        await using var app = builder.Build();
+
+        app.MapPost("/test", async (HttpContext context, IFormFile file) =>
+            {
+                await Task.Delay(50);
+
+                await context.Response.WriteAsync(file.FileName);
+            })
+            .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
+
+        await app.StartAsync();
+
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
+        var httpResponseMessage =
+            await httpRemoteService.UploadFileWithConsoleProgressAsync($"http://localhost:{port}/test", filePath);
+
+        var result = await httpResponseMessage!.Content.ReadAsStringAsync();
+        Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
+        Assert.Equal("test.txt", result);
 
         await app.StopAsync();
         await serviceProvider.DisposeAsync();
