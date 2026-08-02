@@ -44,43 +44,22 @@ public class FileDownloadManagerTests
     }
 
     [Fact]
-    public void GetFileName_Invalid_Parameters()
+    public void ExtractFileName_Invalid_Parameters()
     {
-        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+        Assert.Throws<ArgumentNullException>(() => FileDownloadManager.ExtractFileName(null!));
 
-        var httpFileDownloadBuilder =
-            new HttpFileDownloadBuilder(HttpMethod.Get, new Uri("https://furion.net")).SetDestinationPath(
-                @"C:\Workspaces\");
-        var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
+        var requestUri = new Uri("https://furion.net/api");
+        var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            RequestMessage = new HttpRequestMessage(HttpMethod.Get, requestUri)
+        };
+        httpResponseMessage.Content = new StringContent("test");
 
-        var httpResponseMessage =
-            httpRemoteService.Send(fileDownloadManager.RequestBuilder, HttpCompletionOption.ResponseHeadersRead);
-
-        Assert.Throws<ArgumentException>(() => fileDownloadManager.GetFileName(httpResponseMessage!));
-
-        serviceProvider.Dispose();
+        Assert.Throws<ArgumentException>(() => FileDownloadManager.ExtractFileName(httpResponseMessage));
     }
 
     [Fact]
-    public void GetFileName_IfInDestinationPath_ReturnOK()
-    {
-        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
-
-        var httpFileDownloadBuilder =
-            new HttpFileDownloadBuilder(HttpMethod.Get, new Uri("https://furion.net")).SetDestinationPath(
-                @"C:\Workspaces\index.html");
-        var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
-
-        var httpResponseMessage =
-            httpRemoteService.Send(fileDownloadManager.RequestBuilder, HttpCompletionOption.ResponseHeadersRead);
-
-        Assert.Equal("index.html", fileDownloadManager.GetFileName(httpResponseMessage!));
-
-        serviceProvider.Dispose();
-    }
-
-    [Fact]
-    public void GetFileName_IfInUri_ReturnOK()
+    public void ExtractFileName_IfInUri_ReturnOK()
     {
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -92,13 +71,14 @@ public class FileDownloadManagerTests
         var httpResponseMessage =
             httpRemoteService.Send(fileDownloadManager.RequestBuilder, HttpCompletionOption.ResponseHeadersRead);
 
-        Assert.Equal("index.html", fileDownloadManager.GetFileName(httpResponseMessage!));
+        // 静态方法 ExtractFileName 只根据响应解析，不依赖 DestinationPath
+        Assert.Equal("index.html", FileDownloadManager.ExtractFileName(httpResponseMessage!));
 
         serviceProvider.Dispose();
     }
 
     [Fact]
-    public async Task GetFileNameAsync_IfInContentDisposition_ReturnOK()
+    public async Task ExtractFileName_IfInContentDisposition_ReturnOK()
     {
         var port = NetworkUtility.FindAvailableTcpPort();
         var urls = new[] { "--urls", $"http://localhost:{port}" };
@@ -126,7 +106,7 @@ public class FileDownloadManagerTests
             await httpRemoteService.SendAsync(fileDownloadManager.RequestBuilder,
                 HttpCompletionOption.ResponseHeadersRead);
 
-        Assert.Equal("index.html", fileDownloadManager.GetFileName(httpResponseMessage!));
+        Assert.Equal("index.html", FileDownloadManager.ExtractFileName(httpResponseMessage!));
 
         await app.StopAsync();
         await serviceProvider.DisposeAsync();
@@ -137,7 +117,7 @@ public class FileDownloadManagerTests
     [InlineData("test.safetensors", "test.safetensors", false)]
     [InlineData("test中文.safetensors", "test中文.safetensors", false)]
     // [InlineData("\"é¿é£.safetensors\"", "长风.safetensors", true)]
-    public async Task GetFileNameAsync_IfInContentDispositionAndIso88591FileName_ReturnOK(string fileName,
+    public async Task ExtractFileName_IfInContentDispositionAndIso88591FileName_ReturnOK(string fileName,
         string decodedFileName, bool latin1)
     {
         var port = NetworkUtility.FindAvailableTcpPort();
@@ -174,7 +154,7 @@ public class FileDownloadManagerTests
             await httpRemoteService.SendAsync(fileDownloadManager.RequestBuilder,
                 HttpCompletionOption.ResponseHeadersRead);
 
-        Assert.Equal(decodedFileName, fileDownloadManager.GetFileName(httpResponseMessage!));
+        Assert.Equal(decodedFileName, FileDownloadManager.ExtractFileName(httpResponseMessage!));
 
         await app.StopAsync();
         await serviceProvider.DisposeAsync();
@@ -197,6 +177,116 @@ public class FileDownloadManagerTests
             fileDownloadManager.ShouldContinueWithDownload(httpResponseMessage!, out _));
 
         Assert.Equal($"The destination path `{filePath}` already exists.", exception.Message);
+
+        serviceProvider.Dispose();
+    }
+
+    [Fact]
+    public void ShouldContinueWithDownload_DestinationPathIsExistingDirectory_Invalid_Parameters()
+    {
+        var baseDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+        var conflictDir = Path.Combine(baseDir, "subDir.txt");
+        Directory.CreateDirectory(conflictDir);
+
+        try
+        {
+            var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
+            var httpFileDownloadBuilder =
+                new HttpFileDownloadBuilder(HttpMethod.Get, new Uri("https://furion.net"))
+                    .SetDestinationPath(baseDir);
+            var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
+
+            var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                RequestMessage = new HttpRequestMessage(HttpMethod.Get, "https://furion.net/subDir.txt"),
+                Content = new StringContent("test")
+            };
+
+            var exception = Assert.Throws<InvalidOperationException>(() =>
+                fileDownloadManager.ShouldContinueWithDownload(httpResponseMessage, out _));
+
+            var expectedPath = Path.GetFullPath(Path.Combine(baseDir, "subDir.txt"));
+            Assert.Equal(
+                $"The destination path '{expectedPath}' is an existing directory, not a file path.",
+                exception.Message);
+
+            serviceProvider.Dispose();
+        }
+        finally
+        {
+            if (Directory.Exists(baseDir))
+            {
+                Directory.Delete(baseDir, true);
+            }
+        }
+    }
+
+    [Fact]
+    public void ShouldContinueWithDownload_DestinationPathIsExistingDirectoryWithExtension_ReturnOK()
+    {
+        var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".samples");
+        Directory.CreateDirectory(tempDir);
+
+        try
+        {
+            var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
+            var builder = new HttpFileDownloadBuilder(HttpMethod.Get, new Uri("https://furion.net/720153914265669.png"))
+                .SetDestinationPath(tempDir);
+            var manager = new FileDownloadManager(httpRemoteService, builder);
+
+            var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                RequestMessage = new HttpRequestMessage(HttpMethod.Get, "https://furion.net/720153914265669.png"),
+                Content = new StringContent("test")
+            };
+
+            Assert.True(manager.ShouldContinueWithDownload(httpResponseMessage, out var destinationPath));
+            Assert.EndsWith("720153914265669.png", destinationPath);
+            Assert.StartsWith(tempDir, destinationPath);
+
+            serviceProvider.Dispose();
+        }
+        finally
+        {
+            if (Directory.Exists(tempDir))
+            {
+                Directory.Delete(tempDir, true);
+            }
+        }
+    }
+
+    [Fact]
+    public void ShouldContinueWithDownload_NonExistentPathWithoutExtension_TreatedAsFile_ReturnOK()
+    {
+        const string nonExistentFilePath = @"C:\Workspaces\abc";
+        if (File.Exists(nonExistentFilePath))
+        {
+            File.Delete(nonExistentFilePath);
+        }
+
+        if (Directory.Exists(nonExistentFilePath))
+        {
+            Directory.Delete(nonExistentFilePath, true);
+        }
+
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
+        var builder = new HttpFileDownloadBuilder(HttpMethod.Get, new Uri("https://furion.net/720153914265669.png"))
+            .SetDestinationPath(nonExistentFilePath);
+        var manager = new FileDownloadManager(httpRemoteService, builder);
+
+        var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            RequestMessage = new HttpRequestMessage(HttpMethod.Get, "https://furion.net/720153914265669.png"),
+            Content = new StringContent("test")
+        };
+        httpResponseMessage.Content.Headers.ContentDisposition =
+            new ContentDispositionHeaderValue("attachment") { FileName = "from_response.txt" };
+
+        Assert.True(manager.ShouldContinueWithDownload(httpResponseMessage, out var destinationPath));
+        Assert.Equal(nonExistentFilePath, destinationPath);
 
         serviceProvider.Dispose();
     }
