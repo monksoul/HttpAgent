@@ -6482,12 +6482,12 @@
                 <see cref="T:System.Reflection.MethodInfo" /> 扩展类
             </summary>
         </member>
-        <member name="M:HttpAgent.Core.Extensions.MethodInfoExtensions.ToFriendlyString(System.Reflection.MethodInfo)">
+        <member name="M:HttpAgent.Core.Extensions.MethodInfoExtensions.ToFriendlyString(System.Reflection.MethodBase)">
             <summary>
                 输出方法签名的友好字符串
             </summary>
             <param name="method">
-                <see cref="T:System.Reflection.MethodInfo" />
+                <see cref="T:System.Reflection.MethodBase" />
             </param>
             <returns>
                 <see cref="T:System.String" />
