@@ -6245,7 +6245,7 @@
         <member name="M:HttpAgent.Core.Converters.Json.FlexibleDateTimeConverter.Regex">
             <remarks>
             Pattern:<br/>
-            <code>^/Date\(([+-]*\d+)\)/$</code><br/>
+            <code>^/Date\\(([+-]*\\d+)\\)/$</code><br/>
             Options:<br/>
             <code>RegexOptions.CultureInvariant</code><br/>
             Explanation:<br/>
@@ -6274,7 +6274,7 @@
         <member name="M:HttpAgent.Core.Converters.Json.FlexibleDateTimeOffsetConverter.Regex">
             <remarks>
             Pattern:<br/>
-            <code>^/Date\(([+-]*\d+)([+-])(\d{2})(\d{2})\)/$</code><br/>
+            <code>^/Date\\(([+-]*\\d+)([+-])(\\d{2})(\\d{2})\\)/$</code><br/>
             Options:<br/>
             <code>RegexOptions.CultureInvariant</code><br/>
             Explanation:<br/>
@@ -6872,7 +6872,7 @@
         <member name="M:HttpAgent.Core.Extensions.StringExtensions.PlaceholderRegex">
             <remarks>
             Pattern:<br/>
-            <code>\{\s*(?:\*\*)?\s*(\w+(?:\s*\.\s*\w+|\s*\[\s*\d+\s*\])*)\s*(\?)?\s*\}</code><br/>
+            <code>\\{\\s*(?:\\*\\*)?\\s*(\\w+(?:\\s*\\.\\s*\\w+|\\s*\\[\\s*\\d+\\s*\\])*)\\s*(\\?)?\\s*\\}</code><br/>
             Explanation:<br/>
             <code>
             ○ Match '{'.<br/>
@@ -6883,13 +6883,14 @@
             ○ 1st capture group.<br/>
                 ○ Match a word character greedily at least once.<br/>
                 ○ Loop greedily any number of times.<br/>
-                    ○ Match a whitespace character atomically any number of times.<br/>
                     ○ Match with 2 alternative expressions.<br/>
                         ○ Match a sequence of expressions.<br/>
+                            ○ Match a whitespace character atomically any number of times.<br/>
                             ○ Match '.'.<br/>
                             ○ Match a whitespace character atomically any number of times.<br/>
                             ○ Match a word character greedily at least once.<br/>
                         ○ Match a sequence of expressions.<br/>
+                            ○ Match a whitespace character atomically any number of times.<br/>
                             ○ Match '['.<br/>
                             ○ Match a whitespace character atomically any number of times.<br/>
                             ○ Match a Unicode digit atomically at least once.<br/>
@@ -6907,7 +6908,7 @@
         <member name="M:HttpAgent.Core.Extensions.StringExtensions.ConfigurationKeyRegex">
             <remarks>
             Pattern:<br/>
-            <code>\[\[\s*(?:\*\*)?\s*([\w\-:]+)((?:\s*\|\s*[\w\-:]+)*)\s*(?:\|\|\s*([^\]]*))?\s*(\?)?\s*\]\]</code><br/>
+            <code>\\[\\[\\s*(?:\\*\\*)?\\s*([\\w\\-:]+)((?:\\s*\\|\\s*[\\w\\-:]+)*)\\s*(?:\\|\\|\\s*([^\\]]*))?\\s*(\\?)?\\s*\\]\\]</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "[[".<br/>
@@ -10256,7 +10257,7 @@
         <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.UnicodeEscapeRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\u([0-9a-fA-F]{4})</code><br/>
+            <code>\\\\u([0-9a-fA-F]{4})</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "\\u".<br/>
@@ -12033,7 +12034,7 @@
         <member name="M:HttpAgent.FileTransferProgress.AnsiRegex">
             <remarks>
             Pattern:<br/>
-            <code>\e\[[\d;]*[a-zA-Z]</code><br/>
+            <code>\\e\\[[\\d;]*[a-zA-Z]</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "\u001b[".<br/>
@@ -13509,14 +13510,20 @@
             <param name="eTagCache">
                 <see cref="T:HttpAgent.IHttpETagCache" />
             </param>
+            <param name="logger">
+                <see cref="T:HttpAgent.IHttpRemoteLogger" />
+            </param>
         </member>
-        <member name="M:HttpAgent.ETagPipelineHandler.#ctor(HttpAgent.IHttpETagCache)">
+        <member name="M:HttpAgent.ETagPipelineHandler.#ctor(HttpAgent.IHttpETagCache,HttpAgent.IHttpRemoteLogger)">
             <summary>
                 ETag 缓存管道处理器
             </summary>
             <remarks>参考文献：https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Reference/Headers/ETag。</remarks>
             <param name="eTagCache">
                 <see cref="T:HttpAgent.IHttpETagCache" />
+            </param>
+            <param name="logger">
+                <see cref="T:HttpAgent.IHttpRemoteLogger" />
             </param>
         </member>
         <member name="M:HttpAgent.ETagPipelineHandler.HandleAsync(HttpAgent.HttpRequestPipelineContext,System.Func{System.Threading.Tasks.Task{System.Net.Http.HttpResponseMessage}})">
@@ -13879,7 +13886,7 @@
         <member name="M:HttpAgent.StatusCodePipelineHandler.StatusCodeRangeRegex">
             <remarks>
             Pattern:<br/>
-            <code>^\d+[-~]\d+$</code><br/>
+            <code>^\\d+[-~]\\d+$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
@@ -13893,7 +13900,7 @@
         <member name="M:HttpAgent.StatusCodePipelineHandler.StatusCodeCompareRegex">
             <remarks>
             Pattern:<br/>
-            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\d+)$</code><br/>
+            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\\d+)$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
@@ -15200,6 +15207,12 @@
             <inheritdoc />
         </member>
         <member name="M:HttpAgent.HttpRemoteService.For``1">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.HttpRemoteService.For``1(System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.HttpRemoteService.For(System.Type)">
             <inheritdoc />
         </member>
         <member name="M:HttpAgent.HttpRemoteService.Get(System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
@@ -16814,9 +16827,28 @@
             <summary>
                 解析服务
             </summary>
-            <typeparam name="T">服务类型</typeparam>
+            <typeparam name="T">服务的类型</typeparam>
             <returns>
                 <typeparamref name="T" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.IHttpRemoteService.For``1(System.Boolean)">
+            <summary>
+                解析服务
+            </summary>
+            <param name="required">要求服务必须注册，默认值为：<c>true</c></param>
+            <typeparam name="T">服务的类型</typeparam>
+            <returns>
+                <typeparamref name="T" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.IHttpRemoteService.For(System.Type)">
+            <summary>
+                解析服务
+            </summary>
+            <param name="serviceType">服务的类型</param>
+            <returns>
+                <see cref="T:System.Object" />
             </returns>
         </member>
         <member name="M:HttpAgent.IHttpRemoteService.Get(System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Threading.CancellationToken)">
@@ -20633,16 +20665,14 @@
                 <see cref="T:System.Text.Json.JsonSerializerOptions" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpRemoteUtility.ResolveHttpClientOptions(System.Net.Http.HttpResponseMessage,System.IServiceProvider)">
+        <member name="M:HttpAgent.HttpRemoteUtility.ResolveHttpClientOptions(System.IServiceProvider,System.String)">
             <summary>
-                根据 HTTP 响应消息和服务提供器，解析出 <see cref="T:System.Net.Http.HttpClient" /> 客户端配置选项
+                根据 HttpClient 实例的配置名称解析其配置选项
             </summary>
-            <param name="httpResponseMessage">
-                <see cref="T:System.Net.Http.HttpResponseMessage" />
-            </param>
             <param name="serviceProvider">
                 <see cref="T:System.IServiceProvider" />
             </param>
+            <param name="httpClientName"><see cref="T:System.Net.Http.HttpClient" /> 实例的配置名称</param>
             <returns>
                 <see cref="T:HttpAgent.HttpClientOptions" />
             </returns>
@@ -21464,13 +21494,6 @@
             <param name="httpRemoteBuilder">
                 <see cref="T:HttpAgent.HttpRemoteBuilder" />
             </param>
-            <returns>
-                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
-            </returns>
-        </member>
-    </members>
-</doc>
-   </param>
             <returns>
                 <see cref="T:HttpAgent.IHttpRemoteBuilder" />
             </returns>

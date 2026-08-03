@@ -1651,9 +1651,9 @@ public class HttpRemoteServiceTests
         var port = NetworkUtility.FindAvailableTcpPort();
         var urls = new[] { "--urls", $"http://localhost:{port}" };
         var builder = WebApplication.CreateBuilder(urls);
-        builder.Services.AddHttpRemote(builder =>
+        builder.Services.AddHttpRemote(options =>
         {
-            builder.AddHttpDeclarative<IHttpDeclarativeTest>();
+            options.AddHttpDeclarative<IHttpDeclarativeTest>();
         });
         await using var app = builder.Build();
 
@@ -1670,6 +1670,9 @@ public class HttpRemoteServiceTests
         var result = await httpRemoteService.For<IHttpDeclarativeTest>()
             .GetUrlAsync($"http://localhost:{port}/test", CancellationToken.None);
         Assert.Equal("Hello World!", result);
+
+        Assert.Null(httpRemoteService.For<INonHttpTest>(false));
+        Assert.Null(httpRemoteService.For(typeof(INonHttpTest)));
 
         await app.StopAsync(TestContext.Current.CancellationToken);
     }
@@ -1722,7 +1725,7 @@ public class HttpRemoteServiceTests
                 { "test/quota", new HttpQuotaLimit("daily", 2) }
             };
         });
-        builder.Services.AddHttpRemote(builder => builder.AddDefaultQuotaStrategies());
+        builder.Services.AddHttpRemote(options => options.AddDefaultQuotaStrategies());
         await using var app = builder.Build();
 
         app.MapGet("/test", async () =>

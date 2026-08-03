@@ -10,10 +10,15 @@ public class ETagPipelineHandlerTests
     public void New_ReturnOK()
     {
         var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddOptions<HttpRemoteOptions>();
         services.TryAddSingleton<IHttpETagCache, MemoryETagCache>();
+        services.TryAddSingleton<IHttpRemoteLogger>(provider =>
+            ActivatorUtilities.CreateInstance<HttpRemoteLogger>(provider, true));
         using var serviceProvider = services.BuildServiceProvider();
 
-        var handler = new ETagPipelineHandler(serviceProvider.GetRequiredService<IHttpETagCache>());
+        var handler = new ETagPipelineHandler(serviceProvider.GetRequiredService<IHttpETagCache>(),
+            serviceProvider.GetRequiredService<IHttpRemoteLogger>());
 
         Assert.NotNull(handler);
     }
@@ -33,10 +38,15 @@ public class ETagPipelineHandlerTests
     public async Task CacheResponseAsync_Invalid_Parameters()
     {
         var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddOptions<HttpRemoteOptions>();
         services.TryAddSingleton<IHttpETagCache, MemoryETagCache>();
+        services.TryAddSingleton<IHttpRemoteLogger>(provider =>
+            ActivatorUtilities.CreateInstance<HttpRemoteLogger>(provider, true));
         await using var serviceProvider = services.BuildServiceProvider();
 
-        var handler = new ETagPipelineHandler(serviceProvider.GetRequiredService<IHttpETagCache>());
+        var handler = new ETagPipelineHandler(serviceProvider.GetRequiredService<IHttpETagCache>(),
+            serviceProvider.GetRequiredService<IHttpRemoteLogger>());
 
         await Assert.ThrowsAsync<ArgumentNullException>(() => handler.CacheResponseAsync(null!, null!, null!));
         await Assert.ThrowsAsync<ArgumentException>(() => handler.CacheResponseAsync(string.Empty, null!, null!));
@@ -52,11 +62,15 @@ public class ETagPipelineHandlerTests
     public async Task CacheResponseAsync_ReturnOK()
     {
         var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddOptions<HttpRemoteOptions>();
         services.TryAddSingleton<IHttpETagCache, MemoryETagCache>();
+        services.TryAddSingleton<IHttpRemoteLogger>(provider =>
+            ActivatorUtilities.CreateInstance<HttpRemoteLogger>(provider, true));
         await using var serviceProvider = services.BuildServiceProvider();
 
         var cache = serviceProvider.GetRequiredService<IHttpETagCache>();
-        var handler = new ETagPipelineHandler(cache);
+        var handler = new ETagPipelineHandler(cache, serviceProvider.GetRequiredService<IHttpRemoteLogger>());
 
         var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK);
         httpResponseMessage.Headers.TryAddWithoutValidation("framework", "Furion");
@@ -98,11 +112,15 @@ public class ETagPipelineHandlerTests
     public void BuildResponseFromCacheItem_ReturnOK()
     {
         var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddOptions<HttpRemoteOptions>();
         services.TryAddSingleton<IHttpETagCache, MemoryETagCache>();
+        services.TryAddSingleton<IHttpRemoteLogger>(provider =>
+            ActivatorUtilities.CreateInstance<HttpRemoteLogger>(provider, true));
         using var serviceProvider = services.BuildServiceProvider();
 
         var cache = serviceProvider.GetRequiredService<IHttpETagCache>();
-        var handler = new ETagPipelineHandler(cache);
+        var handler = new ETagPipelineHandler(cache, serviceProvider.GetRequiredService<IHttpRemoteLogger>());
 
         var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK);
         httpResponseMessage.Headers.TryAddWithoutValidation("framework", "Furion");

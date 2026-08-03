@@ -29,6 +29,7 @@ internal sealed class QuotaPipelineHandler(IServiceProvider serviceProvider, IHt
         // 检查是否指定配额键
         if (string.IsNullOrWhiteSpace(quotaKey))
         {
+            // 调用下一个处理器的委托
             return await next();
         }
 
@@ -36,7 +37,7 @@ internal sealed class QuotaPipelineHandler(IServiceProvider serviceProvider, IHt
         var httpClientName = httpRequestBuilder.HttpClientName;
 
         // 获取当前 HttpClient 实例的配置名称的配置选项
-        var httpClientOptions = serviceProvider.GetService<IOptionsMonitor<HttpClientOptions>>()?.Get(httpClientName);
+        var httpClientOptions = HttpRemoteUtility.ResolveHttpClientOptions(serviceProvider, httpClientName);
 
         // 获取当前 HttpClient 实例的配置名称的接口调用配额限制配置
         var quotaLimits = httpClientOptions?.QuotaLimits;
@@ -44,6 +45,7 @@ internal sealed class QuotaPipelineHandler(IServiceProvider serviceProvider, IHt
         // 根据配额键查找是否包含接口调用配额限制配置
         if (quotaLimits is null || !quotaLimits.TryGetValue(quotaKey, out var quotaLimit))
         {
+            // 调用下一个处理器的委托
             return await next();
         }
 

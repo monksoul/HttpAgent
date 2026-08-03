@@ -41,8 +41,8 @@ internal sealed class RequestBuilderPipelineHandler(
         context.RequestMessage = httpRequestMessage;
 
         // 获取当前 HttpClient 实例的配置名称的配置选项
-        var httpClientOptions = serviceProvider.GetService<IOptionsMonitor<HttpClientOptions>>()
-            ?.Get(httpRequestBuilder.HttpClientName);
+        var httpClientOptions =
+            HttpRemoteUtility.ResolveHttpClientOptions(serviceProvider, httpRequestBuilder.HttpClientName);
 
         // 获取全局的 IHttpRequestEventHandler 事件处理程序
         var globalEventHandler = httpClientOptions?.HttpRequestEventHandler;
