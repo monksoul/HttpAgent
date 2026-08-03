@@ -24,7 +24,8 @@ public class ObjectContentConverterTests
         httpResponseMessage.Content = stringContent;
 
         var converter = new ObjectContentConverter<ObjectModel>();
-        var objectModel = converter.Read(new HttpContentConverterContext(httpResponseMessage));
+        var objectModel = converter.Read(new HttpContentConverterContext(httpResponseMessage),
+            TestContext.Current.CancellationToken);
         Assert.NotNull(objectModel);
         Assert.Equal(10, objectModel.Id);
         Assert.Equal("furion", objectModel.Name);
@@ -34,7 +35,8 @@ public class ObjectContentConverterTests
         httpResponseMessage2.Content = stringContent2;
 
         var converter2 = new ObjectContentConverter<ObjectModel>();
-        var objectModel2 = converter2.Read(new HttpContentConverterContext(httpResponseMessage2));
+        var objectModel2 = converter2.Read(new HttpContentConverterContext(httpResponseMessage2),
+            TestContext.Current.CancellationToken);
         Assert.NotNull(objectModel2);
         Assert.Equal(10, objectModel2.Id);
         Assert.Equal("furion", objectModel2.Name);
@@ -48,7 +50,8 @@ public class ObjectContentConverterTests
         httpResponseMessage.Content = stringContent;
 
         var converter = new ObjectContentConverter<ObjectModel>();
-        var objectModel = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage));
+        var objectModel = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage),
+            TestContext.Current.CancellationToken);
         Assert.NotNull(objectModel);
         Assert.Equal(10, objectModel.Id);
         Assert.Equal("furion", objectModel.Name);
@@ -58,7 +61,8 @@ public class ObjectContentConverterTests
         httpResponseMessage2.Content = stringContent2;
 
         var converter2 = new ObjectContentConverter<ObjectModel>();
-        var objectModel2 = await converter2.ReadAsync(new HttpContentConverterContext(httpResponseMessage2));
+        var objectModel2 = await converter2.ReadAsync(new HttpContentConverterContext(httpResponseMessage2),
+            TestContext.Current.CancellationToken);
         Assert.NotNull(objectModel2);
         Assert.Equal(10, objectModel2.Id);
         Assert.Equal("furion", objectModel2.Name);
@@ -103,7 +107,8 @@ public class ObjectContentConverterTests
 
         var converter = new ObjectContentConverter();
         var objectModel =
-            converter.Read(typeof(ObjectModel), new HttpContentConverterContext(httpResponseMessage)) as ObjectModel;
+            converter.Read(typeof(ObjectModel), new HttpContentConverterContext(httpResponseMessage),
+                TestContext.Current.CancellationToken) as ObjectModel;
 
         Assert.NotNull(objectModel);
         Assert.Equal(10, objectModel.Id);
@@ -115,7 +120,8 @@ public class ObjectContentConverterTests
 
         var converter2 = new ObjectContentConverter();
         var objectModel2 =
-            converter2.Read(typeof(ObjectModel), new HttpContentConverterContext(httpResponseMessage2)) as ObjectModel;
+            converter2.Read(typeof(ObjectModel), new HttpContentConverterContext(httpResponseMessage2),
+                TestContext.Current.CancellationToken) as ObjectModel;
         Assert.NotNull(objectModel2);
         Assert.Equal(10, objectModel2.Id);
         Assert.Equal("furion", objectModel2.Name);
@@ -130,7 +136,8 @@ public class ObjectContentConverterTests
 
         var converter = new ObjectContentConverter();
         var objectModel =
-            await converter.ReadAsync(typeof(ObjectModel), new HttpContentConverterContext(httpResponseMessage)) as
+            await converter.ReadAsync(typeof(ObjectModel), new HttpContentConverterContext(httpResponseMessage),
+                    TestContext.Current.CancellationToken) as
                 ObjectModel;
         Assert.NotNull(objectModel);
         Assert.Equal(10, objectModel.Id);
@@ -142,7 +149,8 @@ public class ObjectContentConverterTests
 
         var converter2 = new ObjectContentConverter();
         var objectModel2 =
-            await converter2.ReadAsync(typeof(ObjectModel), new HttpContentConverterContext(httpResponseMessage2)) as
+            await converter2.ReadAsync(typeof(ObjectModel), new HttpContentConverterContext(httpResponseMessage2),
+                    TestContext.Current.CancellationToken) as
                 ObjectModel;
         Assert.NotNull(objectModel2);
         Assert.Equal(10, objectModel2.Id);
@@ -198,7 +206,8 @@ public class ObjectContentConverterTests
         httpResponseMessage.Content = stringContent;
 
         var converter = new ObjectContentConverter<ObjectModelSnakeCase> { ServiceProvider = serviceProvider };
-        var objectModel = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage));
+        var objectModel = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage),
+            TestContext.Current.CancellationToken);
         Assert.NotNull(objectModel);
         Assert.Equal(10, objectModel.UserId);
         Assert.Equal("furion", objectModel.UserName);
@@ -224,7 +233,8 @@ public class ObjectContentConverterTests
         httpResponseMessage.Content = stringContent;
 
         var converter = new ObjectContentConverter<JsonModel> { ServiceProvider = serviceProvider };
-        var objectModel = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage));
+        var objectModel = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage),
+            TestContext.Current.CancellationToken);
         Assert.NotNull(objectModel);
         Assert.Equal(10, objectModel.Id);
         Assert.Equal("furion", objectModel.Name);
@@ -250,7 +260,8 @@ public class ObjectContentConverterTests
         httpResponseMessage.Content = stringContent;
 
         var converter = new ObjectContentConverter<JsonModel> { ServiceProvider = serviceProvider };
-        var objectModel = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage));
+        var objectModel = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage),
+            TestContext.Current.CancellationToken);
         Assert.Null(objectModel);
 
         await serviceProvider.DisposeAsync();
@@ -274,7 +285,8 @@ public class ObjectContentConverterTests
         httpResponseMessage.Content = stringContent;
 
         var converter = new ObjectContentConverter<JsonModel> { ServiceProvider = serviceProvider };
-        var objectModel = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage));
+        var objectModel = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage),
+            TestContext.Current.CancellationToken);
         Assert.Null(objectModel);
 
         await serviceProvider.DisposeAsync();
@@ -298,7 +310,8 @@ public class ObjectContentConverterTests
         httpResponseMessage.Content = stringContent;
 
         var converter = new ObjectContentConverter<string> { ServiceProvider = serviceProvider };
-        var str = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage));
+        var str = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage),
+            TestContext.Current.CancellationToken);
         Assert.Equal("test string", str);
 
         await serviceProvider.DisposeAsync();
@@ -319,7 +332,8 @@ public class ObjectContentConverterTests
         httpResponseMessage.Content = stringContent;
 
         var converter = new ObjectContentConverter<ApiResult<JsonModel>> { ServiceProvider = serviceProvider };
-        var objectModel = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage));
+        var objectModel = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage),
+            TestContext.Current.CancellationToken);
         Assert.NotNull(objectModel);
         Assert.Equal(10, objectModel.Data?.Id);
         Assert.Equal("furion", objectModel.Data?.Name);
@@ -342,7 +356,8 @@ public class ObjectContentConverterTests
         httpResponseMessage.Content = stringContent;
 
         var converter = new ObjectContentConverter<ApiResult<JsonModel>> { ServiceProvider = serviceProvider };
-        var objectModel = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage));
+        var objectModel = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage),
+            TestContext.Current.CancellationToken);
         Assert.Null(objectModel);
 
         await serviceProvider.DisposeAsync();
@@ -363,7 +378,8 @@ public class ObjectContentConverterTests
         httpResponseMessage.Content = stringContent;
 
         var converter = new ObjectContentConverter<ApiResult<JsonModel>> { ServiceProvider = serviceProvider };
-        var objectModel = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage));
+        var objectModel = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage),
+            TestContext.Current.CancellationToken);
         Assert.NotNull(objectModel);
         Assert.Null(objectModel.Data);
 
@@ -386,7 +402,8 @@ public class ObjectContentConverterTests
         httpResponseMessage.Content = stringContent;
 
         var converter = new ObjectContentConverter<JsonModel> { ServiceProvider = serviceProvider };
-        var objectModel = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage));
+        var objectModel = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage),
+            TestContext.Current.CancellationToken);
         Assert.NotNull(objectModel);
         Assert.Equal(10, objectModel.Id);
         Assert.Equal("furion", objectModel.Name);
@@ -410,7 +427,8 @@ public class ObjectContentConverterTests
         httpResponseMessage.Content = stringContent;
 
         var converter = new ObjectContentConverter<JsonModel> { ServiceProvider = serviceProvider };
-        var objectModel = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage));
+        var objectModel = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage),
+            TestContext.Current.CancellationToken);
         Assert.Null(objectModel);
 
         await serviceProvider.DisposeAsync();
@@ -432,7 +450,8 @@ public class ObjectContentConverterTests
         httpResponseMessage.Content = stringContent;
 
         var converter = new ObjectContentConverter<JsonModel> { ServiceProvider = serviceProvider };
-        var objectModel = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage));
+        var objectModel = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage),
+            TestContext.Current.CancellationToken);
         Assert.Null(objectModel);
 
         await serviceProvider.DisposeAsync();
@@ -457,7 +476,8 @@ public class ObjectContentConverterTests
         httpResponseMessage.Content = stringContent;
 
         var converter = new ObjectContentConverter<string> { ServiceProvider = serviceProvider };
-        var str = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage));
+        var str = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage),
+            TestContext.Current.CancellationToken);
         Assert.Equal("test string", str);
 
         await serviceProvider.DisposeAsync();
@@ -483,7 +503,8 @@ public class ObjectContentConverterTests
         httpResponseMessage.Content = stringContent;
 
         var converter = new ObjectContentConverter<ApiResult<JsonModel>> { ServiceProvider = serviceProvider };
-        var objectModel = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage));
+        var objectModel = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage),
+            TestContext.Current.CancellationToken);
         Assert.NotNull(objectModel);
         Assert.Equal(10, objectModel.Data?.Id);
         Assert.Equal("furion", objectModel.Data?.Name);
@@ -511,7 +532,8 @@ public class ObjectContentConverterTests
         httpResponseMessage.Content = stringContent;
 
         var converter = new ObjectContentConverter<ApiResult<JsonModel>> { ServiceProvider = serviceProvider };
-        var objectModel = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage));
+        var objectModel = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage),
+            TestContext.Current.CancellationToken);
         Assert.Null(objectModel);
 
         await serviceProvider.DisposeAsync();
@@ -537,7 +559,8 @@ public class ObjectContentConverterTests
         httpResponseMessage.Content = stringContent;
 
         var converter = new ObjectContentConverter<ApiResult<JsonModel>> { ServiceProvider = serviceProvider };
-        var objectModel = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage));
+        var objectModel = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage),
+            TestContext.Current.CancellationToken);
         Assert.NotNull(objectModel);
         Assert.Null(objectModel.Data);
 
@@ -556,14 +579,16 @@ public class ObjectContentConverterTests
         httpResponseMessage.Content = stringContent;
 
         var converter = new ObjectContentConverter<JsonModel>();
-        var objectModel = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage));
+        var objectModel = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage),
+            TestContext.Current.CancellationToken);
         Assert.NotNull(objectModel);
         Assert.Equal(10, objectModel.Id);
         Assert.Equal("furion", objectModel.Name);
 
         httpRequestMessage.Options.AddOrUpdate(Constants.ENABLE_JSON_RESPONSE_STRING_UNWRAP_KEY, "FALSE");
         await Assert.ThrowsAsync<JsonException>(async () =>
-            await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage)));
+            await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage),
+                TestContext.Current.CancellationToken));
     }
 
     public class ApiResult<T>

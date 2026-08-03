@@ -175,33 +175,34 @@ public class HttpRemoteExtensionsTests
     [Fact]
     public async Task ProfilerAsync_ReturnOK()
     {
-        Assert.Null(await HttpRemoteExtensions.ProfilerAsync(null));
+        Assert.Null(await HttpRemoteExtensions.ProfilerAsync(null,
+            cancellationToken: TestContext.Current.CancellationToken));
 
         var stringContent = new StringContent("Hello World");
         Assert.Equal("[36m[1mRequest Body (StringContent, total: 11 bytes):[0m \r\n  Hello World",
-            await stringContent.ProfilerAsync());
+            await stringContent.ProfilerAsync(cancellationToken: TestContext.Current.CancellationToken));
 
         var jsonContent = JsonContent.Create(new { id = 1, name = "furion" });
         Assert.Equal("[36m[1mRequest Body (JsonContent, total: 24 bytes):[0m \r\n  {\"id\":1,\"name\":\"furion\"}",
-            await jsonContent.ProfilerAsync());
+            await jsonContent.ProfilerAsync(cancellationToken: TestContext.Current.CancellationToken));
 
         var byteArrayContent = new ByteArrayContent("Hello World"u8.ToArray());
         Assert.Equal("[36m[1mRequest Body (ByteArrayContent, total: 11 bytes):[0m \r\n  Hello World",
-            await byteArrayContent.ProfilerAsync());
+            await byteArrayContent.ProfilerAsync(cancellationToken: TestContext.Current.CancellationToken));
 
         var formUrlEncodedContent = new FormUrlEncodedContent([
             new KeyValuePair<string, string>("id", "1"), new KeyValuePair<string, string>("name", "Furion")
         ]);
         Assert.Equal("[36m[1mRequest Body (FormUrlEncodedContent, total: 16 bytes):[0m \r\n  id=1&name=Furion",
-            await formUrlEncodedContent.ProfilerAsync());
+            await formUrlEncodedContent.ProfilerAsync(cancellationToken: TestContext.Current.CancellationToken));
 
         var streamStream = new StreamContent(File.OpenRead(Path.Combine(AppContext.BaseDirectory, "test.txt")));
         Assert.Equal("[36m[1mRequest Body (StreamContent, total: 21 bytes):[0m \r\n  ﻿测试文件内容",
-            await streamStream.ProfilerAsync());
+            await streamStream.ProfilerAsync(cancellationToken: TestContext.Current.CancellationToken));
 
         var readOnlyMemoryContent = new ReadOnlyMemoryContent(new ReadOnlyMemory<byte>("Hello World"u8.ToArray()));
         Assert.Equal("[36m[1mRequest Body (ReadOnlyMemoryContent, total: 11 bytes):[0m \r\n  Hello World",
-            await readOnlyMemoryContent.ProfilerAsync());
+            await readOnlyMemoryContent.ProfilerAsync(cancellationToken: TestContext.Current.CancellationToken));
 
         var multipartFormDataContent = new MultipartFormDataContent("--------------------------");
         multipartFormDataContent.Add(new StringContent("Hello World"), "text");
@@ -209,40 +210,46 @@ public class HttpRemoteExtensionsTests
             new StreamContent(File.OpenRead(Path.Combine(AppContext.BaseDirectory, "test.txt"))), "file");
         Assert.Equal(
             "[36m[1mRequest Body (MultipartFormDataContent, total: 259 bytes):[0m \r\n  ----------------------------\r\n  Content-Type: text/plain; charset=utf-8\r\n  Content-Disposition: form-data; name=text\r\n  \r\n  Hello World\r\n  ----------------------------\r\n  Content-Disposition: form-data; name=file\r\n  \r\n  ﻿测试文件内容\r\n  ------------------------------\r\n  ",
-            await multipartFormDataContent.ProfilerAsync());
+            await multipartFormDataContent.ProfilerAsync(cancellationToken: TestContext.Current.CancellationToken));
 
         var stringContent2 = new StringContent("Hello World");
         Assert.Equal("[36m[1mResponse Body (StringContent, total: 11 bytes):[0m \r\n  Hello World",
-            await stringContent2.ProfilerAsync("Response Body"));
+            await stringContent2.ProfilerAsync("Response Body",
+                cancellationToken: TestContext.Current.CancellationToken));
 
         var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.InternalServerError);
         var stringContent3 = new StringContent("Hello World");
         httpResponseMessage.Content = stringContent3;
         Assert.Equal("[36m[1mRequest Body (StringContent, total: 11 bytes):[0m \r\n  [31mHello World[0m",
-            await stringContent3.ProfilerAsync(httpResponseMessage: httpResponseMessage));
+            await stringContent3.ProfilerAsync(httpResponseMessage: httpResponseMessage,
+                cancellationToken: TestContext.Current.CancellationToken));
 
         var httpResponseMessage2 = new HttpResponseMessage(HttpStatusCode.Redirect);
         var stringContent4 = new StringContent("Hello World");
         httpResponseMessage2.Content = stringContent4;
         Assert.Equal("[36m[1mRequest Body (StringContent, total: 11 bytes):[0m \r\n  [33mHello World[0m",
-            await stringContent4.ProfilerAsync(httpResponseMessage: httpResponseMessage2));
+            await stringContent4.ProfilerAsync(httpResponseMessage: httpResponseMessage2,
+                cancellationToken: TestContext.Current.CancellationToken));
 
         var largeNoLengthContent = new LargeContentWithoutLength(11 * 1024 * 1024);
-        var exReq = await Assert.ThrowsAsync<InvalidOperationException>(() => largeNoLengthContent.ProfilerAsync());
+        var exReq = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            largeNoLengthContent.ProfilerAsync(cancellationToken: TestContext.Current.CancellationToken));
         Assert.Contains("The request body for request", exReq.Message);
         Assert.Contains("10 MB", exReq.Message);
 
         using var reqMsg = new HttpRequestMessage(HttpMethod.Post, "https://furion.net/api/data");
         var largeNoLengthContent2 = new LargeContentWithoutLength(11 * 1024 * 1024);
         var exReqWithUrl = await Assert.ThrowsAsync<InvalidOperationException>(() =>
-            largeNoLengthContent2.ProfilerAsync(httpRequestMessage: reqMsg));
+            largeNoLengthContent2.ProfilerAsync(httpRequestMessage: reqMsg,
+                cancellationToken: TestContext.Current.CancellationToken));
         Assert.Contains("for request 'https://furion.net/api/data'", exReqWithUrl.Message);
 
         using var respMsg = new HttpResponseMessage();
         respMsg.RequestMessage = new HttpRequestMessage(HttpMethod.Get, "https://furion.net/api/response");
         var largeNoLengthContent3 = new LargeContentWithoutLength(11 * 1024 * 1024);
         var exResp = await Assert.ThrowsAsync<InvalidOperationException>(() =>
-            largeNoLengthContent3.ProfilerAsync(httpResponseMessage: respMsg));
+            largeNoLengthContent3.ProfilerAsync(httpResponseMessage: respMsg,
+                cancellationToken: TestContext.Current.CancellationToken));
         Assert.Contains("The response body for request 'https://furion.net/api/response'", exResp.Message);
 
         var streamingResp = new HttpResponseMessage();
@@ -251,12 +258,13 @@ public class HttpRemoteExtensionsTests
             new HttpRequestOptionsKey<HttpCompletionOption>(Constants.HTTP_COMPLETION_OPTION_KEY),
             HttpCompletionOption.ResponseHeadersRead);
         streamingResp.Content = new NoLengthStreamContent("ignored"u8.ToArray());
-        var streamSkipResult = await streamingResp.Content.ProfilerAsync(httpResponseMessage: streamingResp);
+        var streamSkipResult = await streamingResp.Content.ProfilerAsync(httpResponseMessage: streamingResp,
+            cancellationToken: TestContext.Current.CancellationToken);
         Assert.Contains("Skipped due to streaming", streamSkipResult);
 
         var longText = new string('A', 11 * 1024);
         var truncContent = new StringContent(longText);
-        var truncResult = await truncContent.ProfilerAsync();
+        var truncResult = await truncContent.ProfilerAsync(cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(truncResult);
         Assert.Contains("[truncated, > 10240 bytes]", truncResult);
         Assert.True(truncResult.Length < longText.Length + 100);
@@ -268,32 +276,37 @@ public class HttpRemoteExtensionsTests
         compressedContent.Headers.ContentType = new MediaTypeHeaderValue("text/plain") { CharSet = "utf-8" };
         var gzipResp = new HttpResponseMessage();
         gzipResp.Content = compressedContent;
-        var gzipResult = await compressedContent.ProfilerAsync(httpResponseMessage: gzipResp);
+        var gzipResult = await compressedContent.ProfilerAsync(httpResponseMessage: gzipResp,
+            cancellationToken: TestContext.Current.CancellationToken);
         Assert.Contains(rawText, gzipResult);
 
         var largeWithLengthContent = new StringContent(new string('B', 11 * 1024 * 1024));
-        var skipResult = await largeWithLengthContent.ProfilerAsync();
+        var skipResult =
+            await largeWithLengthContent.ProfilerAsync(cancellationToken: TestContext.Current.CancellationToken);
         Assert.Contains("[Skipped: content too large", skipResult);
         Assert.DoesNotContain("BBBB", skipResult);
 
         var successResp = new HttpResponseMessage(HttpStatusCode.OK);
         var successContent = new StringContent("Success");
         successResp.Content = successContent;
-        var successResult = await successContent.ProfilerAsync(httpResponseMessage: successResp);
+        var successResult = await successContent.ProfilerAsync(httpResponseMessage: successResp,
+            cancellationToken: TestContext.Current.CancellationToken);
         Assert.Contains("\e[32m", successResult);
         Assert.Contains("Success", successResult);
 
         var redirectResp = new HttpResponseMessage(HttpStatusCode.Redirect);
         var redirectContent = new StringContent("Redirect");
         redirectResp.Content = redirectContent;
-        var redirectResult = await redirectContent.ProfilerAsync(httpResponseMessage: redirectResp);
+        var redirectResult = await redirectContent.ProfilerAsync(httpResponseMessage: redirectResp,
+            cancellationToken: TestContext.Current.CancellationToken);
         Assert.Contains("\e[33m", redirectResult);
         Assert.Contains("Redirect", redirectResult);
     }
 
     [Fact]
     public async Task CloneAsync_Invalid_Parameters() =>
-        await Assert.ThrowsAsync<ArgumentNullException>(() => HttpRemoteExtensions.CloneAsync(null!));
+        await Assert.ThrowsAsync<ArgumentNullException>(() =>
+            HttpRemoteExtensions.CloneAsync(null!, TestContext.Current.CancellationToken));
 
     [Fact]
     public async Task CloneAsync_ReturnOK()
@@ -305,7 +318,8 @@ public class HttpRemoteExtensionsTests
 
         httpRequestMessage.Options.TryAdd("name", "Furion");
 
-        var clonedHttpRequestMessage = await httpRequestMessage.CloneAsync();
+        var clonedHttpRequestMessage =
+            await httpRequestMessage.CloneAsync(TestContext.Current.CancellationToken);
         Assert.Equal("furion", clonedHttpRequestMessage.Headers.UserAgent.ToString());
         Assert.Single(clonedHttpRequestMessage.Options);
         Assert.True(
@@ -314,7 +328,7 @@ public class HttpRemoteExtensionsTests
 
         var streamContent = clonedHttpRequestMessage.Content as StreamContent;
         Assert.NotNull(streamContent);
-        var str = await streamContent.ReadAsStringAsync();
+        var str = await streamContent.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal("Hello World", str);
 
         Assert.Equal("application/json", clonedHttpRequestMessage.Content?.Headers.ContentType?.MediaType);
@@ -322,7 +336,8 @@ public class HttpRemoteExtensionsTests
 
     [Fact]
     public void Clone_Invalid_Parameters() =>
-        Assert.Throws<ArgumentNullException>(() => HttpRemoteExtensions.Clone(null!));
+        Assert.Throws<ArgumentNullException>(() =>
+            HttpRemoteExtensions.Clone(null!, TestContext.Current.CancellationToken));
 
     [Fact]
     public void Clone_ReturnOK()
@@ -332,13 +347,14 @@ public class HttpRemoteExtensionsTests
         var stringContent = new StringContent("Hello World", Encoding.UTF8, "application/json");
         httpRequestMessage.Content = stringContent;
 
-        var clonedHttpRequestMessage = httpRequestMessage.Clone();
+        var clonedHttpRequestMessage =
+            httpRequestMessage.Clone(TestContext.Current.CancellationToken);
         Assert.Equal("furion", clonedHttpRequestMessage.Headers.UserAgent.ToString());
 
         var streamContent = clonedHttpRequestMessage.Content as StreamContent;
         Assert.NotNull(streamContent);
 #pragma warning disable xUnit1031
-        var str = AsyncUtility.RunSync(() => streamContent.ReadAsStringAsync());
+        var str = AsyncUtility.RunSync(() => streamContent.ReadAsStringAsync(TestContext.Current.CancellationToken));
 #pragma warning restore xUnit1031
         Assert.Equal("Hello World", str);
 
@@ -446,9 +462,8 @@ public class HttpRemoteExtensionsTests
 
         services.AddHttpClient(string.Empty)
             .ConfigureOptions(options => options.JsonSerializerOptions.IncludeFields = true);
-        services.AddHttpClient("github").ConfigureOptions((options, serviceProvider) =>
+        services.AddHttpClient("github").ConfigureOptions(options =>
         {
-            Assert.NotNull(serviceProvider);
             options.JsonSerializerOptions.IncludeFields = true;
         });
 
@@ -629,7 +644,7 @@ public class HttpRemoteExtensionsTests
         using var gzipCompressedStream = new MemoryStream();
         await using (var gzip = new GZipStream(gzipCompressedStream, CompressionMode.Compress, true))
         {
-            await gzip.WriteAsync(originalBytes);
+            await gzip.WriteAsync(originalBytes, TestContext.Current.CancellationToken);
         }
 
         gzipCompressedStream.Position = 0;
@@ -645,7 +660,7 @@ public class HttpRemoteExtensionsTests
         using var deflateCompressedStream = new MemoryStream();
         await using (var deflate = new DeflateStream(deflateCompressedStream, CompressionMode.Compress, true))
         {
-            await deflate.WriteAsync(originalBytes);
+            await deflate.WriteAsync(originalBytes, TestContext.Current.CancellationToken);
         }
 
         deflateCompressedStream.Position = 0;
@@ -662,7 +677,7 @@ public class HttpRemoteExtensionsTests
         using var brCompressedStream = new MemoryStream();
         await using (var brotli = new BrotliStream(brCompressedStream, CompressionMode.Compress, true))
         {
-            await brotli.WriteAsync(originalBytes);
+            await brotli.WriteAsync(originalBytes, TestContext.Current.CancellationToken);
         }
 
         brCompressedStream.Position = 0;
@@ -709,7 +724,7 @@ public class HttpRemoteExtensionsTests
         using var compressedStream = new MemoryStream();
         await using (var gzip = new GZipStream(compressedStream, CompressionMode.Compress, true))
         {
-            await gzip.WriteAsync(originalBytes);
+            await gzip.WriteAsync(originalBytes, TestContext.Current.CancellationToken);
         }
 
         compressedStream.Position = 0;
@@ -750,7 +765,8 @@ public class HttpRemoteExtensionsTests
         using var stringContent = new StringContent("\"{\\\"id\\\":10, \\\"name\\\":\\\"furion\\\"}\"");
 
         var objectModel = await stringContent.ReadAndUnwrapFromJsonAsync(typeof(JsonModel),
-            new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) as JsonModel;
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true },
+            TestContext.Current.CancellationToken) as JsonModel;
         Assert.NotNull(objectModel);
         Assert.Equal(10, objectModel.Id);
         Assert.Equal("furion", objectModel.Name);

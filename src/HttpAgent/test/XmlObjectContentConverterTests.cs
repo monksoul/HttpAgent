@@ -30,7 +30,8 @@ public class XmlObjectContentConverterTests
         httpResponseMessage3.Content = stringContent;
 
         var converter3 = new XmlObjectContentConverter<XmlModel>();
-        var xmlModel = converter3.Read(new HttpContentConverterContext(httpResponseMessage3));
+        var xmlModel = converter3.Read(new HttpContentConverterContext(httpResponseMessage3),
+            TestContext.Current.CancellationToken);
         Assert.NotNull(xmlModel);
         Assert.Equal("Furion", xmlModel.Name);
         Assert.Equal(30, xmlModel.Age);
@@ -50,7 +51,8 @@ public class XmlObjectContentConverterTests
         httpResponseMessage3.Content = stringContent;
 
         var converter3 = new XmlObjectContentConverter<XmlModel>();
-        var xmlModel = await converter3.ReadAsync(new HttpContentConverterContext(httpResponseMessage3));
+        var xmlModel = await converter3.ReadAsync(new HttpContentConverterContext(httpResponseMessage3),
+            TestContext.Current.CancellationToken);
         Assert.NotNull(xmlModel);
         Assert.Equal("Furion", xmlModel.Name);
         Assert.Equal(30, xmlModel.Age);
@@ -111,7 +113,8 @@ public class XmlObjectContentConverterTests
 
         var converter3 = new XmlObjectContentConverter();
         var xmlModel =
-            converter3.Read(typeof(XmlModel), new HttpContentConverterContext(httpResponseMessage3)) as XmlModel;
+            converter3.Read(typeof(XmlModel), new HttpContentConverterContext(httpResponseMessage3),
+                TestContext.Current.CancellationToken) as XmlModel;
         Assert.NotNull(xmlModel);
         Assert.Equal("Furion", xmlModel.Name);
         Assert.Equal(30, xmlModel.Age);
@@ -132,7 +135,8 @@ public class XmlObjectContentConverterTests
 
         var converter3 = new XmlObjectContentConverter();
         var xmlModel =
-            await converter3.ReadAsync(typeof(XmlModel), new HttpContentConverterContext(httpResponseMessage3)) as
+            await converter3.ReadAsync(typeof(XmlModel), new HttpContentConverterContext(httpResponseMessage3),
+                    TestContext.Current.CancellationToken) as
                 XmlModel;
         Assert.NotNull(xmlModel);
         Assert.Equal("Furion", xmlModel.Name);

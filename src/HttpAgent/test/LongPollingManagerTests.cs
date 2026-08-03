@@ -415,7 +415,7 @@ public class LongPollingManagerTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
@@ -429,11 +429,11 @@ public class LongPollingManagerTests
         var longPollingManagerManager = new LongPollingManager(httpRemoteService, httpLongPollingBuilder);
 
         // ReSharper disable once MethodHasAsyncOverload
-        longPollingManagerManager.Start();
+        longPollingManagerManager.Start(TestContext.Current.CancellationToken);
 
         Assert.Equal(5, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -464,7 +464,7 @@ public class LongPollingManagerTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         using var cancellationTokenSource = new CancellationTokenSource();
         cancellationTokenSource.CancelAfter(100);
@@ -492,7 +492,7 @@ public class LongPollingManagerTests
 
         Assert.Equal(0, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -523,7 +523,7 @@ public class LongPollingManagerTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var customLongPollingEventHandler = new CustomLongPollingEventHandler();
@@ -540,12 +540,12 @@ public class LongPollingManagerTests
         var longPollingManagerManager = new LongPollingManager(httpRemoteService, httpLongPollingBuilder);
 
         // ReSharper disable once MethodHasAsyncOverload
-        longPollingManagerManager.Start();
+        longPollingManagerManager.Start(TestContext.Current.CancellationToken);
 
         Assert.Equal(5, i);
         Assert.Equal(5, customLongPollingEventHandler.counter);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -580,7 +580,7 @@ public class LongPollingManagerTests
 #pragma warning restore CS0162 // 检测到不可到达的代码
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
@@ -594,11 +594,11 @@ public class LongPollingManagerTests
         var longPollingManagerManager = new LongPollingManager(httpRemoteService, httpLongPollingBuilder);
 
         // ReSharper disable once MethodHasAsyncOverload
-        longPollingManagerManager.Start();
+        longPollingManagerManager.Start(TestContext.Current.CancellationToken);
 
         Assert.Equal(0, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -629,7 +629,7 @@ public class LongPollingManagerTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
@@ -642,11 +642,11 @@ public class LongPollingManagerTests
                 });
         var longPollingManagerManager = new LongPollingManager(httpRemoteService, httpLongPollingBuilder);
 
-        await longPollingManagerManager.StartAsync();
+        await longPollingManagerManager.StartAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(5, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -677,7 +677,7 @@ public class LongPollingManagerTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         using var cancellationTokenSource = new CancellationTokenSource();
         cancellationTokenSource.CancelAfter(100);
@@ -700,7 +700,7 @@ public class LongPollingManagerTests
 
         Assert.Equal(0, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -731,7 +731,7 @@ public class LongPollingManagerTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var customLongPollingEventHandler = new CustomLongPollingEventHandler();
@@ -747,12 +747,12 @@ public class LongPollingManagerTests
                 }).SetEventHandler<CustomLongPollingEventHandler>();
         var longPollingManagerManager = new LongPollingManager(httpRemoteService, httpLongPollingBuilder);
 
-        await longPollingManagerManager.StartAsync();
+        await longPollingManagerManager.StartAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(5, i);
         Assert.Equal(5, customLongPollingEventHandler.counter);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -787,7 +787,7 @@ public class LongPollingManagerTests
 #pragma warning restore CS0162 // 检测到不可到达的代码
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
@@ -800,11 +800,11 @@ public class LongPollingManagerTests
                 }).SetRetryInterval(TimeSpan.FromMilliseconds(100)).SetMaxRetries(10);
         var longPollingManagerManager = new LongPollingManager(httpRemoteService, httpLongPollingBuilder);
 
-        await longPollingManagerManager.StartAsync();
+        await longPollingManagerManager.StartAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(0, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -835,7 +835,7 @@ public class LongPollingManagerTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
@@ -843,14 +843,15 @@ public class LongPollingManagerTests
             new HttpLongPollingBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
         var longPollingManagerManager = new LongPollingManager(httpRemoteService, httpLongPollingBuilder);
 
-        await foreach (var data in longPollingManagerManager.StartAsAsyncEnumerable())
+        await foreach (var data in longPollingManagerManager.StartAsAsyncEnumerable(TestContext.Current
+                           .CancellationToken))
         {
             i++;
         }
 
         Assert.Equal(5, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 }

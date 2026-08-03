@@ -23,7 +23,8 @@ public class ByteArrayContentConverterTests
         httpResponseMessage.Content = byteArrayContent;
 
         var converter = new ByteArrayContentConverter();
-        var bytes = converter.Read(new HttpContentConverterContext(httpResponseMessage));
+        var bytes = converter.Read(new HttpContentConverterContext(httpResponseMessage),
+            TestContext.Current.CancellationToken);
         Assert.NotNull(bytes);
         Assert.Equal("furion", Encoding.UTF8.GetString(bytes));
     }
@@ -36,7 +37,8 @@ public class ByteArrayContentConverterTests
         httpResponseMessage.Content = byteArrayContent;
 
         var converter = new ByteArrayContentConverter();
-        var bytes = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage));
+        var bytes = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage),
+            TestContext.Current.CancellationToken);
         Assert.NotNull(bytes);
         Assert.Equal("furion", Encoding.UTF8.GetString(bytes));
     }
@@ -65,7 +67,8 @@ public class ByteArrayContentConverterTests
         httpResponseMessage.Content = byteArrayContent;
 
         var converter = new ByteArrayContentConverter();
-        var bytes = converter.Read(typeof(byte[]), new HttpContentConverterContext(httpResponseMessage));
+        var bytes = converter.Read(typeof(byte[]), new HttpContentConverterContext(httpResponseMessage),
+            TestContext.Current.CancellationToken);
         Assert.NotNull(bytes);
         Assert.Equal("furion", Encoding.UTF8.GetString((byte[])bytes));
     }
@@ -78,7 +81,8 @@ public class ByteArrayContentConverterTests
         httpResponseMessage.Content = byteArrayContent;
 
         var converter = new ByteArrayContentConverter();
-        var bytes = await converter.ReadAsync(typeof(byte[]), new HttpContentConverterContext(httpResponseMessage));
+        var bytes = await converter.ReadAsync(typeof(byte[]), new HttpContentConverterContext(httpResponseMessage),
+            TestContext.Current.CancellationToken);
         Assert.NotNull(bytes);
         Assert.Equal("furion", Encoding.UTF8.GetString((byte[])bytes));
     }

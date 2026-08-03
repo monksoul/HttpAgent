@@ -206,7 +206,8 @@ public class HttpRemoteResultTests
             new MediaTypeHeaderValue("application/json") { CharSet = "utf-8" });
         httpResponseMessage.Content = stringContent;
         var httpRemoteResult =
-            new HttpRemoteResult<string>(httpResponseMessage, await httpResponseMessage.Content.ReadAsStringAsync())
+            new HttpRemoteResult<string>(httpResponseMessage,
+                await httpResponseMessage.Content.ReadAsStringAsync(TestContext.Current.CancellationToken))
             {
                 RequestDuration = 200
             };
@@ -235,7 +236,8 @@ public class HttpRemoteResultTests
             new MediaTypeHeaderValue("application/json") { CharSet = "utf-8" });
         httpResponseMessage.Content = stringContent;
         var httpRemoteResult =
-            new HttpRemoteResult<string>(httpResponseMessage, await httpResponseMessage.Content.ReadAsStringAsync())
+            new HttpRemoteResult<string>(httpResponseMessage,
+                await httpResponseMessage.Content.ReadAsStringAsync(TestContext.Current.CancellationToken))
             {
                 RequestDuration = 200
             };
@@ -243,6 +245,6 @@ public class HttpRemoteResultTests
         httpRemoteResult.Dispose();
 
         await Assert.ThrowsAsync<ObjectDisposedException>(async () =>
-            await httpRemoteResult.ResponseMessage.Content.ReadAsStreamAsync());
+            await httpRemoteResult.ResponseMessage.Content.ReadAsStreamAsync(TestContext.Current.CancellationToken));
     }
 }

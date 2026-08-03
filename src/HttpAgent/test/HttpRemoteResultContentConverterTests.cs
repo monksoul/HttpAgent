@@ -37,7 +37,8 @@ public class HttpRemoteResultContentConverterTests
 
         var converter = new HttpRemoteResultContentConverter<ObjectModel>();
         var httpRemoteResult = converter.Read(typeof(HttpRemoteResult<ObjectModel>),
-                new HttpContentConverterContext(httpResponseMessage) { Factory = httpContentConverterFactory }) as
+                new HttpContentConverterContext(httpResponseMessage) { Factory = httpContentConverterFactory },
+                TestContext.Current.CancellationToken) as
             HttpRemoteResult<ObjectModel>;
         Assert.NotNull(httpRemoteResult);
         Assert.Equal(10, httpRemoteResult.Result?.Id);
@@ -49,7 +50,8 @@ public class HttpRemoteResultContentConverterTests
 
         var converter2 = new HttpRemoteResultContentConverter<ObjectModel>();
         var httpRemoteResult2 = converter2.Read(typeof(HttpRemoteResult<ObjectModel>),
-                new HttpContentConverterContext(httpResponseMessage2) { Factory = httpContentConverterFactory }) as
+                new HttpContentConverterContext(httpResponseMessage2) { Factory = httpContentConverterFactory },
+                TestContext.Current.CancellationToken) as
             HttpRemoteResult<ObjectModel>;
         Assert.NotNull(httpRemoteResult2);
         Assert.Equal(10, httpRemoteResult2.Result?.Id);
@@ -76,7 +78,8 @@ public class HttpRemoteResultContentConverterTests
 
         var converter = new HttpRemoteResultContentConverter<ObjectModel>();
         var httpRemoteResult = await converter.ReadAsync(typeof(HttpRemoteResult<ObjectModel>),
-                new HttpContentConverterContext(httpResponseMessage) { Factory = httpContentConverterFactory }) as
+                new HttpContentConverterContext(httpResponseMessage) { Factory = httpContentConverterFactory },
+                TestContext.Current.CancellationToken) as
             HttpRemoteResult<ObjectModel>;
         Assert.NotNull(httpRemoteResult);
         Assert.Equal(10, httpRemoteResult.Result?.Id);
@@ -88,7 +91,8 @@ public class HttpRemoteResultContentConverterTests
 
         var converter2 = new HttpRemoteResultContentConverter<ObjectModel>();
         var httpRemoteResult2 = await converter2.ReadAsync(typeof(HttpRemoteResult<ObjectModel>),
-                new HttpContentConverterContext(httpResponseMessage2) { Factory = httpContentConverterFactory }) as
+                new HttpContentConverterContext(httpResponseMessage2) { Factory = httpContentConverterFactory },
+                TestContext.Current.CancellationToken) as
             HttpRemoteResult<ObjectModel>;
         Assert.NotNull(httpRemoteResult2);
         Assert.Equal(10, httpRemoteResult2.Result?.Id);
@@ -116,7 +120,8 @@ public class HttpRemoteResultContentConverterTests
         var converter = new HttpRemoteResultContentConverter<ObjectModel>();
         var httpRemoteResult =
             converter.Read(
-                new HttpContentConverterContext(httpResponseMessage) { Factory = httpContentConverterFactory });
+                new HttpContentConverterContext(httpResponseMessage) { Factory = httpContentConverterFactory },
+                TestContext.Current.CancellationToken);
         Assert.NotNull(httpRemoteResult);
         Assert.Equal(10, httpRemoteResult.Result?.Id);
         Assert.Equal("furion", httpRemoteResult.Result?.Name);
@@ -128,7 +133,8 @@ public class HttpRemoteResultContentConverterTests
         var converter2 = new HttpRemoteResultContentConverter<ObjectModel>();
         var httpRemoteResult2 =
             converter2.Read(
-                new HttpContentConverterContext(httpResponseMessage2) { Factory = httpContentConverterFactory });
+                new HttpContentConverterContext(httpResponseMessage2) { Factory = httpContentConverterFactory },
+                TestContext.Current.CancellationToken);
         Assert.NotNull(httpRemoteResult2);
         Assert.Equal(10, httpRemoteResult2.Result?.Id);
         Assert.Equal("furion", httpRemoteResult2.Result?.Name);
@@ -155,7 +161,8 @@ public class HttpRemoteResultContentConverterTests
         var converter = new HttpRemoteResultContentConverter<ObjectModel>();
         var httpRemoteResult =
             await converter.ReadAsync(
-                new HttpContentConverterContext(httpResponseMessage) { Factory = httpContentConverterFactory });
+                new HttpContentConverterContext(httpResponseMessage) { Factory = httpContentConverterFactory },
+                TestContext.Current.CancellationToken);
         Assert.NotNull(httpRemoteResult);
         Assert.Equal(10, httpRemoteResult.Result?.Id);
         Assert.Equal("furion", httpRemoteResult.Result?.Name);
@@ -165,10 +172,9 @@ public class HttpRemoteResultContentConverterTests
         httpResponseMessage2.Content = stringContent2;
 
         var converter2 = new HttpRemoteResultContentConverter<ObjectModel>();
-        var httpRemoteResult2 = await converter2.ReadAsync(new HttpContentConverterContext(httpResponseMessage2)
-        {
-            Factory = httpContentConverterFactory
-        });
+        var httpRemoteResult2 = await converter2.ReadAsync(
+            new HttpContentConverterContext(httpResponseMessage2) { Factory = httpContentConverterFactory },
+            TestContext.Current.CancellationToken);
         Assert.NotNull(httpRemoteResult2);
         Assert.Equal(10, httpRemoteResult2.Result?.Id);
         Assert.Equal("furion", httpRemoteResult2.Result?.Name);
@@ -214,7 +220,8 @@ public class HttpRemoteResultBaseContentConverterTests
 
         var converter = new HttpRemoteResultBaseContentConverter<ObjectModel>();
         var httpRemoteResult = converter.Read(typeof(HttpRemoteResultBase<ObjectModel>),
-                new HttpContentConverterContext(httpResponseMessage) { Factory = httpContentConverterFactory }) as
+                new HttpContentConverterContext(httpResponseMessage) { Factory = httpContentConverterFactory },
+                TestContext.Current.CancellationToken) as
             HttpRemoteResultBase<ObjectModel>;
         Assert.NotNull(httpRemoteResult);
         Assert.Equal(10, httpRemoteResult.Result?.Id);
@@ -226,7 +233,8 @@ public class HttpRemoteResultBaseContentConverterTests
 
         var converter2 = new HttpRemoteResultBaseContentConverter<ObjectModel>();
         var httpRemoteResult2 = converter2.Read(typeof(HttpRemoteResultBase<ObjectModel>),
-                new HttpContentConverterContext(httpResponseMessage2) { Factory = httpContentConverterFactory }) as
+                new HttpContentConverterContext(httpResponseMessage2) { Factory = httpContentConverterFactory },
+                TestContext.Current.CancellationToken) as
             HttpRemoteResultBase<ObjectModel>;
         Assert.NotNull(httpRemoteResult2);
         Assert.Equal(10, httpRemoteResult2.Result?.Id);
@@ -253,7 +261,8 @@ public class HttpRemoteResultBaseContentConverterTests
 
         var converter = new HttpRemoteResultBaseContentConverter<ObjectModel>();
         var httpRemoteResult = await converter.ReadAsync(typeof(HttpRemoteResultBase<ObjectModel>),
-                new HttpContentConverterContext(httpResponseMessage) { Factory = httpContentConverterFactory }) as
+                new HttpContentConverterContext(httpResponseMessage) { Factory = httpContentConverterFactory },
+                TestContext.Current.CancellationToken) as
             HttpRemoteResultBase<ObjectModel>;
         Assert.NotNull(httpRemoteResult);
         Assert.Equal(10, httpRemoteResult.Result?.Id);
@@ -265,7 +274,8 @@ public class HttpRemoteResultBaseContentConverterTests
 
         var converter2 = new HttpRemoteResultBaseContentConverter<ObjectModel>();
         var httpRemoteResult2 = await converter2.ReadAsync(typeof(HttpRemoteResultBase<ObjectModel>),
-                new HttpContentConverterContext(httpResponseMessage2) { Factory = httpContentConverterFactory }) as
+                new HttpContentConverterContext(httpResponseMessage2) { Factory = httpContentConverterFactory },
+                TestContext.Current.CancellationToken) as
             HttpRemoteResultBase<ObjectModel>;
         Assert.NotNull(httpRemoteResult2);
         Assert.Equal(10, httpRemoteResult2.Result?.Id);
@@ -293,7 +303,8 @@ public class HttpRemoteResultBaseContentConverterTests
         var converter = new HttpRemoteResultBaseContentConverter<ObjectModel>();
         var httpRemoteResult =
             converter.Read(
-                new HttpContentConverterContext(httpResponseMessage) { Factory = httpContentConverterFactory });
+                new HttpContentConverterContext(httpResponseMessage) { Factory = httpContentConverterFactory },
+                TestContext.Current.CancellationToken);
         Assert.NotNull(httpRemoteResult);
         Assert.Equal(10, httpRemoteResult.Result?.Id);
         Assert.Equal("furion", httpRemoteResult.Result?.Name);
@@ -305,7 +316,8 @@ public class HttpRemoteResultBaseContentConverterTests
         var converter2 = new HttpRemoteResultBaseContentConverter<ObjectModel>();
         var httpRemoteResult2 =
             converter2.Read(
-                new HttpContentConverterContext(httpResponseMessage2) { Factory = httpContentConverterFactory });
+                new HttpContentConverterContext(httpResponseMessage2) { Factory = httpContentConverterFactory },
+                TestContext.Current.CancellationToken);
         Assert.NotNull(httpRemoteResult2);
         Assert.Equal(10, httpRemoteResult2.Result?.Id);
         Assert.Equal("furion", httpRemoteResult2.Result?.Name);
@@ -332,7 +344,8 @@ public class HttpRemoteResultBaseContentConverterTests
         var converter = new HttpRemoteResultBaseContentConverter<ObjectModel>();
         var httpRemoteResult =
             await converter.ReadAsync(
-                new HttpContentConverterContext(httpResponseMessage) { Factory = httpContentConverterFactory });
+                new HttpContentConverterContext(httpResponseMessage) { Factory = httpContentConverterFactory },
+                TestContext.Current.CancellationToken);
         Assert.NotNull(httpRemoteResult);
         Assert.Equal(10, httpRemoteResult.Result?.Id);
         Assert.Equal("furion", httpRemoteResult.Result?.Name);
@@ -342,10 +355,9 @@ public class HttpRemoteResultBaseContentConverterTests
         httpResponseMessage2.Content = stringContent2;
 
         var converter2 = new HttpRemoteResultBaseContentConverter<ObjectModel>();
-        var httpRemoteResult2 = await converter2.ReadAsync(new HttpContentConverterContext(httpResponseMessage2)
-        {
-            Factory = httpContentConverterFactory
-        });
+        var httpRemoteResult2 = await converter2.ReadAsync(
+            new HttpContentConverterContext(httpResponseMessage2) { Factory = httpContentConverterFactory },
+            TestContext.Current.CancellationToken);
         Assert.NotNull(httpRemoteResult2);
         Assert.Equal(10, httpRemoteResult2.Result?.Id);
         Assert.Equal("furion", httpRemoteResult2.Result?.Name);

@@ -157,15 +157,16 @@ public class HttpContextForwardBuilderTests
                 await context.Response.WriteAsync("Hello World!");
             });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
         var httpResponseMessage =
             await httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get,
-                new Uri($"http://localhost:{port}/test/1?name=furion&giveup=miss")));
+                    new Uri($"http://localhost:{port}/test/1?name=furion&giveup=miss")),
+                TestContext.Current.CancellationToken);
         httpResponseMessage.EnsureSuccessStatusCode();
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -199,15 +200,15 @@ public class HttpContextForwardBuilderTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
         var httpResponseMessage =
             await httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get,
-                new Uri($"http://localhost:{port}/test/1?name=furion")));
+                new Uri($"http://localhost:{port}/test/1?name=furion")), TestContext.Current.CancellationToken);
         httpResponseMessage.EnsureSuccessStatusCode();
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -239,15 +240,15 @@ public class HttpContextForwardBuilderTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
         var httpResponseMessage =
             await httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get,
-                new Uri($"http://localhost:{port}/test")));
+                new Uri($"http://localhost:{port}/test")), TestContext.Current.CancellationToken);
         httpResponseMessage.EnsureSuccessStatusCode();
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -279,15 +280,15 @@ public class HttpContextForwardBuilderTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
         var httpResponseMessage =
             await httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get,
-                new Uri($"http://localhost:{port}/test")));
+                new Uri($"http://localhost:{port}/test")), TestContext.Current.CancellationToken);
         httpResponseMessage.EnsureSuccessStatusCode();
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -307,7 +308,7 @@ public class HttpContextForwardBuilderTests
             await next.Invoke();
         });
 
-        app.MapPost("/test", async (HttpContext context, HttpRemoteAspNetCoreModel1 model) =>
+        app.MapPost("/test", async (HttpContext context, HttpRemoteAspNetCoreModel1 _) =>
         {
             var httpMethod = Helpers.ParseHttpMethod(context.Request.Method);
             var requestUri = new Uri($"http://localhost:{port}");
@@ -337,7 +338,7 @@ public class HttpContextForwardBuilderTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
 
@@ -348,10 +349,10 @@ public class HttpContextForwardBuilderTests
                 Encoding.UTF8, new MediaTypeHeaderValue("application/json"));
 
         var httpResponseMessage =
-            await httpClient.SendAsync(httpRequestMessage);
+            await httpClient.SendAsync(httpRequestMessage, TestContext.Current.CancellationToken);
         httpResponseMessage.EnsureSuccessStatusCode();
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -422,7 +423,7 @@ public class HttpContextForwardBuilderTests
             await context.Response.WriteAsync("Hello World!");
         }).DisableAntiforgery();
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
 
@@ -433,16 +434,16 @@ public class HttpContextForwardBuilderTests
         multipartFormDataContent.Add(new StringContent("1"), "Id");
         multipartFormDataContent.Add(new StringContent("Furion"), "Name");
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
-        var bytes = await File.ReadAllBytesAsync(filePath);
+        var bytes = await File.ReadAllBytesAsync(filePath, TestContext.Current.CancellationToken);
         multipartFormDataContent.Add(new ByteArrayContent(bytes), "File", "test.txt");
 
         httpRequestMessage.Content = multipartFormDataContent;
 
         var httpResponseMessage =
-            await httpClient.SendAsync(httpRequestMessage);
+            await httpClient.SendAsync(httpRequestMessage, TestContext.Current.CancellationToken);
         httpResponseMessage.EnsureSuccessStatusCode();
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -528,7 +529,7 @@ public class HttpContextForwardBuilderTests
             await context.Response.WriteAsync("Hello World!");
         }).DisableAntiforgery();
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
 
@@ -539,16 +540,16 @@ public class HttpContextForwardBuilderTests
         multipartFormDataContent.Add(new StringContent("1"), "Id");
         multipartFormDataContent.Add(new StringContent("Furion"), "Name");
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
-        var bytes = await File.ReadAllBytesAsync(filePath);
+        var bytes = await File.ReadAllBytesAsync(filePath, TestContext.Current.CancellationToken);
         multipartFormDataContent.Add(new ByteArrayContent(bytes), "File", "test.txt");
 
         httpRequestMessage.Content = multipartFormDataContent;
 
         var httpResponseMessage =
-            await httpClient.SendAsync(httpRequestMessage);
+            await httpClient.SendAsync(httpRequestMessage, TestContext.Current.CancellationToken);
         httpResponseMessage.EnsureSuccessStatusCode();
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -617,7 +618,7 @@ public class HttpContextForwardBuilderTests
             await context.Response.WriteAsync("Hello World!");
         }).DisableAntiforgery();
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
 
@@ -628,16 +629,16 @@ public class HttpContextForwardBuilderTests
         multipartFormDataContent.Add(new StringContent("1"), "Id");
         multipartFormDataContent.Add(new StringContent("Furion"), "Name");
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
-        var bytes = await File.ReadAllBytesAsync(filePath);
+        var bytes = await File.ReadAllBytesAsync(filePath, TestContext.Current.CancellationToken);
         multipartFormDataContent.Add(new ByteArrayContent(bytes), "File", "test.txt");
 
         httpRequestMessage.Content = multipartFormDataContent;
 
         var httpResponseMessage =
-            await httpClient.SendAsync(httpRequestMessage);
+            await httpClient.SendAsync(httpRequestMessage, TestContext.Current.CancellationToken);
         httpResponseMessage.EnsureSuccessStatusCode();
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -672,15 +673,15 @@ public class HttpContextForwardBuilderTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
         var httpResponseMessage =
             await httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get,
-                new Uri($"http://localhost:{port}/test")));
+                new Uri($"http://localhost:{port}/test")), TestContext.Current.CancellationToken);
         httpResponseMessage.EnsureSuccessStatusCode();
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -700,7 +701,7 @@ public class HttpContextForwardBuilderTests
             await next.Invoke();
         });
 
-        app.MapPost("/test", async (HttpContext context, HttpRemoteAspNetCoreModel1 model) =>
+        app.MapPost("/test", async (HttpContext context, HttpRemoteAspNetCoreModel1 _) =>
         {
             var httpMethod = Helpers.ParseHttpMethod(context.Request.Method);
             var requestUri = new Uri($"http://localhost:{port}");
@@ -729,7 +730,7 @@ public class HttpContextForwardBuilderTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
 
@@ -740,10 +741,10 @@ public class HttpContextForwardBuilderTests
                 Encoding.UTF8, new MediaTypeHeaderValue("application/json"));
 
         var httpResponseMessage =
-            await httpClient.SendAsync(httpRequestMessage);
+            await httpClient.SendAsync(httpRequestMessage, TestContext.Current.CancellationToken);
         httpResponseMessage.EnsureSuccessStatusCode();
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -810,7 +811,7 @@ public class HttpContextForwardBuilderTests
             await context.Response.WriteAsync("Hello World!");
         }).DisableAntiforgery();
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
 
@@ -821,16 +822,16 @@ public class HttpContextForwardBuilderTests
         multipartFormDataContent.Add(new StringContent("1"), "Id");
         multipartFormDataContent.Add(new StringContent("Furion"), "Name");
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
-        var bytes = await File.ReadAllBytesAsync(filePath);
+        var bytes = await File.ReadAllBytesAsync(filePath, TestContext.Current.CancellationToken);
         multipartFormDataContent.Add(new ByteArrayContent(bytes), "File", "test.txt");
 
         httpRequestMessage.Content = multipartFormDataContent;
 
         var httpResponseMessage =
-            await httpClient.SendAsync(httpRequestMessage);
+            await httpClient.SendAsync(httpRequestMessage, TestContext.Current.CancellationToken);
         httpResponseMessage.EnsureSuccessStatusCode();
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -881,7 +882,7 @@ public class HttpContextForwardBuilderTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
         var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post,
@@ -890,10 +891,10 @@ public class HttpContextForwardBuilderTests
         var formData = new Dictionary<string, string> { { "Id", "1" }, { "Name", "Furion" } };
         httpRequestMessage.Content = new FormUrlEncodedContent(formData);
 
-        var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
+        var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage, TestContext.Current.CancellationToken);
         httpResponseMessage.EnsureSuccessStatusCode();
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -935,15 +936,15 @@ public class HttpContextForwardBuilderTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
         var httpResponseMessage =
             await httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get,
-                new Uri($"http://localhost:{port}/test")));
+                new Uri($"http://localhost:{port}/test")), TestContext.Current.CancellationToken);
         httpResponseMessage.EnsureSuccessStatusCode();
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -963,7 +964,7 @@ public class HttpContextForwardBuilderTests
             await next.Invoke();
         });
 
-        app.MapPost("/test", async (HttpContext context, HttpRemoteAspNetCoreModel1 model) =>
+        app.MapPost("/test", async (HttpContext context, HttpRemoteAspNetCoreModel1 _) =>
         {
             var httpMethod = Helpers.ParseHttpMethod(context.Request.Method);
             var requestUri = new Uri($"http://localhost:{port}");
@@ -993,7 +994,7 @@ public class HttpContextForwardBuilderTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
 
@@ -1004,10 +1005,10 @@ public class HttpContextForwardBuilderTests
                 Encoding.UTF8, new MediaTypeHeaderValue("application/json"));
 
         var httpResponseMessage =
-            await httpClient.SendAsync(httpRequestMessage);
+            await httpClient.SendAsync(httpRequestMessage, TestContext.Current.CancellationToken);
         httpResponseMessage.EnsureSuccessStatusCode();
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -1075,7 +1076,7 @@ public class HttpContextForwardBuilderTests
             await context.Response.WriteAsync("Hello World!");
         }).DisableAntiforgery();
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
 
@@ -1086,16 +1087,16 @@ public class HttpContextForwardBuilderTests
         multipartFormDataContent.Add(new StringContent("1"), "Id");
         multipartFormDataContent.Add(new StringContent("Furion"), "Name");
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
-        var bytes = await File.ReadAllBytesAsync(filePath);
+        var bytes = await File.ReadAllBytesAsync(filePath, TestContext.Current.CancellationToken);
         multipartFormDataContent.Add(new ByteArrayContent(bytes), "File", "test.txt");
 
         httpRequestMessage.Content = multipartFormDataContent;
 
         var httpResponseMessage =
-            await httpClient.SendAsync(httpRequestMessage);
+            await httpClient.SendAsync(httpRequestMessage, TestContext.Current.CancellationToken);
         httpResponseMessage.EnsureSuccessStatusCode();
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -1140,15 +1141,15 @@ public class HttpContextForwardBuilderTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
         var httpResponseMessage =
             await httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get,
-                new Uri($"http://localhost:{port}/test")));
+                new Uri($"http://localhost:{port}/test")), TestContext.Current.CancellationToken);
         httpResponseMessage.EnsureSuccessStatusCode();
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -1168,7 +1169,7 @@ public class HttpContextForwardBuilderTests
             await next.Invoke();
         });
 
-        app.MapPost("/test", async (HttpContext context, HttpRemoteAspNetCoreModel1 model) =>
+        app.MapPost("/test", async (HttpContext context, HttpRemoteAspNetCoreModel1 _) =>
         {
             var httpMethod = Helpers.ParseHttpMethod(context.Request.Method);
             var requestUri = new Uri($"http://localhost:{port}");
@@ -1202,7 +1203,7 @@ public class HttpContextForwardBuilderTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
 
@@ -1213,10 +1214,10 @@ public class HttpContextForwardBuilderTests
                 Encoding.UTF8, new MediaTypeHeaderValue("application/json"));
 
         var httpResponseMessage =
-            await httpClient.SendAsync(httpRequestMessage);
+            await httpClient.SendAsync(httpRequestMessage, TestContext.Current.CancellationToken);
         httpResponseMessage.EnsureSuccessStatusCode();
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -1288,7 +1289,7 @@ public class HttpContextForwardBuilderTests
             await context.Response.WriteAsync("Hello World!");
         }).DisableAntiforgery();
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
 
@@ -1299,16 +1300,16 @@ public class HttpContextForwardBuilderTests
         multipartFormDataContent.Add(new StringContent("1"), "Id");
         multipartFormDataContent.Add(new StringContent("Furion"), "Name");
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
-        var bytes = await File.ReadAllBytesAsync(filePath);
+        var bytes = await File.ReadAllBytesAsync(filePath, TestContext.Current.CancellationToken);
         multipartFormDataContent.Add(new ByteArrayContent(bytes), "File", "test.txt");
 
         httpRequestMessage.Content = multipartFormDataContent;
 
         var httpResponseMessage =
-            await httpClient.SendAsync(httpRequestMessage);
+            await httpClient.SendAsync(httpRequestMessage, TestContext.Current.CancellationToken);
         httpResponseMessage.EnsureSuccessStatusCode();
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -1321,7 +1322,7 @@ public class HttpContextForwardBuilderTests
         builder.Services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
         await using var app = builder.Build();
 
-        app.MapPost("/test", async (HttpContext context, HttpRemoteAspNetCoreModel1 model) =>
+        app.MapPost("/test", async (HttpContext context, HttpRemoteAspNetCoreModel1 _) =>
         {
             var httpMethod = Helpers.ParseHttpMethod(context.Request.Method);
             var requestUri = new Uri($"http://localhost:{port}");
@@ -1342,7 +1343,7 @@ public class HttpContextForwardBuilderTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
 
@@ -1353,10 +1354,10 @@ public class HttpContextForwardBuilderTests
                 Encoding.UTF8, new MediaTypeHeaderValue("application/json"));
 
         var httpResponseMessage =
-            await httpClient.SendAsync(httpRequestMessage);
+            await httpClient.SendAsync(httpRequestMessage, TestContext.Current.CancellationToken);
         httpResponseMessage.EnsureSuccessStatusCode();
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -1376,7 +1377,7 @@ public class HttpContextForwardBuilderTests
             await next.Invoke();
         });
 
-        app.MapPost("/test", async (HttpContext context, HttpRemoteAspNetCoreModel1 model) =>
+        app.MapPost("/test", async (HttpContext context, HttpRemoteAspNetCoreModel1 _) =>
         {
             var httpMethod = Helpers.ParseHttpMethod(context.Request.Method);
             var requestUri = new Uri($"http://localhost:{port}");
@@ -1390,7 +1391,7 @@ public class HttpContextForwardBuilderTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
 
@@ -1401,10 +1402,10 @@ public class HttpContextForwardBuilderTests
                 Encoding.UTF8, new MediaTypeHeaderValue("application/json"));
 
         var httpResponseMessage =
-            await httpClient.SendAsync(httpRequestMessage);
+            await httpClient.SendAsync(httpRequestMessage, TestContext.Current.CancellationToken);
         httpResponseMessage.EnsureSuccessStatusCode();
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]

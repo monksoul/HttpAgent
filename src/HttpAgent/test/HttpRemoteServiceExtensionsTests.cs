@@ -28,15 +28,16 @@ public class HttpRemoteServiceExtensionsTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
-        var fileTransferResult = httpRemoteService.DownloadFile($"http://localhost:{port}/test", destinationPath);
+        var fileTransferResult = httpRemoteService.DownloadFile($"http://localhost:{port}/test", destinationPath,
+            cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.True(File.Exists(destinationPath));
-        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
+        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath, TestContext.Current.CancellationToken)).Length);
 
         Assert.True(fileTransferResult.IsSuccess);
         Assert.Equal(12, fileTransferResult.FileSize);
@@ -47,7 +48,7 @@ public class HttpRemoteServiceExtensionsTests
 
         File.Delete(destinationPath);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -67,12 +68,12 @@ public class HttpRemoteServiceExtensionsTests
 
         app.MapGet("/test", async context =>
         {
-            await Task.Delay(200);
+            await Task.Delay(200, TestContext.Current.CancellationToken);
 
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -87,7 +88,7 @@ public class HttpRemoteServiceExtensionsTests
 
         Assert.False(File.Exists(destinationPath));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -112,7 +113,7 @@ public class HttpRemoteServiceExtensionsTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -123,10 +124,10 @@ public class HttpRemoteServiceExtensionsTests
                 requestBuilder.SetOnPreSendRequest(_ =>
                 {
                     i += 1;
-                })));
+                })), cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.True(File.Exists(destinationPath));
-        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
+        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath, TestContext.Current.CancellationToken)).Length);
         Assert.Equal(1, i);
 
         Assert.True(fileTransferResult.IsSuccess);
@@ -138,7 +139,7 @@ public class HttpRemoteServiceExtensionsTests
 
         File.Delete(destinationPath);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -163,16 +164,17 @@ public class HttpRemoteServiceExtensionsTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
         var fileTransferResult =
-            httpRemoteService.DownloadFileWithConsoleProgress($"http://localhost:{port}/test", destinationPath);
+            httpRemoteService.DownloadFileWithConsoleProgress($"http://localhost:{port}/test", destinationPath,
+                cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.True(File.Exists(destinationPath));
-        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
+        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath, TestContext.Current.CancellationToken)).Length);
 
         Assert.True(fileTransferResult.IsSuccess);
         Assert.Equal(12, fileTransferResult.FileSize);
@@ -183,7 +185,7 @@ public class HttpRemoteServiceExtensionsTests
 
         File.Delete(destinationPath);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -208,15 +210,16 @@ public class HttpRemoteServiceExtensionsTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var fileTransferResult =
-            await httpRemoteService.DownloadFileAsync($"http://localhost:{port}/test", destinationPath);
+            await httpRemoteService.DownloadFileAsync($"http://localhost:{port}/test", destinationPath,
+                cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.True(File.Exists(destinationPath));
-        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
+        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath, TestContext.Current.CancellationToken)).Length);
 
         Assert.True(fileTransferResult.IsSuccess);
         Assert.Equal(12, fileTransferResult.FileSize);
@@ -227,7 +230,7 @@ public class HttpRemoteServiceExtensionsTests
 
         File.Delete(destinationPath);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -247,12 +250,12 @@ public class HttpRemoteServiceExtensionsTests
 
         app.MapGet("/test", async context =>
         {
-            await Task.Delay(200);
+            await Task.Delay(200, TestContext.Current.CancellationToken);
 
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -267,7 +270,7 @@ public class HttpRemoteServiceExtensionsTests
 
         Assert.False(File.Exists(destinationPath));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -292,21 +295,20 @@ public class HttpRemoteServiceExtensionsTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var i = 0;
         var fileTransferResult = await httpRemoteService.DownloadFileAsync($"http://localhost:{port}/test",
-            destinationPath,
-            configure: downloadBuilder => downloadBuilder.With(requestBuilder =>
+            destinationPath, configure: downloadBuilder => downloadBuilder.With(requestBuilder =>
                 requestBuilder.SetOnPreSendRequest(_ =>
                 {
                     i += 1;
-                })));
+                })), cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.True(File.Exists(destinationPath));
-        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
+        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath, TestContext.Current.CancellationToken)).Length);
         Assert.Equal(1, i);
 
         Assert.True(fileTransferResult.IsSuccess);
@@ -318,7 +320,7 @@ public class HttpRemoteServiceExtensionsTests
 
         File.Delete(destinationPath);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -343,16 +345,16 @@ public class HttpRemoteServiceExtensionsTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var fileTransferResult =
             await httpRemoteService.DownloadFileWithConsoleProgressAsync($"http://localhost:{port}/test",
-                destinationPath);
+                destinationPath, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.True(File.Exists(destinationPath));
-        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
+        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath, TestContext.Current.CancellationToken)).Length);
 
         Assert.True(fileTransferResult.IsSuccess);
         Assert.Equal(12, fileTransferResult.FileSize);
@@ -363,7 +365,7 @@ public class HttpRemoteServiceExtensionsTests
 
         File.Delete(destinationPath);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -388,7 +390,7 @@ public class HttpRemoteServiceExtensionsTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -396,10 +398,10 @@ public class HttpRemoteServiceExtensionsTests
             HttpRequestBuilder.DownloadFile(new Uri($"http://localhost:{port}/test"), destinationPath);
 
         // ReSharper disable once MethodHasAsyncOverload
-        var fileTransferResult = httpRemoteService.Send(httpFileDownloadBuilder);
+        var fileTransferResult = httpRemoteService.Send(httpFileDownloadBuilder, TestContext.Current.CancellationToken);
 
         Assert.True(File.Exists(destinationPath));
-        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
+        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath, TestContext.Current.CancellationToken)).Length);
 
         Assert.True(fileTransferResult.IsSuccess);
         Assert.Equal(12, fileTransferResult.FileSize);
@@ -410,7 +412,7 @@ public class HttpRemoteServiceExtensionsTests
 
         File.Delete(destinationPath);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -430,12 +432,12 @@ public class HttpRemoteServiceExtensionsTests
 
         app.MapGet("/test", async context =>
         {
-            await Task.Delay(200);
+            await Task.Delay(200, TestContext.Current.CancellationToken);
 
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -456,7 +458,7 @@ public class HttpRemoteServiceExtensionsTests
 
         Assert.False(File.Exists(destinationPath));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -481,7 +483,7 @@ public class HttpRemoteServiceExtensionsTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -495,11 +497,11 @@ public class HttpRemoteServiceExtensionsTests
                 });
 
         // ReSharper disable once MethodHasAsyncOverload
-        var fileTransferResult = httpRemoteService.Send(httpFileDownloadBuilder);
+        var fileTransferResult = httpRemoteService.Send(httpFileDownloadBuilder, TestContext.Current.CancellationToken);
 
         Assert.Equal(2, i);
         Assert.True(File.Exists(destinationPath));
-        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
+        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath, TestContext.Current.CancellationToken)).Length);
 
         Assert.True(fileTransferResult.IsSuccess);
         Assert.Equal(12, fileTransferResult.FileSize);
@@ -510,7 +512,7 @@ public class HttpRemoteServiceExtensionsTests
 
         File.Delete(destinationPath);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -535,7 +537,7 @@ public class HttpRemoteServiceExtensionsTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -548,10 +550,10 @@ public class HttpRemoteServiceExtensionsTests
             requestBuilder.SetOnPreSendRequest(_ =>
             {
                 i += 1;
-            })));
+            })), TestContext.Current.CancellationToken);
 
         Assert.True(File.Exists(destinationPath));
-        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
+        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath, TestContext.Current.CancellationToken)).Length);
         Assert.Equal(1, i);
 
         Assert.True(fileTransferResult.IsSuccess);
@@ -563,7 +565,7 @@ public class HttpRemoteServiceExtensionsTests
 
         File.Delete(destinationPath);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -588,7 +590,7 @@ public class HttpRemoteServiceExtensionsTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var customFileTransferEventHandler = new CustomFileTransferEventHandler();
         var (httpRemoteService, serviceProvider) =
@@ -599,10 +601,11 @@ public class HttpRemoteServiceExtensionsTests
 
         // ReSharper disable once MethodHasAsyncOverload
         var fileTransferResult =
-            httpRemoteService.Send(httpFileDownloadBuilder.SetEventHandler<CustomFileTransferEventHandler>());
+            httpRemoteService.Send(httpFileDownloadBuilder.SetEventHandler<CustomFileTransferEventHandler>(),
+                TestContext.Current.CancellationToken);
 
         Assert.True(File.Exists(destinationPath));
-        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
+        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath, TestContext.Current.CancellationToken)).Length);
         Assert.Equal(2, customFileTransferEventHandler.counter);
 
         Assert.True(fileTransferResult.IsSuccess);
@@ -614,7 +617,7 @@ public class HttpRemoteServiceExtensionsTests
 
         File.Delete(destinationPath);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -639,17 +642,18 @@ public class HttpRemoteServiceExtensionsTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var httpFileDownloadBuilder =
             HttpRequestBuilder.DownloadFile(new Uri($"http://localhost:{port}/test"), destinationPath);
 
-        var fileTransferResult = await httpRemoteService.SendAsync(httpFileDownloadBuilder);
+        var fileTransferResult =
+            await httpRemoteService.SendAsync(httpFileDownloadBuilder, TestContext.Current.CancellationToken);
 
         Assert.True(File.Exists(destinationPath));
-        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
+        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath, TestContext.Current.CancellationToken)).Length);
 
         Assert.True(fileTransferResult.IsSuccess);
         Assert.Equal(12, fileTransferResult.FileSize);
@@ -660,7 +664,7 @@ public class HttpRemoteServiceExtensionsTests
 
         File.Delete(destinationPath);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -680,12 +684,12 @@ public class HttpRemoteServiceExtensionsTests
 
         app.MapGet("/test", async context =>
         {
-            await Task.Delay(200);
+            await Task.Delay(200, TestContext.Current.CancellationToken);
 
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -706,7 +710,7 @@ public class HttpRemoteServiceExtensionsTests
 
         Assert.False(File.Exists(destinationPath));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -731,7 +735,7 @@ public class HttpRemoteServiceExtensionsTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -744,11 +748,12 @@ public class HttpRemoteServiceExtensionsTests
                     await Task.CompletedTask;
                 });
 
-        var fileTransferResult = await httpRemoteService.SendAsync(httpFileDownloadBuilder);
+        var fileTransferResult =
+            await httpRemoteService.SendAsync(httpFileDownloadBuilder, TestContext.Current.CancellationToken);
 
         Assert.Equal(2, i);
         Assert.True(File.Exists(destinationPath));
-        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
+        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath, TestContext.Current.CancellationToken)).Length);
 
         Assert.True(fileTransferResult.IsSuccess);
         Assert.Equal(12, fileTransferResult.FileSize);
@@ -759,7 +764,7 @@ public class HttpRemoteServiceExtensionsTests
 
         File.Delete(destinationPath);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -784,7 +789,7 @@ public class HttpRemoteServiceExtensionsTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -796,10 +801,10 @@ public class HttpRemoteServiceExtensionsTests
             requestBuilder.SetOnPreSendRequest(_ =>
             {
                 i += 1;
-            })));
+            })), TestContext.Current.CancellationToken);
 
         Assert.True(File.Exists(destinationPath));
-        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
+        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath, TestContext.Current.CancellationToken)).Length);
         Assert.Equal(1, i);
 
         Assert.True(fileTransferResult.IsSuccess);
@@ -811,7 +816,7 @@ public class HttpRemoteServiceExtensionsTests
 
         File.Delete(destinationPath);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -836,7 +841,7 @@ public class HttpRemoteServiceExtensionsTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var customFileTransferEventHandler = new CustomFileTransferEventHandler();
         var (httpRemoteService, serviceProvider) =
@@ -846,10 +851,10 @@ public class HttpRemoteServiceExtensionsTests
             HttpRequestBuilder.DownloadFile(new Uri($"http://localhost:{port}/test"), destinationPath);
 
         var fileTransferResult = await httpRemoteService.SendAsync(httpFileDownloadBuilder
-            .SetEventHandler<CustomFileTransferEventHandler>());
+            .SetEventHandler<CustomFileTransferEventHandler>(), TestContext.Current.CancellationToken);
 
         Assert.True(File.Exists(destinationPath));
-        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
+        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath, TestContext.Current.CancellationToken)).Length);
         Assert.Equal(2, customFileTransferEventHandler.counter);
 
         Assert.True(fileTransferResult.IsSuccess);
@@ -861,7 +866,7 @@ public class HttpRemoteServiceExtensionsTests
 
         File.Delete(destinationPath);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -883,17 +888,18 @@ public class HttpRemoteServiceExtensionsTests
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
-        var httpResponseMessage = httpRemoteService.UploadFile($"http://localhost:{port}/test", filePath);
-        var result = await httpResponseMessage!.Content.ReadAsStringAsync();
+        var httpResponseMessage = httpRemoteService.UploadFile($"http://localhost:{port}/test", filePath,
+            cancellationToken: TestContext.Current.CancellationToken);
+        var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.Equal("test.txt", result);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -909,13 +915,13 @@ public class HttpRemoteServiceExtensionsTests
 
         app.MapPost("/test", async (HttpContext context, IFormFile file) =>
             {
-                await Task.Delay(200);
+                await Task.Delay(200, TestContext.Current.CancellationToken);
 
                 await context.Response.WriteAsync(file.FileName);
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -928,7 +934,7 @@ public class HttpRemoteServiceExtensionsTests
                 cancellationToken: cancellationTokenSource.Token);
         });
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -950,7 +956,7 @@ public class HttpRemoteServiceExtensionsTests
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -961,14 +967,14 @@ public class HttpRemoteServiceExtensionsTests
                 requestBuilder.SetOnPreSendRequest(_ =>
                 {
                     i += 1;
-                })));
+                })), cancellationToken: TestContext.Current.CancellationToken);
 
-        var result = await httpResponseMessage!.Content.ReadAsStringAsync();
+        var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.Equal("test.txt", result);
         Assert.Equal(1, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -990,18 +996,19 @@ public class HttpRemoteServiceExtensionsTests
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
         var httpResponseMessage =
-            httpRemoteService.UploadFileWithConsoleProgress($"http://localhost:{port}/test", filePath);
-        var result = await httpResponseMessage!.Content.ReadAsStringAsync();
+            httpRemoteService.UploadFileWithConsoleProgress($"http://localhost:{port}/test", filePath,
+                cancellationToken: TestContext.Current.CancellationToken);
+        var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.Equal("test.txt", result);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1023,18 +1030,19 @@ public class HttpRemoteServiceExtensionsTests
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var httpResponseMessage =
-            await httpRemoteService.UploadFileAsync($"http://localhost:{port}/test", filePath);
+            await httpRemoteService.UploadFileAsync($"http://localhost:{port}/test", filePath,
+                cancellationToken: TestContext.Current.CancellationToken);
 
-        var result = await httpResponseMessage!.Content.ReadAsStringAsync();
+        var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.Equal("test.txt", result);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1050,13 +1058,13 @@ public class HttpRemoteServiceExtensionsTests
 
         app.MapPost("/test", async (HttpContext context, IFormFile file) =>
             {
-                await Task.Delay(200);
+                await Task.Delay(200, TestContext.Current.CancellationToken);
 
                 await context.Response.WriteAsync(file.FileName);
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -1069,7 +1077,7 @@ public class HttpRemoteServiceExtensionsTests
                 filePath, cancellationToken: cancellationTokenSource.Token);
         });
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1091,24 +1099,24 @@ public class HttpRemoteServiceExtensionsTests
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var i = 0;
-        var httpResponseMessage = await httpRemoteService.UploadFileAsync($"http://localhost:{port}/test",
-            filePath, configure: uploadBuilder => uploadBuilder.With(requestBuilder =>
+        var httpResponseMessage = await httpRemoteService.UploadFileAsync($"http://localhost:{port}/test", filePath,
+            configure: uploadBuilder => uploadBuilder.With(requestBuilder =>
                 requestBuilder.SetOnPreSendRequest(_ =>
                 {
                     i += 1;
-                })));
+                })), cancellationToken: TestContext.Current.CancellationToken);
 
-        var result = await httpResponseMessage!.Content.ReadAsStringAsync();
+        var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.Equal("test.txt", result);
         Assert.Equal(1, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1130,18 +1138,19 @@ public class HttpRemoteServiceExtensionsTests
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var httpResponseMessage =
-            await httpRemoteService.UploadFileWithConsoleProgressAsync($"http://localhost:{port}/test", filePath);
+            await httpRemoteService.UploadFileWithConsoleProgressAsync($"http://localhost:{port}/test", filePath,
+                cancellationToken: TestContext.Current.CancellationToken);
 
-        var result = await httpResponseMessage!.Content.ReadAsStringAsync();
+        var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.Equal("test.txt", result);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1163,7 +1172,7 @@ public class HttpRemoteServiceExtensionsTests
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -1171,12 +1180,12 @@ public class HttpRemoteServiceExtensionsTests
             HttpRequestBuilder.UploadFile(new Uri($"http://localhost:{port}/test"), filePath);
 
         // ReSharper disable once MethodHasAsyncOverload
-        var httpResponseMessage = httpRemoteService.Send(httpFileUploadBuilder);
-        var result = await httpResponseMessage!.Content.ReadAsStringAsync();
+        var httpResponseMessage = httpRemoteService.Send(httpFileUploadBuilder, TestContext.Current.CancellationToken);
+        var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.Equal("test.txt", result);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1192,13 +1201,13 @@ public class HttpRemoteServiceExtensionsTests
 
         app.MapPost("/test", async (HttpContext context, IFormFile file) =>
             {
-                await Task.Delay(200);
+                await Task.Delay(200, TestContext.Current.CancellationToken);
 
                 await context.Response.WriteAsync(file.FileName);
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -1217,7 +1226,7 @@ public class HttpRemoteServiceExtensionsTests
             httpRemoteService.Send(httpFileUploadBuilder, cancellationTokenSource.Token);
         });
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1239,7 +1248,7 @@ public class HttpRemoteServiceExtensionsTests
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -1253,14 +1262,14 @@ public class HttpRemoteServiceExtensionsTests
             });
 
         // ReSharper disable once MethodHasAsyncOverload
-        var httpResponseMessage = httpRemoteService.Send(httpFileUploadBuilder);
+        var httpResponseMessage = httpRemoteService.Send(httpFileUploadBuilder, TestContext.Current.CancellationToken);
 
         Assert.Equal(1, i);
-        var result = await httpResponseMessage!.Content.ReadAsStringAsync();
+        var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.Equal("test.txt", result);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1282,7 +1291,7 @@ public class HttpRemoteServiceExtensionsTests
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -1295,14 +1304,14 @@ public class HttpRemoteServiceExtensionsTests
             requestBuilder.SetOnPreSendRequest(_ =>
             {
                 i += 1;
-            })));
+            })), TestContext.Current.CancellationToken);
 
-        var result = await httpResponseMessage!.Content.ReadAsStringAsync();
+        var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.Equal(1, i);
         Assert.Equal("test.txt", result);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1324,7 +1333,7 @@ public class HttpRemoteServiceExtensionsTests
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var customFileTransferEventHandler = new CustomFileTransferEventHandler();
         var (httpRemoteService, serviceProvider) =
@@ -1335,14 +1344,15 @@ public class HttpRemoteServiceExtensionsTests
 
         // ReSharper disable once MethodHasAsyncOverload
         var httpResponseMessage =
-            httpRemoteService.Send(httpFileUploadBuilder.SetEventHandler<CustomFileTransferEventHandler>());
+            httpRemoteService.Send(httpFileUploadBuilder.SetEventHandler<CustomFileTransferEventHandler>(),
+                TestContext.Current.CancellationToken);
 
-        var result = await httpResponseMessage!.Content.ReadAsStringAsync();
+        var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.Equal("test.txt", result);
         Assert.Equal(2, customFileTransferEventHandler.counter);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1364,20 +1374,21 @@ public class HttpRemoteServiceExtensionsTests
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var httpFileUploadBuilder =
             HttpRequestBuilder.UploadFile(new Uri($"http://localhost:{port}/test"), filePath);
 
-        var httpResponseMessage = await httpRemoteService.SendAsync(httpFileUploadBuilder);
+        var httpResponseMessage =
+            await httpRemoteService.SendAsync(httpFileUploadBuilder, TestContext.Current.CancellationToken);
 
-        var result = await httpResponseMessage!.Content.ReadAsStringAsync();
+        var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.Equal("test.txt", result);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1393,13 +1404,13 @@ public class HttpRemoteServiceExtensionsTests
 
         app.MapPost("/test", async (HttpContext context, IFormFile file) =>
             {
-                await Task.Delay(200);
+                await Task.Delay(200, TestContext.Current.CancellationToken);
 
                 await context.Response.WriteAsync(file.FileName);
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -1419,7 +1430,7 @@ public class HttpRemoteServiceExtensionsTests
                 await httpRemoteService.SendAsync(httpFileUploadBuilder, cancellationTokenSource.Token);
         });
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1442,7 +1453,7 @@ public class HttpRemoteServiceExtensionsTests
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
 
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -1455,14 +1466,15 @@ public class HttpRemoteServiceExtensionsTests
                 await Task.CompletedTask;
             });
 
-        var httpResponseMessage = await httpRemoteService.SendAsync(httpFileUploadBuilder);
+        var httpResponseMessage =
+            await httpRemoteService.SendAsync(httpFileUploadBuilder, TestContext.Current.CancellationToken);
 
         Assert.Equal(1, i);
-        var result = await httpResponseMessage!.Content.ReadAsStringAsync();
+        var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.Equal("test.txt", result);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1484,7 +1496,7 @@ public class HttpRemoteServiceExtensionsTests
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -1496,14 +1508,14 @@ public class HttpRemoteServiceExtensionsTests
             requestBuilder.SetOnPreSendRequest(_ =>
             {
                 i += 1;
-            })));
+            })), TestContext.Current.CancellationToken);
 
-        var result = await httpResponseMessage!.Content.ReadAsStringAsync();
+        var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.Equal("test.txt", result);
         Assert.Equal(1, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1525,7 +1537,7 @@ public class HttpRemoteServiceExtensionsTests
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var customFileTransferEventHandler = new CustomFileTransferEventHandler();
         var (httpRemoteService, serviceProvider) =
@@ -1535,14 +1547,14 @@ public class HttpRemoteServiceExtensionsTests
             HttpRequestBuilder.UploadFile(new Uri($"http://localhost:{port}/test"), filePath);
 
         var httpResponseMessage = await httpRemoteService.SendAsync(httpFileUploadBuilder
-            .SetEventHandler<CustomFileTransferEventHandler>());
+            .SetEventHandler<CustomFileTransferEventHandler>(), TestContext.Current.CancellationToken);
 
-        var result = await httpResponseMessage!.Content.ReadAsStringAsync();
+        var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.Equal("test.txt", result);
         Assert.Equal(2, customFileTransferEventHandler.counter);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1573,7 +1585,7 @@ public class HttpRemoteServiceExtensionsTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
@@ -1585,11 +1597,11 @@ public class HttpRemoteServiceExtensionsTests
             });
 
         // ReSharper disable once MethodHasAsyncOverload
-        httpRemoteService.Send(httpServerSentEventsBuilder);
+        httpRemoteService.Send(httpServerSentEventsBuilder, TestContext.Current.CancellationToken);
 
         Assert.Equal(5, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1620,7 +1632,7 @@ public class HttpRemoteServiceExtensionsTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
@@ -1642,7 +1654,7 @@ public class HttpRemoteServiceExtensionsTests
 
         Assert.Equal(0, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1673,7 +1685,7 @@ public class HttpRemoteServiceExtensionsTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
@@ -1687,11 +1699,11 @@ public class HttpRemoteServiceExtensionsTests
             });
 
         // ReSharper disable once MethodHasAsyncOverload
-        httpRemoteService.Send(httpServerSentEventsBuilder);
+        httpRemoteService.Send(httpServerSentEventsBuilder, TestContext.Current.CancellationToken);
 
         Assert.Equal(1, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1722,7 +1734,7 @@ public class HttpRemoteServiceExtensionsTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var customServerSentEventsEventHandler = new CustomServerSentEventsEventHandler();
@@ -1741,12 +1753,12 @@ public class HttpRemoteServiceExtensionsTests
                 .SetEventHandler<CustomServerSentEventsEventHandler>();
 
         // ReSharper disable once MethodHasAsyncOverload
-        httpRemoteService.Send(httpServerSentEventsBuilder);
+        httpRemoteService.Send(httpServerSentEventsBuilder, TestContext.Current.CancellationToken);
 
         Assert.Equal(1, i);
         Assert.Equal(6, customServerSentEventsEventHandler.counter);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1777,7 +1789,7 @@ public class HttpRemoteServiceExtensionsTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
@@ -1792,11 +1804,11 @@ public class HttpRemoteServiceExtensionsTests
         httpRemoteService.Send(httpServerSentEventsBuilder.With(b => b.SetOnPreSendRequest(_ =>
         {
             i++;
-        })));
+        })), TestContext.Current.CancellationToken);
 
         Assert.Equal(6, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1827,7 +1839,7 @@ public class HttpRemoteServiceExtensionsTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
@@ -1838,11 +1850,11 @@ public class HttpRemoteServiceExtensionsTests
                 await Task.CompletedTask;
             });
 
-        await httpRemoteService.SendAsync(httpServerSentEventsBuilder);
+        await httpRemoteService.SendAsync(httpServerSentEventsBuilder, TestContext.Current.CancellationToken);
 
         Assert.Equal(5, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1873,7 +1885,7 @@ public class HttpRemoteServiceExtensionsTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
@@ -1894,7 +1906,7 @@ public class HttpRemoteServiceExtensionsTests
 
         Assert.Equal(1, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1925,7 +1937,7 @@ public class HttpRemoteServiceExtensionsTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
@@ -1938,11 +1950,11 @@ public class HttpRemoteServiceExtensionsTests
                 i++;
             });
 
-        await httpRemoteService.SendAsync(httpServerSentEventsBuilder);
+        await httpRemoteService.SendAsync(httpServerSentEventsBuilder, TestContext.Current.CancellationToken);
 
         Assert.Equal(1, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1973,7 +1985,7 @@ public class HttpRemoteServiceExtensionsTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var customServerSentEventsEventHandler = new CustomServerSentEventsEventHandler();
@@ -1991,12 +2003,12 @@ public class HttpRemoteServiceExtensionsTests
                 })
                 .SetEventHandler<CustomServerSentEventsEventHandler>();
 
-        await httpRemoteService.SendAsync(httpServerSentEventsBuilder);
+        await httpRemoteService.SendAsync(httpServerSentEventsBuilder, TestContext.Current.CancellationToken);
 
         Assert.Equal(1, i);
         Assert.Equal(6, customServerSentEventsEventHandler.counter);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -2027,7 +2039,7 @@ public class HttpRemoteServiceExtensionsTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
@@ -2041,11 +2053,11 @@ public class HttpRemoteServiceExtensionsTests
         await httpRemoteService.SendAsync(httpServerSentEventsBuilder.With(b => b.SetOnPreSendRequest(_ =>
         {
             i++;
-        })));
+        })), TestContext.Current.CancellationToken);
 
         Assert.Equal(6, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -2076,7 +2088,7 @@ public class HttpRemoteServiceExtensionsTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
@@ -2086,11 +2098,11 @@ public class HttpRemoteServiceExtensionsTests
         {
             i++;
             await Task.CompletedTask;
-        });
+        }, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal(5, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -2122,7 +2134,7 @@ public class HttpRemoteServiceExtensionsTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
@@ -2146,7 +2158,7 @@ public class HttpRemoteServiceExtensionsTests
 
         Assert.Equal(0, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -2177,7 +2189,7 @@ public class HttpRemoteServiceExtensionsTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
@@ -2190,11 +2202,11 @@ public class HttpRemoteServiceExtensionsTests
         }, sseBuilder => sseBuilder.With(b => b.SetOnPreSendRequest(_ =>
         {
             i++;
-        })));
+        })), TestContext.Current.CancellationToken);
 
         Assert.Equal(6, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -2225,7 +2237,7 @@ public class HttpRemoteServiceExtensionsTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
@@ -2234,11 +2246,11 @@ public class HttpRemoteServiceExtensionsTests
         {
             i++;
             await Task.CompletedTask;
-        });
+        }, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal(5, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -2269,7 +2281,7 @@ public class HttpRemoteServiceExtensionsTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
@@ -2288,7 +2300,7 @@ public class HttpRemoteServiceExtensionsTests
 
         Assert.Equal(1, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -2319,7 +2331,7 @@ public class HttpRemoteServiceExtensionsTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
@@ -2331,11 +2343,11 @@ public class HttpRemoteServiceExtensionsTests
         }, sseBuilder => sseBuilder.With(b => b.SetOnPreSendRequest(_ =>
         {
             i++;
-        })));
+        })), TestContext.Current.CancellationToken);
 
         Assert.Equal(6, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -2353,7 +2365,7 @@ public class HttpRemoteServiceExtensionsTests
             return "Hello Furion";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpStressTestHarnessBuilder =
@@ -2361,7 +2373,8 @@ public class HttpRemoteServiceExtensionsTests
                 .SetNumberOfRequests(10);
 
         // ReSharper disable once MethodHasAsyncOverload
-        var result = httpRemoteService.Send(httpStressTestHarnessBuilder);
+        var result = httpRemoteService.Send(httpStressTestHarnessBuilder,
+            cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(result);
 
         Assert.Equal(10, result.TotalRequests);
@@ -2369,7 +2382,7 @@ public class HttpRemoteServiceExtensionsTests
         Assert.Equal(0, result.FailedRequests);
         Assert.True(result.QueriesPerSecond > 50);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -2387,7 +2400,7 @@ public class HttpRemoteServiceExtensionsTests
             return "Hello Furion";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpStressTestHarnessBuilder =
@@ -2404,7 +2417,7 @@ public class HttpRemoteServiceExtensionsTests
                 cancellationTokenSource.Token);
         });
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -2423,7 +2436,7 @@ public class HttpRemoteServiceExtensionsTests
             return "Hello Furion";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
@@ -2435,7 +2448,7 @@ public class HttpRemoteServiceExtensionsTests
         var result = httpRemoteService.Send(httpStressTestHarnessBuilder.With(b => b.SetOnPreSendRequest(_ =>
         {
             i++;
-        })));
+        })), cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(result);
 
         Assert.Equal(10, result.TotalRequests);
@@ -2445,7 +2458,7 @@ public class HttpRemoteServiceExtensionsTests
 
         Assert.Equal(10, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -2463,14 +2476,15 @@ public class HttpRemoteServiceExtensionsTests
             return "Hello Furion";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpStressTestHarnessBuilder =
             new HttpStressTestHarnessBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"))
                 .SetNumberOfRequests(10);
 
-        var result = await httpRemoteService.SendAsync(httpStressTestHarnessBuilder);
+        var result = await httpRemoteService.SendAsync(httpStressTestHarnessBuilder,
+            cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(result);
 
         Assert.Equal(10, result.TotalRequests);
@@ -2478,7 +2492,7 @@ public class HttpRemoteServiceExtensionsTests
         Assert.Equal(0, result.FailedRequests);
         Assert.True(result.QueriesPerSecond > 50);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -2496,7 +2510,7 @@ public class HttpRemoteServiceExtensionsTests
             return "Hello Furion";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpStressTestHarnessBuilder =
@@ -2512,7 +2526,7 @@ public class HttpRemoteServiceExtensionsTests
                 cancellationTokenSource.Token);
         });
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -2530,7 +2544,7 @@ public class HttpRemoteServiceExtensionsTests
             return "Hello Furion";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpStressTestHarnessBuilder =
@@ -2542,7 +2556,7 @@ public class HttpRemoteServiceExtensionsTests
             b.SetOnPreSendRequest(_ =>
             {
                 i++;
-            })));
+            })), cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(result);
 
         Assert.Equal(10, result.TotalRequests);
@@ -2552,7 +2566,7 @@ public class HttpRemoteServiceExtensionsTests
 
         Assert.Equal(10, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -2571,12 +2585,13 @@ public class HttpRemoteServiceExtensionsTests
             return "Hello Furion";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
-        var result = httpRemoteService.StressTestHarness($"http://localhost:{port}/test", 10);
+        var result = httpRemoteService.StressTestHarness($"http://localhost:{port}/test", 10,
+            cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(result);
 
         Assert.Equal(10, result.TotalRequests);
@@ -2584,7 +2599,7 @@ public class HttpRemoteServiceExtensionsTests
         Assert.Equal(0, result.FailedRequests);
         Assert.True(result.QueriesPerSecond > 50);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -2602,7 +2617,7 @@ public class HttpRemoteServiceExtensionsTests
             return "Hello Furion";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -2616,7 +2631,7 @@ public class HttpRemoteServiceExtensionsTests
                 cancellationToken: cancellationTokenSource.Token);
         });
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -2634,7 +2649,7 @@ public class HttpRemoteServiceExtensionsTests
             return "Hello Furion";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
@@ -2644,7 +2659,7 @@ public class HttpRemoteServiceExtensionsTests
             sthBuilder.With(b => b.SetOnPreSendRequest(_ =>
             {
                 i++;
-            })));
+            })), cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(result);
 
         Assert.Equal(10, result.TotalRequests);
@@ -2654,7 +2669,7 @@ public class HttpRemoteServiceExtensionsTests
 
         Assert.Equal(10, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -2672,11 +2687,12 @@ public class HttpRemoteServiceExtensionsTests
             return "Hello Furion";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        var result = await httpRemoteService.StressTestHarnessAsync($"http://localhost:{port}/test", 10);
+        var result = await httpRemoteService.StressTestHarnessAsync($"http://localhost:{port}/test", 10,
+            cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(result);
 
         Assert.Equal(10, result.TotalRequests);
@@ -2684,7 +2700,7 @@ public class HttpRemoteServiceExtensionsTests
         Assert.Equal(0, result.FailedRequests);
         Assert.True(result.QueriesPerSecond > 50);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -2702,7 +2718,7 @@ public class HttpRemoteServiceExtensionsTests
             return "Hello Furion";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -2715,7 +2731,7 @@ public class HttpRemoteServiceExtensionsTests
                 cancellationToken: cancellationTokenSource.Token);
         });
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -2733,16 +2749,16 @@ public class HttpRemoteServiceExtensionsTests
             return "Hello Furion";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        var result = await httpRemoteService.StressTestHarnessAsync($"http://localhost:{port}/test", 10,
-            sthBuilder => sthBuilder.With(b => b.SetOnPreSendRequest(_ =>
+        var result = await httpRemoteService.StressTestHarnessAsync($"http://localhost:{port}/test", 10, sthBuilder =>
+            sthBuilder.With(b => b.SetOnPreSendRequest(_ =>
             {
                 i++;
-            })));
+            })), cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(result);
 
         Assert.Equal(10, result.TotalRequests);
@@ -2752,7 +2768,7 @@ public class HttpRemoteServiceExtensionsTests
 
         Assert.Equal(10, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -2783,7 +2799,7 @@ public class HttpRemoteServiceExtensionsTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
@@ -2796,11 +2812,11 @@ public class HttpRemoteServiceExtensionsTests
                 });
 
         // ReSharper disable once MethodHasAsyncOverload
-        httpRemoteService.Send(httpLongPollingBuilder);
+        httpRemoteService.Send(httpLongPollingBuilder, TestContext.Current.CancellationToken);
 
         Assert.Equal(5, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -2831,7 +2847,7 @@ public class HttpRemoteServiceExtensionsTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
@@ -2858,7 +2874,7 @@ public class HttpRemoteServiceExtensionsTests
 
         Assert.Equal(0, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -2889,7 +2905,7 @@ public class HttpRemoteServiceExtensionsTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var customLongPollingEventHandler = new CustomLongPollingEventHandler();
@@ -2906,12 +2922,12 @@ public class HttpRemoteServiceExtensionsTests
                 .SetEventHandler<CustomLongPollingEventHandler>();
 
         // ReSharper disable once MethodHasAsyncOverload
-        httpRemoteService.Send(httpLongPollingBuilder);
+        httpRemoteService.Send(httpLongPollingBuilder, TestContext.Current.CancellationToken);
 
         Assert.Equal(5, i);
         Assert.Equal(5, customLongPollingEventHandler.counter);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -2942,7 +2958,7 @@ public class HttpRemoteServiceExtensionsTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
@@ -2958,11 +2974,11 @@ public class HttpRemoteServiceExtensionsTests
         httpRemoteService.Send(httpLongPollingBuilder.With(b => b.SetOnPreSendRequest(_ =>
         {
             i++;
-        })));
+        })), TestContext.Current.CancellationToken);
 
         Assert.Equal(11, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -2993,7 +3009,7 @@ public class HttpRemoteServiceExtensionsTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
@@ -3005,11 +3021,11 @@ public class HttpRemoteServiceExtensionsTests
                     await Task.CompletedTask;
                 });
 
-        await httpRemoteService.SendAsync(httpLongPollingBuilder);
+        await httpRemoteService.SendAsync(httpLongPollingBuilder, TestContext.Current.CancellationToken);
 
         Assert.Equal(5, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -3040,7 +3056,7 @@ public class HttpRemoteServiceExtensionsTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
@@ -3062,7 +3078,7 @@ public class HttpRemoteServiceExtensionsTests
 
         Assert.Equal(0, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -3093,7 +3109,7 @@ public class HttpRemoteServiceExtensionsTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var customLongPollingEventHandler = new CustomLongPollingEventHandler();
@@ -3109,12 +3125,12 @@ public class HttpRemoteServiceExtensionsTests
                 })
                 .SetEventHandler<CustomLongPollingEventHandler>();
 
-        await httpRemoteService.SendAsync(httpLongPollingBuilder);
+        await httpRemoteService.SendAsync(httpLongPollingBuilder, TestContext.Current.CancellationToken);
 
         Assert.Equal(5, i);
         Assert.Equal(5, customLongPollingEventHandler.counter);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -3145,7 +3161,7 @@ public class HttpRemoteServiceExtensionsTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
@@ -3160,11 +3176,11 @@ public class HttpRemoteServiceExtensionsTests
         await httpRemoteService.SendAsync(httpLongPollingBuilder.With(b => b.SetOnPreSendRequest(_ =>
         {
             i++;
-        })));
+        })), TestContext.Current.CancellationToken);
 
         Assert.Equal(11, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -3195,7 +3211,7 @@ public class HttpRemoteServiceExtensionsTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
@@ -3205,11 +3221,11 @@ public class HttpRemoteServiceExtensionsTests
         {
             i++;
             await Task.CompletedTask;
-        });
+        }, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal(5, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -3240,7 +3256,7 @@ public class HttpRemoteServiceExtensionsTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
@@ -3264,7 +3280,7 @@ public class HttpRemoteServiceExtensionsTests
 
         Assert.Equal(0, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -3295,7 +3311,7 @@ public class HttpRemoteServiceExtensionsTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
@@ -3308,11 +3324,11 @@ public class HttpRemoteServiceExtensionsTests
         }, lpBuilder => lpBuilder.With(b => b.SetOnPreSendRequest(_ =>
         {
             i++;
-        })));
+        })), TestContext.Current.CancellationToken);
 
         Assert.Equal(11, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -3343,7 +3359,7 @@ public class HttpRemoteServiceExtensionsTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
@@ -3352,11 +3368,11 @@ public class HttpRemoteServiceExtensionsTests
         {
             i++;
             await Task.CompletedTask;
-        });
+        }, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal(5, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -3387,7 +3403,7 @@ public class HttpRemoteServiceExtensionsTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
@@ -3406,7 +3422,7 @@ public class HttpRemoteServiceExtensionsTests
 
         Assert.Equal(0, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -3437,7 +3453,7 @@ public class HttpRemoteServiceExtensionsTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
@@ -3449,11 +3465,11 @@ public class HttpRemoteServiceExtensionsTests
         }, lpBuilder => lpBuilder.With(b => b.SetOnPreSendRequest(_ =>
         {
             i++;
-        })));
+        })), TestContext.Current.CancellationToken);
 
         Assert.Equal(11, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -3472,7 +3488,7 @@ public class HttpRemoteServiceExtensionsTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var method = typeof(IHttpDeclarativeTest).GetMethod(nameof(IHttpDeclarativeTest.GetUrl))!;
@@ -3482,7 +3498,7 @@ public class HttpRemoteServiceExtensionsTests
             typeof(IHttpDeclarativeTest));
         Assert.Equal("Hello World!", result);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -3496,12 +3512,12 @@ public class HttpRemoteServiceExtensionsTests
 
         app.MapGet("/test", async context =>
         {
-            await Task.Delay(200);
+            await Task.Delay(200, TestContext.Current.CancellationToken);
 
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -3517,7 +3533,7 @@ public class HttpRemoteServiceExtensionsTests
                 typeof(IHttpDeclarativeTest));
         });
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -3536,7 +3552,7 @@ public class HttpRemoteServiceExtensionsTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -3546,7 +3562,7 @@ public class HttpRemoteServiceExtensionsTests
             [$"http://localhost:{port}/test", CancellationToken.None], typeof(IHttpDeclarativeTest));
         Assert.Equal("Hello World!", result);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -3560,12 +3576,12 @@ public class HttpRemoteServiceExtensionsTests
 
         app.MapGet("/test", async context =>
         {
-            await Task.Delay(200);
+            await Task.Delay(200, TestContext.Current.CancellationToken);
 
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -3580,7 +3596,7 @@ public class HttpRemoteServiceExtensionsTests
                 [$"http://localhost:{port}/test", cancellationTokenSource.Token], typeof(IHttpDeclarativeTest));
         });
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -3599,7 +3615,7 @@ public class HttpRemoteServiceExtensionsTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var method = typeof(IHttpDeclarativeTest).GetMethod(nameof(IHttpDeclarativeTest.GetUrl))!;
@@ -3610,7 +3626,7 @@ public class HttpRemoteServiceExtensionsTests
                 [$"http://localhost:{port}/test", CancellationToken.None], typeof(IHttpDeclarativeTest)));
         Assert.Equal("Hello World!", result);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -3624,12 +3640,12 @@ public class HttpRemoteServiceExtensionsTests
 
         app.MapGet("/test", async context =>
         {
-            await Task.Delay(200);
+            await Task.Delay(200, TestContext.Current.CancellationToken);
 
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -3645,7 +3661,7 @@ public class HttpRemoteServiceExtensionsTests
                 [$"http://localhost:{port}/test", cancellationTokenSource.Token], typeof(IHttpDeclarativeTest)));
         });
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -3664,7 +3680,7 @@ public class HttpRemoteServiceExtensionsTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -3675,7 +3691,7 @@ public class HttpRemoteServiceExtensionsTests
                 [$"http://localhost:{port}/test", CancellationToken.None], typeof(IHttpDeclarativeTest)));
         Assert.Equal("Hello World!", result);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -3689,12 +3705,12 @@ public class HttpRemoteServiceExtensionsTests
 
         app.MapGet("/test", async context =>
         {
-            await Task.Delay(200);
+            await Task.Delay(200, TestContext.Current.CancellationToken);
 
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -3709,7 +3725,7 @@ public class HttpRemoteServiceExtensionsTests
                 [$"http://localhost:{port}/test", cancellationTokenSource.Token], typeof(IHttpDeclarativeTest)));
         });
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -3740,21 +3756,22 @@ public class HttpRemoteServiceExtensionsTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpLongPollingBuilder =
             new HttpLongPollingBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
 
-        await foreach (var data in httpRemoteService.SendAsAsyncEnumerable(httpLongPollingBuilder))
+        await foreach (var _ in httpRemoteService.SendAsAsyncEnumerable(httpLongPollingBuilder,
+                           TestContext.Current.CancellationToken))
         {
             i++;
         }
 
         Assert.Equal(5, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -3785,21 +3802,22 @@ public class HttpRemoteServiceExtensionsTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpServerSentEventsBuilder =
             new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test"));
 
-        await foreach (var data in httpRemoteService.SendAsAsyncEnumerable(httpServerSentEventsBuilder))
+        await foreach (var _ in httpRemoteService.SendAsAsyncEnumerable(httpServerSentEventsBuilder,
+                           TestContext.Current.CancellationToken))
         {
             i++;
         }
 
         Assert.Equal(5, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -3830,19 +3848,20 @@ public class HttpRemoteServiceExtensionsTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        await foreach (var data in httpRemoteService.ServerSentEventsAsAsyncEnumerable($"http://localhost:{port}/test"))
+        await foreach (var _ in httpRemoteService.ServerSentEventsAsAsyncEnumerable($"http://localhost:{port}/test",
+                           cancellationToken: TestContext.Current.CancellationToken))
         {
             i++;
         }
 
         Assert.Equal(5, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -3873,19 +3892,20 @@ public class HttpRemoteServiceExtensionsTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        await foreach (var data in httpRemoteService.LongPollingAsAsyncEnumerable($"http://localhost:{port}/test"))
+        await foreach (var _ in httpRemoteService.LongPollingAsAsyncEnumerable($"http://localhost:{port}/test",
+                           cancellationToken: TestContext.Current.CancellationToken))
         {
             i++;
         }
 
         Assert.Equal(5, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 }

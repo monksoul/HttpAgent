@@ -236,7 +236,7 @@ public class ServerSentEventsManagerTests
         var serverSentEventsManager = new ServerSentEventsManager(httpRemoteService, httpServerSentEventsBuilder);
 
         await Assert.ThrowsAsync<ArgumentNullException>(async () =>
-            await serverSentEventsManager.HandleMessageReceivedAsync(null!));
+            await serverSentEventsManager.HandleMessageReceivedAsync(null!, TestContext.Current.CancellationToken));
 
         await serviceProvider.DisposeAsync();
     }
@@ -253,7 +253,8 @@ public class ServerSentEventsManagerTests
 
         var serverSentEventsData =
             new ServerSentEventsData();
-        await serverSentEventsManager.HandleMessageReceivedAsync(serverSentEventsData);
+        await serverSentEventsManager.HandleMessageReceivedAsync(serverSentEventsData,
+            TestContext.Current.CancellationToken);
 
         var i = 0;
         httpServerSentEventsBuilder.SetOnMessage(async (_, _) =>
@@ -263,14 +264,16 @@ public class ServerSentEventsManagerTests
         });
 
         var serverSentEventsManager2 = new ServerSentEventsManager(httpRemoteService, httpServerSentEventsBuilder);
-        await serverSentEventsManager2.HandleMessageReceivedAsync(serverSentEventsData);
+        await serverSentEventsManager2.HandleMessageReceivedAsync(serverSentEventsData,
+            TestContext.Current.CancellationToken);
 
         Assert.Equal(1, i);
         Assert.Equal(0, customServerSentEventsEventHandler.counter);
 
         httpServerSentEventsBuilder.SetEventHandler<CustomServerSentEventsEventHandler>();
         var serverSentEventsManager3 = new ServerSentEventsManager(httpRemoteService, httpServerSentEventsBuilder);
-        await serverSentEventsManager3.HandleMessageReceivedAsync(serverSentEventsData);
+        await serverSentEventsManager3.HandleMessageReceivedAsync(serverSentEventsData,
+            TestContext.Current.CancellationToken);
 
         Assert.Equal(1, customServerSentEventsEventHandler.counter);
 
@@ -304,12 +307,12 @@ public class ServerSentEventsManagerTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpServerSentEventsBuilder =
-            new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test")).SetOnMessage(async (data, _) =>
+            new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test")).SetOnMessage(async (_, _) =>
             {
                 i++;
                 await Task.CompletedTask;
@@ -317,11 +320,11 @@ public class ServerSentEventsManagerTests
         var serverSentEventsManager = new ServerSentEventsManager(httpRemoteService, httpServerSentEventsBuilder);
 
         // ReSharper disable once MethodHasAsyncOverload
-        serverSentEventsManager.Start();
+        serverSentEventsManager.Start(TestContext.Current.CancellationToken);
 
         Assert.Equal(5, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -352,12 +355,12 @@ public class ServerSentEventsManagerTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpServerSentEventsBuilder =
-            new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test")).SetOnMessage(async (data, _) =>
+            new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test")).SetOnMessage(async (_, _) =>
             {
                 i++;
                 await Task.CompletedTask;
@@ -372,7 +375,7 @@ public class ServerSentEventsManagerTests
 
         Assert.Equal(0, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -403,7 +406,7 @@ public class ServerSentEventsManagerTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
@@ -412,7 +415,7 @@ public class ServerSentEventsManagerTests
             {
                 i++;
                 Console.WriteLine("准备连接...");
-            }).SetOnError(e =>
+            }).SetOnError(_ =>
             {
                 i++;
                 Console.WriteLine("连接失败...");
@@ -420,11 +423,11 @@ public class ServerSentEventsManagerTests
         var serverSentEventsManager = new ServerSentEventsManager(httpRemoteService, httpServerSentEventsBuilder);
 
         // ReSharper disable once MethodHasAsyncOverload
-        serverSentEventsManager.Start();
+        serverSentEventsManager.Start(TestContext.Current.CancellationToken);
 
         Assert.Equal(1, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -455,7 +458,7 @@ public class ServerSentEventsManagerTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var customServerSentEventsEventHandler = new CustomServerSentEventsEventHandler();
@@ -468,7 +471,7 @@ public class ServerSentEventsManagerTests
                 {
                     i++;
                     Console.WriteLine("准备连接...");
-                }).SetOnError(e =>
+                }).SetOnError(_ =>
                 {
                     i++;
                     Console.WriteLine("连接失败...");
@@ -477,12 +480,12 @@ public class ServerSentEventsManagerTests
         var serverSentEventsManager = new ServerSentEventsManager(httpRemoteService, httpServerSentEventsBuilder);
 
         // ReSharper disable once MethodHasAsyncOverload
-        serverSentEventsManager.Start();
+        serverSentEventsManager.Start(TestContext.Current.CancellationToken);
 
         Assert.Equal(1, i);
         Assert.Equal(6, customServerSentEventsEventHandler.counter);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -513,23 +516,23 @@ public class ServerSentEventsManagerTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpServerSentEventsBuilder =
-            new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test")).SetOnMessage(async (data, _) =>
+            new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test")).SetOnMessage(async (_, _) =>
             {
                 i++;
                 await Task.CompletedTask;
             });
         var serverSentEventsManager = new ServerSentEventsManager(httpRemoteService, httpServerSentEventsBuilder);
 
-        await serverSentEventsManager.StartAsync();
+        await serverSentEventsManager.StartAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(5, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -561,12 +564,12 @@ public class ServerSentEventsManagerTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpServerSentEventsBuilder =
-            new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test")).SetOnMessage(async (data, _) =>
+            new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test")).SetOnMessage(async (_, _) =>
             {
                 i++;
                 await Task.CompletedTask;
@@ -583,7 +586,7 @@ public class ServerSentEventsManagerTests
 
         Assert.Equal(0, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -614,7 +617,7 @@ public class ServerSentEventsManagerTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
@@ -623,18 +626,18 @@ public class ServerSentEventsManagerTests
             {
                 i++;
                 Console.WriteLine("准备连接...");
-            }).SetOnError(e =>
+            }).SetOnError(_ =>
             {
                 i++;
                 Console.WriteLine("连接失败...");
             });
         var serverSentEventsManager = new ServerSentEventsManager(httpRemoteService, httpServerSentEventsBuilder);
 
-        await serverSentEventsManager.StartAsync();
+        await serverSentEventsManager.StartAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(1, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -665,7 +668,7 @@ public class ServerSentEventsManagerTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var customServerSentEventsEventHandler = new CustomServerSentEventsEventHandler();
@@ -678,7 +681,7 @@ public class ServerSentEventsManagerTests
                 {
                     i++;
                     Console.WriteLine("准备连接...");
-                }).SetOnError(e =>
+                }).SetOnError(_ =>
                 {
                     i++;
                     Console.WriteLine("连接失败...");
@@ -686,12 +689,12 @@ public class ServerSentEventsManagerTests
                 .SetEventHandler<CustomServerSentEventsEventHandler>();
         var serverSentEventsManager = new ServerSentEventsManager(httpRemoteService, httpServerSentEventsBuilder);
 
-        await serverSentEventsManager.StartAsync();
+        await serverSentEventsManager.StartAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(1, i);
         Assert.Equal(6, customServerSentEventsEventHandler.counter);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -722,21 +725,21 @@ public class ServerSentEventsManagerTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpServerSentEventsBuilder = new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test"));
         var serverSentEventsManager = new ServerSentEventsManager(httpRemoteService, httpServerSentEventsBuilder);
 
-        await foreach (var data in serverSentEventsManager.StartAsAsyncEnumerable())
+        await foreach (var _ in serverSentEventsManager.StartAsAsyncEnumerable(TestContext.Current.CancellationToken))
         {
             i++;
         }
 
         Assert.Equal(5, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 }

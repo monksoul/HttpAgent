@@ -24,7 +24,8 @@ public class StreamContentConverterTests
         httpResponseMessage.Content = streamContent;
 
         var converter = new StreamContentConverter();
-        var stream = converter.Read(new HttpContentConverterContext(httpResponseMessage));
+        var stream = converter.Read(new HttpContentConverterContext(httpResponseMessage),
+            TestContext.Current.CancellationToken);
         Assert.NotNull(stream);
 
         using var reader = new StreamReader(stream, Encoding.UTF8);
@@ -41,11 +42,12 @@ public class StreamContentConverterTests
         httpResponseMessage.Content = streamContent;
 
         var converter = new StreamContentConverter();
-        var stream = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage));
+        var stream = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage),
+            TestContext.Current.CancellationToken);
         Assert.NotNull(stream);
 
         using var reader = new StreamReader(stream, Encoding.UTF8);
-        var result = await reader.ReadToEndAsync();
+        var result = await reader.ReadToEndAsync(TestContext.Current.CancellationToken);
         Assert.Equal("furion", result);
     }
 
@@ -78,7 +80,8 @@ public class StreamContentConverterTests
         httpResponseMessage.Content = streamContent;
 
         var converter = new StreamContentConverter();
-        var stream = converter.Read(typeof(Stream), new HttpContentConverterContext(httpResponseMessage));
+        var stream = converter.Read(typeof(Stream), new HttpContentConverterContext(httpResponseMessage),
+            TestContext.Current.CancellationToken);
         Assert.NotNull(stream);
 
         using var reader = new StreamReader((Stream)stream, Encoding.UTF8);
@@ -95,11 +98,12 @@ public class StreamContentConverterTests
         httpResponseMessage.Content = streamContent;
 
         var converter = new StreamContentConverter();
-        var stream = await converter.ReadAsync(typeof(Stream), new HttpContentConverterContext(httpResponseMessage));
+        var stream = await converter.ReadAsync(typeof(Stream), new HttpContentConverterContext(httpResponseMessage),
+            TestContext.Current.CancellationToken);
         Assert.NotNull(stream);
 
         using var reader = new StreamReader((Stream)stream, Encoding.UTF8);
-        var result = await reader.ReadToEndAsync();
+        var result = await reader.ReadToEndAsync(TestContext.Current.CancellationToken);
         Assert.Equal("furion", result);
     }
 

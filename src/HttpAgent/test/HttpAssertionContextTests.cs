@@ -43,7 +43,7 @@ public class HttpAssertionContextTests
         await using var serviceProvider = services.BuildServiceProvider();
 
         var context = new HttpAssertionContext(httpResponseMessage, 100, serviceProvider);
-        Assert.Equal("Hello World", await context.ReadAsStringAsync());
+        Assert.Equal("Hello World", await context.ReadAsStringAsync(TestContext.Current.CancellationToken));
         Assert.NotNull(context._cachedContent);
         Assert.Equal("Hello World", context._cachedContent);
     }

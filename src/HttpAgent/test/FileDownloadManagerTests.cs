@@ -69,7 +69,8 @@ public class FileDownloadManagerTests
         var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         var httpResponseMessage =
-            httpRemoteService.Send(fileDownloadManager.RequestBuilder, HttpCompletionOption.ResponseHeadersRead);
+            httpRemoteService.Send(fileDownloadManager.RequestBuilder, HttpCompletionOption.ResponseHeadersRead,
+                TestContext.Current.CancellationToken);
 
         // 静态方法 ExtractFileName 只根据响应解析，不依赖 DestinationPath
         Assert.Equal("index.html", FileDownloadManager.ExtractFileName(httpResponseMessage!));
@@ -93,7 +94,7 @@ public class FileDownloadManagerTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -104,11 +105,11 @@ public class FileDownloadManagerTests
 
         var httpResponseMessage =
             await httpRemoteService.SendAsync(fileDownloadManager.RequestBuilder,
-                HttpCompletionOption.ResponseHeadersRead);
+                HttpCompletionOption.ResponseHeadersRead, TestContext.Current.CancellationToken);
 
         Assert.Equal("index.html", FileDownloadManager.ExtractFileName(httpResponseMessage!));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -141,7 +142,7 @@ public class FileDownloadManagerTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -152,11 +153,11 @@ public class FileDownloadManagerTests
 
         var httpResponseMessage =
             await httpRemoteService.SendAsync(fileDownloadManager.RequestBuilder,
-                HttpCompletionOption.ResponseHeadersRead);
+                HttpCompletionOption.ResponseHeadersRead, TestContext.Current.CancellationToken);
 
         Assert.Equal(decodedFileName, FileDownloadManager.ExtractFileName(httpResponseMessage!));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -171,7 +172,8 @@ public class FileDownloadManagerTests
         var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         var httpResponseMessage =
-            httpRemoteService.Send(fileDownloadManager.RequestBuilder, HttpCompletionOption.ResponseHeadersRead);
+            httpRemoteService.Send(fileDownloadManager.RequestBuilder, HttpCompletionOption.ResponseHeadersRead,
+                TestContext.Current.CancellationToken);
 
         var exception = Assert.Throws<InvalidOperationException>(() =>
             fileDownloadManager.ShouldContinueWithDownload(httpResponseMessage!, out _));
@@ -302,7 +304,8 @@ public class FileDownloadManagerTests
         var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         var httpResponseMessage =
-            httpRemoteService.Send(fileDownloadManager.RequestBuilder, HttpCompletionOption.ResponseHeadersRead);
+            httpRemoteService.Send(fileDownloadManager.RequestBuilder, HttpCompletionOption.ResponseHeadersRead,
+                TestContext.Current.CancellationToken);
 
         Assert.True(fileDownloadManager.ShouldContinueWithDownload(httpResponseMessage!, out var destinationPath));
         Assert.Equal(@"C:\Workspaces\index.html", destinationPath);
@@ -610,7 +613,7 @@ public class FileDownloadManagerTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -620,10 +623,10 @@ public class FileDownloadManagerTests
         var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         // ReSharper disable once MethodHasAsyncOverload
-        var fileTransferResult = fileDownloadManager.Start();
+        var fileTransferResult = fileDownloadManager.Start(TestContext.Current.CancellationToken);
 
         Assert.True(File.Exists(destinationPath));
-        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
+        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath, TestContext.Current.CancellationToken)).Length);
 
         Assert.True(fileTransferResult.IsSuccess);
         Assert.Equal(12, fileTransferResult.FileSize);
@@ -634,7 +637,7 @@ public class FileDownloadManagerTests
 
         File.Delete(destinationPath);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -654,12 +657,12 @@ public class FileDownloadManagerTests
 
         app.MapGet("/test", async context =>
         {
-            await Task.Delay(200);
+            await Task.Delay(200, TestContext.Current.CancellationToken);
 
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -686,7 +689,7 @@ public class FileDownloadManagerTests
 
         Assert.False(File.Exists(destinationPath));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -711,7 +714,7 @@ public class FileDownloadManagerTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -726,11 +729,11 @@ public class FileDownloadManagerTests
         var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         // ReSharper disable once MethodHasAsyncOverload
-        var fileTransferResult = fileDownloadManager.Start();
+        var fileTransferResult = fileDownloadManager.Start(TestContext.Current.CancellationToken);
 
         Assert.Equal(2, i);
         Assert.True(File.Exists(destinationPath));
-        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
+        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath, TestContext.Current.CancellationToken)).Length);
 
         Assert.True(fileTransferResult.IsSuccess);
         Assert.Equal(12, fileTransferResult.FileSize);
@@ -741,7 +744,7 @@ public class FileDownloadManagerTests
 
         File.Delete(destinationPath);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -766,7 +769,7 @@ public class FileDownloadManagerTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -785,11 +788,11 @@ public class FileDownloadManagerTests
         var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         // ReSharper disable once MethodHasAsyncOverload
-        var fileTransferResult = fileDownloadManager.Start();
+        var fileTransferResult = fileDownloadManager.Start(TestContext.Current.CancellationToken);
 
         Assert.Equal(2, i);
         Assert.True(File.Exists(destinationPath));
-        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
+        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath, TestContext.Current.CancellationToken)).Length);
 
         Assert.True(fileTransferResult.IsSuccess);
         Assert.Equal(12, fileTransferResult.FileSize);
@@ -800,7 +803,7 @@ public class FileDownloadManagerTests
 
         File.Delete(destinationPath);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -825,7 +828,7 @@ public class FileDownloadManagerTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var customFileTransferEventHandler = new CustomFileTransferEventHandler();
         var (httpRemoteService, serviceProvider) =
@@ -847,12 +850,12 @@ public class FileDownloadManagerTests
         var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         // ReSharper disable once MethodHasAsyncOverload
-        var fileTransferResult = fileDownloadManager.Start();
+        var fileTransferResult = fileDownloadManager.Start(TestContext.Current.CancellationToken);
 
         Assert.Equal(2, i);
         Assert.Equal(2, customFileTransferEventHandler.counter);
         Assert.True(File.Exists(destinationPath));
-        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
+        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath, TestContext.Current.CancellationToken)).Length);
 
         Assert.True(fileTransferResult.IsSuccess);
         Assert.Equal(12, fileTransferResult.FileSize);
@@ -863,7 +866,7 @@ public class FileDownloadManagerTests
 
         File.Delete(destinationPath);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -891,7 +894,7 @@ public class FileDownloadManagerTests
 #pragma warning restore CS0162 // 检测到不可到达的代码
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -916,13 +919,13 @@ public class FileDownloadManagerTests
         Assert.Throws<HttpRequestException>(() =>
         {
             // ReSharper disable once MethodHasAsyncOverload
-            _ = fileDownloadManager.Start();
+            _ = fileDownloadManager.Start(TestContext.Current.CancellationToken);
         });
         Assert.Equal(2, i);
 
         File.Delete(destinationPath);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -947,7 +950,7 @@ public class FileDownloadManagerTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -956,10 +959,10 @@ public class FileDownloadManagerTests
                 destinationPath);
         var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
-        var fileTransferResult = await fileDownloadManager.StartAsync();
+        var fileTransferResult = await fileDownloadManager.StartAsync(TestContext.Current.CancellationToken);
 
         Assert.True(File.Exists(destinationPath));
-        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
+        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath, TestContext.Current.CancellationToken)).Length);
 
         Assert.True(fileTransferResult.IsSuccess);
         Assert.Equal(12, fileTransferResult.FileSize);
@@ -970,7 +973,7 @@ public class FileDownloadManagerTests
 
         File.Delete(destinationPath);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -990,12 +993,12 @@ public class FileDownloadManagerTests
 
         app.MapGet("/test", async context =>
         {
-            await Task.Delay(200);
+            await Task.Delay(200, TestContext.Current.CancellationToken);
 
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -1017,7 +1020,7 @@ public class FileDownloadManagerTests
 
         Assert.False(File.Exists(destinationPath));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1042,7 +1045,7 @@ public class FileDownloadManagerTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -1056,11 +1059,11 @@ public class FileDownloadManagerTests
             });
         var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
-        var fileTransferResult = await fileDownloadManager.StartAsync();
+        var fileTransferResult = await fileDownloadManager.StartAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(2, i);
         Assert.True(File.Exists(destinationPath));
-        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
+        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath, TestContext.Current.CancellationToken)).Length);
 
         Assert.True(fileTransferResult.IsSuccess);
         Assert.Equal(12, fileTransferResult.FileSize);
@@ -1071,7 +1074,7 @@ public class FileDownloadManagerTests
 
         File.Delete(destinationPath);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1096,7 +1099,7 @@ public class FileDownloadManagerTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -1114,11 +1117,11 @@ public class FileDownloadManagerTests
             });
         var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
-        var fileTransferResult = await fileDownloadManager.StartAsync();
+        var fileTransferResult = await fileDownloadManager.StartAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(2, i);
         Assert.True(File.Exists(destinationPath));
-        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
+        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath, TestContext.Current.CancellationToken)).Length);
 
         Assert.True(fileTransferResult.IsSuccess);
         Assert.Equal(12, fileTransferResult.FileSize);
@@ -1129,7 +1132,7 @@ public class FileDownloadManagerTests
 
         File.Delete(destinationPath);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1154,7 +1157,7 @@ public class FileDownloadManagerTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var customFileTransferEventHandler = new CustomFileTransferEventHandler();
         var (httpRemoteService, serviceProvider) =
@@ -1175,12 +1178,12 @@ public class FileDownloadManagerTests
 
         var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
-        var fileTransferResult = await fileDownloadManager.StartAsync();
+        var fileTransferResult = await fileDownloadManager.StartAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(2, i);
         Assert.Equal(2, customFileTransferEventHandler.counter);
         Assert.True(File.Exists(destinationPath));
-        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath)).Length);
+        Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath, TestContext.Current.CancellationToken)).Length);
 
         Assert.True(fileTransferResult.IsSuccess);
         Assert.Equal(12, fileTransferResult.FileSize);
@@ -1191,7 +1194,7 @@ public class FileDownloadManagerTests
 
         File.Delete(destinationPath);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1219,7 +1222,7 @@ public class FileDownloadManagerTests
 #pragma warning restore CS0162 // 检测到不可到达的代码
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -1243,13 +1246,13 @@ public class FileDownloadManagerTests
 
         await Assert.ThrowsAsync<HttpRequestException>(async () =>
         {
-            _ = await fileDownloadManager.StartAsync();
+            _ = await fileDownloadManager.StartAsync(TestContext.Current.CancellationToken);
         });
         Assert.Equal(2, i);
 
         File.Delete(destinationPath);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1341,9 +1344,10 @@ public class FileDownloadManagerTests
         var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         var httpResponseMessage =
-            httpRemoteService.Send(fileDownloadManager.RequestBuilder, HttpCompletionOption.ResponseHeadersRead)!;
+            httpRemoteService.Send(fileDownloadManager.RequestBuilder, HttpCompletionOption.ResponseHeadersRead,
+                TestContext.Current.CancellationToken)!;
 
-        using var rawStream = httpResponseMessage.Content.ReadAsStream();
+        using var rawStream = httpResponseMessage.Content.ReadAsStream(TestContext.Current.CancellationToken);
 
         using var stream = FileDownloadManager.WrapDecompressionStream(rawStream, httpResponseMessage);
 

@@ -52,17 +52,18 @@ public class HttpMultipartFormDataBuilderExtensionsTests
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpRemoteService = app.Services.GetRequiredService<IHttpRemoteService>();
         var httpResponseMessage = await httpRemoteService.SendAsync(HttpRequestBuilder
-            .Post($"http://localhost:{port}/test")
-            .SetMultipartContent(multipart => multipart.AddFileAsStream(filePath)));
-        var result = await httpResponseMessage!.Content.ReadAsStringAsync();
+                .Post($"http://localhost:{port}/test")
+                .SetMultipartContent(multipart => multipart.AddFileAsStream(filePath)),
+            TestContext.Current.CancellationToken);
+        var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.Equal("test.txt", result);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -111,24 +112,26 @@ public class HttpMultipartFormDataBuilderExtensionsTests
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpRemoteService = app.Services.GetRequiredService<IHttpRemoteService>();
         var httpResponseMessage = await httpRemoteService.SendAsync(HttpRequestBuilder
-            .Post($"http://localhost:{port}/test")
-            .SetMultipartContent(multipart => multipart.AddFileAsStream(filePath)));
-        var result = await httpResponseMessage!.Content.ReadAsStringAsync();
+                .Post($"http://localhost:{port}/test")
+                .SetMultipartContent(multipart => multipart.AddFileAsStream(filePath)),
+            TestContext.Current.CancellationToken);
+        var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.Equal("test.txt", result);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
     public void AddFile_IBrowserFile_Invalid_Parameters()
     {
         var builder = new HttpMultipartFormDataBuilder(HttpRequestBuilder.Get("http://localhost"));
-        Assert.Throws<ArgumentNullException>(() => builder.AddFile((IBrowserFile)null!));
+        Assert.Throws<ArgumentNullException>(() =>
+            builder.AddFile(null!, cancellationToken: TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -139,7 +142,7 @@ public class HttpMultipartFormDataBuilderExtensionsTests
         var browserFile = new TestBrowserFile("test.txt", "text/plain", "Hello"u8.ToArray());
 
         // Act
-        builder.AddFile(browserFile);
+        builder.AddFile(browserFile, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Single(builder._partContents);
@@ -154,7 +157,8 @@ public class HttpMultipartFormDataBuilderExtensionsTests
     public void AddFiles_IBrowserFile_Invalid_Parameters()
     {
         var builder = new HttpMultipartFormDataBuilder(HttpRequestBuilder.Get("http://localhost"));
-        Assert.Throws<ArgumentNullException>(() => builder.AddFiles((IEnumerable<IBrowserFile>)null!));
+        Assert.Throws<ArgumentNullException>(() =>
+            builder.AddFiles(null!, cancellationToken: TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -165,7 +169,7 @@ public class HttpMultipartFormDataBuilderExtensionsTests
         var browserFile = new TestBrowserFile("test.txt", "text/plain", "World"u8.ToArray());
 
         // Act
-        builder.AddFiles([browserFile]);
+        builder.AddFiles([browserFile], cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Single(builder._partContents);
@@ -176,7 +180,7 @@ public class HttpMultipartFormDataBuilderExtensionsTests
         Assert.Equal("text/plain", part.ContentType);
     }
 
-    internal class TestBrowserFile(string name, string contentType = "application/octet-stream", byte[]? content = null)
+    private class TestBrowserFile(string name, string contentType = "application/octet-stream", byte[]? content = null)
         : IBrowserFile
     {
         private readonly byte[] _content = content ?? [];

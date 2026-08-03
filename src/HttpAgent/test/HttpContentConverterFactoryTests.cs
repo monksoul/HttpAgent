@@ -213,11 +213,13 @@ public class HttpContentConverterFactoryTests
         var httpContentConverterFactory =
             new HttpContentConverterFactory(serviceProvider, logger, null!, null!);
 
-        var result = httpContentConverterFactory.Read<string>(new HttpContentConverterContext(httpResponseMessage));
+        var result = httpContentConverterFactory.Read<string>(new HttpContentConverterContext(httpResponseMessage),
+            TestContext.Current.CancellationToken);
         Assert.Equal("furion", result.Result);
 
         var result2 =
-            httpContentConverterFactory.Read<HttpResponseMessage>(new HttpContentConverterContext(httpResponseMessage));
+            httpContentConverterFactory.Read<HttpResponseMessage>(new HttpContentConverterContext(httpResponseMessage),
+                TestContext.Current.CancellationToken);
         Assert.Equal(result2.Result, httpResponseMessage);
     }
 
@@ -239,12 +241,13 @@ public class HttpContentConverterFactoryTests
             new HttpContentConverterFactory(serviceProvider, logger, null!, null!);
 
         var result =
-            await httpContentConverterFactory.ReadAsync<string>(new HttpContentConverterContext(httpResponseMessage));
+            await httpContentConverterFactory.ReadAsync<string>(new HttpContentConverterContext(httpResponseMessage),
+                TestContext.Current.CancellationToken);
         Assert.Equal("furion", result.Result);
 
         var result2 =
             await httpContentConverterFactory.ReadAsync<HttpResponseMessage>(
-                new HttpContentConverterContext(httpResponseMessage));
+                new HttpContentConverterContext(httpResponseMessage), TestContext.Current.CancellationToken);
         Assert.Equal(result2.Result, httpResponseMessage);
     }
 
@@ -384,11 +387,12 @@ public class HttpContentConverterFactoryTests
             new HttpContentConverterFactory(serviceProvider, logger, null!, null!);
 
         var result =
-            httpContentConverterFactory.Read(typeof(string), new HttpContentConverterContext(httpResponseMessage));
+            httpContentConverterFactory.Read(typeof(string), new HttpContentConverterContext(httpResponseMessage),
+                TestContext.Current.CancellationToken);
         Assert.Equal("furion", result.Result);
 
         var result2 = httpContentConverterFactory.Read(typeof(HttpResponseMessage),
-            new HttpContentConverterContext(httpResponseMessage));
+            new HttpContentConverterContext(httpResponseMessage), TestContext.Current.CancellationToken);
         Assert.Equal(result2.Result, httpResponseMessage);
     }
 
@@ -411,11 +415,11 @@ public class HttpContentConverterFactoryTests
 
         var result =
             await httpContentConverterFactory.ReadAsync(typeof(string),
-                new HttpContentConverterContext(httpResponseMessage));
+                new HttpContentConverterContext(httpResponseMessage), TestContext.Current.CancellationToken);
         Assert.Equal("furion", result.Result);
 
         var result2 = await httpContentConverterFactory.ReadAsync(typeof(HttpResponseMessage),
-            new HttpContentConverterContext(httpResponseMessage));
+            new HttpContentConverterContext(httpResponseMessage), TestContext.Current.CancellationToken);
         Assert.Equal(result2.Result, httpResponseMessage);
     }
 

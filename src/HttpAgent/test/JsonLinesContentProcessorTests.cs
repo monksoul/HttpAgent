@@ -54,7 +54,7 @@ public class JsonLinesContentProcessorTests
         var list = new List<JsonModel> { new() { Id = 1, Name = "Furion" }, new() { Id = 2, Name = "百小僧" } };
         var httpContent2 = processor.Process(new HttpContentProcessorContext(list, "application/x-ndjson"));
         Assert.NotNull(httpContent2);
-        var str = await httpContent2.ReadAsStringAsync();
+        var str = await httpContent2.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal("{\"id\":1,\"name\":\"Furion\"}\n{\"id\":2,\"name\":\"百小僧\"}", str);
     }
 }

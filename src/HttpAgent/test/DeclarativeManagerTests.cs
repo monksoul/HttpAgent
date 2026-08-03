@@ -48,7 +48,7 @@ public class DeclarativeManagerTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -60,7 +60,7 @@ public class DeclarativeManagerTests
         var result = declarativeManager.Start();
         Assert.Equal("Hello World!", result);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -74,12 +74,12 @@ public class DeclarativeManagerTests
 
         app.MapGet("/test", async context =>
         {
-            await Task.Delay(200);
+            await Task.Delay(200, TestContext.Current.CancellationToken);
 
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -96,7 +96,7 @@ public class DeclarativeManagerTests
             _ = declarativeManager.Start();
         });
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -115,7 +115,7 @@ public class DeclarativeManagerTests
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -126,7 +126,7 @@ public class DeclarativeManagerTests
         var result = await declarativeManager.StartAsync<string>();
         Assert.Equal("Hello World!", result);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -140,12 +140,12 @@ public class DeclarativeManagerTests
 
         app.MapGet("/test", async context =>
         {
-            await Task.Delay(200);
+            await Task.Delay(200, TestContext.Current.CancellationToken);
 
             await context.Response.WriteAsync("Hello World!");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -161,7 +161,7 @@ public class DeclarativeManagerTests
             _ = await declarativeManager.StartAsync<string>();
         });
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -215,7 +215,7 @@ public class DeclarativeManagerTests
             await context.Response.WriteAsJsonAsync(new { id = 1, name = "Furion" });
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -230,7 +230,7 @@ public class DeclarativeManagerTests
         Assert.Equal("Furion", result["name"]);
         Assert.Equal("Furion", result["Name"]);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -249,7 +249,7 @@ public class DeclarativeManagerTests
             await context.Response.WriteAsJsonAsync(new { id = 1, name = "Furion" });
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -264,7 +264,7 @@ public class DeclarativeManagerTests
         Assert.Equal("Furion", result.Result["name"]);
         Assert.Equal("Furion", result.Result["Name"]);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -283,7 +283,7 @@ public class DeclarativeManagerTests
             await context.Response.WriteAsJsonAsync(new { id = 1, name = "Furion" });
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -298,7 +298,7 @@ public class DeclarativeManagerTests
         Assert.Equal("Furion", result["name"]);
         Assert.Equal("Furion", result["Name"]);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -317,7 +317,7 @@ public class DeclarativeManagerTests
             await context.Response.WriteAsJsonAsync(new { id = 1, name = "Furion" });
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -332,7 +332,7 @@ public class DeclarativeManagerTests
         Assert.Equal("Furion", result.Result["name"]);
         Assert.Equal("Furion", result.Result["Name"]);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -351,7 +351,7 @@ public class DeclarativeManagerTests
             await context.Response.WriteAsJsonAsync(new { id = 1, name = "Furion" });
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -366,7 +366,7 @@ public class DeclarativeManagerTests
         Assert.Equal("Furion", result["name"]);
         Assert.Equal("Furion", result["Name"]);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -385,7 +385,7 @@ public class DeclarativeManagerTests
             await context.Response.WriteAsJsonAsync(new { id = 1, name = "Furion" });
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -400,7 +400,7 @@ public class DeclarativeManagerTests
         Assert.Equal("Furion", result.Result["name"]);
         Assert.Equal("Furion", result.Result["Name"]);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 }

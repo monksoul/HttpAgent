@@ -25,7 +25,8 @@ public class VoidContentConverterTests
         httpResponseMessage.Content = stringContent;
 
         var converter = new VoidContentConverter();
-        var result = converter.Read(new HttpContentConverterContext(httpResponseMessage));
+        var result = converter.Read(new HttpContentConverterContext(httpResponseMessage),
+            TestContext.Current.CancellationToken);
         Assert.Null(result);
     }
 
@@ -37,7 +38,8 @@ public class VoidContentConverterTests
         httpResponseMessage.Content = stringContent;
 
         var converter = new VoidContentConverter();
-        var result = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage));
+        var result = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage),
+            TestContext.Current.CancellationToken);
         Assert.Null(result);
     }
 
@@ -64,7 +66,8 @@ public class VoidContentConverterTests
         httpResponseMessage.Content = stringContent;
 
         var converter = new VoidContentConverter();
-        var result = converter.Read(typeof(string), new HttpContentConverterContext(httpResponseMessage));
+        var result = converter.Read(typeof(string), new HttpContentConverterContext(httpResponseMessage),
+            TestContext.Current.CancellationToken);
         Assert.Null(result);
     }
 
@@ -76,7 +79,8 @@ public class VoidContentConverterTests
         httpResponseMessage.Content = stringContent;
 
         var converter = new VoidContentConverter();
-        var result = await converter.ReadAsync(typeof(string), new HttpContentConverterContext(httpResponseMessage));
+        var result = await converter.ReadAsync(typeof(string), new HttpContentConverterContext(httpResponseMessage),
+            TestContext.Current.CancellationToken);
         Assert.Null(result);
     }
 

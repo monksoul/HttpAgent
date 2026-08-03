@@ -23,15 +23,16 @@ public class HttpContextExtensionsTests
             await Task.CompletedTask;
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         using HttpClient httpClient = new();
         httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(nameof(HttpContextExtensionsTests));
 
-        var httpResponseMessage = await httpClient.GetAsync($"http://localhost:{port}/test");
+        var httpResponseMessage =
+            await httpClient.GetAsync($"http://localhost:{port}/test", TestContext.Current.CancellationToken);
         httpResponseMessage.EnsureSuccessStatusCode();
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -182,17 +183,17 @@ public class HttpContextExtensionsTests
                                               result4!.Result);
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
         var httpResponseMessage =
             await httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get,
-                new Uri($"http://localhost:{port}/test")));
+                new Uri($"http://localhost:{port}/test")), TestContext.Current.CancellationToken);
         httpResponseMessage.EnsureSuccessStatusCode();
-        var str = await httpResponseMessage.Content.ReadAsStringAsync();
+        var str = await httpResponseMessage.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal("Hello World Hello World Hello World Hello World", str);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -253,25 +254,24 @@ public class HttpContextExtensionsTests
                                               result4.Result.Name + "");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
         var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, new Uri($"http://localhost:{port}/test"));
         httpRequestMessage.Content =
             new StringContent(JsonSerializer.Serialize(new HttpRemoteAspNetCoreModel1 { Id = 1, Name = "furion" }),
                 Encoding.UTF8, new MediaTypeHeaderValue("application/json"));
-        var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
+        var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage, TestContext.Current.CancellationToken);
         httpResponseMessage.EnsureSuccessStatusCode();
-        var str = await httpResponseMessage.Content.ReadAsStringAsync();
+        var str = await httpResponseMessage.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal("1 furion 1 furion 1 furion 1 furion", str);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
     public async Task ForwardAsync_FormUrlEncoded_ReturnOK()
     {
-        var boundary = "---------------" + DateTime.Now.Ticks.ToString("x");
         var port = NetworkUtility.FindAvailableTcpPort();
         var urls = new[] { "--urls", $"http://localhost:{port}" };
         var builder = WebApplication.CreateBuilder(urls);
@@ -329,7 +329,7 @@ public class HttpContextExtensionsTests
                                                   result4.Result.Name + "");
             }).DisableAntiforgery();
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
 
@@ -343,13 +343,13 @@ public class HttpContextExtensionsTests
         httpRequestMessage.Content = formUrlEncodedContent;
 
         var httpResponseMessage =
-            await httpClient.SendAsync(httpRequestMessage);
+            await httpClient.SendAsync(httpRequestMessage, TestContext.Current.CancellationToken);
         httpResponseMessage.EnsureSuccessStatusCode();
 
-        var str = await httpResponseMessage.Content.ReadAsStringAsync();
+        var str = await httpResponseMessage.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal("1 furion 1 furion 1 furion 1 furion", str);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -408,7 +408,7 @@ public class HttpContextExtensionsTests
                                               result4!.Result);
         }).DisableAntiforgery();
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
 
@@ -417,19 +417,19 @@ public class HttpContextExtensionsTests
 
         var multipartFormDataContent = new MultipartFormDataContent(boundary);
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
-        var bytes = await File.ReadAllBytesAsync(filePath);
+        var bytes = await File.ReadAllBytesAsync(filePath, TestContext.Current.CancellationToken);
         multipartFormDataContent.Add(new ByteArrayContent(bytes), "file", "test.txt");
 
         httpRequestMessage.Content = multipartFormDataContent;
 
         var httpResponseMessage =
-            await httpClient.SendAsync(httpRequestMessage);
+            await httpClient.SendAsync(httpRequestMessage, TestContext.Current.CancellationToken);
         httpResponseMessage.EnsureSuccessStatusCode();
 
-        var str = await httpResponseMessage.Content.ReadAsStringAsync();
+        var str = await httpResponseMessage.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal("test.txt test.txt test.txt test.txt", str);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -488,7 +488,7 @@ public class HttpContextExtensionsTests
                                               result4!.Result);
         }).DisableAntiforgery();
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
 
@@ -497,20 +497,20 @@ public class HttpContextExtensionsTests
 
         var multipartFormDataContent = new MultipartFormDataContent(boundary);
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
-        var bytes = await File.ReadAllBytesAsync(filePath);
+        var bytes = await File.ReadAllBytesAsync(filePath, TestContext.Current.CancellationToken);
         multipartFormDataContent.Add(new ByteArrayContent(bytes), "files", "test.txt");
         multipartFormDataContent.Add(new ByteArrayContent(bytes), "files", "test2.txt");
 
         httpRequestMessage.Content = multipartFormDataContent;
 
         var httpResponseMessage =
-            await httpClient.SendAsync(httpRequestMessage);
+            await httpClient.SendAsync(httpRequestMessage, TestContext.Current.CancellationToken);
         httpResponseMessage.EnsureSuccessStatusCode();
 
-        var str = await httpResponseMessage.Content.ReadAsStringAsync();
+        var str = await httpResponseMessage.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal("test.txt;test2.txt test.txt;test2.txt test.txt;test2.txt test.txt;test2.txt", str);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -569,7 +569,7 @@ public class HttpContextExtensionsTests
                                               result4!.Result);
         }).DisableAntiforgery();
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
 
@@ -580,25 +580,24 @@ public class HttpContextExtensionsTests
         multipartFormDataContent.Add(new StringContent("1"), "Id");
         multipartFormDataContent.Add(new StringContent("Furion"), "Name");
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
-        var bytes = await File.ReadAllBytesAsync(filePath);
+        var bytes = await File.ReadAllBytesAsync(filePath, TestContext.Current.CancellationToken);
         multipartFormDataContent.Add(new ByteArrayContent(bytes), "File", "test.txt");
 
         httpRequestMessage.Content = multipartFormDataContent;
 
         var httpResponseMessage =
-            await httpClient.SendAsync(httpRequestMessage);
+            await httpClient.SendAsync(httpRequestMessage, TestContext.Current.CancellationToken);
         httpResponseMessage.EnsureSuccessStatusCode();
 
-        var str = await httpResponseMessage.Content.ReadAsStringAsync();
+        var str = await httpResponseMessage.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal("1;Furion;test.txt 1;Furion;test.txt 1;Furion;test.txt 1;Furion;test.txt", str);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
     public async Task ForwardAsync_FromBody_ReturnOK()
     {
-        var boundary = "---------------" + DateTime.Now.Ticks.ToString("x");
         var port = NetworkUtility.FindAvailableTcpPort();
         var urls = new[] { "--urls", $"http://localhost:{port}" };
         var builder = WebApplication.CreateBuilder(urls);
@@ -634,7 +633,7 @@ public class HttpContextExtensionsTests
             await context.Response.WriteAsync(str1 + " " + str2 + " " + str3 + " " + str4);
         }).DisableAntiforgery();
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
 
@@ -648,13 +647,13 @@ public class HttpContextExtensionsTests
         httpRequestMessage.Content = stringContent;
 
         var httpResponseMessage =
-            await httpClient.SendAsync(httpRequestMessage);
+            await httpClient.SendAsync(httpRequestMessage, TestContext.Current.CancellationToken);
         httpResponseMessage.EnsureSuccessStatusCode();
 
-        var str = await httpResponseMessage.Content.ReadAsStringAsync();
+        var str = await httpResponseMessage.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal("Furion Furion Furion Furion", str);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -718,17 +717,17 @@ public class HttpContextExtensionsTests
                                               result4!.Result);
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
         var httpResponseMessage =
             await httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get,
-                new Uri($"http://localhost:{port}/test")));
+                new Uri($"http://localhost:{port}/test")), TestContext.Current.CancellationToken);
         httpResponseMessage.EnsureSuccessStatusCode();
-        var str = await httpResponseMessage.Content.ReadAsStringAsync();
+        var str = await httpResponseMessage.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal("Hello World Hello World Hello World Hello World", str);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -754,7 +753,7 @@ public class HttpContextExtensionsTests
 
         app.MapControllers();
 
-        app.MapPost("/test", async (HttpContext context, HttpRemoteAspNetCoreModel1 model) =>
+        app.MapPost("/test", async (HttpContext context, HttpRemoteAspNetCoreModel1 _) =>
         {
             var result1 = context.Forward<HttpRemoteAspNetCoreModel1>(HttpMethod.Post,
                 new Uri($"http://localhost:{port}/HttpRemote/Request2"),
@@ -789,19 +788,19 @@ public class HttpContextExtensionsTests
                                               result4.Result.Name + "");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
         var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, new Uri($"http://localhost:{port}/test"));
         httpRequestMessage.Content =
             new StringContent(JsonSerializer.Serialize(new HttpRemoteAspNetCoreModel1 { Id = 1, Name = "furion" }),
                 Encoding.UTF8, new MediaTypeHeaderValue("application/json"));
-        var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
+        var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage, TestContext.Current.CancellationToken);
         httpResponseMessage.EnsureSuccessStatusCode();
-        var str = await httpResponseMessage.Content.ReadAsStringAsync();
+        var str = await httpResponseMessage.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal("1 furion 1 furion 1 furion 1 furion", str);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -859,7 +858,7 @@ public class HttpContextExtensionsTests
                                               result4!.Result);
         }).DisableAntiforgery();
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
 
@@ -870,19 +869,19 @@ public class HttpContextExtensionsTests
         multipartFormDataContent.Add(new StringContent("1"), "Id");
         multipartFormDataContent.Add(new StringContent("Furion"), "Name");
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
-        var bytes = await File.ReadAllBytesAsync(filePath);
+        var bytes = await File.ReadAllBytesAsync(filePath, TestContext.Current.CancellationToken);
         multipartFormDataContent.Add(new ByteArrayContent(bytes), "File", "test.txt");
 
         httpRequestMessage.Content = multipartFormDataContent;
 
         var httpResponseMessage =
-            await httpClient.SendAsync(httpRequestMessage);
+            await httpClient.SendAsync(httpRequestMessage, TestContext.Current.CancellationToken);
         httpResponseMessage.EnsureSuccessStatusCode();
 
-        var str = await httpResponseMessage.Content.ReadAsStringAsync();
+        var str = await httpResponseMessage.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal("1;Furion;test.txt 1;Furion;test.txt 1;Furion;test.txt 1;Furion;test.txt", str);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -916,17 +915,17 @@ public class HttpContextExtensionsTests
             await context.Response.WriteAsync(result1!.Result!);
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
         var httpResponseMessage =
             await httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get,
-                new Uri($"http://localhost:{port}/test")));
+                new Uri($"http://localhost:{port}/test")), TestContext.Current.CancellationToken);
         httpResponseMessage.EnsureSuccessStatusCode();
-        var str = await httpResponseMessage.Content.ReadAsStringAsync();
+        var str = await httpResponseMessage.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal("Redirect", str);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -960,17 +959,17 @@ public class HttpContextExtensionsTests
             await result1!.Result!.CopyToAsync(context.Response.Body);
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
         var httpResponseMessage =
             await httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Post,
-                new Uri($"http://localhost:{port}/test")));
+                new Uri($"http://localhost:{port}/test")), TestContext.Current.CancellationToken);
         httpResponseMessage.EnsureSuccessStatusCode();
-        var stream = await httpResponseMessage.Content.ReadAsStreamAsync();
+        var stream = await httpResponseMessage.Content.ReadAsStreamAsync(TestContext.Current.CancellationToken);
         Assert.True(stream.CanRead);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -1015,25 +1014,25 @@ public class HttpContextExtensionsTests
                 $"http://localhost:{port}/HttpRemote/Request1");
             var httpResponseMessage4 = await context.ForwardAsync($"http://localhost:{port}/HttpRemote/Request1");
 
-            var str1 = await httpResponseMessage1!.Content.ReadAsStringAsync();
-            var str2 = await httpResponseMessage2!.Content.ReadAsStringAsync();
-            var str3 = await httpResponseMessage3!.Content.ReadAsStringAsync();
-            var str4 = await httpResponseMessage4!.Content.ReadAsStringAsync();
+            var str1 = await httpResponseMessage1!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+            var str2 = await httpResponseMessage2!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+            var str3 = await httpResponseMessage3!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+            var str4 = await httpResponseMessage4!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
             await context.Response.WriteAsync(str1 + " " + str2 + " " + str3 + " " + str4);
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
         var httpResponseMessage =
             await httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get,
-                new Uri($"http://localhost:{port}/test")));
+                new Uri($"http://localhost:{port}/test")), TestContext.Current.CancellationToken);
         httpResponseMessage.EnsureSuccessStatusCode();
-        var str = await httpResponseMessage.Content.ReadAsStringAsync();
+        var str = await httpResponseMessage.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal("Hello World Hello World Hello World Hello World", str);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -1059,7 +1058,7 @@ public class HttpContextExtensionsTests
 
         app.MapControllers();
 
-        app.MapPost("/test", async (HttpContext context, HttpRemoteAspNetCoreModel1 model) =>
+        app.MapPost("/test", async (HttpContext context, HttpRemoteAspNetCoreModel1 _) =>
         {
             var httpResponseMessage1 = await context.ForwardAsync(HttpMethod.Post,
                 new Uri($"http://localhost:{port}/HttpRemote/Request2"));
@@ -1083,19 +1082,19 @@ public class HttpContextExtensionsTests
                                               model4.Name + "");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
         var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, new Uri($"http://localhost:{port}/test"));
         httpRequestMessage.Content =
             new StringContent(JsonSerializer.Serialize(new HttpRemoteAspNetCoreModel1 { Id = 1, Name = "furion" }),
                 Encoding.UTF8, new MediaTypeHeaderValue("application/json"));
-        var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
+        var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage, TestContext.Current.CancellationToken);
         httpResponseMessage.EnsureSuccessStatusCode();
-        var str = await httpResponseMessage.Content.ReadAsStringAsync();
+        var str = await httpResponseMessage.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal("1 furion 1 furion 1 furion 1 furion", str);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -1134,15 +1133,15 @@ public class HttpContextExtensionsTests
             var httpResponseMessage4 =
                 await context.ForwardAsync($"http://localhost:{port}/HttpRemote/Request6");
 
-            var str1 = await httpResponseMessage1!.Content.ReadAsStringAsync();
-            var str2 = await httpResponseMessage2!.Content.ReadAsStringAsync();
-            var str3 = await httpResponseMessage3!.Content.ReadAsStringAsync();
-            var str4 = await httpResponseMessage4!.Content.ReadAsStringAsync();
+            var str1 = await httpResponseMessage1!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+            var str2 = await httpResponseMessage2!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+            var str3 = await httpResponseMessage3!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+            var str4 = await httpResponseMessage4!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
             await context.Response.WriteAsync(str1 + " " + str2 + " " + str3 + " " + str4);
         }).DisableAntiforgery();
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
 
@@ -1153,19 +1152,19 @@ public class HttpContextExtensionsTests
         multipartFormDataContent.Add(new StringContent("1"), "Id");
         multipartFormDataContent.Add(new StringContent("Furion"), "Name");
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
-        var bytes = await File.ReadAllBytesAsync(filePath);
+        var bytes = await File.ReadAllBytesAsync(filePath, TestContext.Current.CancellationToken);
         multipartFormDataContent.Add(new ByteArrayContent(bytes), "File", "test.txt");
 
         httpRequestMessage.Content = multipartFormDataContent;
 
         var httpResponseMessage =
-            await httpClient.SendAsync(httpRequestMessage);
+            await httpClient.SendAsync(httpRequestMessage, TestContext.Current.CancellationToken);
         httpResponseMessage.EnsureSuccessStatusCode();
 
-        var str = await httpResponseMessage.Content.ReadAsStringAsync();
+        var str = await httpResponseMessage.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal("1;Furion;test.txt 1;Furion;test.txt 1;Furion;test.txt 1;Furion;test.txt", str);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -1213,25 +1212,25 @@ public class HttpContextExtensionsTests
             // ReSharper disable once MethodHasAsyncOverload
             var httpResponseMessage4 = context.Forward($"http://localhost:{port}/HttpRemote/Request1");
 
-            var str1 = await httpResponseMessage1!.Content.ReadAsStringAsync();
-            var str2 = await httpResponseMessage2!.Content.ReadAsStringAsync();
-            var str3 = await httpResponseMessage3!.Content.ReadAsStringAsync();
-            var str4 = await httpResponseMessage4!.Content.ReadAsStringAsync();
+            var str1 = await httpResponseMessage1!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+            var str2 = await httpResponseMessage2!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+            var str3 = await httpResponseMessage3!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+            var str4 = await httpResponseMessage4!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
             await context.Response.WriteAsync(str1 + " " + str2 + " " + str3 + " " + str4);
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
         var httpResponseMessage =
             await httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get,
-                new Uri($"http://localhost:{port}/test")));
+                new Uri($"http://localhost:{port}/test")), TestContext.Current.CancellationToken);
         httpResponseMessage.EnsureSuccessStatusCode();
-        var str = await httpResponseMessage.Content.ReadAsStringAsync();
+        var str = await httpResponseMessage.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal("Hello World Hello World Hello World Hello World", str);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -1257,7 +1256,7 @@ public class HttpContextExtensionsTests
 
         app.MapControllers();
 
-        app.MapPost("/test", async (HttpContext context, HttpRemoteAspNetCoreModel1 model) =>
+        app.MapPost("/test", async (HttpContext context, HttpRemoteAspNetCoreModel1 _) =>
         {
             // ReSharper disable once MethodHasAsyncOverload
             var httpResponseMessage1 = context.Forward(HttpMethod.Post,
@@ -1284,19 +1283,19 @@ public class HttpContextExtensionsTests
                                               model4.Name + "");
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
         var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, new Uri($"http://localhost:{port}/test"));
         httpRequestMessage.Content =
             new StringContent(JsonSerializer.Serialize(new HttpRemoteAspNetCoreModel1 { Id = 1, Name = "furion" }),
                 Encoding.UTF8, new MediaTypeHeaderValue("application/json"));
-        var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
+        var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage, TestContext.Current.CancellationToken);
         httpResponseMessage.EnsureSuccessStatusCode();
-        var str = await httpResponseMessage.Content.ReadAsStringAsync();
+        var str = await httpResponseMessage.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal("1 furion 1 furion 1 furion 1 furion", str);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -1338,15 +1337,15 @@ public class HttpContextExtensionsTests
             var httpResponseMessage4 =
                 context.Forward($"http://localhost:{port}/HttpRemote/Request6");
 
-            var str1 = await httpResponseMessage1!.Content.ReadAsStringAsync();
-            var str2 = await httpResponseMessage2!.Content.ReadAsStringAsync();
-            var str3 = await httpResponseMessage3!.Content.ReadAsStringAsync();
-            var str4 = await httpResponseMessage4!.Content.ReadAsStringAsync();
+            var str1 = await httpResponseMessage1!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+            var str2 = await httpResponseMessage2!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+            var str3 = await httpResponseMessage3!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+            var str4 = await httpResponseMessage4!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
             await context.Response.WriteAsync(str1 + " " + str2 + " " + str3 + " " + str4);
         }).DisableAntiforgery();
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
 
@@ -1357,19 +1356,19 @@ public class HttpContextExtensionsTests
         multipartFormDataContent.Add(new StringContent("1"), "Id");
         multipartFormDataContent.Add(new StringContent("Furion"), "Name");
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
-        var bytes = await File.ReadAllBytesAsync(filePath);
+        var bytes = await File.ReadAllBytesAsync(filePath, TestContext.Current.CancellationToken);
         multipartFormDataContent.Add(new ByteArrayContent(bytes), "File", "test.txt");
 
         httpRequestMessage.Content = multipartFormDataContent;
 
         var httpResponseMessage =
-            await httpClient.SendAsync(httpRequestMessage);
+            await httpClient.SendAsync(httpRequestMessage, TestContext.Current.CancellationToken);
         httpResponseMessage.EnsureSuccessStatusCode();
 
-        var str = await httpResponseMessage.Content.ReadAsStringAsync();
+        var str = await httpResponseMessage.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal("1;Furion;test.txt 1;Furion;test.txt 1;Furion;test.txt 1;Furion;test.txt", str);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -1400,22 +1399,22 @@ public class HttpContextExtensionsTests
             var httpResponseMessage1 = await context.ForwardAsync(HttpMethod.Get,
                 new Uri($"http://localhost:{port}/HttpRemote/Request8"));
 
-            var str1 = await httpResponseMessage1!.Content.ReadAsStringAsync();
+            var str1 = await httpResponseMessage1!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
             await context.Response.WriteAsync(str1);
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
         var httpResponseMessage =
             await httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get,
-                new Uri($"http://localhost:{port}/test")));
+                new Uri($"http://localhost:{port}/test")), TestContext.Current.CancellationToken);
         httpResponseMessage.EnsureSuccessStatusCode();
-        var str = await httpResponseMessage.Content.ReadAsStringAsync();
+        var str = await httpResponseMessage.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal("Redirect", str);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -1451,17 +1450,17 @@ public class HttpContextExtensionsTests
             await stream.CopyToAsync(context.Response.Body);
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
         var httpResponseMessage =
             await httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Post,
-                new Uri($"http://localhost:{port}/test")));
+                new Uri($"http://localhost:{port}/test")), TestContext.Current.CancellationToken);
         httpResponseMessage.EnsureSuccessStatusCode();
-        var stream = await httpResponseMessage.Content.ReadAsStreamAsync();
+        var stream = await httpResponseMessage.Content.ReadAsStreamAsync(TestContext.Current.CancellationToken);
         Assert.True(stream.CanRead);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -1513,7 +1512,7 @@ public class HttpContextExtensionsTests
                 WithResponseStatusCode = false,
                 WithResponseHeaders = false,
                 OnForward =
-                    (ctx, res) => { ctx.Response.ContentLength = 10; }
+                    (ctx, _) => { ctx.Response.ContentLength = 10; }
             });
         Assert.Equal(200, defaultHttpContext3.Response.StatusCode);
         Assert.DoesNotContain(defaultHttpContext3.Response.Headers, u => u.Key == "Framework");
@@ -1592,17 +1591,17 @@ public class HttpContextExtensionsTests
             await context.Response.WriteAsync(contentResult?.Content ?? string.Empty);
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
         var httpResponseMessage =
             await httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Post,
-                new Uri($"http://localhost:{port}/test")));
+                new Uri($"http://localhost:{port}/test")), TestContext.Current.CancellationToken);
         // httpResponseMessage.EnsureSuccessStatusCode();
         Assert.Equal(HttpStatusCode.InternalServerError, httpResponseMessage.StatusCode);
-        var str = await httpResponseMessage.Content.ReadAsStringAsync();
+        var str = await httpResponseMessage.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Contains("出错了", str);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 }

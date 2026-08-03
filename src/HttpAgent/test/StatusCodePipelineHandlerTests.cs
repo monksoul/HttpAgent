@@ -17,11 +17,13 @@ public class StatusCodePipelineHandlerTests
     public async Task InvokeStatusCodeHandlersAsync_Invalid_Parameters()
     {
         await Assert.ThrowsAsync<ArgumentNullException>(async () =>
-            await StatusCodePipelineHandler.InvokeStatusCodeHandlersAsync(null!, null!));
+            await StatusCodePipelineHandler.InvokeStatusCodeHandlersAsync(null!, null!,
+                TestContext.Current.CancellationToken));
 
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
         await Assert.ThrowsAsync<ArgumentNullException>(async () =>
-            await StatusCodePipelineHandler.InvokeStatusCodeHandlersAsync(httpRequestBuilder, null!));
+            await StatusCodePipelineHandler.InvokeStatusCodeHandlersAsync(httpRequestBuilder, null!,
+                TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -29,7 +31,8 @@ public class StatusCodePipelineHandlerTests
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
         var httpResponseMessage = new HttpResponseMessage { StatusCode = HttpStatusCode.OK };
-        await StatusCodePipelineHandler.InvokeStatusCodeHandlersAsync(httpRequestBuilder, httpResponseMessage);
+        await StatusCodePipelineHandler.InvokeStatusCodeHandlersAsync(httpRequestBuilder, httpResponseMessage,
+            TestContext.Current.CancellationToken);
 
         var i = 0;
         httpRequestBuilder.WithStatusCodeHandler(200, (_, _) =>
@@ -43,7 +46,8 @@ public class StatusCodePipelineHandlerTests
                 return Task.CompletedTask;
             });
 
-        await StatusCodePipelineHandler.InvokeStatusCodeHandlersAsync(httpRequestBuilder, httpResponseMessage);
+        await StatusCodePipelineHandler.InvokeStatusCodeHandlersAsync(httpRequestBuilder, httpResponseMessage,
+            TestContext.Current.CancellationToken);
         Assert.Equal(2, i);
 
         var httpRequestBuilder2 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
@@ -54,7 +58,8 @@ public class StatusCodePipelineHandlerTests
             j++;
             return Task.CompletedTask;
         });
-        await StatusCodePipelineHandler.InvokeStatusCodeHandlersAsync(httpRequestBuilder2, httpResponseMessage2);
+        await StatusCodePipelineHandler.InvokeStatusCodeHandlersAsync(httpRequestBuilder2, httpResponseMessage2,
+            TestContext.Current.CancellationToken);
         Assert.Equal(0, j);
     }
 
@@ -97,13 +102,14 @@ public class StatusCodePipelineHandlerTests
 
         await Assert.ThrowsAsync<ArgumentNullException>(async () =>
         {
-            await httpRemoteService.SendCoreAsync(null!, HttpCompletionOption.ResponseContentRead, null, null);
+            await httpRemoteService.SendCoreAsync(null!, HttpCompletionOption.ResponseContentRead, null, null,
+                TestContext.Current.CancellationToken);
         });
 
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(async () =>
         {
             await httpRemoteService.SendCoreAsync(new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost/")),
-                HttpCompletionOption.ResponseContentRead, null, null);
+                HttpCompletionOption.ResponseContentRead, null, null, TestContext.Current.CancellationToken);
         });
         Assert.Equal("Both `sendAsyncMethod` and `sendMethod` cannot be null.", exception.Message);
 
@@ -112,7 +118,8 @@ public class StatusCodePipelineHandlerTests
             _ = await httpRemoteService.SendCoreAsync(
                 HttpRequestBuilder.Get("https://furion.net").SetTimeout(TimeSpan.FromSeconds(101)),
                 HttpCompletionOption.ResponseContentRead, (httpClient, httpRequestMessage, option, token) =>
-                    httpClient.SendAsync(httpRequestMessage, option, token), null);
+                    httpClient.SendAsync(httpRequestMessage, option, token), null,
+                TestContext.Current.CancellationToken);
         });
         Assert.Equal(
             "HttpTimeoutOptions's Timeout cannot be greater than HttpClient's Timeout, which defaults to 100 seconds.",

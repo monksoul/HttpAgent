@@ -246,7 +246,7 @@ public class FileUploadManagerTests
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -255,13 +255,13 @@ public class FileUploadManagerTests
         var fileUploadManager = new FileUploadManager(httpRemoteService, httpFileUploadBuilder);
 
         // ReSharper disable once MethodHasAsyncOverload
-        var httpResponseMessage = fileUploadManager.Start();
-        var result = await httpResponseMessage!.Content.ReadAsStringAsync();
+        var httpResponseMessage = fileUploadManager.Start(TestContext.Current.CancellationToken);
+        var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Console.WriteLine(result);
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.Equal("test.txt", result);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -276,13 +276,13 @@ public class FileUploadManagerTests
         await using var app = builder.Build();
         app.MapPost("/test", async (HttpContext context, IFormFile file) =>
             {
-                await Task.Delay(200);
+                await Task.Delay(200, TestContext.Current.CancellationToken);
 
                 await context.Response.WriteAsync(file.FileName);
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -298,7 +298,7 @@ public class FileUploadManagerTests
             _ = fileUploadManager.Start(cancellationTokenSource.Token);
         });
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -319,7 +319,7 @@ public class FileUploadManagerTests
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -334,15 +334,15 @@ public class FileUploadManagerTests
         var fileUploadManager = new FileUploadManager(httpRemoteService, httpFileUploadBuilder);
 
         // ReSharper disable once MethodHasAsyncOverload
-        var httpResponseMessage = fileUploadManager.Start();
-        var result = await httpResponseMessage!.Content.ReadAsStringAsync();
+        var httpResponseMessage = fileUploadManager.Start(TestContext.Current.CancellationToken);
+        var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Console.WriteLine(result);
 
         Assert.Equal(1, i);
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.Equal("test.txt", result);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -363,7 +363,7 @@ public class FileUploadManagerTests
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -382,15 +382,15 @@ public class FileUploadManagerTests
         var fileUploadManager = new FileUploadManager(httpRemoteService, httpFileUploadBuilder);
 
         // ReSharper disable once MethodHasAsyncOverload
-        var httpResponseMessage = fileUploadManager.Start();
-        var result = await httpResponseMessage!.Content.ReadAsStringAsync();
+        var httpResponseMessage = fileUploadManager.Start(TestContext.Current.CancellationToken);
+        var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Console.WriteLine(result);
 
         Assert.Equal(2, i);
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.Equal("test.txt", result);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -411,7 +411,7 @@ public class FileUploadManagerTests
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var customFileTransferEventHandler = new CustomFileTransferEventHandler();
         var (httpRemoteService, serviceProvider) =
@@ -432,8 +432,8 @@ public class FileUploadManagerTests
         var fileUploadManager = new FileUploadManager(httpRemoteService, httpFileUploadBuilder);
 
         // ReSharper disable once MethodHasAsyncOverload
-        var httpResponseMessage = fileUploadManager.Start();
-        var result = await httpResponseMessage!.Content.ReadAsStringAsync();
+        var httpResponseMessage = fileUploadManager.Start(TestContext.Current.CancellationToken);
+        var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Console.WriteLine(result);
 
         Assert.Equal(2, i);
@@ -441,7 +441,7 @@ public class FileUploadManagerTests
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.Equal("test.txt", result);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -465,7 +465,7 @@ public class FileUploadManagerTests
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -492,11 +492,11 @@ public class FileUploadManagerTests
 
         Assert.Throws<HttpRequestException>(() =>
         {
-            _ = fileUploadManager.Start();
+            _ = fileUploadManager.Start(TestContext.Current.CancellationToken);
         });
         Assert.Equal(2, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -517,7 +517,7 @@ public class FileUploadManagerTests
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -525,13 +525,13 @@ public class FileUploadManagerTests
             new HttpFileUploadBuilder(HttpMethod.Post, new Uri($"http://localhost:{port}/test"), filePath, "file");
         var fileUploadManager = new FileUploadManager(httpRemoteService, httpFileUploadBuilder);
 
-        var httpResponseMessage = await fileUploadManager.StartAsync();
-        var result = await httpResponseMessage!.Content.ReadAsStringAsync();
+        var httpResponseMessage = await fileUploadManager.StartAsync(TestContext.Current.CancellationToken);
+        var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Console.WriteLine(result);
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.Equal("test.txt", result);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -546,13 +546,13 @@ public class FileUploadManagerTests
         await using var app = builder.Build();
         app.MapPost("/test", async (HttpContext context, IFormFile file) =>
             {
-                await Task.Delay(200);
+                await Task.Delay(200, TestContext.Current.CancellationToken);
 
                 await context.Response.WriteAsync(file.FileName);
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -568,7 +568,7 @@ public class FileUploadManagerTests
             _ = await fileUploadManager.StartAsync(cancellationTokenSource.Token);
         });
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -589,7 +589,7 @@ public class FileUploadManagerTests
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -603,15 +603,15 @@ public class FileUploadManagerTests
                 });
         var fileUploadManager = new FileUploadManager(httpRemoteService, httpFileUploadBuilder);
 
-        var httpResponseMessage = await fileUploadManager.StartAsync();
-        var result = await httpResponseMessage!.Content.ReadAsStringAsync();
+        var httpResponseMessage = await fileUploadManager.StartAsync(TestContext.Current.CancellationToken);
+        var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Console.WriteLine(result);
 
         Assert.Equal(1, i);
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.Equal("test.txt", result);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -632,7 +632,7 @@ public class FileUploadManagerTests
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -650,15 +650,15 @@ public class FileUploadManagerTests
                 });
         var fileUploadManager = new FileUploadManager(httpRemoteService, httpFileUploadBuilder);
 
-        var httpResponseMessage = await fileUploadManager.StartAsync();
-        var result = await httpResponseMessage!.Content.ReadAsStringAsync();
+        var httpResponseMessage = await fileUploadManager.StartAsync(TestContext.Current.CancellationToken);
+        var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Console.WriteLine(result);
 
         Assert.Equal(2, i);
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.Equal("test.txt", result);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -679,7 +679,7 @@ public class FileUploadManagerTests
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var customFileTransferEventHandler = new CustomFileTransferEventHandler();
         var (httpRemoteService, serviceProvider) =
@@ -699,8 +699,8 @@ public class FileUploadManagerTests
                 }).SetEventHandler<CustomFileTransferEventHandler>();
         var fileUploadManager = new FileUploadManager(httpRemoteService, httpFileUploadBuilder);
 
-        var httpResponseMessage = await fileUploadManager.StartAsync();
-        var result = await httpResponseMessage!.Content.ReadAsStringAsync();
+        var httpResponseMessage = await fileUploadManager.StartAsync(TestContext.Current.CancellationToken);
+        var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Console.WriteLine(result);
 
         Assert.Equal(2, i);
@@ -708,7 +708,7 @@ public class FileUploadManagerTests
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.Equal("test.txt", result);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -732,7 +732,7 @@ public class FileUploadManagerTests
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
@@ -759,11 +759,11 @@ public class FileUploadManagerTests
 
         await Assert.ThrowsAsync<HttpRequestException>(async () =>
         {
-            _ = await fileUploadManager.StartAsync();
+            _ = await fileUploadManager.StartAsync(TestContext.Current.CancellationToken);
         });
         Assert.Equal(2, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 }

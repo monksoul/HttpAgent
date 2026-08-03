@@ -68,10 +68,10 @@ public class RateLimitedStreamTests
     public async Task FlushAsync_ReturnOK()
     {
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
-        using var fileStream = File.OpenRead(filePath);
-        using var rateLimitedStream = new RateLimitedStream(fileStream, 5);
+        await using var fileStream = File.OpenRead(filePath);
+        await using var rateLimitedStream = new RateLimitedStream(fileStream, 5);
 
-        await rateLimitedStream.FlushAsync();
+        await rateLimitedStream.FlushAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -151,20 +151,20 @@ public class RateLimitedStreamTests
     {
         var testData = new byte[8192];
         using var memoryStream = new MemoryStream(testData);
-        using var rateLimitedStream = new RateLimitedStream(memoryStream, 4096);
+        await using var rateLimitedStream = new RateLimitedStream(memoryStream, 4096);
         var buffer = new byte[4096];
         var totalBytesRead = 0;
 
         while (totalBytesRead < testData.Length)
         {
             var bytesRead = await rateLimitedStream.ReadAsync(buffer, 0,
-                Math.Min(buffer.Length, testData.Length - totalBytesRead));
+                Math.Min(buffer.Length, testData.Length - totalBytesRead), TestContext.Current.CancellationToken);
             totalBytesRead += bytesRead;
             Assert.InRange(bytesRead, 0, 4096);
 
             if (totalBytesRead < testData.Length)
             {
-                await Task.Delay(1000);
+                await Task.Delay(1000, TestContext.Current.CancellationToken);
             }
         }
 
@@ -204,13 +204,14 @@ public class RateLimitedStreamTests
     {
         var testData = new byte[8192];
         using var memoryStream = new MemoryStream();
-        using var rateLimitedStream = new RateLimitedStream(memoryStream, 4096);
+        await using var rateLimitedStream = new RateLimitedStream(memoryStream, 4096);
 
-        await rateLimitedStream.WriteAsync(testData, 0, testData.Length / 2);
+        await rateLimitedStream.WriteAsync(testData, 0, testData.Length / 2, TestContext.Current.CancellationToken);
 
-        await Task.Delay(1000);
+        await Task.Delay(1000, TestContext.Current.CancellationToken);
 
-        await rateLimitedStream.WriteAsync(testData, testData.Length / 2, testData.Length / 2);
+        await rateLimitedStream.WriteAsync(testData, testData.Length / 2, testData.Length / 2,
+            TestContext.Current.CancellationToken);
 
         Assert.Equal(testData.Length, memoryStream.Length);
     }
@@ -220,9 +221,9 @@ public class RateLimitedStreamTests
     {
         var testData = new byte[10000];
         using var memoryStream = new MemoryStream();
-        using var rateLimitedStream = new RateLimitedStream(memoryStream, 10240);
+        await using var rateLimitedStream = new RateLimitedStream(memoryStream, 10240);
 
-        await rateLimitedStream.WriteAsync(testData, 0, testData.Length);
+        await rateLimitedStream.WriteAsync(testData, 0, testData.Length, TestContext.Current.CancellationToken);
 
         Assert.Equal(testData.Length, memoryStream.Length);
     }
@@ -297,24 +298,24 @@ public class RateLimitedStreamTests
     public async Task WaitForTokensAsync_ReturnOK()
     {
         using var memoryStream = new MemoryStream();
-        using var rateLimitedStream = new RateLimitedStream(memoryStream, 1024);
+        await using var rateLimitedStream = new RateLimitedStream(memoryStream, 1024);
 
         rateLimitedStream._availableTokens = 512;
-        await rateLimitedStream.WaitForTokensAsync(256);
+        await rateLimitedStream.WaitForTokensAsync(256, TestContext.Current.CancellationToken);
 
-        Assert.Equal(256, rateLimitedStream._availableTokens);
+        Assert.Equal(256, (int)rateLimitedStream._availableTokens);
     }
 
     [Fact]
     public async Task WaitForTokensAsync_InsufficientTokens_ReturnOK()
     {
         using var memoryStream = new MemoryStream();
-        using var rateLimitedStream = new RateLimitedStream(memoryStream, 4096);
+        await using var rateLimitedStream = new RateLimitedStream(memoryStream, 4096);
 
         rateLimitedStream._availableTokens = 0;
         rateLimitedStream._lastTokenRefillTime = rateLimitedStream._stopwatch.ElapsedMilliseconds;
 
-        await rateLimitedStream.WaitForTokensAsync(100);
+        await rateLimitedStream.WaitForTokensAsync(100, TestContext.Current.CancellationToken);
 
         Assert.True(rateLimitedStream._availableTokens >= 0);
     }

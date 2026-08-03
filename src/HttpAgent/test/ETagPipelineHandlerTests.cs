@@ -25,8 +25,8 @@ public class ETagPipelineHandlerTests
     [Fact]
     public void GenerateCacheKey_ReturnOK()
     {
-        var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, "http://furion.net");
-        Assert.Equal("GET:http://furion.net/", ETagPipelineHandler.GenerateCacheKey(httpRequestMessage));
+        var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, "https://furion.net");
+        Assert.Equal("GET:https://furion.net/", ETagPipelineHandler.GenerateCacheKey(httpRequestMessage));
     }
 
     [Fact]
@@ -43,9 +43,9 @@ public class ETagPipelineHandlerTests
         await Assert.ThrowsAsync<ArgumentException>(() => handler.CacheResponseAsync(" ", null!, null!));
 
         await Assert.ThrowsAsync<ArgumentNullException>(() =>
-            handler.CacheResponseAsync("GET:http://furion.net/", null!, null!));
+            handler.CacheResponseAsync("GET:https://furion.net/", null!, null!));
         await Assert.ThrowsAsync<ArgumentNullException>(() =>
-            handler.CacheResponseAsync("GET:http://furion.net/", new HttpResponseMessage(), null!));
+            handler.CacheResponseAsync("GET:https://furion.net/", new HttpResponseMessage(), null!));
     }
 
     [Fact]
@@ -64,7 +64,7 @@ public class ETagPipelineHandlerTests
             new StringContent("让 .NET 开发更简单，更通用，更流行。", Encoding.UTF8, MediaTypeNames.Text.Plain);
         httpResponseMessage.Headers.ETag = new EntityTagHeaderValue("\"675af34563dc-tr34\"");
 
-        await handler.CacheResponseAsync("GET:http://furion.net/", httpResponseMessage,
+        await handler.CacheResponseAsync("GET:https://furion.net/", httpResponseMessage,
             httpResponseMessage.Headers.ETag);
 
         var memoryCache = cache as MemoryETagCache;
@@ -110,8 +110,8 @@ public class ETagPipelineHandlerTests
             new StringContent("让 .NET 开发更简单，更通用，更流行。", Encoding.UTF8, MediaTypeNames.Text.Plain);
         httpResponseMessage.Headers.ETag = new EntityTagHeaderValue("\"675af34563dc-tr34\"");
 
-        handler.CacheResponseAsync("GET:http://furion.net/", httpResponseMessage,
-            httpResponseMessage.Headers.ETag).GetAwaiter().GetResult();
+        AsyncUtility.RunSync(() => handler.CacheResponseAsync("GET:https://furion.net/", httpResponseMessage,
+            httpResponseMessage.Headers.ETag));
 
         var memoryCache = cache as MemoryETagCache;
         Assert.NotNull(memoryCache);
@@ -120,12 +120,13 @@ public class ETagPipelineHandlerTests
 
         var newHttpResponseMessage =
             ETagPipelineHandler.BuildResponseFromCacheItem(item,
-                new HttpRequestMessage(HttpMethod.Get, "http://furion.net/"));
+                new HttpRequestMessage(HttpMethod.Get, "https://furion.net/"));
         Assert.NotNull(newHttpResponseMessage);
         Assert.Equal(HttpStatusCode.OK, newHttpResponseMessage.StatusCode);
         Assert.NotNull(newHttpResponseMessage.Content);
         Assert.Equal("让 .NET 开发更简单，更通用，更流行。",
-            newHttpResponseMessage.Content.ReadAsStringAsync().GetAwaiter().GetResult());
+            AsyncUtility.RunSync(() =>
+                newHttpResponseMessage.Content.ReadAsStringAsync(TestContext.Current.CancellationToken)));
         Assert.Equal("OK", newHttpResponseMessage.ReasonPhrase);
         Assert.Equal("text/plain; charset=utf-8", newHttpResponseMessage.Content.Headers.ContentType?.ToString());
         Assert.Equal("Furion", newHttpResponseMessage.Headers.GetValues("framework").First());

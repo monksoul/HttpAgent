@@ -147,7 +147,7 @@ public class DigestCredentialsTests
             await context.Response.CompleteAsync();
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var ex = Assert.Throws<InvalidOperationException>(() => DigestCredentials.GetDigestCredentials(
             $"http://localhost:{port}/test",
@@ -155,7 +155,7 @@ public class DigestCredentialsTests
 
         Assert.Equal("Failed to obtain digest credentials.", ex.Message);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -175,7 +175,7 @@ public class DigestCredentialsTests
             await context.Response.CompleteAsync();
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var credentials = DigestCredentials.GetDigestCredentials($"http://localhost:{port}/test",
             "admin", "a123456789", HttpMethod.Get);
@@ -184,7 +184,7 @@ public class DigestCredentialsTests
             "username=\"admin\", realm=\"IP Camera(K7151)\", nonce=\"613134303a38303236313662363ae1b0b8bde54893eab8c0846d38665ab9\", uri=\"/test\", algorithm=MD5, qop=auth, nc=00000001",
             credentials);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -206,11 +206,12 @@ public class DigestCredentialsTests
         using var httpClient = new HttpClient();
         httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Digest", credentials);
 
-        var response = await httpClient.GetAsync("https://httpbin.org/digest-auth/auth/user/passwd");
+        var response = await httpClient.GetAsync("https://httpbin.org/digest-auth/auth/user/passwd",
+            TestContext.Current.CancellationToken);
 
         Assert.True(response.IsSuccessStatusCode, $"Digest authentication failed. Status: {response.StatusCode}");
 
-        var content = await response.Content.ReadAsStringAsync();
+        var content = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Contains("\"authenticated\": true", content);
     }
 }

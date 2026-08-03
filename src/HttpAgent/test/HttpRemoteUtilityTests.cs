@@ -53,7 +53,7 @@ public class HttpRemoteUtilityTests
                 HttpRemoteUtility.IPAddressConnectCallback(AddressFamily.Unspecified, context, token)
         });
 
-        var response = await httpClient.GetAsync("https://www.baidu.com");
+        var response = await httpClient.GetAsync("https://www.baidu.com", TestContext.Current.CancellationToken);
         response.EnsureSuccessStatusCode();
     }
 
@@ -65,7 +65,7 @@ public class HttpRemoteUtilityTests
             ConnectCallback = HttpRemoteUtility.IPv4ConnectCallback
         });
 
-        var response = await httpClient.GetAsync("https://www.baidu.com");
+        var response = await httpClient.GetAsync("https://www.baidu.com", TestContext.Current.CancellationToken);
         response.EnsureSuccessStatusCode();
     }
 
@@ -79,7 +79,7 @@ public class HttpRemoteUtilityTests
 
         await Assert.ThrowsAsync<HttpRequestException>(async () =>
         {
-            var response = await httpClient.GetAsync("https://www.baidu.com");
+            var response = await httpClient.GetAsync("https://www.baidu.com", TestContext.Current.CancellationToken);
             response.EnsureSuccessStatusCode();
         });
     }
@@ -92,7 +92,7 @@ public class HttpRemoteUtilityTests
             ConnectCallback = HttpRemoteUtility.UnspecifiedConnectCallback
         });
 
-        var response = await httpClient.GetAsync("https://www.baidu.com");
+        var response = await httpClient.GetAsync("https://www.baidu.com", TestContext.Current.CancellationToken);
         response.EnsureSuccessStatusCode();
     }
 
@@ -105,7 +105,7 @@ public class HttpRemoteUtilityTests
                 HttpRemoteUtility.ConnectWithLocalIPv4(IPAddress.Parse("192.168.0.103"), context, token)
         });
 
-        var response = await httpClient.GetAsync("https://www.baidu.com");
+        var response = await httpClient.GetAsync("https://www.baidu.com", TestContext.Current.CancellationToken);
         response.EnsureSuccessStatusCode();
     }
 
@@ -120,7 +120,7 @@ public class HttpRemoteUtilityTests
 
         await Assert.ThrowsAsync<HttpRequestException>(async () =>
         {
-            var response = await httpClient.GetAsync("https://www.baidu.com");
+            var response = await httpClient.GetAsync("https://www.baidu.com", TestContext.Current.CancellationToken);
             response.EnsureSuccessStatusCode();
         });
     }
@@ -176,8 +176,6 @@ public class HttpRemoteUtilityTests
         Assert.True(jsonSerializationContext.JsonSerializerOptions.IncludeFields);
         Assert.Equal(typeof(JsonModel), jsonSerializationContext.ResultType);
         Assert.NotNull(jsonSerializationContext.GetResultValue);
-
-        serviceProvider.Dispose();
     }
 
     [Fact]
@@ -204,8 +202,6 @@ public class HttpRemoteUtilityTests
         Assert.True(jsonSerializationContext.JsonSerializerOptions.IncludeFields);
         Assert.Equal(typeof(ApiResult<JsonModel>), jsonSerializationContext.ResultType);
         Assert.NotNull(jsonSerializationContext.GetResultValue);
-
-        serviceProvider.Dispose();
     }
 
     [Fact]
@@ -228,8 +224,6 @@ public class HttpRemoteUtilityTests
         Assert.True(jsonSerializationContext.JsonSerializerOptions.IncludeFields);
         Assert.Equal(typeof(JsonModel), jsonSerializationContext.ResultType);
         Assert.NotNull(jsonSerializationContext.GetResultValue);
-
-        serviceProvider.Dispose();
     }
 
     [Fact]

@@ -93,19 +93,19 @@ public class WebSocketClientTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         using var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
-        await webSocketClient.ConnectAsync();
+        await webSocketClient.ConnectAsync(TestContext.Current.CancellationToken);
 
         Assert.NotNull(webSocketClient._clientWebSocket);
         Assert.NotNull(webSocketClient.State);
         Assert.Equal(WebSocketState.Open, webSocketClient.State);
         Assert.Equal(0, webSocketClient.CurrentReconnectRetries);
 
-        await Task.Delay(200);
-        await webSocketClient.CloseAsync();
-        await app.StopAsync();
+        await Task.Delay(200, TestContext.Current.CancellationToken);
+        await webSocketClient.CloseAsync(TestContext.Current.CancellationToken);
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -137,23 +137,23 @@ public class WebSocketClientTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         using var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
 
         var i = 0;
-        webSocketClient.Connecting += (s, e) => { i++; };
-        webSocketClient.Connected += (s, e) => { i++; };
-        await webSocketClient.ConnectAsync();
+        webSocketClient.Connecting += (s, _) => { i++; };
+        webSocketClient.Connected += (s, _) => { i++; };
+        await webSocketClient.ConnectAsync(TestContext.Current.CancellationToken);
 
         Assert.NotNull(webSocketClient._clientWebSocket);
         Assert.NotNull(webSocketClient.State);
         Assert.Equal(WebSocketState.Open, webSocketClient.State);
         Assert.Equal(2, i);
 
-        await Task.Delay(200);
-        await webSocketClient.CloseAsync();
-        await app.StopAsync();
+        await Task.Delay(200, TestContext.Current.CancellationToken);
+        await webSocketClient.CloseAsync(TestContext.Current.CancellationToken);
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -186,7 +186,7 @@ public class WebSocketClientTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         using var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
 
@@ -200,7 +200,7 @@ public class WebSocketClientTests
         Assert.Null(webSocketClient.State);
 
         await webSocketClient.CloseAsync(cancellationTokenSource.Token);
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -233,7 +233,7 @@ public class WebSocketClientTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         using var webSocketClient = new WebSocketClient(new WebSocketClientOptions($"ws://localhost:{port}/ws")
         {
@@ -241,12 +241,12 @@ public class WebSocketClientTests
         });
 
         await Assert.ThrowsAsync<TaskCanceledException>(async () =>
-            await webSocketClient.ConnectAsync());
+            await webSocketClient.ConnectAsync(TestContext.Current.CancellationToken));
 
         Assert.Null(webSocketClient._clientWebSocket);
         Assert.Null(webSocketClient.State);
 
-        await webSocketClient.CloseAsync();
+        await webSocketClient.CloseAsync(TestContext.Current.CancellationToken);
 
         using var webSocketClient2 =
             new WebSocketClient(
@@ -254,13 +254,13 @@ public class WebSocketClientTests
                 {
                     Timeout = TimeSpan.Zero, MaxReconnectRetries = 0
                 });
-        await webSocketClient2.ConnectAsync();
+        await webSocketClient2.ConnectAsync(TestContext.Current.CancellationToken);
         Assert.NotNull(webSocketClient2._clientWebSocket);
         Assert.NotNull(webSocketClient2.State);
         Assert.Equal(WebSocketState.Open, webSocketClient2.State);
 
-        await webSocketClient2.CloseAsync();
-        await app.StopAsync();
+        await webSocketClient2.CloseAsync(TestContext.Current.CancellationToken);
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -292,22 +292,22 @@ public class WebSocketClientTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
 
         var options = new WebSocketClientOptions($"ws://localhost:{port}/ws") { Configure = o => { i++; } };
         using var webSocketClient = new WebSocketClient(options);
 
-        await webSocketClient.ConnectAsync();
+        await webSocketClient.ConnectAsync(TestContext.Current.CancellationToken);
 
         Assert.NotNull(webSocketClient._clientWebSocket);
         Assert.NotNull(webSocketClient.State);
         Assert.Equal(WebSocketState.Open, webSocketClient.State);
         Assert.Equal(1, i);
 
-        await webSocketClient.CloseAsync();
-        await app.StopAsync();
+        await webSocketClient.CloseAsync(TestContext.Current.CancellationToken);
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -339,15 +339,15 @@ public class WebSocketClientTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         using var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
         var i = 0;
-        webSocketClient.Connecting += (s, e) => { i++; };
+        webSocketClient.Connecting += (_, _) => { i++; };
 
-        await webSocketClient.ConnectAsync();
-        await webSocketClient.ConnectAsync();
-        await webSocketClient.ConnectAsync();
+        await webSocketClient.ConnectAsync(TestContext.Current.CancellationToken);
+        await webSocketClient.ConnectAsync(TestContext.Current.CancellationToken);
+        await webSocketClient.ConnectAsync(TestContext.Current.CancellationToken);
 
         Assert.NotNull(webSocketClient._clientWebSocket);
         Assert.NotNull(webSocketClient.State);
@@ -355,8 +355,8 @@ public class WebSocketClientTests
         Assert.Equal(0, webSocketClient.CurrentReconnectRetries);
         Assert.Equal(1, i);
 
-        await webSocketClient.CloseAsync();
-        await app.StopAsync();
+        await webSocketClient.CloseAsync(TestContext.Current.CancellationToken);
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -389,7 +389,7 @@ public class WebSocketClientTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var options = new WebSocketClientOptions($"ws://localhost:{port}/ws")
         {
@@ -397,16 +397,18 @@ public class WebSocketClientTests
         };
         using var webSocketClient = new WebSocketClient(options);
         var i = 0;
-        webSocketClient.Reconnecting += (s, e) => { i++; };
+        webSocketClient.Reconnecting += (_, _) => { i++; };
 
-        await Assert.ThrowsAsync<WebSocketException>(async () => await webSocketClient.ConnectAsync());
+        await Assert.ThrowsAsync<WebSocketException>(async () =>
+            await webSocketClient.ConnectAsync(TestContext.Current.CancellationToken));
 
         Assert.Null(webSocketClient._clientWebSocket);
         Assert.Null(webSocketClient.State);
         Assert.Equal(5, webSocketClient.CurrentReconnectRetries);
+        Assert.Equal(5, i);
 
-        await webSocketClient.CloseAsync();
-        await app.StopAsync();
+        await webSocketClient.CloseAsync(TestContext.Current.CancellationToken);
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -438,12 +440,13 @@ public class WebSocketClientTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         using var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
-        await webSocketClient.ConnectAsync();
-        await webSocketClient.CloseAsync();
-        await webSocketClient.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closing");
+        await webSocketClient.ConnectAsync(TestContext.Current.CancellationToken);
+        await webSocketClient.CloseAsync(TestContext.Current.CancellationToken);
+        await webSocketClient.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closing",
+            TestContext.Current.CancellationToken);
 
         Assert.Null(webSocketClient._clientWebSocket);
         Assert.Null(webSocketClient._messageCancellationTokenSource);
@@ -451,7 +454,7 @@ public class WebSocketClientTests
         Assert.Null(webSocketClient.State);
         Assert.Equal(0, webSocketClient.CurrentReconnectRetries);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -483,16 +486,16 @@ public class WebSocketClientTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         using var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
 
         var i = 0;
-        webSocketClient.Closing += (s, e) => { i++; };
-        webSocketClient.Closed += (s, e) => { i++; };
+        webSocketClient.Closing += (_, _) => { i++; };
+        webSocketClient.Closed += (_, _) => { i++; };
 
-        await webSocketClient.ConnectAsync();
-        await webSocketClient.CloseAsync();
+        await webSocketClient.ConnectAsync(TestContext.Current.CancellationToken);
+        await webSocketClient.CloseAsync(TestContext.Current.CancellationToken);
 
         Assert.Null(webSocketClient._clientWebSocket);
         Assert.Null(webSocketClient._messageCancellationTokenSource);
@@ -501,7 +504,7 @@ public class WebSocketClientTests
         Assert.Equal(0, webSocketClient.CurrentReconnectRetries);
         Assert.Equal(2, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -533,18 +536,18 @@ public class WebSocketClientTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         using var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
 
         var i = 0;
-        webSocketClient.Closing += (s, e) => { i++; };
-        webSocketClient.Closed += (s, e) => { i++; };
+        webSocketClient.Closing += (_, _) => { i++; };
+        webSocketClient.Closed += (_, _) => { i++; };
 
-        await webSocketClient.ConnectAsync();
-        await webSocketClient.CloseAsync();
-        await webSocketClient.CloseAsync();
-        await webSocketClient.CloseAsync();
+        await webSocketClient.ConnectAsync(TestContext.Current.CancellationToken);
+        await webSocketClient.CloseAsync(TestContext.Current.CancellationToken);
+        await webSocketClient.CloseAsync(TestContext.Current.CancellationToken);
+        await webSocketClient.CloseAsync(TestContext.Current.CancellationToken);
 
         Assert.Null(webSocketClient._clientWebSocket);
         Assert.Null(webSocketClient._messageCancellationTokenSource);
@@ -553,7 +556,7 @@ public class WebSocketClientTests
         Assert.Equal(0, webSocketClient.CurrentReconnectRetries);
         Assert.Equal(2, i);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -585,10 +588,10 @@ public class WebSocketClientTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         using var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
-        await webSocketClient.ListenAsync();
+        await webSocketClient.ListenAsync(TestContext.Current.CancellationToken);
 
         Assert.Null(webSocketClient._clientWebSocket);
         Assert.Null(webSocketClient._messageCancellationTokenSource);
@@ -596,8 +599,8 @@ public class WebSocketClientTests
         Assert.Null(webSocketClient.State);
         Assert.Equal(0, webSocketClient.CurrentReconnectRetries);
 
-        await webSocketClient.CloseAsync();
-        await app.StopAsync();
+        await webSocketClient.CloseAsync(TestContext.Current.CancellationToken);
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -629,17 +632,17 @@ public class WebSocketClientTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         using var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
 
         var i = 0;
-        webSocketClient.TextReceived += (s, e) => { i++; };
+        webSocketClient.TextReceived += (_, _) => { i++; };
 
-        await webSocketClient.ConnectAsync();
-        await webSocketClient.ListenAsync();
-        await webSocketClient.SendAsync("ok");
-        await webSocketClient.CloseAsync();
+        await webSocketClient.ConnectAsync(TestContext.Current.CancellationToken);
+        await webSocketClient.ListenAsync(TestContext.Current.CancellationToken);
+        await webSocketClient.SendAsync("ok", cancellationToken: TestContext.Current.CancellationToken);
+        await webSocketClient.CloseAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(1, i);
         Assert.Null(webSocketClient._clientWebSocket);
@@ -648,8 +651,8 @@ public class WebSocketClientTests
         Assert.Null(webSocketClient.State);
         Assert.Equal(0, webSocketClient.CurrentReconnectRetries);
 
-        await webSocketClient.CloseAsync();
-        await app.StopAsync();
+        await webSocketClient.CloseAsync(TestContext.Current.CancellationToken);
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -681,20 +684,20 @@ public class WebSocketClientTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         using var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
 
         var i = 0;
-        webSocketClient.TextReceived += (s, e) => { i++; };
+        webSocketClient.TextReceived += (_, _) => { i++; };
 
-        await webSocketClient.ConnectAsync();
+        await webSocketClient.ConnectAsync(TestContext.Current.CancellationToken);
 #pragma warning disable CS4014 // 由于此调用不会等待，因此在调用完成前将继续执行当前方法
-        Task.Run(async () => await webSocketClient.WaitAsync());
+        Task.Run(async () => await webSocketClient.WaitAsync(), TestContext.Current.CancellationToken);
 #pragma warning restore CS4014 // 由于此调用不会等待，因此在调用完成前将继续执行当前方法
-        await webSocketClient.SendAsync("ok");
+        await webSocketClient.SendAsync("ok", cancellationToken: TestContext.Current.CancellationToken);
 
-        await webSocketClient.CloseAsync();
+        await webSocketClient.CloseAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(1, i);
         Assert.Null(webSocketClient._clientWebSocket);
@@ -703,8 +706,8 @@ public class WebSocketClientTests
         Assert.Null(webSocketClient.State);
         Assert.Equal(0, webSocketClient.CurrentReconnectRetries);
 
-        await webSocketClient.CloseAsync();
-        await app.StopAsync();
+        await webSocketClient.CloseAsync(TestContext.Current.CancellationToken);
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -736,21 +739,22 @@ public class WebSocketClientTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         using var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
 
         var i = 0;
-        webSocketClient.TextReceived += (s, e) => { i++; };
-        webSocketClient.BinaryReceived += (s, e) => { i++; };
+        webSocketClient.TextReceived += (_, _) => { i++; };
+        webSocketClient.BinaryReceived += (_, _) => { i++; };
 
-        await webSocketClient.ConnectAsync();
-        await webSocketClient.ListenAsync();
-        await webSocketClient.SendAsync("ok");
-        await webSocketClient.SendAsync("ok2", WebSocketMessageType.Text);
-        await webSocketClient.SendAsync("Furion"u8.ToArray());
-        await Task.Delay(1000);
-        await webSocketClient.CloseAsync();
+        await webSocketClient.ConnectAsync(TestContext.Current.CancellationToken);
+        await webSocketClient.ListenAsync(TestContext.Current.CancellationToken);
+        await webSocketClient.SendAsync("ok", cancellationToken: TestContext.Current.CancellationToken);
+        await webSocketClient.SendAsync("ok2", WebSocketMessageType.Text,
+            cancellationToken: TestContext.Current.CancellationToken);
+        await webSocketClient.SendAsync("Furion"u8.ToArray(), cancellationToken: TestContext.Current.CancellationToken);
+        await Task.Delay(1000, TestContext.Current.CancellationToken);
+        await webSocketClient.CloseAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(3, i);
         Assert.Null(webSocketClient._clientWebSocket);
@@ -759,8 +763,8 @@ public class WebSocketClientTests
         Assert.Null(webSocketClient.State);
         Assert.Equal(0, webSocketClient.CurrentReconnectRetries);
 
-        await webSocketClient.CloseAsync();
-        await app.StopAsync();
+        await webSocketClient.CloseAsync(TestContext.Current.CancellationToken);
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -792,23 +796,23 @@ public class WebSocketClientTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         using var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
         string? receivedText = null;
-        webSocketClient.TextReceived += (s, e) => { receivedText = e.Message; };
+        webSocketClient.TextReceived += (_, e) => { receivedText = e.Message; };
 
-        await webSocketClient.ConnectAsync();
-        await webSocketClient.ListenAsync();
-        await webSocketClient.SendAsync("Hello, WebSocket!");
-        await Task.Delay(200);
-        await webSocketClient.CloseAsync();
+        await webSocketClient.ConnectAsync(TestContext.Current.CancellationToken);
+        await webSocketClient.ListenAsync(TestContext.Current.CancellationToken);
+        await webSocketClient.SendAsync("Hello, WebSocket!", cancellationToken: TestContext.Current.CancellationToken);
+        await Task.Delay(200, TestContext.Current.CancellationToken);
+        await webSocketClient.CloseAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal("Hello, WebSocket!", receivedText);
         Assert.Null(webSocketClient._clientWebSocket);
         Assert.Equal(0, webSocketClient.CurrentReconnectRetries);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -840,25 +844,25 @@ public class WebSocketClientTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         using var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
         byte[]? receivedBytes = null;
-        webSocketClient.BinaryReceived += (s, e) => { receivedBytes = e.Message; };
+        webSocketClient.BinaryReceived += (_, e) => { receivedBytes = e.Message; };
 
-        await webSocketClient.ConnectAsync();
-        await webSocketClient.ListenAsync();
+        await webSocketClient.ConnectAsync(TestContext.Current.CancellationToken);
+        await webSocketClient.ListenAsync(TestContext.Current.CancellationToken);
         var sentBytes = "Binary Data"u8.ToArray();
-        await webSocketClient.SendAsync(sentBytes);
-        await Task.Delay(200);
-        await webSocketClient.CloseAsync();
+        await webSocketClient.SendAsync(sentBytes, cancellationToken: TestContext.Current.CancellationToken);
+        await Task.Delay(200, TestContext.Current.CancellationToken);
+        await webSocketClient.CloseAsync(TestContext.Current.CancellationToken);
 
         Assert.NotNull(receivedBytes);
         Assert.Equal(sentBytes, receivedBytes);
         Assert.Null(webSocketClient._clientWebSocket);
         Assert.Equal(0, webSocketClient.CurrentReconnectRetries);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -878,7 +882,7 @@ public class WebSocketClientTests
                 {
                     using var webSocket = await context.WebSockets.AcceptWebSocketAsync();
                     await webSocket.SendAsync(
-                        new ArraySegment<byte>(Encoding.UTF8.GetBytes("Hello")),
+                        new ArraySegment<byte>("Hello"u8.ToArray()),
                         WebSocketMessageType.Text,
                         true,
                         CancellationToken.None);
@@ -895,16 +899,16 @@ public class WebSocketClientTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
         string? lastMessage = null;
-        webSocketClient.TextReceived += (s, e) => lastMessage = e.Message;
+        webSocketClient.TextReceived += (_, e) => lastMessage = e.Message;
 
         try
         {
-            await webSocketClient.ConnectAsync();
-            await webSocketClient.WaitAsync();
+            await webSocketClient.ConnectAsync(TestContext.Current.CancellationToken);
+            await webSocketClient.WaitAsync(TestContext.Current.CancellationToken);
         }
         finally
         {
@@ -914,7 +918,7 @@ public class WebSocketClientTests
         Assert.Equal("Hello", lastMessage);
         Assert.Null(webSocketClient._clientWebSocket);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -946,25 +950,25 @@ public class WebSocketClientTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var options = new WebSocketClientOptions($"ws://localhost:{port}/ws") { ReceiveBufferSize = 10 };
         using var webSocketClient = new WebSocketClient(options);
 
         string? completeText = null;
-        webSocketClient.TextReceived += (s, e) => completeText = e.Message;
+        webSocketClient.TextReceived += (_, e) => completeText = e.Message;
 
-        await webSocketClient.ConnectAsync();
+        await webSocketClient.ConnectAsync(TestContext.Current.CancellationToken);
         var longMessage = new string('A', 50);
-        await webSocketClient.SendAsync(longMessage);
-        await Task.Delay(1000);
-        await webSocketClient.CloseAsync();
+        await webSocketClient.SendAsync(longMessage, cancellationToken: TestContext.Current.CancellationToken);
+        await Task.Delay(1000, TestContext.Current.CancellationToken);
+        await webSocketClient.CloseAsync(TestContext.Current.CancellationToken);
 
         Assert.NotNull(completeText);
         Assert.Equal(longMessage, completeText);
         Assert.Null(webSocketClient._clientWebSocket);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -996,13 +1000,13 @@ public class WebSocketClientTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         using var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
         var stopped = false;
-        webSocketClient.ReceivingStopped += (s, e) => stopped = true;
+        webSocketClient.ReceivingStopped += (_, _) => stopped = true;
 
-        await webSocketClient.ConnectAsync();
+        await webSocketClient.ConnectAsync(TestContext.Current.CancellationToken);
 
         using var cts = new CancellationTokenSource(200);
         await Assert.ThrowsAsync<OperationCanceledException>(async () =>
@@ -1010,7 +1014,7 @@ public class WebSocketClientTests
 
         Assert.True(stopped);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -1042,24 +1046,24 @@ public class WebSocketClientTests
             }
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         using var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
 
         var eventCount = 0;
-        webSocketClient.ReceivingStarted += (s, e) => { Interlocked.Increment(ref eventCount); };
-        webSocketClient.ReceivingStopped += (s, e) => { Interlocked.Increment(ref eventCount); };
-        webSocketClient.TextReceived += (s, e) => { Interlocked.Increment(ref eventCount); };
+        webSocketClient.ReceivingStarted += (_, _) => { Interlocked.Increment(ref eventCount); };
+        webSocketClient.ReceivingStopped += (_, _) => { Interlocked.Increment(ref eventCount); };
+        webSocketClient.TextReceived += (_, _) => { Interlocked.Increment(ref eventCount); };
 
-        await webSocketClient.ConnectAsync();
-        await webSocketClient.SendAsync("test");
-        await Task.Delay(200);
-        await webSocketClient.CloseAsync();
+        await webSocketClient.ConnectAsync(TestContext.Current.CancellationToken);
+        await webSocketClient.SendAsync("test", cancellationToken: TestContext.Current.CancellationToken);
+        await Task.Delay(200, TestContext.Current.CancellationToken);
+        await webSocketClient.CloseAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(3, eventCount);
         Assert.Null(webSocketClient._clientWebSocket);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]

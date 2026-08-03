@@ -55,21 +55,21 @@ public class StreamContentProcessorTests
         var streamContent2 =
             processor.Process(new HttpContentProcessorContext(stream, "application/octet-stream"));
         Assert.NotNull(streamContent2);
-        Assert.NotNull(streamContent2.ReadAsStream());
+        Assert.NotNull(streamContent2.ReadAsStream(TestContext.Current.CancellationToken));
         Assert.Equal("application/octet-stream", streamContent2.Headers.ContentType?.MediaType);
         Assert.Null(streamContent2.Headers.ContentType?.CharSet);
 
         var streamContent3 =
             processor.Process(new HttpContentProcessorContext(stream, "application/octet-stream", Encoding.UTF32));
         Assert.NotNull(streamContent3);
-        Assert.NotNull(streamContent3.ReadAsStream());
+        Assert.NotNull(streamContent3.ReadAsStream(TestContext.Current.CancellationToken));
         Assert.Equal("application/octet-stream", streamContent3.Headers.ContentType?.MediaType);
         Assert.Equal("utf-32", streamContent3.Headers.ContentType?.CharSet);
 
         var streamContent4 =
             processor.Process(new HttpContentProcessorContext(new StreamContent(stream), "application/octet-stream"));
         Assert.NotNull(streamContent4);
-        Assert.NotNull(streamContent4.ReadAsStream());
+        Assert.NotNull(streamContent4.ReadAsStream(TestContext.Current.CancellationToken));
         Assert.Equal("application/octet-stream", streamContent4.Headers.ContentType?.MediaType);
         Assert.Null(streamContent4.Headers.ContentType?.CharSet);
     }

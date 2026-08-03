@@ -57,7 +57,7 @@ public class StringContentProcessorTests
         var httpContent2 = processor.Process(new HttpContentProcessorContext("furion", "text/plain"));
         Assert.NotNull(httpContent2);
         Assert.Equal(typeof(StringContent), httpContent2.GetType());
-        Assert.Equal("furion", await httpContent2.ReadAsStringAsync());
+        Assert.Equal("furion", await httpContent2.ReadAsStringAsync(TestContext.Current.CancellationToken));
         Assert.Equal("text/plain", httpContent2.Headers.ContentType?.MediaType);
         Assert.Null(httpContent2.Headers.ContentType?.CharSet);
 
@@ -65,21 +65,22 @@ public class StringContentProcessorTests
             "application/json", Encoding.UTF32));
         Assert.NotNull(httpContent3);
         Assert.Equal(typeof(StringContent), httpContent3.GetType());
-        Assert.Equal("{\"id\":10,\"name\":\"furion\"}", await httpContent3.ReadAsStringAsync());
+        Assert.Equal("{\"id\":10,\"name\":\"furion\"}",
+            await httpContent3.ReadAsStringAsync(TestContext.Current.CancellationToken));
         Assert.Equal("application/json", httpContent3.Headers.ContentType?.MediaType);
         Assert.Equal("utf-32", httpContent3.Headers.ContentType?.CharSet);
 
         var httpContent4 = processor.Process(new HttpContentProcessorContext(10, "text/plain"));
         Assert.NotNull(httpContent4);
         Assert.Equal(typeof(StringContent), httpContent4.GetType());
-        Assert.Equal("10", await httpContent4.ReadAsStringAsync());
+        Assert.Equal("10", await httpContent4.ReadAsStringAsync(TestContext.Current.CancellationToken));
         Assert.Equal("text/plain", httpContent4.Headers.ContentType?.MediaType);
         Assert.Null(httpContent4.Headers.ContentType?.CharSet);
 
         var httpContent5 = processor.Process(new HttpContentProcessorContext(EnumModel.Default, "text/plain"));
         Assert.NotNull(httpContent5);
         Assert.Equal(typeof(StringContent), httpContent5.GetType());
-        Assert.Equal("1", await httpContent5.ReadAsStringAsync());
+        Assert.Equal("1", await httpContent5.ReadAsStringAsync(TestContext.Current.CancellationToken));
         Assert.Equal("text/plain", httpContent5.Headers.ContentType?.MediaType);
         Assert.Null(httpContent5.Headers.ContentType?.CharSet);
 
@@ -89,7 +90,7 @@ public class StringContentProcessorTests
                 Encoding.UTF32));
         Assert.NotNull(httpContent6);
         Assert.Equal(typeof(StringContent), httpContent6.GetType());
-        Assert.Equal("furion", await httpContent6.ReadAsStringAsync());
+        Assert.Equal("furion", await httpContent6.ReadAsStringAsync(TestContext.Current.CancellationToken));
         Assert.Equal("application/json", httpContent6.Headers.ContentType?.MediaType);
         Assert.Equal("utf-32", httpContent6.Headers.ContentType?.CharSet);
 
@@ -97,7 +98,7 @@ public class StringContentProcessorTests
             processor.Process(new HttpContentProcessorContext(new StringContent("furion"), "text/plain"));
         Assert.NotNull(httpContent7);
         Assert.Equal(typeof(StringContent), httpContent7.GetType());
-        Assert.Equal("furion", await httpContent7.ReadAsStringAsync());
+        Assert.Equal("furion", await httpContent7.ReadAsStringAsync(TestContext.Current.CancellationToken));
         Assert.Equal("text/plain", httpContent7.Headers.ContentType?.MediaType);
         Assert.Equal("utf-8", httpContent7.Headers.ContentType?.CharSet);
 
@@ -109,7 +110,8 @@ public class StringContentProcessorTests
             "application/json"));
         Assert.NotNull(httpContent8);
         Assert.Equal(typeof(StringContent), httpContent8.GetType());
-        Assert.Equal("{\"id\":1,\"name\":\"Furion\"}", await httpContent8.ReadAsStringAsync());
+        Assert.Equal("{\"id\":1,\"name\":\"Furion\"}",
+            await httpContent8.ReadAsStringAsync(TestContext.Current.CancellationToken));
         Assert.Equal("application/json", httpContent8.Headers.ContentType?.MediaType);
         Assert.Null(httpContent8.Headers.ContentType?.CharSet);
     }

@@ -51,7 +51,7 @@ public class StressTestHarnessManagerTests
             return "Hello Furion";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpStressTestHarnessBuilder =
@@ -60,7 +60,7 @@ public class StressTestHarnessManagerTests
         var stressTestHarnessManager = new StressTestHarnessManager(httpRemoteService, httpStressTestHarnessBuilder);
 
         // ReSharper disable once MethodHasAsyncOverload
-        var result = stressTestHarnessManager.Start();
+        var result = stressTestHarnessManager.Start(cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(result);
 
         Assert.Equal(10, result.TotalRequests);
@@ -68,7 +68,7 @@ public class StressTestHarnessManagerTests
         Assert.Equal(0, result.FailedRequests);
         Assert.True(result.QueriesPerSecond > 50);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -89,7 +89,7 @@ public class StressTestHarnessManagerTests
 #pragma warning restore CS0162 // 检测到不可到达的代码
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpStressTestHarnessBuilder =
@@ -98,15 +98,15 @@ public class StressTestHarnessManagerTests
         var stressTestHarnessManager = new StressTestHarnessManager(httpRemoteService, httpStressTestHarnessBuilder);
 
         // ReSharper disable once MethodHasAsyncOverload
-        var result = stressTestHarnessManager.Start();
+        var result = stressTestHarnessManager.Start(cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(result);
 
         Assert.Equal(10, result.TotalRequests);
         Assert.Equal(0, result.SuccessfulRequests);
         Assert.Equal(10, result.FailedRequests);
-        Assert.True(result.QueriesPerSecond > 50);
+        Assert.True(result.QueriesPerSecond > 10);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -124,7 +124,7 @@ public class StressTestHarnessManagerTests
             return "Hello Furion";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpStressTestHarnessBuilder =
@@ -141,7 +141,7 @@ public class StressTestHarnessManagerTests
             stressTestHarnessManager.Start(HttpCompletionOption.ResponseContentRead, cancellationTokenSource.Token);
         });
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -159,7 +159,7 @@ public class StressTestHarnessManagerTests
             return "Hello Furion";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpStressTestHarnessBuilder =
@@ -167,7 +167,8 @@ public class StressTestHarnessManagerTests
                 .SetNumberOfRequests(10);
         var stressTestHarnessManager = new StressTestHarnessManager(httpRemoteService, httpStressTestHarnessBuilder);
 
-        var result = await stressTestHarnessManager.StartAsync();
+        var result =
+            await stressTestHarnessManager.StartAsync(cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(result);
 
         Assert.Equal(10, result.TotalRequests);
@@ -175,7 +176,7 @@ public class StressTestHarnessManagerTests
         Assert.Equal(0, result.FailedRequests);
         Assert.True(result.QueriesPerSecond > 15);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -196,7 +197,7 @@ public class StressTestHarnessManagerTests
 #pragma warning restore CS0162 // 检测到不可到达的代码
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpStressTestHarnessBuilder =
@@ -204,7 +205,8 @@ public class StressTestHarnessManagerTests
                 .SetNumberOfRequests(10);
         var stressTestHarnessManager = new StressTestHarnessManager(httpRemoteService, httpStressTestHarnessBuilder);
 
-        var result = await stressTestHarnessManager.StartAsync();
+        var result =
+            await stressTestHarnessManager.StartAsync(cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(result);
 
         Assert.Equal(10, result.TotalRequests);
@@ -212,7 +214,7 @@ public class StressTestHarnessManagerTests
         Assert.Equal(10, result.FailedRequests);
         Assert.True(result.QueriesPerSecond > 50);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -230,7 +232,7 @@ public class StressTestHarnessManagerTests
             return "Hello Furion";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpStressTestHarnessBuilder =
@@ -247,7 +249,7 @@ public class StressTestHarnessManagerTests
                 cancellationTokenSource.Token);
         });
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 }

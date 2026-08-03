@@ -60,7 +60,7 @@ public class ByteArrayContentProcessorTests
         var byteArrayContent2 =
             processor.Process(new HttpContentProcessorContext(Array.Empty<byte>(), "application/octet-stream"));
         Assert.NotNull(byteArrayContent2);
-        Assert.NotNull(byteArrayContent2.ReadAsStream());
+        Assert.NotNull(byteArrayContent2.ReadAsStream(TestContext.Current.CancellationToken));
         Assert.Equal("application/octet-stream", byteArrayContent2.Headers.ContentType?.MediaType);
         Assert.Null(byteArrayContent2.Headers.ContentType?.CharSet);
 
@@ -68,14 +68,14 @@ public class ByteArrayContentProcessorTests
             processor.Process(new HttpContentProcessorContext(Array.Empty<byte>(), "application/octet-stream",
                 Encoding.UTF32));
         Assert.NotNull(byteArrayContent3);
-        Assert.NotNull(byteArrayContent3.ReadAsStream());
+        Assert.NotNull(byteArrayContent3.ReadAsStream(TestContext.Current.CancellationToken));
         Assert.Equal("application/octet-stream", byteArrayContent3.Headers.ContentType?.MediaType);
         Assert.Equal("utf-32", byteArrayContent3.Headers.ContentType?.CharSet);
 
         var byteArrayContent4 =
             processor.Process(new HttpContentProcessorContext(new ByteArrayContent([]), "application/octet-stream"));
         Assert.NotNull(byteArrayContent4);
-        Assert.NotNull(byteArrayContent4.ReadAsStream());
+        Assert.NotNull(byteArrayContent4.ReadAsStream(TestContext.Current.CancellationToken));
         Assert.Equal("application/octet-stream", byteArrayContent4.Headers.ContentType?.MediaType);
         Assert.Null(byteArrayContent4.Headers.ContentType?.CharSet);
     }

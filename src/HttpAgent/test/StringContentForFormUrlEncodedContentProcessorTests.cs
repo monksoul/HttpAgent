@@ -85,7 +85,7 @@ public class StringContentForFormUrlEncodedContentProcessorTests
         Assert.Equal("application/x-www-form-urlencoded", httpContent3.Headers.ContentType?.MediaType);
         Assert.Equal("utf-32", httpContent3.Headers.ContentType?.CharSet);
 
-        var result = await httpContent3.ReadAsStringAsync();
+        var result = await httpContent3.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal("id=1&name=furion", result);
 
         var httpContent4 = processor.Process(new HttpContentProcessorContext(
@@ -104,7 +104,7 @@ public class StringContentForFormUrlEncodedContentProcessorTests
                     new("id", "1"), new("name", "fur ion"), new("data", """{"plateNo":"京A12345","color":"1"}""")
                 }, "application/x-www-form-urlencoded"))!;
         Assert.Equal("""id=1&name=fur ion&data={"plateNo":"京A12345","color":"1"}""",
-            await httpContent5.ReadAsStringAsync());
+            await httpContent5.ReadAsStringAsync(TestContext.Current.CancellationToken));
     }
 
     [Fact]

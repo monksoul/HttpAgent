@@ -74,7 +74,8 @@ public class ProgressFileStreamTests
         var bytesRead = progressFileStream.Read(bytes, 0, 10);
         Assert.True(bytesRead > 0);
 
-        await foreach (var fileTransferProgress in progressChannel.Reader.ReadAllAsync())
+        await foreach (var fileTransferProgress in progressChannel.Reader.ReadAllAsync(TestContext.Current
+                           .CancellationToken))
         {
             Assert.NotNull(fileTransferProgress);
             Console.WriteLine(fileTransferProgress.FileName);
@@ -108,7 +109,8 @@ public class ProgressFileStreamTests
         var bytes = new byte[1024];
         progressFileStream.Write(bytes, 0, 21);
 
-        await foreach (var fileTransferProgress in progressChannel.Reader.ReadAllAsync())
+        await foreach (var fileTransferProgress in progressChannel.Reader.ReadAllAsync(TestContext.Current
+                           .CancellationToken))
         {
             Assert.NotNull(fileTransferProgress);
             Console.WriteLine(fileTransferProgress.FileName);
@@ -153,7 +155,8 @@ public class ProgressFileStreamTests
 
         progressFileStream.ReportProgress(10);
 
-        await foreach (var fileTransferProgress in progressChannel.Reader.ReadAllAsync())
+        await foreach (var fileTransferProgress in progressChannel.Reader.ReadAllAsync(TestContext.Current
+                           .CancellationToken))
         {
             Assert.NotNull(fileTransferProgress);
             Console.WriteLine(fileTransferProgress.FileName);

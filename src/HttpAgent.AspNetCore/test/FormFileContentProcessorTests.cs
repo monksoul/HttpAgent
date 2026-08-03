@@ -45,7 +45,7 @@ public class FormFileContentProcessorTests
 
         var streamContent2 = processor.Process(processorContext);
         Assert.NotNull(streamContent2);
-        Assert.NotNull(streamContent2.ReadAsStream());
+        Assert.NotNull(streamContent2.ReadAsStream(TestContext.Current.CancellationToken));
         Assert.Equal("text/plain", streamContent2.Headers.ContentType?.MediaType);
         Assert.Null(streamContent2.Headers.ContentType?.CharSet);
         Assert.NotNull(streamContent2.Headers.ContentDisposition);
@@ -56,7 +56,7 @@ public class FormFileContentProcessorTests
         var streamContent3 =
             processor.Process(new HttpContentProcessorContext(formFile, "application/octet-stream", Encoding.UTF32));
         Assert.NotNull(streamContent3);
-        Assert.NotNull(streamContent3.ReadAsStream());
+        Assert.NotNull(streamContent3.ReadAsStream(TestContext.Current.CancellationToken));
         Assert.Equal("application/octet-stream", streamContent3.Headers.ContentType?.MediaType);
         Assert.Equal("utf-32", streamContent3.Headers.ContentType?.CharSet);
         Assert.NotNull(streamContent3.Headers.ContentDisposition);
@@ -67,14 +67,14 @@ public class FormFileContentProcessorTests
         var streamContent4 =
             processor.Process(new HttpContentProcessorContext(new StreamContent(stream), "application/octet-stream"));
         Assert.NotNull(streamContent4);
-        Assert.NotNull(streamContent4.ReadAsStream());
+        Assert.NotNull(streamContent4.ReadAsStream(TestContext.Current.CancellationToken));
         Assert.Equal("application/octet-stream", streamContent4.Headers.ContentType?.MediaType);
         Assert.Null(streamContent4.Headers.ContentType?.CharSet);
 
         var streamContent5 =
             processor.Process(new HttpContentProcessorContext(formFile, "text/plain") { AsFormItem = true });
         Assert.NotNull(streamContent5);
-        Assert.NotNull(streamContent5.ReadAsStream());
+        Assert.NotNull(streamContent5.ReadAsStream(TestContext.Current.CancellationToken));
         Assert.Equal("text/plain", streamContent5.Headers.ContentType?.MediaType);
         Assert.Null(streamContent5.Headers.ContentType?.CharSet);
         Assert.NotNull(streamContent5.Headers.ContentDisposition);

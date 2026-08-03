@@ -117,17 +117,17 @@ public class HttpRemoteClientTests
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var str = await HttpRemoteClient.Service.SendAsStringAsync(
-            HttpRequestBuilder.Get($"http://localhost:{port}/test"));
+            HttpRequestBuilder.Get($"http://localhost:{port}/test"), TestContext.Current.CancellationToken);
         var str2 = await HttpRemoteClient.Service.SendAsStringAsync(
-            HttpRequestBuilder.Get($"http://localhost:{port}/test"));
+            HttpRequestBuilder.Get($"http://localhost:{port}/test"), TestContext.Current.CancellationToken);
 
         Assert.Equal("Hello World!", str);
         Assert.Equal("Hello World!", str2);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         HttpRemoteClient.Dispose();
     }
 }

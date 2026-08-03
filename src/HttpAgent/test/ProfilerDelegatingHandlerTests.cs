@@ -41,8 +41,8 @@ public class ProfilerDelegatingHandlerTests
         httpRequestMessage.Headers.TryAddWithoutValidation("Accept-Encoding", "gzip, deflate");
 
         await ProfilerDelegatingHandler.LogRequestAsync(logger,
-            new HttpRemoteOptions { ProfilerLogLevel = LogLevel.Warning },
-            httpRequestMessage);
+            new HttpRemoteOptions { ProfilerLogLevel = LogLevel.Warning }, httpRequestMessage,
+            cancellationToken: TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -68,8 +68,8 @@ public class ProfilerDelegatingHandlerTests
         httpResponseMessage.Content.Headers.TryAddWithoutValidation("Content-Type", "application/json");
 
         await ProfilerDelegatingHandler.LogResponseAsync(logger,
-            new HttpRemoteOptions { ProfilerLogLevel = LogLevel.Warning },
-            httpResponseMessage, 200);
+            new HttpRemoteOptions { ProfilerLogLevel = LogLevel.Warning }, httpResponseMessage, 200,
+            cancellationToken: TestContext.Current.CancellationToken);
     }
 
     [Fact]

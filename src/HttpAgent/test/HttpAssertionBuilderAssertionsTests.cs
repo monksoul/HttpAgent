@@ -103,8 +103,10 @@ public class HttpAssertionBuilderAssertionsTests
     {
         var httpAssertionBuilder = new HttpAssertionBuilder();
 
-        Assert.Throws<ArgumentNullException>(() => httpAssertionBuilder.ContentContains(null!));
-        Assert.Throws<ArgumentException>(() => httpAssertionBuilder.ContentContains(string.Empty));
+        Assert.Throws<ArgumentNullException>(() =>
+            httpAssertionBuilder.ContentContains(null!, TestContext.Current.CancellationToken));
+        Assert.Throws<ArgumentException>(() =>
+            httpAssertionBuilder.ContentContains(string.Empty, TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -113,7 +115,7 @@ public class HttpAssertionBuilderAssertionsTests
         var httpAssertionBuilder = new HttpAssertionBuilder();
         Assert.Empty(httpAssertionBuilder._assertions);
 
-        httpAssertionBuilder.ContentContains("Hello");
+        httpAssertionBuilder.ContentContains("Hello", TestContext.Current.CancellationToken);
         Assert.Single(httpAssertionBuilder._assertions);
 
         var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK);
@@ -139,8 +141,10 @@ public class HttpAssertionBuilderAssertionsTests
     {
         var httpAssertionBuilder = new HttpAssertionBuilder();
 
-        Assert.Throws<ArgumentNullException>(() => httpAssertionBuilder.ContentEquals(null!));
-        Assert.Throws<ArgumentException>(() => httpAssertionBuilder.ContentEquals(string.Empty));
+        Assert.Throws<ArgumentNullException>(() =>
+            httpAssertionBuilder.ContentEquals(null!, TestContext.Current.CancellationToken));
+        Assert.Throws<ArgumentException>(() =>
+            httpAssertionBuilder.ContentEquals(string.Empty, TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -149,7 +153,7 @@ public class HttpAssertionBuilderAssertionsTests
         var httpAssertionBuilder = new HttpAssertionBuilder();
         Assert.Empty(httpAssertionBuilder._assertions);
 
-        httpAssertionBuilder.ContentEquals("Hello World!");
+        httpAssertionBuilder.ContentEquals("Hello World!", TestContext.Current.CancellationToken);
         Assert.Single(httpAssertionBuilder._assertions);
 
         var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK);
@@ -175,9 +179,12 @@ public class HttpAssertionBuilderAssertionsTests
     {
         var httpAssertionBuilder = new HttpAssertionBuilder();
 
-        Assert.Throws<ArgumentNullException>(() => httpAssertionBuilder.ContentMatches(null!));
-        Assert.Throws<ArgumentException>(() => httpAssertionBuilder.ContentMatches(string.Empty));
-        Assert.Throws<ArgumentException>(() => httpAssertionBuilder.ContentMatches(" "));
+        Assert.Throws<ArgumentNullException>(() =>
+            httpAssertionBuilder.ContentMatches(null!, TestContext.Current.CancellationToken));
+        Assert.Throws<ArgumentException>(() =>
+            httpAssertionBuilder.ContentMatches(string.Empty, TestContext.Current.CancellationToken));
+        Assert.Throws<ArgumentException>(() =>
+            httpAssertionBuilder.ContentMatches(" ", TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -186,7 +193,7 @@ public class HttpAssertionBuilderAssertionsTests
         var httpAssertionBuilder = new HttpAssertionBuilder();
         Assert.Empty(httpAssertionBuilder._assertions);
 
-        httpAssertionBuilder.ContentMatches(@".ello\s*World!");
+        httpAssertionBuilder.ContentMatches(@".ello\s*World!", TestContext.Current.CancellationToken);
         Assert.Single(httpAssertionBuilder._assertions);
 
         var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK);

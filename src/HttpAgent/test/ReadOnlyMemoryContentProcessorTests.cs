@@ -59,7 +59,7 @@ public class ReadOnlyMemoryContentProcessorTests
             processor.Process(new HttpContentProcessorContext(new ReadOnlyMemory<byte>([]),
                 "application/octet-stream"));
         Assert.NotNull(readOnlyMemoryContent2);
-        Assert.NotNull(readOnlyMemoryContent2.ReadAsStream());
+        Assert.NotNull(readOnlyMemoryContent2.ReadAsStream(TestContext.Current.CancellationToken));
         Assert.Equal("application/octet-stream", readOnlyMemoryContent2.Headers.ContentType?.MediaType);
         Assert.Null(readOnlyMemoryContent2.Headers.ContentType?.CharSet);
 
@@ -67,7 +67,7 @@ public class ReadOnlyMemoryContentProcessorTests
             processor.Process(new HttpContentProcessorContext(new ReadOnlyMemory<byte>([]), "application/octet-stream",
                 Encoding.UTF32));
         Assert.NotNull(readOnlyMemoryContent3);
-        Assert.NotNull(readOnlyMemoryContent3.ReadAsStream());
+        Assert.NotNull(readOnlyMemoryContent3.ReadAsStream(TestContext.Current.CancellationToken));
         Assert.Equal("application/octet-stream", readOnlyMemoryContent3.Headers.ContentType?.MediaType);
         Assert.Equal("utf-32", readOnlyMemoryContent3.Headers.ContentType?.CharSet);
     }

@@ -22,7 +22,8 @@ public class HttpResponseMessageConverterTests
         var httpResponseMessage = new HttpResponseMessage();
 
         var converter = new HttpResponseMessageConverter();
-        var responseMessage = converter.Read(new HttpContentConverterContext(httpResponseMessage));
+        var responseMessage = converter.Read(new HttpContentConverterContext(httpResponseMessage),
+            TestContext.Current.CancellationToken);
         Assert.NotNull(responseMessage);
         Assert.Equal(httpResponseMessage, responseMessage);
     }
@@ -33,7 +34,8 @@ public class HttpResponseMessageConverterTests
         var httpResponseMessage = new HttpResponseMessage();
 
         var converter = new HttpResponseMessageConverter();
-        var responseMessage = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage));
+        var responseMessage = await converter.ReadAsync(new HttpContentConverterContext(httpResponseMessage),
+            TestContext.Current.CancellationToken);
         Assert.NotNull(responseMessage);
         Assert.Equal(httpResponseMessage, responseMessage);
     }
@@ -58,7 +60,8 @@ public class HttpResponseMessageConverterTests
         var httpResponseMessage = new HttpResponseMessage();
 
         var converter = new HttpResponseMessageConverter();
-        var responseMessage = converter.Read(typeof(byte[]), new HttpContentConverterContext(httpResponseMessage));
+        var responseMessage = converter.Read(typeof(byte[]), new HttpContentConverterContext(httpResponseMessage),
+            TestContext.Current.CancellationToken);
         Assert.NotNull(responseMessage);
         Assert.Equal(httpResponseMessage, responseMessage);
     }
@@ -70,7 +73,8 @@ public class HttpResponseMessageConverterTests
 
         var converter = new HttpResponseMessageConverter();
         var responseMessage =
-            await converter.ReadAsync(typeof(byte[]), new HttpContentConverterContext(httpResponseMessage));
+            await converter.ReadAsync(typeof(byte[]), new HttpContentConverterContext(httpResponseMessage),
+                TestContext.Current.CancellationToken);
         Assert.NotNull(responseMessage);
         Assert.Equal(httpResponseMessage, responseMessage);
     }

@@ -499,7 +499,7 @@ public class HttpRequestBuilderTests
             await context.Response.CompleteAsync();
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var httpRequestBuilder =
             new HttpRequestBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test")).AddDigestAuthentication(
@@ -513,7 +513,7 @@ public class HttpRequestBuilderTests
             "Digest username=\"admin\", realm=\"IP Camera(K7151)\", nonce=\"613134303a38303236313662363ae1b0b8bde54893eab8c0846d38665ab9\", uri=\"/test\", algorithm=MD5, qop=auth, nc=00000001",
             httpRequestMessage.Headers.GetValues("Authorization").FirstOrDefault());
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]

@@ -20,21 +20,22 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
-        var str = httpRemoteService.GetAsString($"http://localhost:{port}/test");
+        var str = httpRemoteService.GetAsString($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
 
         // ReSharper disable once MethodHasAsyncOverload
         var str2 = httpRemoteService.GetAsString($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal("Hello World!", str);
         Assert.Equal("Hello World!", str2);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -52,23 +53,24 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
-        await using var stream = httpRemoteService.GetAsStream($"http://localhost:{port}/test");
+        await using var stream = httpRemoteService.GetAsStream($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
         using var streamReader = new StreamReader(stream!);
 
         // ReSharper disable once MethodHasAsyncOverload
         await using var stream2 = httpRemoteService.GetAsStream($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
         using var streamReader2 = new StreamReader(stream2!);
 
-        Assert.Equal("Hello World!", await streamReader.ReadToEndAsync());
-        Assert.Equal("Hello World!", await streamReader2.ReadToEndAsync());
+        Assert.Equal("Hello World!", await streamReader.ReadToEndAsync(TestContext.Current.CancellationToken));
+        Assert.Equal("Hello World!", await streamReader2.ReadToEndAsync(TestContext.Current.CancellationToken));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -86,21 +88,22 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
-        var bytes = httpRemoteService.GetAsByteArray($"http://localhost:{port}/test");
+        var bytes = httpRemoteService.GetAsByteArray($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
 
         // ReSharper disable once MethodHasAsyncOverload
         var bytes2 = httpRemoteService.GetAsByteArray($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal("Hello World!", Encoding.UTF8.GetString(bytes!));
         Assert.Equal("Hello World!", Encoding.UTF8.GetString(bytes2!));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -118,18 +121,19 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        var str = await httpRemoteService.GetAsStringAsync($"http://localhost:{port}/test");
+        var str = await httpRemoteService.GetAsStringAsync($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
         var str2 = await httpRemoteService.GetAsStringAsync($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal("Hello World!", str);
         Assert.Equal("Hello World!", str2);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -147,21 +151,22 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        await using var stream = await httpRemoteService.GetAsStreamAsync($"http://localhost:{port}/test");
+        await using var stream = await httpRemoteService.GetAsStreamAsync($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
         using var streamReader = new StreamReader(stream!);
 
         await using var stream2 = await httpRemoteService.GetAsStreamAsync($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
         using var streamReader2 = new StreamReader(stream2!);
 
-        Assert.Equal("Hello World!", await streamReader.ReadToEndAsync());
-        Assert.Equal("Hello World!", await streamReader2.ReadToEndAsync());
+        Assert.Equal("Hello World!", await streamReader.ReadToEndAsync(TestContext.Current.CancellationToken));
+        Assert.Equal("Hello World!", await streamReader2.ReadToEndAsync(TestContext.Current.CancellationToken));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -179,18 +184,19 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        var bytes = await httpRemoteService.GetAsByteArrayAsync($"http://localhost:{port}/test");
+        var bytes = await httpRemoteService.GetAsByteArrayAsync($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
         var bytes2 = await httpRemoteService.GetAsByteArrayAsync($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal("Hello World!", Encoding.UTF8.GetString(bytes!));
         Assert.Equal("Hello World!", Encoding.UTF8.GetString(bytes2!));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -208,21 +214,22 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
-        var str = httpRemoteService.PutAsString($"http://localhost:{port}/test");
+        var str = httpRemoteService.PutAsString($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
 
         // ReSharper disable once MethodHasAsyncOverload
         var str2 = httpRemoteService.PutAsString($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal("Hello World!", str);
         Assert.Equal("Hello World!", str2);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -240,23 +247,24 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
-        await using var stream = httpRemoteService.PutAsStream($"http://localhost:{port}/test");
+        await using var stream = httpRemoteService.PutAsStream($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
         using var streamReader = new StreamReader(stream!);
 
         // ReSharper disable once MethodHasAsyncOverload
         await using var stream2 = httpRemoteService.PutAsStream($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
         using var streamReader2 = new StreamReader(stream2!);
 
-        Assert.Equal("Hello World!", await streamReader.ReadToEndAsync());
-        Assert.Equal("Hello World!", await streamReader2.ReadToEndAsync());
+        Assert.Equal("Hello World!", await streamReader.ReadToEndAsync(TestContext.Current.CancellationToken));
+        Assert.Equal("Hello World!", await streamReader2.ReadToEndAsync(TestContext.Current.CancellationToken));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -274,21 +282,22 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
-        var bytes = httpRemoteService.PutAsByteArray($"http://localhost:{port}/test");
+        var bytes = httpRemoteService.PutAsByteArray($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
 
         // ReSharper disable once MethodHasAsyncOverload
         var bytes2 = httpRemoteService.PutAsByteArray($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal("Hello World!", Encoding.UTF8.GetString(bytes!));
         Assert.Equal("Hello World!", Encoding.UTF8.GetString(bytes2!));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -306,18 +315,19 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        var str = await httpRemoteService.PutAsStringAsync($"http://localhost:{port}/test");
+        var str = await httpRemoteService.PutAsStringAsync($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
         var str2 = await httpRemoteService.PutAsStringAsync($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal("Hello World!", str);
         Assert.Equal("Hello World!", str2);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -335,21 +345,22 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        await using var stream = await httpRemoteService.PutAsStreamAsync($"http://localhost:{port}/test");
+        await using var stream = await httpRemoteService.PutAsStreamAsync($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
         using var streamReader = new StreamReader(stream!);
 
         await using var stream2 = await httpRemoteService.PutAsStreamAsync($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
         using var streamReader2 = new StreamReader(stream2!);
 
-        Assert.Equal("Hello World!", await streamReader.ReadToEndAsync());
-        Assert.Equal("Hello World!", await streamReader2.ReadToEndAsync());
+        Assert.Equal("Hello World!", await streamReader.ReadToEndAsync(TestContext.Current.CancellationToken));
+        Assert.Equal("Hello World!", await streamReader2.ReadToEndAsync(TestContext.Current.CancellationToken));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -367,18 +378,19 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        var bytes = await httpRemoteService.PutAsByteArrayAsync($"http://localhost:{port}/test");
+        var bytes = await httpRemoteService.PutAsByteArrayAsync($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
         var bytes2 = await httpRemoteService.PutAsByteArrayAsync($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal("Hello World!", Encoding.UTF8.GetString(bytes!));
         Assert.Equal("Hello World!", Encoding.UTF8.GetString(bytes2!));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -396,21 +408,22 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
-        var str = httpRemoteService.PostAsString($"http://localhost:{port}/test");
+        var str = httpRemoteService.PostAsString($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
 
         // ReSharper disable once MethodHasAsyncOverload
         var str2 = httpRemoteService.PostAsString($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal("Hello World!", str);
         Assert.Equal("Hello World!", str2);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -428,23 +441,24 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
-        await using var stream = httpRemoteService.PostAsStream($"http://localhost:{port}/test");
+        await using var stream = httpRemoteService.PostAsStream($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
         using var streamReader = new StreamReader(stream!);
 
         // ReSharper disable once MethodHasAsyncOverload
         await using var stream2 = httpRemoteService.PostAsStream($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
         using var streamReader2 = new StreamReader(stream2!);
 
-        Assert.Equal("Hello World!", await streamReader.ReadToEndAsync());
-        Assert.Equal("Hello World!", await streamReader2.ReadToEndAsync());
+        Assert.Equal("Hello World!", await streamReader.ReadToEndAsync(TestContext.Current.CancellationToken));
+        Assert.Equal("Hello World!", await streamReader2.ReadToEndAsync(TestContext.Current.CancellationToken));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -462,21 +476,22 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
-        var bytes = httpRemoteService.PostAsByteArray($"http://localhost:{port}/test");
+        var bytes = httpRemoteService.PostAsByteArray($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
 
         // ReSharper disable once MethodHasAsyncOverload
         var bytes2 = httpRemoteService.PostAsByteArray($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal("Hello World!", Encoding.UTF8.GetString(bytes!));
         Assert.Equal("Hello World!", Encoding.UTF8.GetString(bytes2!));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -494,18 +509,19 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        var str = await httpRemoteService.PostAsStringAsync($"http://localhost:{port}/test");
+        var str = await httpRemoteService.PostAsStringAsync($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
         var str2 = await httpRemoteService.PostAsStringAsync($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal("Hello World!", str);
         Assert.Equal("Hello World!", str2);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -523,21 +539,22 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        await using var stream = await httpRemoteService.PostAsStreamAsync($"http://localhost:{port}/test");
+        await using var stream = await httpRemoteService.PostAsStreamAsync($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
         using var streamReader = new StreamReader(stream!);
 
         await using var stream2 = await httpRemoteService.PostAsStreamAsync($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
         using var streamReader2 = new StreamReader(stream2!);
 
-        Assert.Equal("Hello World!", await streamReader.ReadToEndAsync());
-        Assert.Equal("Hello World!", await streamReader2.ReadToEndAsync());
+        Assert.Equal("Hello World!", await streamReader.ReadToEndAsync(TestContext.Current.CancellationToken));
+        Assert.Equal("Hello World!", await streamReader2.ReadToEndAsync(TestContext.Current.CancellationToken));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -555,18 +572,19 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        var bytes = await httpRemoteService.PostAsByteArrayAsync($"http://localhost:{port}/test");
+        var bytes = await httpRemoteService.PostAsByteArrayAsync($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
         var bytes2 = await httpRemoteService.PostAsByteArrayAsync($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal("Hello World!", Encoding.UTF8.GetString(bytes!));
         Assert.Equal("Hello World!", Encoding.UTF8.GetString(bytes2!));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -584,21 +602,22 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
-        var str = httpRemoteService.DeleteAsString($"http://localhost:{port}/test");
+        var str = httpRemoteService.DeleteAsString($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
 
         // ReSharper disable once MethodHasAsyncOverload
         var str2 = httpRemoteService.DeleteAsString($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal("Hello World!", str);
         Assert.Equal("Hello World!", str2);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -616,23 +635,24 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
-        await using var stream = httpRemoteService.DeleteAsStream($"http://localhost:{port}/test");
+        await using var stream = httpRemoteService.DeleteAsStream($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
         using var streamReader = new StreamReader(stream!);
 
         // ReSharper disable once MethodHasAsyncOverload
         await using var stream2 = httpRemoteService.DeleteAsStream($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
         using var streamReader2 = new StreamReader(stream2!);
 
-        Assert.Equal("Hello World!", await streamReader.ReadToEndAsync());
-        Assert.Equal("Hello World!", await streamReader2.ReadToEndAsync());
+        Assert.Equal("Hello World!", await streamReader.ReadToEndAsync(TestContext.Current.CancellationToken));
+        Assert.Equal("Hello World!", await streamReader2.ReadToEndAsync(TestContext.Current.CancellationToken));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -650,21 +670,22 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
-        var bytes = httpRemoteService.DeleteAsByteArray($"http://localhost:{port}/test");
+        var bytes = httpRemoteService.DeleteAsByteArray($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
 
         // ReSharper disable once MethodHasAsyncOverload
         var bytes2 = httpRemoteService.DeleteAsByteArray($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal("Hello World!", Encoding.UTF8.GetString(bytes!));
         Assert.Equal("Hello World!", Encoding.UTF8.GetString(bytes2!));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -682,18 +703,19 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        var str = await httpRemoteService.DeleteAsStringAsync($"http://localhost:{port}/test");
+        var str = await httpRemoteService.DeleteAsStringAsync($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
         var str2 = await httpRemoteService.DeleteAsStringAsync($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal("Hello World!", str);
         Assert.Equal("Hello World!", str2);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -711,21 +733,22 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        await using var stream = await httpRemoteService.DeleteAsStreamAsync($"http://localhost:{port}/test");
+        await using var stream = await httpRemoteService.DeleteAsStreamAsync($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
         using var streamReader = new StreamReader(stream!);
 
         await using var stream2 = await httpRemoteService.DeleteAsStreamAsync($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
         using var streamReader2 = new StreamReader(stream2!);
 
-        Assert.Equal("Hello World!", await streamReader.ReadToEndAsync());
-        Assert.Equal("Hello World!", await streamReader2.ReadToEndAsync());
+        Assert.Equal("Hello World!", await streamReader.ReadToEndAsync(TestContext.Current.CancellationToken));
+        Assert.Equal("Hello World!", await streamReader2.ReadToEndAsync(TestContext.Current.CancellationToken));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -743,18 +766,19 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        var bytes = await httpRemoteService.DeleteAsByteArrayAsync($"http://localhost:{port}/test");
+        var bytes = await httpRemoteService.DeleteAsByteArrayAsync($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
         var bytes2 = await httpRemoteService.DeleteAsByteArrayAsync($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal("Hello World!", Encoding.UTF8.GetString(bytes!));
         Assert.Equal("Hello World!", Encoding.UTF8.GetString(bytes2!));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -772,21 +796,22 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
-        var str = httpRemoteService.HeadAsString($"http://localhost:{port}/test");
+        var str = httpRemoteService.HeadAsString($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
 
         // ReSharper disable once MethodHasAsyncOverload
         var str2 = httpRemoteService.HeadAsString($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal("", str);
         Assert.Equal("", str2);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -804,23 +829,24 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
-        await using var stream = httpRemoteService.HeadAsStream($"http://localhost:{port}/test");
+        await using var stream = httpRemoteService.HeadAsStream($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
         using var streamReader = new StreamReader(stream!);
 
         // ReSharper disable once MethodHasAsyncOverload
         await using var stream2 = httpRemoteService.HeadAsStream($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
         using var streamReader2 = new StreamReader(stream2!);
 
-        Assert.Equal("", await streamReader.ReadToEndAsync());
-        Assert.Equal("", await streamReader2.ReadToEndAsync());
+        Assert.Equal("", await streamReader.ReadToEndAsync(TestContext.Current.CancellationToken));
+        Assert.Equal("", await streamReader2.ReadToEndAsync(TestContext.Current.CancellationToken));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -838,21 +864,22 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
-        var bytes = httpRemoteService.HeadAsByteArray($"http://localhost:{port}/test");
+        var bytes = httpRemoteService.HeadAsByteArray($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
 
         // ReSharper disable once MethodHasAsyncOverload
         var bytes2 = httpRemoteService.HeadAsByteArray($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal("", Encoding.UTF8.GetString(bytes!));
         Assert.Equal("", Encoding.UTF8.GetString(bytes2!));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -870,18 +897,19 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        var str = await httpRemoteService.HeadAsStringAsync($"http://localhost:{port}/test");
+        var str = await httpRemoteService.HeadAsStringAsync($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
         var str2 = await httpRemoteService.HeadAsStringAsync($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal("", str);
         Assert.Equal("", str2);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -899,21 +927,22 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        await using var stream = await httpRemoteService.HeadAsStreamAsync($"http://localhost:{port}/test");
+        await using var stream = await httpRemoteService.HeadAsStreamAsync($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
         using var streamReader = new StreamReader(stream!);
 
         await using var stream2 = await httpRemoteService.HeadAsStreamAsync($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
         using var streamReader2 = new StreamReader(stream2!);
 
-        Assert.Equal("", await streamReader.ReadToEndAsync());
-        Assert.Equal("", await streamReader2.ReadToEndAsync());
+        Assert.Equal("", await streamReader.ReadToEndAsync(TestContext.Current.CancellationToken));
+        Assert.Equal("", await streamReader2.ReadToEndAsync(TestContext.Current.CancellationToken));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -931,18 +960,19 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        var bytes = await httpRemoteService.HeadAsByteArrayAsync($"http://localhost:{port}/test");
+        var bytes = await httpRemoteService.HeadAsByteArrayAsync($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
         var bytes2 = await httpRemoteService.HeadAsByteArrayAsync($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal("", Encoding.UTF8.GetString(bytes!));
         Assert.Equal("", Encoding.UTF8.GetString(bytes2!));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -960,21 +990,22 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
-        var str = httpRemoteService.OptionsAsString($"http://localhost:{port}/test");
+        var str = httpRemoteService.OptionsAsString($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
 
         // ReSharper disable once MethodHasAsyncOverload
         var str2 = httpRemoteService.OptionsAsString($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal("Hello World!", str);
         Assert.Equal("Hello World!", str2);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -992,23 +1023,24 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
-        await using var stream = httpRemoteService.OptionsAsStream($"http://localhost:{port}/test");
+        await using var stream = httpRemoteService.OptionsAsStream($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
         using var streamReader = new StreamReader(stream!);
 
         // ReSharper disable once MethodHasAsyncOverload
         await using var stream2 = httpRemoteService.OptionsAsStream($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
         using var streamReader2 = new StreamReader(stream2!);
 
-        Assert.Equal("Hello World!", await streamReader.ReadToEndAsync());
-        Assert.Equal("Hello World!", await streamReader2.ReadToEndAsync());
+        Assert.Equal("Hello World!", await streamReader.ReadToEndAsync(TestContext.Current.CancellationToken));
+        Assert.Equal("Hello World!", await streamReader2.ReadToEndAsync(TestContext.Current.CancellationToken));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1026,21 +1058,22 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
-        var bytes = httpRemoteService.OptionsAsByteArray($"http://localhost:{port}/test");
+        var bytes = httpRemoteService.OptionsAsByteArray($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
 
         // ReSharper disable once MethodHasAsyncOverload
         var bytes2 = httpRemoteService.OptionsAsByteArray($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal("Hello World!", Encoding.UTF8.GetString(bytes!));
         Assert.Equal("Hello World!", Encoding.UTF8.GetString(bytes2!));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1058,18 +1091,19 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        var str = await httpRemoteService.OptionsAsStringAsync($"http://localhost:{port}/test");
+        var str = await httpRemoteService.OptionsAsStringAsync($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
         var str2 = await httpRemoteService.OptionsAsStringAsync($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal("Hello World!", str);
         Assert.Equal("Hello World!", str2);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1087,21 +1121,22 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        await using var stream = await httpRemoteService.OptionsAsStreamAsync($"http://localhost:{port}/test");
+        await using var stream = await httpRemoteService.OptionsAsStreamAsync($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
         using var streamReader = new StreamReader(stream!);
 
         await using var stream2 = await httpRemoteService.OptionsAsStreamAsync($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
         using var streamReader2 = new StreamReader(stream2!);
 
-        Assert.Equal("Hello World!", await streamReader.ReadToEndAsync());
-        Assert.Equal("Hello World!", await streamReader2.ReadToEndAsync());
+        Assert.Equal("Hello World!", await streamReader.ReadToEndAsync(TestContext.Current.CancellationToken));
+        Assert.Equal("Hello World!", await streamReader2.ReadToEndAsync(TestContext.Current.CancellationToken));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1119,18 +1154,19 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        var bytes = await httpRemoteService.OptionsAsByteArrayAsync($"http://localhost:{port}/test");
+        var bytes = await httpRemoteService.OptionsAsByteArrayAsync($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
         var bytes2 = await httpRemoteService.OptionsAsByteArrayAsync($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal("Hello World!", Encoding.UTF8.GetString(bytes!));
         Assert.Equal("Hello World!", Encoding.UTF8.GetString(bytes2!));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1148,21 +1184,22 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
-        var str = httpRemoteService.TraceAsString($"http://localhost:{port}/test");
+        var str = httpRemoteService.TraceAsString($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
 
         // ReSharper disable once MethodHasAsyncOverload
         var str2 = httpRemoteService.TraceAsString($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal("Hello World!", str);
         Assert.Equal("Hello World!", str2);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1180,23 +1217,24 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
-        await using var stream = httpRemoteService.TraceAsStream($"http://localhost:{port}/test");
+        await using var stream = httpRemoteService.TraceAsStream($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
         using var streamReader = new StreamReader(stream!);
 
         // ReSharper disable once MethodHasAsyncOverload
         await using var stream2 = httpRemoteService.TraceAsStream($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
         using var streamReader2 = new StreamReader(stream2!);
 
-        Assert.Equal("Hello World!", await streamReader.ReadToEndAsync());
-        Assert.Equal("Hello World!", await streamReader2.ReadToEndAsync());
+        Assert.Equal("Hello World!", await streamReader.ReadToEndAsync(TestContext.Current.CancellationToken));
+        Assert.Equal("Hello World!", await streamReader2.ReadToEndAsync(TestContext.Current.CancellationToken));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1214,21 +1252,22 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
-        var bytes = httpRemoteService.TraceAsByteArray($"http://localhost:{port}/test");
+        var bytes = httpRemoteService.TraceAsByteArray($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
 
         // ReSharper disable once MethodHasAsyncOverload
         var bytes2 = httpRemoteService.TraceAsByteArray($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal("Hello World!", Encoding.UTF8.GetString(bytes!));
         Assert.Equal("Hello World!", Encoding.UTF8.GetString(bytes2!));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1246,18 +1285,19 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        var str = await httpRemoteService.TraceAsStringAsync($"http://localhost:{port}/test");
+        var str = await httpRemoteService.TraceAsStringAsync($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
         var str2 = await httpRemoteService.TraceAsStringAsync($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal("Hello World!", str);
         Assert.Equal("Hello World!", str2);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1275,21 +1315,22 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        await using var stream = await httpRemoteService.TraceAsStreamAsync($"http://localhost:{port}/test");
+        await using var stream = await httpRemoteService.TraceAsStreamAsync($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
         using var streamReader = new StreamReader(stream!);
 
         await using var stream2 = await httpRemoteService.TraceAsStreamAsync($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
         using var streamReader2 = new StreamReader(stream2!);
 
-        Assert.Equal("Hello World!", await streamReader.ReadToEndAsync());
-        Assert.Equal("Hello World!", await streamReader2.ReadToEndAsync());
+        Assert.Equal("Hello World!", await streamReader.ReadToEndAsync(TestContext.Current.CancellationToken));
+        Assert.Equal("Hello World!", await streamReader2.ReadToEndAsync(TestContext.Current.CancellationToken));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1307,18 +1348,19 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        var bytes = await httpRemoteService.TraceAsByteArrayAsync($"http://localhost:{port}/test");
+        var bytes = await httpRemoteService.TraceAsByteArrayAsync($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
         var bytes2 = await httpRemoteService.TraceAsByteArrayAsync($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal("Hello World!", Encoding.UTF8.GetString(bytes!));
         Assert.Equal("Hello World!", Encoding.UTF8.GetString(bytes2!));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1336,21 +1378,22 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
-        var str = httpRemoteService.PatchAsString($"http://localhost:{port}/test");
+        var str = httpRemoteService.PatchAsString($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
 
         // ReSharper disable once MethodHasAsyncOverload
         var str2 = httpRemoteService.PatchAsString($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal("Hello World!", str);
         Assert.Equal("Hello World!", str2);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1368,23 +1411,24 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
-        await using var stream = httpRemoteService.PatchAsStream($"http://localhost:{port}/test");
+        await using var stream = httpRemoteService.PatchAsStream($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
         using var streamReader = new StreamReader(stream!);
 
         // ReSharper disable once MethodHasAsyncOverload
         await using var stream2 = httpRemoteService.PatchAsStream($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
         using var streamReader2 = new StreamReader(stream2!);
 
-        Assert.Equal("Hello World!", await streamReader.ReadToEndAsync());
-        Assert.Equal("Hello World!", await streamReader2.ReadToEndAsync());
+        Assert.Equal("Hello World!", await streamReader.ReadToEndAsync(TestContext.Current.CancellationToken));
+        Assert.Equal("Hello World!", await streamReader2.ReadToEndAsync(TestContext.Current.CancellationToken));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1402,21 +1446,22 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
-        var bytes = httpRemoteService.PatchAsByteArray($"http://localhost:{port}/test");
+        var bytes = httpRemoteService.PatchAsByteArray($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
 
         // ReSharper disable once MethodHasAsyncOverload
         var bytes2 = httpRemoteService.PatchAsByteArray($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal("Hello World!", Encoding.UTF8.GetString(bytes!));
         Assert.Equal("Hello World!", Encoding.UTF8.GetString(bytes2!));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1434,18 +1479,19 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        var str = await httpRemoteService.PatchAsStringAsync($"http://localhost:{port}/test");
+        var str = await httpRemoteService.PatchAsStringAsync($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
         var str2 = await httpRemoteService.PatchAsStringAsync($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal("Hello World!", str);
         Assert.Equal("Hello World!", str2);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1463,21 +1509,22 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        await using var stream = await httpRemoteService.PatchAsStreamAsync($"http://localhost:{port}/test");
+        await using var stream = await httpRemoteService.PatchAsStreamAsync($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
         using var streamReader = new StreamReader(stream!);
 
         await using var stream2 = await httpRemoteService.PatchAsStreamAsync($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
         using var streamReader2 = new StreamReader(stream2!);
 
-        Assert.Equal("Hello World!", await streamReader.ReadToEndAsync());
-        Assert.Equal("Hello World!", await streamReader2.ReadToEndAsync());
+        Assert.Equal("Hello World!", await streamReader.ReadToEndAsync(TestContext.Current.CancellationToken));
+        Assert.Equal("Hello World!", await streamReader2.ReadToEndAsync(TestContext.Current.CancellationToken));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1495,18 +1542,19 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        var bytes = await httpRemoteService.PatchAsByteArrayAsync($"http://localhost:{port}/test");
+        var bytes = await httpRemoteService.PatchAsByteArrayAsync($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
         var bytes2 = await httpRemoteService.PatchAsByteArrayAsync($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal("Hello World!", Encoding.UTF8.GetString(bytes!));
         Assert.Equal("Hello World!", Encoding.UTF8.GetString(bytes2!));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1524,21 +1572,22 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
-        var str = httpRemoteService.QueryAsString($"http://localhost:{port}/test");
+        var str = httpRemoteService.QueryAsString($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
 
         // ReSharper disable once MethodHasAsyncOverload
         var str2 = httpRemoteService.QueryAsString($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal("Hello World!", str);
         Assert.Equal("Hello World!", str2);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1556,23 +1605,24 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
-        await using var stream = httpRemoteService.QueryAsStream($"http://localhost:{port}/test");
+        await using var stream = httpRemoteService.QueryAsStream($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
         using var streamReader = new StreamReader(stream!);
 
         // ReSharper disable once MethodHasAsyncOverload
         await using var stream2 = httpRemoteService.QueryAsStream($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
         using var streamReader2 = new StreamReader(stream2!);
 
-        Assert.Equal("Hello World!", await streamReader.ReadToEndAsync());
-        Assert.Equal("Hello World!", await streamReader2.ReadToEndAsync());
+        Assert.Equal("Hello World!", await streamReader.ReadToEndAsync(TestContext.Current.CancellationToken));
+        Assert.Equal("Hello World!", await streamReader2.ReadToEndAsync(TestContext.Current.CancellationToken));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1590,21 +1640,22 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
-        var bytes = httpRemoteService.QueryAsByteArray($"http://localhost:{port}/test");
+        var bytes = httpRemoteService.QueryAsByteArray($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
 
         // ReSharper disable once MethodHasAsyncOverload
         var bytes2 = httpRemoteService.QueryAsByteArray($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal("Hello World!", Encoding.UTF8.GetString(bytes!));
         Assert.Equal("Hello World!", Encoding.UTF8.GetString(bytes2!));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1622,18 +1673,19 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        var str = await httpRemoteService.QueryAsStringAsync($"http://localhost:{port}/test");
+        var str = await httpRemoteService.QueryAsStringAsync($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
         var str2 = await httpRemoteService.QueryAsStringAsync($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal("Hello World!", str);
         Assert.Equal("Hello World!", str2);
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1651,21 +1703,22 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        await using var stream = await httpRemoteService.QueryAsStreamAsync($"http://localhost:{port}/test");
+        await using var stream = await httpRemoteService.QueryAsStreamAsync($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
         using var streamReader = new StreamReader(stream!);
 
         await using var stream2 = await httpRemoteService.QueryAsStreamAsync($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
         using var streamReader2 = new StreamReader(stream2!);
 
-        Assert.Equal("Hello World!", await streamReader.ReadToEndAsync());
-        Assert.Equal("Hello World!", await streamReader2.ReadToEndAsync());
+        Assert.Equal("Hello World!", await streamReader.ReadToEndAsync(TestContext.Current.CancellationToken));
+        Assert.Equal("Hello World!", await streamReader2.ReadToEndAsync(TestContext.Current.CancellationToken));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
@@ -1683,18 +1736,19 @@ public class HttpRemoteServiceHttpMethodsTests2
             return "Hello World!";
         });
 
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        var bytes = await httpRemoteService.QueryAsByteArrayAsync($"http://localhost:{port}/test");
+        var bytes = await httpRemoteService.QueryAsByteArrayAsync($"http://localhost:{port}/test",
+            cancellationToken: TestContext.Current.CancellationToken);
         var bytes2 = await httpRemoteService.QueryAsByteArrayAsync($"http://localhost:{port}/test",
-            HttpCompletionOption.ResponseContentRead);
+            HttpCompletionOption.ResponseContentRead, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal("Hello World!", Encoding.UTF8.GetString(bytes!));
         Assert.Equal("Hello World!", Encoding.UTF8.GetString(bytes2!));
 
-        await app.StopAsync();
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 }
