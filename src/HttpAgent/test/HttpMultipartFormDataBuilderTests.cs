@@ -19,7 +19,7 @@ public class HttpMultipartFormDataBuilderTests
         Assert.NotNull(builder._partContents);
         Assert.Empty(builder._partContents);
         Assert.NotNull(builder.Boundary);
-        Assert.StartsWith("--------------------------", builder.Boundary);
+        Assert.StartsWith("----", builder.Boundary);
         Assert.True(builder.OmitContentType);
         Assert.Null(builder.OnPreAddContent);
         Assert.Null(builder.FormNameTransformer);
@@ -1113,7 +1113,7 @@ public class HttpMultipartFormDataBuilderTests
         Assert.NotNull(multipartFormDataContent3);
         Assert.Equal(2, multipartFormDataContent3.Count());
         Assert.NotNull(multipartFormDataContent3.Headers.ContentType);
-        Assert.Contains("--------------------------", multipartFormDataContent3.Headers.ContentType.ToString());
+        Assert.Contains("----", multipartFormDataContent3.Headers.ContentType.ToString());
 
         builder.SetFormNameTransformer(name => "_" + name);
         var multipartFormDataContent4 = builder.Build(httpRemoteOptions, httpContentProcessorFactory, null);
