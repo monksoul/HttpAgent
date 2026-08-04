@@ -165,10 +165,29 @@ public class HttpRemoteExtensionsTests
     {
         Assert.Equal("\e[32m\e[1m200 OK\e[0m",
             new HttpResponseMessage(HttpStatusCode.OK).GetColoredText("200 OK"));
+
+        Assert.Equal("\e[32m\e[1m304 NotModified\e[0m",
+            new HttpResponseMessage(HttpStatusCode.NotModified).GetColoredText("304 NotModified"));
+
         Assert.Equal("\e[33m\e[1m302 Found\e[0m",
             new HttpResponseMessage(HttpStatusCode.Redirect).GetColoredText("302 Found"));
+        Assert.Equal("\e[33m\e[1m307 TemporaryRedirect\e[0m",
+            new HttpResponseMessage(HttpStatusCode.TemporaryRedirect).GetColoredText("307 TemporaryRedirect"));
+
+        Assert.Equal("\e[31m\e[1m400 BadRequest\e[0m",
+            new HttpResponseMessage(HttpStatusCode.BadRequest).GetColoredText("400 BadRequest"));
+
         Assert.Equal("\e[31m\e[1m500 InternalServerError\e[0m",
             new HttpResponseMessage(HttpStatusCode.InternalServerError).GetColoredText("500 InternalServerError"));
+
+        Assert.Equal("\e[34m\e[1m100 Continue\e[0m",
+            new HttpResponseMessage(HttpStatusCode.Continue).GetColoredText("100 Continue"));
+
+        Assert.Equal("\e[90m\e[1m600 Custom\e[0m",
+            new HttpResponseMessage((HttpStatusCode)600).GetColoredText("600 Custom"));
+
+        Assert.Equal("\e[32m200 OK\e[0m",
+            new HttpResponseMessage(HttpStatusCode.OK).GetColoredText("200 OK", false));
     }
 
     [Fact]
@@ -299,7 +318,7 @@ public class HttpRemoteExtensionsTests
         multipartFormDataContent.Add(
             new StreamContent(File.OpenRead(Path.Combine(AppContext.BaseDirectory, "test.txt"))), "file");
         Assert.Equal(
-            "\e[36m\e[1mRequest Body (MultipartFormDataContent, total: 32 bytes):\e[0m \r\n  --------------------------\r\n  Content-Type: text/plain; charset=utf-8\r\n  Content-Disposition: form-data; name=text\r\n  \r\n  Hello World\r\n  --------------------------\r\n  Content-Disposition: form-data; name=file\r\n  \r\n  \ufeff测试文件内容",
+            "\e[36m\e[1mRequest Body (MultipartFormDataContent, total: 32 bytes):\e[0m \r\n  \e[90m--------------------------\e[0m\r\n  Content-Type: text/plain; charset=utf-8\r\n  Content-Disposition: form-data; name=text\r\n  \r\n  Hello World\r\n  \e[90m--------------------------\e[0m\r\n  Content-Disposition: form-data; name=file\r\n  \r\n  \ufeff测试文件内容",
             await multipartFormDataContent.ProfilerAsync(cancellationToken: TestContext.Current.CancellationToken));
 
         var stringContent2 = new StringContent("Hello World");

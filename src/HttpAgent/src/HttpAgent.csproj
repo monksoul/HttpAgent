@@ -1,28 +1,28 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <Description>Furion 框架 HTTP 远程请求模块。</Description>
+        <Description>HttpAgent 是一个高性能、灵活且易用的开源库，提供了全面的 HTTP 功能支持，包括文件传输、轮询、测试工具、实时通信、请求管理、Media 类型处理、MessagePack 支持、声明式请求等。 内置工业级报文透视引擎（Profiler），彻底终结第三方 API 对接的“黑匣子”时代，并具有低资源消耗和高测试覆盖率的特点。</Description>
         <PackageTags>Furion;ASP.NET;dotNET China;Cross Platform;百小僧;Monk;MonkSoul;Core;HTTP;HttpClient;Remote</PackageTags>
     </PropertyGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
-        <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0"/>
-        <PackageReference Include="Microsoft.Net.Http.Headers" Version="8.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
+        <PackageReference Include="Microsoft.Net.Http.Headers" Version="8.0.0" />
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net9.0' ">
-        <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.0"/>
-        <PackageReference Include="Microsoft.Net.Http.Headers" Version="9.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.0" />
+        <PackageReference Include="Microsoft.Net.Http.Headers" Version="9.0.0" />
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net10.0' ">
-        <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.0"/>
-        <PackageReference Include="Microsoft.Net.Http.Headers" Version="10.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.0" />
+        <PackageReference Include="Microsoft.Net.Http.Headers" Version="10.0.0" />
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net11.0' ">
-        <PackageReference Include="Microsoft.Extensions.Http" Version="11.0.0-preview.3.26207.106"/>
-        <PackageReference Include="Microsoft.Net.Http.Headers" Version="11.0.0-preview.3.26207.106"/>
+        <PackageReference Include="Microsoft.Extensions.Http" Version="11.0.0-preview.3.26207.106" />
+        <PackageReference Include="Microsoft.Net.Http.Headers" Version="11.0.0-preview.3.26207.106" />
     </ItemGroup>
 
 </Project>

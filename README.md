@@ -4,8 +4,9 @@
 
 HttpAgent is a high-performance, flexible, and user-friendly open-source library that provides comprehensive support for
 HTTP functionalities, including file transfer, polling, testing tools, real-time communication, request management,
-media type handling, MessagePack support, Declarative Requests, and more. It is characterized by low resource
-consumption and high test coverage.
+media type handling, MessagePack support, Declarative Requests, and more. **It features a built-in industrial-grade HTTP
+traffic inspection engine (Profiler) that completely eliminates the "black box" dilemma in third-party API
+integration**, and is characterized by low resource consumption and high test coverage.
 
 ![HttpAgent.drawio](https://gitee.com/dotnetchina/HttpAgent/raw/master/drawio/HttpAgent.drawio.jpg "HttpAgent.drawio.jpg")
 
@@ -15,6 +16,9 @@ consumption and high test coverage.
 
 - **Comprehensive `HTTP` Method Support**: Covers `GET`, `POST`, `PUT`, `DELETE`, `PATCH`, `HEAD`, `TRACE`, `OPTIONS`
   and `QUERY` methods.
+- **Industrial-Grade HTTP Traffic Inspection Engine (`Profiler`)**: Completely eliminates the "black box" pain points in
+  third-party API integration, allowing you to inspect underlying HTTP traffic directly in the console without relying
+  on external packet capture tools like Fiddler or Wireshark.
 - **File Transfer Functionality**: Supports file upload and download with real-time transfer progress monitoring.
 - **Polling Mechanism**: Supports standard polling and long polling with customizable polling intervals.
 - **Testing Toolkit**: Capable of stress testing, performance testing, and simulation testing with the ability to

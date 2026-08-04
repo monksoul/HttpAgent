@@ -3,7 +3,8 @@
 [![license](https://img.shields.io/badge/license-MIT-orange?cacheSeconds=10800)](https://gitee.com/dotnetchina/HttpAgent/blob/master/LICENSE) [![nuget](https://img.shields.io/nuget/v/HttpAgent.svg?cacheSeconds=10800)](https://www.nuget.org/packages/HttpAgent) [![dotNET China](https://img.shields.io/badge/organization-dotNET%20China-yellow?cacheSeconds=10800)](https://gitee.com/dotnetchina)
 
 HttpAgent 是一个高性能、灵活且易用的开源库，提供了全面的 HTTP 功能支持，包括文件传输、轮询、测试工具、实时通信、请求管理、Media
-类型处理、MessagePack 支持、声明式请求等，并具有低资源消耗和高测试覆盖率的特点。
+类型处理、MessagePack 支持、声明式请求等。 **内置工业级报文透视引擎（Profiler），彻底终结第三方 API 对接的“黑匣子”时代**
+，并具有低资源消耗和高测试覆盖率的特点。
 
 ![HttpAgent.drawio](https://gitee.com/dotnetchina/HttpAgent/raw/master/drawio/HttpAgent.drawio.jpg "HttpAgent.drawio.jpg")
 
@@ -12,6 +13,8 @@ HttpAgent 是一个高性能、灵活且易用的开源库，提供了全面的 
 ## 特性
 
 - **全面的 `HTTP` 方法支持**：涵盖 `GET`, `POST`, `PUT`, `DELETE`, `PATCH`, `HEAD`, `TRACE`, `OPTIONS` 和 `QUERY` 方法。
+- **工业级报文透视引擎 (`Profiler`)**：彻底终结第三方 API 对接的“黑匣子”痛点，无需依赖 Fiddler/Wireshark
+  等外部抓包工具，即可在控制台洞察底层报文。
 - **文件传输功能**：支持文件上传和下载，并提供实时传输进度监控。
 - **轮询机制**：支持标准轮询与长轮询，并允许自定义轮询间隔。
 - **测试工具集**：具备压力测试、性能测试及模拟测试能力，并能生成详细的测试报告；支持配置请求数量、并发数及测试迭代次数。

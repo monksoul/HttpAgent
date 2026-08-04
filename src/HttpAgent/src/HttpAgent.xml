@@ -1933,10 +1933,7 @@
             <summary>
                 多部分表单内容项排序委托
             </summary>
-            <remarks>
-                接收原始 <see cref="T:HttpAgent.MultipartFormDataItem" /> 集合，返回排序后的可枚举集合。为 <c>null</c>
-                时使用默认排序：非二进制内容（如字符串、对象）优先，二进制内容（如文件流、字节数组）后置。
-            </remarks>
+            <remarks>接收原始 <see cref="T:HttpAgent.MultipartFormDataItem" /> 集合，返回排序后的可枚举集合。为 <c>null</c> 时不排序（原始添加顺序）。</remarks>
         </member>
         <member name="F:HttpAgent.HttpMultipartFormDataBuilder.FormNameTransformer">
             <summary>
@@ -2013,10 +2010,7 @@
             <summary>
                 设置多部分表单内容项的排序规则
             </summary>
-            <param name="sorter">
-                接收原始 <see cref="T:HttpAgent.MultipartFormDataItem" /> 集合，返回排序后的可枚举集合。为 <c>null</c>
-                时使用默认排序：非二进制内容（如字符串、对象）优先，二进制内容（如文件流、字节数组）后置
-            </param>
+            <param name="sorter">接收原始 <see cref="T:HttpAgent.MultipartFormDataItem" /> 集合，返回排序后的可枚举集合。为 <c>null</c> 时不排序（原始添加顺序）</param>
             <returns>
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
@@ -3196,7 +3190,7 @@
             <summary>
                 设置查询参数排序规则
             </summary>
-            <param name="sorter">接收所有查询键值对（包括原始 URL 参数和用户追加的参数），返回排序后的键值对序列。为 <c>null</c> 时不执行排序，保持参数的添加顺序</param>
+            <param name="sorter">接收所有查询键值对（包括原始 URL 参数和用户追加的参数），返回排序后的键值对序列。为 <c>null</c> 时不排序（原始添加顺序）</param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
@@ -4174,7 +4168,7 @@
             <summary>
                 查询参数排序委托
             </summary>
-            <remarks>接收所有查询键值对（包括原始 URL 参数和用户追加的参数），返回排序后的键值对序列。为 <c>null</c> 时不执行排序，保持参数的添加顺序。</remarks>
+            <remarks>接收所有查询键值对（包括原始 URL 参数和用户追加的参数），返回排序后的键值对序列。为 <c>null</c> 时不排序（原始添加顺序）。</remarks>
         </member>
         <member name="P:HttpAgent.HttpRequestBuilder.QueryParametersToRemove">
             <summary>
@@ -6245,7 +6239,7 @@
         <member name="M:HttpAgent.Core.Converters.Json.FlexibleDateTimeConverter.Regex">
             <remarks>
             Pattern:<br/>
-            <code>^/Date\(([+-]*\d+)\)/$</code><br/>
+            <code>^/Date\\(([+-]*\\d+)\\)/$</code><br/>
             Options:<br/>
             <code>RegexOptions.CultureInvariant</code><br/>
             Explanation:<br/>
@@ -6274,7 +6268,7 @@
         <member name="M:HttpAgent.Core.Converters.Json.FlexibleDateTimeOffsetConverter.Regex">
             <remarks>
             Pattern:<br/>
-            <code>^/Date\(([+-]*\d+)([+-])(\d{2})(\d{2})\)/$</code><br/>
+            <code>^/Date\\(([+-]*\\d+)([+-])(\\d{2})(\\d{2})\\)/$</code><br/>
             Options:<br/>
             <code>RegexOptions.CultureInvariant</code><br/>
             Explanation:<br/>
@@ -6872,7 +6866,7 @@
         <member name="M:HttpAgent.Core.Extensions.StringExtensions.PlaceholderRegex">
             <remarks>
             Pattern:<br/>
-            <code>\{\s*(?:\*\*)?\s*(\w+(?:\s*\.\s*\w+|\s*\[\s*\d+\s*\])*)\s*(\?)?\s*\}</code><br/>
+            <code>\\{\\s*(?:\\*\\*)?\\s*(\\w+(?:\\s*\\.\\s*\\w+|\\s*\\[\\s*\\d+\\s*\\])*)\\s*(\\?)?\\s*\\}</code><br/>
             Explanation:<br/>
             <code>
             ○ Match '{'.<br/>
@@ -6883,13 +6877,14 @@
             ○ 1st capture group.<br/>
                 ○ Match a word character greedily at least once.<br/>
                 ○ Loop greedily any number of times.<br/>
-                    ○ Match a whitespace character atomically any number of times.<br/>
                     ○ Match with 2 alternative expressions.<br/>
                         ○ Match a sequence of expressions.<br/>
+                            ○ Match a whitespace character atomically any number of times.<br/>
                             ○ Match '.'.<br/>
                             ○ Match a whitespace character atomically any number of times.<br/>
                             ○ Match a word character greedily at least once.<br/>
                         ○ Match a sequence of expressions.<br/>
+                            ○ Match a whitespace character atomically any number of times.<br/>
                             ○ Match '['.<br/>
                             ○ Match a whitespace character atomically any number of times.<br/>
                             ○ Match a Unicode digit atomically at least once.<br/>
@@ -6907,7 +6902,7 @@
         <member name="M:HttpAgent.Core.Extensions.StringExtensions.ConfigurationKeyRegex">
             <remarks>
             Pattern:<br/>
-            <code>\[\[\s*(?:\*\*)?\s*([\w\-:]+)((?:\s*\|\s*[\w\-:]+)*)\s*(?:\|\|\s*([^\]]*))?\s*(\?)?\s*\]\]</code><br/>
+            <code>\\[\\[\\s*(?:\\*\\*)?\\s*([\\w\\-:]+)((?:\\s*\\|\\s*[\\w\\-:]+)*)\\s*(?:\\|\\|\\s*([^\\]]*))?\\s*(\\?)?\\s*\\]\\]</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "[[".<br/>
@@ -10082,7 +10077,10 @@
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
             <returns>
-                <see cref="T:System.Tuple`3" />：包含格式化后的内容、实际读取字节数以及是否截断的值元组
+                <para>
+                    <see cref="T:System.Tuple`3" />
+                </para>
+                <para>包含格式化后的内容、实际读取字节数以及是否截断的值元组</para>
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.GetHexDump(System.Byte[],System.Int32)">
@@ -10106,7 +10104,10 @@
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
             <returns>
-                <see cref="T:System.Tuple`3" />：包含解压后字节数组、实际读取字节数以及是否截断的值元组
+                <para>
+                    <see cref="T:System.Tuple`3" />
+                </para>
+                <para>包含解压后字节数组、实际读取字节数以及是否截断的值元组</para>
             </returns>
         </member>
         <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.GetColoredText(System.Net.Http.HttpResponseMessage,System.String,System.Boolean)">
@@ -10310,7 +10311,7 @@
         <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.UnicodeEscapeRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\u([0-9a-fA-F]{4})</code><br/>
+            <code>\\\\u([0-9a-fA-F]{4})</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "\\u".<br/>
@@ -12087,7 +12088,7 @@
         <member name="M:HttpAgent.FileTransferProgress.AnsiRegex">
             <remarks>
             Pattern:<br/>
-            <code>\e\[[\d;]*[a-zA-Z]</code><br/>
+            <code>\\e\\[[\\d;]*[a-zA-Z]</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "\u001b[".<br/>
@@ -13939,7 +13940,7 @@
         <member name="M:HttpAgent.StatusCodePipelineHandler.StatusCodeRangeRegex">
             <remarks>
             Pattern:<br/>
-            <code>^\d+[-~]\d+$</code><br/>
+            <code>^\\d+[-~]\\d+$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
@@ -13953,7 +13954,7 @@
         <member name="M:HttpAgent.StatusCodePipelineHandler.StatusCodeCompareRegex">
             <remarks>
             Pattern:<br/>
-            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\d+)$</code><br/>
+            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\\d+)$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
