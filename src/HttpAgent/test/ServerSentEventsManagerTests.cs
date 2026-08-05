@@ -81,6 +81,7 @@ public class ServerSentEventsManagerTests
         serverSentEventsManager.TryParseEventLine("data: 这是一行数据", ref serverSentEventsData5);
         Assert.NotNull(serverSentEventsData5);
         Assert.Equal("这是一行数据", serverSentEventsData5.Data);
+        Assert.Equal("data: 这是一行数据", serverSentEventsData5.RawLine);
 
         serverSentEventsManager.TryParseEventLine("event: myname", ref serverSentEventsData5);
         Assert.NotNull(serverSentEventsData5);

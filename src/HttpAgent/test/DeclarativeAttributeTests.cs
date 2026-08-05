@@ -744,7 +744,8 @@ public class DeclarativeAttributeTests
         public void OnPreSendRequest(HttpRequestMessage httpRequestMessage) { }
 
         /// <inheritdoc />
-        public void OnPostReceiveResponse(HttpResponseMessage httpResponseMessage) { }
+        public Task OnPostReceiveResponseAsync(HttpResponseMessage httpResponseMessage,
+            CancellationToken cancellationToken) => Task.CompletedTask;
 
         /// <inheritdoc />
         public void OnRequestFailed(Exception exception, HttpResponseMessage? httpResponseMessage) { }

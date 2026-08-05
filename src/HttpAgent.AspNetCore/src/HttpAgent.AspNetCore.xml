@@ -263,6 +263,28 @@
                 <see cref="T:System.String" />
             </returns>
         </member>
+        <member name="M:HttpAgent.Extensions.HttpContextExtensions.EnableServerSentEvents(Microsoft.AspNetCore.Http.HttpResponse)">
+            <summary>
+                将 <see cref="T:Microsoft.AspNetCore.Http.HttpResponse" /> 配置为 Server-Sent Events 标准流式响应格式
+            </summary>
+            <param name="httpResponse">
+                <see cref="T:Microsoft.AspNetCore.Http.HttpResponse" />
+            </param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:HttpAgent.Extensions.HttpContextExtensions.WriteAndFlushAsync(Microsoft.AspNetCore.Http.HttpResponse,System.String,System.Threading.CancellationToken)">
+            <summary>
+                向客户端写入一条消息并立即刷新响应流
+            </summary>
+            <param name="httpResponse">
+                <see cref="T:Microsoft.AspNetCore.Http.HttpResponse" />
+            </param>
+            <param name="text">消息文本</param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
         <member name="M:HttpAgent.Extensions.HttpContextExtensions.Forward(Microsoft.AspNetCore.Http.HttpContext,System.String,System.Action{HttpAgent.HttpRequestBuilder},System.Net.Http.HttpCompletionOption,HttpAgent.HttpContextForwardOptions)">
             <summary>
                 转发 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 到新的 HTTP 远程地址
@@ -1746,26 +1768,6 @@
             </returns>
             <exception cref="T:System.ArgumentNullException"></exception>
         </member>
-        <member name="T:HttpAgent.AspNetCore.Extensions.IApplicationBuilderExtensions">
-            <summary>
-                <see cref="T:Microsoft.AspNetCore.Builder.IApplicationBuilder" /> 扩展类
-            </summary>
-        </member>
-        <member name="M:HttpAgent.AspNetCore.Extensions.IApplicationBuilderExtensions.UseEnableBuffering(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
-            <summary>
-                启用请求正文缓存
-            </summary>
-            <remarks>
-                <para>支持 <c>HttpRequest.Body</c> 重复读取。</para>
-                <para>参考文献：https://learn.microsoft.com/zh-cn/aspnet/core/fundamentals/use-http-context?view=aspnetcore-8.0#enable-request-body-buffering</para>
-            </remarks>
-            <param name="app">
-                <see cref="T:Microsoft.AspNetCore.Builder.IApplicationBuilder" />
-            </param>
-            <returns>
-                <see cref="T:Microsoft.AspNetCore.Builder.IApplicationBuilder" />
-            </returns>
-        </member>
         <member name="T:HttpAgent.ForwardAttribute">
             <summary>
                 <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 转发操作筛选器
@@ -1991,6 +1993,64 @@
         </member>
         <member name="M:HttpAgent.FormFileContentProcessor.Process(HttpAgent.HttpContentProcessorContext)">
             <inheritdoc />
+        </member>
+        <member name="T:Microsoft.AspNetCore.Builder.HttpRemoteApplicationBuilderExtensions">
+            <summary>
+                <see cref="T:Microsoft.AspNetCore.Builder.IApplicationBuilder" /> 扩展类
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Builder.HttpRemoteApplicationBuilderExtensions.UseEnableBuffering(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
+            <summary>
+                启用请求正文缓存
+            </summary>
+            <remarks>
+                <para>支持 <c>HttpRequest.Body</c> 重复读取。</para>
+                <para>参考文献：https://learn.microsoft.com/zh-cn/aspnet/core/fundamentals/use-http-context?view=aspnetcore-8.0#enable-request-body-buffering</para>
+            </remarks>
+            <param name="app">
+                <see cref="T:Microsoft.AspNetCore.Builder.IApplicationBuilder" />
+            </param>
+            <returns>
+                <see cref="T:Microsoft.AspNetCore.Builder.IApplicationBuilder" />
+            </returns>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Builder.HttpRemoteApplicationBuilderExtensions.UseHttpRemoteClient(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
+            <summary>
+                将应用程序的主 <see cref="T:System.IServiceProvider" /> 注入到 <see cref="T:HttpAgent.HttpRemoteClient" />，使其优先使用该容器解析
+                <see cref="T:HttpAgent.IHttpRemoteService" /> 服务
+            </summary>
+            <remarks>
+                <para>
+                    调用此方法后，<see cref="P:HttpAgent.HttpRemoteClient.Service" /> 将从外部容器获取服务实例，而非自行构建独立 DI 容器。注入的容器生命周期由调用方管理，
+                    <see cref="M:HttpAgent.HttpRemoteClient.Dispose" /> 不会释放它。
+                </para>
+                <para>注意：请确保使用的是根容器（Root ServiceProvider），使用作用域容器可能导致对象生命周期异常。</para>
+            </remarks>
+            <param name="app">
+                <see cref="T:Microsoft.AspNetCore.Builder.IApplicationBuilder" />
+            </param>
+            <returns>
+                <see cref="T:Microsoft.AspNetCore.Builder.IApplicationBuilder" />
+            </returns>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Builder.HttpRemoteApplicationBuilderExtensions.UseHttpRemoteClient(Microsoft.AspNetCore.Builder.WebApplication)">
+            <summary>
+                将应用程序的主 <see cref="T:System.IServiceProvider" /> 注入到 <see cref="T:HttpAgent.HttpRemoteClient" />，使其优先使用该容器解析
+                <see cref="T:HttpAgent.IHttpRemoteService" /> 服务
+            </summary>
+            <remarks>
+                <para>
+                    调用此方法后，<see cref="P:HttpAgent.HttpRemoteClient.Service" /> 将从外部容器获取服务实例，而非自行构建独立 DI 容器。注入的容器生命周期由调用方管理，
+                    <see cref="M:HttpAgent.HttpRemoteClient.Dispose" /> 不会释放它。
+                </para>
+                <para>注意：请确保使用的是根容器（Root ServiceProvider），使用作用域容器可能导致对象生命周期异常。</para>
+            </remarks>
+            <param name="app">
+                <see cref="T:Microsoft.AspNetCore.Builder.WebApplication" />
+            </param>
+            <returns>
+                <see cref="T:Microsoft.AspNetCore.Builder.WebApplication" />
+            </returns>
         </member>
     </members>
 </doc>

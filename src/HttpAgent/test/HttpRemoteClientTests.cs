@@ -12,7 +12,8 @@ public class HttpRemoteClientTests
     private static void ResetStaticState()
     {
         HttpRemoteClient._isDisposed = false;
-        HttpRemoteClient.ReleaseServiceProvider();
+        HttpRemoteClient.ReleaseInternalServiceProvider();
+        HttpRemoteClient._externalServiceProvider = null;
 
         HttpRemoteClient._serviceInstance = null;
         HttpRemoteClient._configure = services => services.AddHttpRemote();
@@ -95,10 +96,10 @@ public class HttpRemoteClientTests
     }
 
     [Fact]
-    public void ReleaseServiceProvider_ReturnOK()
+    public void ReleaseInternalServiceProvider_ReturnOK()
     {
         _ = HttpRemoteClient.Service;
-        HttpRemoteClient.ReleaseServiceProvider();
+        HttpRemoteClient.ReleaseInternalServiceProvider();
 
         Assert.Null(HttpRemoteClient._serviceProvider);
     }
@@ -129,5 +130,105 @@ public class HttpRemoteClientTests
 
         await app.StopAsync(TestContext.Current.CancellationToken);
         HttpRemoteClient.Dispose();
+    }
+
+    [Fact]
+    public void SetServiceProvider_ValidProvider_ServiceReturnsFromExternal_ReturnOK()
+    {
+        var services = new ServiceCollection();
+        services.AddHttpRemote();
+        var provider = services.BuildServiceProvider();
+
+        HttpRemoteClient.SetServiceProvider(provider);
+
+        var service = HttpRemoteClient.Service;
+        Assert.NotNull(service);
+        Assert.Same(provider.GetRequiredService<IHttpRemoteService>(), service);
+        Assert.Null(HttpRemoteClient._serviceProvider);
+        Assert.Same(provider, HttpRemoteClient._externalServiceProvider);
+    }
+
+    [Fact]
+    public void SetServiceProvider_MissingRegistration_ThrowsOnAccess_ReturnOK()
+    {
+        var services = new ServiceCollection();
+        var provider = services.BuildServiceProvider();
+
+        HttpRemoteClient.SetServiceProvider(provider);
+
+        Assert.Throws<InvalidOperationException>(() => HttpRemoteClient.Service);
+    }
+
+    [Fact]
+    public void SetServiceProvider_OverrideExternalProvider_UsesNewProvider_ReturnOK()
+    {
+        var services1 = new ServiceCollection();
+        services1.AddHttpRemote();
+        var provider1 = services1.BuildServiceProvider();
+
+        var services2 = new ServiceCollection();
+        services2.AddHttpRemote();
+        var provider2 = services2.BuildServiceProvider();
+
+        HttpRemoteClient.SetServiceProvider(provider1);
+        var firstService = HttpRemoteClient.Service;
+
+        HttpRemoteClient.SetServiceProvider(provider2);
+        var secondService = HttpRemoteClient.Service;
+
+        Assert.NotSame(firstService, secondService);
+        Assert.Same(provider2.GetRequiredService<IHttpRemoteService>(), secondService);
+    }
+
+    [Fact]
+    public void Configure_AfterSetServiceProvider_DoesNotAffectExternalResolution_ReturnOK()
+    {
+        var services = new ServiceCollection();
+        services.AddHttpRemote();
+        var provider = services.BuildServiceProvider();
+
+        HttpRemoteClient.SetServiceProvider(provider);
+        var serviceBefore = HttpRemoteClient.Service;
+
+        HttpRemoteClient.Configure(sc => sc.AddHttpClient());
+        var serviceAfter = HttpRemoteClient.Service;
+
+        Assert.Same(serviceBefore, serviceAfter);
+        Assert.Null(HttpRemoteClient._serviceProvider);
+    }
+
+    [Fact]
+    public void Dispose_WithExternalProvider_ClearsReferenceButDoesNotDisposeExternal_ReturnOK()
+    {
+        var services = new ServiceCollection();
+        services.AddHttpRemote();
+        var provider = services.BuildServiceProvider();
+
+        HttpRemoteClient.SetServiceProvider(provider);
+        var service = HttpRemoteClient.Service;
+        Assert.NotNull(service);
+
+        HttpRemoteClient.Dispose();
+
+        Assert.Null(HttpRemoteClient._externalServiceProvider);
+        Assert.Null(HttpRemoteClient._serviceInstance);
+        Assert.True(HttpRemoteClient._isDisposed);
+
+        var resolved = provider.GetRequiredService<IHttpRemoteService>();
+        Assert.NotNull(resolved);
+    }
+
+    [Fact]
+    public void UseHttpRemoteClient_ExtensionMethod_ReturnsSameProviderAndSetsExternal_ReturnOK()
+    {
+        var services = new ServiceCollection();
+        services.AddHttpRemote();
+        var provider = services.BuildServiceProvider();
+
+        var result = provider.UseHttpRemoteClient();
+
+        Assert.Same(provider, result);
+        Assert.Same(provider, HttpRemoteClient._externalServiceProvider);
+        Assert.NotNull(HttpRemoteClient.Service);
     }
 }

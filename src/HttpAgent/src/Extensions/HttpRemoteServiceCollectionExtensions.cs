@@ -54,4 +54,26 @@ public static class HttpRemoteServiceCollectionExtensions
 
         return new DefaultHttpRemoteBuilder(services);
     }
+
+    /// <summary>
+    ///     将应用程序的主 <see cref="IServiceProvider" /> 注入到 <see cref="HttpRemoteClient" />，使其优先使用该容器解析
+    ///     <see cref="IHttpRemoteService" /> 服务
+    /// </summary>
+    /// <remarks>
+    ///     <para>
+    ///         调用此方法后，<see cref="HttpRemoteClient.Service" /> 将从外部容器获取服务实例，而非自行构建独立 DI 容器。注入的容器生命周期由调用方管理，
+    ///         <see cref="HttpRemoteClient.Dispose" /> 不会释放它。
+    ///     </para>
+    ///     <para>注意：请确保使用的是根容器（Root ServiceProvider），使用作用域容器可能导致对象生命周期异常。</para>
+    /// </remarks>
+    /// <param name="serviceProvider">应用程序的根服务提供器，必须已完成 <see cref="IHttpRemoteService" /> 的注册。</param>
+    /// <returns>
+    ///     <see cref="IServiceProvider" />
+    /// </returns>
+    public static IServiceProvider UseHttpRemoteClient(this IServiceProvider serviceProvider)
+    {
+        HttpRemoteClient.SetServiceProvider(serviceProvider);
+
+        return serviceProvider;
+    }
 }

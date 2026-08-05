@@ -120,13 +120,17 @@ public class CustomRequestEventHandler : IHttpRequestEventHandler
     public void OnPreSendRequest(HttpRequestMessage httpRequestMessage) => counter++;
 
     /// <inheritdoc />
-    public void OnPostReceiveResponse(HttpResponseMessage httpResponseMessage) => counter++;
+    public Task OnPostReceiveResponseAsync(HttpResponseMessage httpResponseMessage, CancellationToken cancellationToken)
+    {
+        counter++;
+        return Task.CompletedTask;
+    }
 
     /// <inheritdoc />
     public void OnRequestFailed(Exception exception, HttpResponseMessage? httpResponseMessage) => counter++;
 }
 
-public class NotImplementFileDownloadEventHandler;
+public class NotImplementFileTransferEventHandler;
 
 public class CustomFileTransferEventHandler : IHttpFileTransferEventHandler
 {
@@ -169,7 +173,8 @@ public class CustomFileTransferEventHandler2 : IHttpFileTransferEventHandler, IH
     public void OnPreSendRequest(HttpRequestMessage httpRequestMessage) => throw new NotImplementedException();
 
     /// <inheritdoc />
-    public void OnPostReceiveResponse(HttpResponseMessage httpResponseMessage) => throw new NotImplementedException();
+    public Task OnPostReceiveResponseAsync(HttpResponseMessage httpResponseMessage,
+        CancellationToken cancellationToken) => throw new NotImplementedException();
 
     /// <inheritdoc />
     public void OnRequestFailed(Exception exception, HttpResponseMessage? httpResponseMessage) =>
@@ -202,7 +207,8 @@ public class CustomServerSentEventsEventHandler2 : IHttpServerSentEventsEventHan
     public void OnPreSendRequest(HttpRequestMessage httpRequestMessage) => throw new NotImplementedException();
 
     /// <inheritdoc />
-    public void OnPostReceiveResponse(HttpResponseMessage httpResponseMessage) => throw new NotImplementedException();
+    public Task OnPostReceiveResponseAsync(HttpResponseMessage httpResponseMessage,
+        CancellationToken cancellationToken) => throw new NotImplementedException();
 
     /// <inheritdoc />
     public void OnRequestFailed(Exception exception, HttpResponseMessage? httpResponseMessage) =>
@@ -262,7 +268,8 @@ public class CustomLongPollingEventHandler2 : IHttpLongPollingEventHandler, IHtt
     public void OnPreSendRequest(HttpRequestMessage httpRequestMessage) => throw new NotImplementedException();
 
     /// <inheritdoc />
-    public void OnPostReceiveResponse(HttpResponseMessage httpResponseMessage) => throw new NotImplementedException();
+    public Task OnPostReceiveResponseAsync(HttpResponseMessage httpResponseMessage,
+        CancellationToken cancellationToken) => throw new NotImplementedException();
 
     /// <inheritdoc />
     public void OnRequestFailed(Exception exception, HttpResponseMessage? httpResponseMessage) =>

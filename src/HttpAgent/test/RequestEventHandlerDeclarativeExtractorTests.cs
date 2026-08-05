@@ -73,7 +73,8 @@ public class MyRequestEventHandler : IHttpRequestEventHandler
     public void OnPreSendRequest(HttpRequestMessage httpRequestMessage) { }
 
     /// <inheritdoc />
-    public void OnPostReceiveResponse(HttpResponseMessage httpResponseMessage) { }
+    public Task OnPostReceiveResponseAsync(HttpResponseMessage httpResponseMessage,
+        CancellationToken cancellationToken) => Task.CompletedTask;
 
     /// <inheritdoc />
     public void OnRequestFailed(Exception exception, HttpResponseMessage? httpResponseMessage) { }
@@ -85,7 +86,8 @@ public class MyRequestEventHandler2 : IHttpRequestEventHandler
     public void OnPreSendRequest(HttpRequestMessage httpRequestMessage) { }
 
     /// <inheritdoc />
-    public void OnPostReceiveResponse(HttpResponseMessage httpResponseMessage) { }
+    public Task OnPostReceiveResponseAsync(HttpResponseMessage httpResponseMessage,
+        CancellationToken cancellationToken) => Task.CompletedTask;
 
     /// <inheritdoc />
     public void OnRequestFailed(Exception exception, HttpResponseMessage? httpResponseMessage) { }

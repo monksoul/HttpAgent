@@ -142,8 +142,16 @@ public class WebSocketClientTests
         using var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
 
         var i = 0;
-        webSocketClient.Connecting += (s, _) => { i++; };
-        webSocketClient.Connected += (s, _) => { i++; };
+        webSocketClient.Connecting += (_, _) =>
+        {
+            i++;
+            return Task.CompletedTask;
+        };
+        webSocketClient.Connected += (_, _) =>
+        {
+            i++;
+            return Task.CompletedTask;
+        };
         await webSocketClient.ConnectAsync(TestContext.Current.CancellationToken);
 
         Assert.NotNull(webSocketClient._clientWebSocket);
@@ -296,7 +304,7 @@ public class WebSocketClientTests
 
         var i = 0;
 
-        var options = new WebSocketClientOptions($"ws://localhost:{port}/ws") { Configure = o => { i++; } };
+        var options = new WebSocketClientOptions($"ws://localhost:{port}/ws") { Configure = _ => { i++; } };
         using var webSocketClient = new WebSocketClient(options);
 
         await webSocketClient.ConnectAsync(TestContext.Current.CancellationToken);
@@ -343,7 +351,11 @@ public class WebSocketClientTests
 
         using var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
         var i = 0;
-        webSocketClient.Connecting += (_, _) => { i++; };
+        webSocketClient.Connecting += (_, _) =>
+        {
+            i++;
+            return Task.CompletedTask;
+        };
 
         await webSocketClient.ConnectAsync(TestContext.Current.CancellationToken);
         await webSocketClient.ConnectAsync(TestContext.Current.CancellationToken);
@@ -397,7 +409,11 @@ public class WebSocketClientTests
         };
         using var webSocketClient = new WebSocketClient(options);
         var i = 0;
-        webSocketClient.Reconnecting += (_, _) => { i++; };
+        webSocketClient.Reconnecting += (_, _) =>
+        {
+            i++;
+            return Task.CompletedTask;
+        };
 
         await Assert.ThrowsAsync<WebSocketException>(async () =>
             await webSocketClient.ConnectAsync(TestContext.Current.CancellationToken));
@@ -491,8 +507,16 @@ public class WebSocketClientTests
         using var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
 
         var i = 0;
-        webSocketClient.Closing += (_, _) => { i++; };
-        webSocketClient.Closed += (_, _) => { i++; };
+        webSocketClient.Closing += (_, _) =>
+        {
+            i++;
+            return Task.CompletedTask;
+        };
+        webSocketClient.Closed += (_, _) =>
+        {
+            i++;
+            return Task.CompletedTask;
+        };
 
         await webSocketClient.ConnectAsync(TestContext.Current.CancellationToken);
         await webSocketClient.CloseAsync(TestContext.Current.CancellationToken);
@@ -541,8 +565,16 @@ public class WebSocketClientTests
         using var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
 
         var i = 0;
-        webSocketClient.Closing += (_, _) => { i++; };
-        webSocketClient.Closed += (_, _) => { i++; };
+        webSocketClient.Closing += (_, _) =>
+        {
+            i++;
+            return Task.CompletedTask;
+        };
+        webSocketClient.Closed += (_, _) =>
+        {
+            i++;
+            return Task.CompletedTask;
+        };
 
         await webSocketClient.ConnectAsync(TestContext.Current.CancellationToken);
         await webSocketClient.CloseAsync(TestContext.Current.CancellationToken);
@@ -637,7 +669,11 @@ public class WebSocketClientTests
         using var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
 
         var i = 0;
-        webSocketClient.TextReceived += (_, _) => { i++; };
+        webSocketClient.TextReceived += (_, _) =>
+        {
+            i++;
+            return Task.CompletedTask;
+        };
 
         await webSocketClient.ConnectAsync(TestContext.Current.CancellationToken);
         await webSocketClient.ListenAsync(TestContext.Current.CancellationToken);
@@ -689,7 +725,11 @@ public class WebSocketClientTests
         using var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
 
         var i = 0;
-        webSocketClient.TextReceived += (_, _) => { i++; };
+        webSocketClient.TextReceived += (_, _) =>
+        {
+            i++;
+            return Task.CompletedTask;
+        };
 
         await webSocketClient.ConnectAsync(TestContext.Current.CancellationToken);
 #pragma warning disable CS4014 // 由于此调用不会等待，因此在调用完成前将继续执行当前方法
@@ -744,8 +784,16 @@ public class WebSocketClientTests
         using var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
 
         var i = 0;
-        webSocketClient.TextReceived += (_, _) => { i++; };
-        webSocketClient.BinaryReceived += (_, _) => { i++; };
+        webSocketClient.TextReceived += (_, _) =>
+        {
+            i++;
+            return Task.CompletedTask;
+        };
+        webSocketClient.BinaryReceived += (_, _) =>
+        {
+            i++;
+            return Task.CompletedTask;
+        };
 
         await webSocketClient.ConnectAsync(TestContext.Current.CancellationToken);
         await webSocketClient.ListenAsync(TestContext.Current.CancellationToken);
@@ -800,7 +848,11 @@ public class WebSocketClientTests
 
         using var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
         string? receivedText = null;
-        webSocketClient.TextReceived += (_, e) => { receivedText = e.Message; };
+        webSocketClient.TextReceived += (_, e) =>
+        {
+            receivedText = e.Message;
+            return Task.CompletedTask;
+        };
 
         await webSocketClient.ConnectAsync(TestContext.Current.CancellationToken);
         await webSocketClient.ListenAsync(TestContext.Current.CancellationToken);
@@ -848,7 +900,11 @@ public class WebSocketClientTests
 
         using var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
         byte[]? receivedBytes = null;
-        webSocketClient.BinaryReceived += (_, e) => { receivedBytes = e.Message; };
+        webSocketClient.BinaryReceived += (_, e) =>
+        {
+            receivedBytes = e.Message;
+            return Task.CompletedTask;
+        };
 
         await webSocketClient.ConnectAsync(TestContext.Current.CancellationToken);
         await webSocketClient.ListenAsync(TestContext.Current.CancellationToken);
@@ -903,7 +959,11 @@ public class WebSocketClientTests
 
         var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
         string? lastMessage = null;
-        webSocketClient.TextReceived += (_, e) => lastMessage = e.Message;
+        webSocketClient.TextReceived += (_, e) =>
+        {
+            lastMessage = e.Message;
+            return Task.CompletedTask;
+        };
 
         try
         {
@@ -956,7 +1016,11 @@ public class WebSocketClientTests
         using var webSocketClient = new WebSocketClient(options);
 
         string? completeText = null;
-        webSocketClient.TextReceived += (_, e) => completeText = e.Message;
+        webSocketClient.TextReceived += (_, e) =>
+        {
+            completeText = e.Message;
+            return Task.CompletedTask;
+        };
 
         await webSocketClient.ConnectAsync(TestContext.Current.CancellationToken);
         var longMessage = new string('A', 50);
@@ -1004,7 +1068,11 @@ public class WebSocketClientTests
 
         using var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
         var stopped = false;
-        webSocketClient.ReceivingStopped += (_, _) => stopped = true;
+        webSocketClient.ReceivingStopped += (_, _) =>
+        {
+            stopped = true;
+            return Task.CompletedTask;
+        };
 
         await webSocketClient.ConnectAsync(TestContext.Current.CancellationToken);
 
@@ -1051,9 +1119,21 @@ public class WebSocketClientTests
         using var webSocketClient = new WebSocketClient($"ws://localhost:{port}/ws");
 
         var eventCount = 0;
-        webSocketClient.ReceivingStarted += (_, _) => { Interlocked.Increment(ref eventCount); };
-        webSocketClient.ReceivingStopped += (_, _) => { Interlocked.Increment(ref eventCount); };
-        webSocketClient.TextReceived += (_, _) => { Interlocked.Increment(ref eventCount); };
+        webSocketClient.ReceivingStarted += (_, _) =>
+        {
+            Interlocked.Increment(ref eventCount);
+            return Task.CompletedTask;
+        };
+        webSocketClient.ReceivingStopped += (_, _) =>
+        {
+            Interlocked.Increment(ref eventCount);
+            return Task.CompletedTask;
+        };
+        webSocketClient.TextReceived += (_, _) =>
+        {
+            Interlocked.Increment(ref eventCount);
+            return Task.CompletedTask;
+        };
 
         await webSocketClient.ConnectAsync(TestContext.Current.CancellationToken);
         await webSocketClient.SendAsync("test", cancellationToken: TestContext.Current.CancellationToken);

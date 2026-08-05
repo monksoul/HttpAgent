@@ -33,6 +33,8 @@ public class HttpFileDownloadBuilderTests
         Assert.Null(builder2.OnFileExistAndSkip);
         Assert.Null(builder2.FileTransferEventHandlerType);
         Assert.Null(builder2._configureRequest);
+        Assert.Null(builder2.Configure);
+        Assert.Same(builder2, builder2.This);
     }
 
     [Fact]
@@ -203,9 +205,9 @@ public class HttpFileDownloadBuilderTests
 
         Assert.Throws<ArgumentNullException>(() => builder.SetEventHandler(null!));
         var exception = Assert.Throws<ArgumentException>(() =>
-            builder.SetEventHandler(typeof(NotImplementFileDownloadEventHandler)));
+            builder.SetEventHandler(typeof(NotImplementFileTransferEventHandler)));
         Assert.Equal(
-            $"`{typeof(NotImplementFileDownloadEventHandler)}` type is not assignable from `{typeof(IHttpFileTransferEventHandler)}`. (Parameter 'fileTransferEventHandlerType')",
+            $"`{typeof(NotImplementFileTransferEventHandler)}` type is not assignable from `{typeof(IHttpFileTransferEventHandler)}`. (Parameter 'fileTransferEventHandlerType')",
             exception.Message);
     }
 
@@ -237,6 +239,7 @@ public class HttpFileDownloadBuilderTests
         Assert.Null(builder._configureRequest);
         builder.With(requestBuilder => requestBuilder.WithHeader("framework", "Furion"));
         Assert.NotNull(builder._configureRequest);
+        Assert.NotNull(builder.Configure);
     }
 
     [Fact]
@@ -256,6 +259,64 @@ public class HttpFileDownloadBuilderTests
         builder.Profiler(_ => { });
         builder._configureRequest?.Invoke(httpRequestBuilder);
         Assert.True(httpRequestBuilder.ProfilerEnabled);
+    }
+
+    [Fact]
+    public void DisableCache_ReturnOK()
+    {
+        var builder = new HttpFileDownloadBuilder(HttpMethod.Get, null);
+        builder.DisableCache();
+
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, null);
+        builder._configureRequest?.Invoke(httpRequestBuilder);
+        Assert.True(httpRequestBuilder.DisableCacheEnabled);
+
+        builder.DisableCache(false);
+        builder._configureRequest?.Invoke(httpRequestBuilder);
+        Assert.False(httpRequestBuilder.DisableCacheEnabled);
+    }
+
+    [Fact]
+    public void AddBearerAuthentication_ReturnOK()
+    {
+        var builder = new HttpFileDownloadBuilder(HttpMethod.Get, null);
+        builder.AddBearerAuthentication("token");
+
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, null);
+        builder._configureRequest?.Invoke(httpRequestBuilder);
+        Assert.NotNull(httpRequestBuilder.AuthenticationHeader);
+        Assert.Equal("Bearer", httpRequestBuilder.AuthenticationHeader.Scheme);
+
+        builder.AddBearerAuthentication("x-header", "token");
+        builder._configureRequest?.Invoke(httpRequestBuilder);
+        Assert.NotNull(httpRequestBuilder.Headers);
+        Assert.StartsWith("Bearer", httpRequestBuilder.Headers["x-header"].First());
+    }
+
+    [Fact]
+    public void SetJsonContent_ReturnOK()
+    {
+        var builder = new HttpFileDownloadBuilder(HttpMethod.Get, null);
+        builder.SetJsonContent(new { });
+
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, null);
+        builder._configureRequest?.Invoke(httpRequestBuilder);
+        Assert.NotNull(httpRequestBuilder.RawContent);
+
+        builder.SetJsonContentWithoutValidation("[]");
+        builder._configureRequest?.Invoke(httpRequestBuilder);
+        Assert.NotNull(httpRequestBuilder.RawContent);
+    }
+
+    [Fact]
+    public void SetContent_ReturnOK()
+    {
+        var builder = new HttpFileDownloadBuilder(HttpMethod.Get, null);
+        builder.SetContent(new { });
+
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, null);
+        builder._configureRequest?.Invoke(httpRequestBuilder);
+        Assert.NotNull(httpRequestBuilder.RawContent);
     }
 
     [Fact]

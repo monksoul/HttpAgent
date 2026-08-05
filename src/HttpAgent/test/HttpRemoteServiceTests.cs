@@ -366,9 +366,10 @@ public class HttpRemoteServiceTests
             {
                 i += 1;
             })
-            .SetOnPostReceiveResponse(_ =>
+            .SetOnPostReceiveResponse((_, _) =>
             {
                 i += 1;
+                return Task.CompletedTask;
             });
 
         _ = await httpRemoteService.SendCoreAsync(httpRequestBuilder, HttpCompletionOption.ResponseContentRead,
@@ -410,9 +411,10 @@ public class HttpRemoteServiceTests
             {
                 i += 1;
             })
-            .SetOnPostReceiveResponse(_ =>
+            .SetOnPostReceiveResponse((_, _) =>
             {
                 i += 1;
+                return Task.CompletedTask;
             }).EnsureSuccessStatusCode();
 
         try
@@ -463,9 +465,10 @@ public class HttpRemoteServiceTests
             {
                 i += 1;
             })
-            .SetOnPostReceiveResponse(_ =>
+            .SetOnPostReceiveResponse((_, _) =>
             {
                 i += 1;
+                return Task.CompletedTask;
             }).SetEventHandler<CustomRequestEventHandler>().EnsureSuccessStatusCode();
 
         try

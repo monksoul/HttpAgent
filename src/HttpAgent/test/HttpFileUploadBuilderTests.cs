@@ -45,6 +45,8 @@ public class HttpFileUploadBuilderTests
         Assert.Null(builder2.MaxFileSizeInBytes);
         Assert.Null(builder2.FileName);
         Assert.Null(builder2._configureRequest);
+        Assert.Null(builder2.Configure);
+        Assert.Same(builder2, builder2.This);
 
         var builder3 =
             new HttpFileUploadBuilder(HttpMethod.Post, null, @"C:\Workspaces\index.html", "file", "myindex.html");
@@ -254,9 +256,9 @@ public class HttpFileUploadBuilderTests
 
         Assert.Throws<ArgumentNullException>(() => builder.SetEventHandler(null!));
         var exception = Assert.Throws<ArgumentException>(() =>
-            builder.SetEventHandler(typeof(NotImplementFileDownloadEventHandler)));
+            builder.SetEventHandler(typeof(NotImplementFileTransferEventHandler)));
         Assert.Equal(
-            $"`{typeof(NotImplementFileDownloadEventHandler)}` type is not assignable from `{typeof(IHttpFileTransferEventHandler)}`. (Parameter 'fileTransferEventHandlerType')",
+            $"`{typeof(NotImplementFileTransferEventHandler)}` type is not assignable from `{typeof(IHttpFileTransferEventHandler)}`. (Parameter 'fileTransferEventHandlerType')",
             exception.Message);
     }
 
@@ -292,6 +294,7 @@ public class HttpFileUploadBuilderTests
         Assert.Null(builder._configureRequest);
         builder.With(requestBuilder => requestBuilder.WithHeader("framework", "Furion"));
         Assert.NotNull(builder._configureRequest);
+        Assert.NotNull(builder.Configure);
     }
 
     [Fact]
@@ -312,6 +315,83 @@ public class HttpFileUploadBuilderTests
         builder.Profiler(_ => { });
         builder._configureRequest?.Invoke(httpRequestBuilder);
         Assert.True(httpRequestBuilder.ProfilerEnabled);
+    }
+
+    [Fact]
+    public void DisableCache_ReturnOK()
+    {
+        var builder = new HttpFileUploadBuilder(HttpMethod.Post, new Uri("http://localhost"),
+            @"C:\Workspaces\index.html", "file");
+        builder.DisableCache();
+
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, null);
+        builder._configureRequest?.Invoke(httpRequestBuilder);
+        Assert.True(httpRequestBuilder.DisableCacheEnabled);
+
+        builder.DisableCache(false);
+        builder._configureRequest?.Invoke(httpRequestBuilder);
+        Assert.False(httpRequestBuilder.DisableCacheEnabled);
+    }
+
+    [Fact]
+    public void AddBearerAuthentication_ReturnOK()
+    {
+        var builder = new HttpFileUploadBuilder(HttpMethod.Post, new Uri("http://localhost"),
+            @"C:\Workspaces\index.html", "file");
+        builder.AddBearerAuthentication("token");
+
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, null);
+        builder._configureRequest?.Invoke(httpRequestBuilder);
+        Assert.NotNull(httpRequestBuilder.AuthenticationHeader);
+        Assert.Equal("Bearer", httpRequestBuilder.AuthenticationHeader.Scheme);
+
+        builder.AddBearerAuthentication("x-header", "token");
+        builder._configureRequest?.Invoke(httpRequestBuilder);
+        Assert.NotNull(httpRequestBuilder.Headers);
+        Assert.StartsWith("Bearer", httpRequestBuilder.Headers["x-header"].First());
+    }
+
+    [Fact]
+    public void SetJsonContent_ReturnOK()
+    {
+        var builder = new HttpFileUploadBuilder(HttpMethod.Post, new Uri("http://localhost"),
+            @"C:\Workspaces\index.html", "file");
+        builder.SetJsonContent(new { });
+
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, null);
+        builder._configureRequest?.Invoke(httpRequestBuilder);
+        Assert.NotNull(httpRequestBuilder.RawContent);
+
+        builder.SetJsonContentWithoutValidation("[]");
+        builder._configureRequest?.Invoke(httpRequestBuilder);
+        Assert.NotNull(httpRequestBuilder.RawContent);
+    }
+
+    [Fact]
+    public void SetContent_ReturnOK()
+    {
+        var builder = new HttpFileUploadBuilder(HttpMethod.Post, new Uri("http://localhost"),
+            @"C:\Workspaces\index.html", "file");
+        builder.SetContent(new { });
+
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, null);
+        builder._configureRequest?.Invoke(httpRequestBuilder);
+        Assert.NotNull(httpRequestBuilder.RawContent);
+    }
+
+    [Fact]
+    public void WithMultipart_ReturnOK()
+    {
+        var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
+        var httpFileUploadBuilder = new HttpFileUploadBuilder(HttpMethod.Post, new Uri("http://localhost"),
+            filePath, "file").Profiler().WithMultipart(u => u.AddJson("[]", "name"));
+
+        var httpRemoteOptions = new HttpRemoteOptions();
+        var progressChannel = Channel.CreateUnbounded<FileTransferProgress>();
+
+        var httpRequestBuilder = httpFileUploadBuilder.Build(httpRemoteOptions, progressChannel);
+        Assert.NotNull(httpRequestBuilder.MultipartFormDataBuilder);
+        Assert.Equal(2, httpRequestBuilder.MultipartFormDataBuilder._partContents.Count);
     }
 
     [Fact]

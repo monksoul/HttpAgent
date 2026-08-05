@@ -329,7 +329,7 @@ public class HttpRequestBuilderStaticMethodsTests
 
     [Fact]
     public void DownloadFile_Invalid_Parameters() =>
-        Assert.Throws<ArgumentNullException>(() => HttpRequestBuilder.DownloadFile(null!, null, null, null));
+        Assert.Throws<ArgumentNullException>(() => HttpRequestBuilder.DownloadFile(null!, (Uri?)null));
 
     [Fact]
     public void DownloadFile_ReturnOK()
@@ -342,7 +342,7 @@ public class HttpRequestBuilderStaticMethodsTests
         Assert.NotNull(httpFileDownloadBuilder.RequestUri);
         Assert.Equal("http://localhost/", httpFileDownloadBuilder.RequestUri.ToString());
 
-        var httpFileDownloadBuilder2 = HttpRequestBuilder.DownloadFile(HttpMethod.Post, null);
+        var httpFileDownloadBuilder2 = HttpRequestBuilder.DownloadFile(HttpMethod.Post, (Uri?)null);
         Assert.Equal(HttpMethod.Post, httpFileDownloadBuilder2.HttpMethod);
         Assert.Null(httpFileDownloadBuilder2.RequestUri);
 
@@ -363,6 +363,11 @@ public class HttpRequestBuilderStaticMethodsTests
         Assert.Equal(HttpMethod.Get, httpFileDownloadBuilder6.HttpMethod);
         Assert.NotNull(httpFileDownloadBuilder6.RequestUri);
         Assert.Equal("http://localhost/", httpFileDownloadBuilder6.RequestUri.ToString());
+
+        var httpFileDownloadBuilder7 = HttpRequestBuilder.DownloadFile(HttpMethod.Post, "http://localhost");
+        Assert.Equal(HttpMethod.Post, httpFileDownloadBuilder7.HttpMethod);
+        Assert.NotNull(httpFileDownloadBuilder7.RequestUri);
+        Assert.Equal("http://localhost/", httpFileDownloadBuilder7.RequestUri.ToString());
     }
 
     [Fact]
@@ -378,7 +383,8 @@ public class HttpRequestBuilderStaticMethodsTests
         Assert.Equal(@"C:\Workspaces\furion.html", httpFileUploadBuilder.FilePath);
         Assert.Equal("file", httpFileUploadBuilder.Name);
 
-        var httpFileUploadBuilder2 = HttpRequestBuilder.UploadFile(HttpMethod.Post, null, @"C:\Workspaces\furion.html");
+        var httpFileUploadBuilder2 =
+            HttpRequestBuilder.UploadFile(HttpMethod.Post, (Uri?)null, @"C:\Workspaces\furion.html");
         Assert.Equal(HttpMethod.Post, httpFileUploadBuilder2.HttpMethod);
         Assert.Null(httpFileUploadBuilder2.RequestUri);
 
@@ -408,6 +414,12 @@ public class HttpRequestBuilderStaticMethodsTests
         Assert.Equal("http://localhost/", httpFileUploadBuilder7.RequestUri.ToString());
         Assert.Equal(@"C:\Workspaces\furion.html", httpFileUploadBuilder7.FilePath);
         Assert.Equal("fileinfo", httpFileUploadBuilder7.Name);
+
+        var httpFileUploadBuilder8 =
+            HttpRequestBuilder.UploadFile(HttpMethod.Put, new Uri("http://localhost"), @"C:\Workspaces\furion.html",
+                "fileinfo");
+        Assert.Equal(HttpMethod.Put, httpFileUploadBuilder8.HttpMethod);
+        Assert.NotNull(httpFileUploadBuilder8.RequestUri);
     }
 
     [Fact]
@@ -434,7 +446,7 @@ public class HttpRequestBuilderStaticMethodsTests
         Assert.Null(httpServerSentEventsBuilder4.RequestUri);
 
         var httpServerSentEventsBuilder5 =
-            HttpRequestBuilder.ServerSentEvents(HttpMethod.Post, null!, (_, _) => Task.CompletedTask);
+            HttpRequestBuilder.ServerSentEvents(HttpMethod.Post, (Uri)null!, (_, _) => Task.CompletedTask);
         Assert.Null(httpServerSentEventsBuilder5.RequestUri);
         Assert.Equal(HttpMethod.Post, httpServerSentEventsBuilder5.HttpMethod);
 
@@ -459,14 +471,30 @@ public class HttpRequestBuilderStaticMethodsTests
         Assert.Null(httpServerSentEventsBuilder9.RequestUri);
 
         var httpServerSentEventsBuilder10 =
-            HttpRequestBuilder.ServerSentEvents(HttpMethod.Post, null!);
+            HttpRequestBuilder.ServerSentEvents(HttpMethod.Post, (Uri)null!);
         Assert.Null(httpServerSentEventsBuilder10.RequestUri);
         Assert.Equal(HttpMethod.Post, httpServerSentEventsBuilder10.HttpMethod);
+
+        var httpServerSentEventsBuilder11 =
+            HttpRequestBuilder.ServerSentEvents(HttpMethod.Post, (string)null!);
+        Assert.Null(httpServerSentEventsBuilder11.RequestUri);
+        Assert.Equal(HttpMethod.Post, httpServerSentEventsBuilder11.HttpMethod);
+
+        var httpServerSentEventsBuilder12 =
+            HttpRequestBuilder.ServerSentEvents(HttpMethod.Post, "http://localhost");
+        Assert.Equal("http://localhost/", httpServerSentEventsBuilder12.RequestUri?.ToString());
+        Assert.Equal(HttpMethod.Post, httpServerSentEventsBuilder12.HttpMethod);
+
+        var httpServerSentEventsBuilder13 =
+            HttpRequestBuilder.ServerSentEvents(HttpMethod.Post, "http://localhost", (_, _) => Task.CompletedTask);
+        Assert.Equal("http://localhost/", httpServerSentEventsBuilder13.RequestUri?.ToString());
+        Assert.Equal(HttpMethod.Post, httpServerSentEventsBuilder13.HttpMethod);
+        Assert.NotNull(httpServerSentEventsBuilder13.OnMessage);
     }
 
     [Fact]
     public void StressTestHarness_Invalid_Parameters() =>
-        Assert.Throws<ArgumentNullException>(() => HttpRequestBuilder.StressTestHarness(null!, null));
+        Assert.Throws<ArgumentNullException>(() => HttpRequestBuilder.StressTestHarness(null!, (Uri?)null));
 
     [Fact]
     public void StressTestHarness_ReturnOK()
@@ -479,7 +507,7 @@ public class HttpRequestBuilderStaticMethodsTests
         Assert.NotNull(httpStressTestHarnessBuilder.RequestUri);
         Assert.Equal("http://localhost/", httpStressTestHarnessBuilder.RequestUri.ToString());
 
-        var httpStressTestHarnessBuilder2 = HttpRequestBuilder.StressTestHarness(HttpMethod.Post, null, 500);
+        var httpStressTestHarnessBuilder2 = HttpRequestBuilder.StressTestHarness(HttpMethod.Post, (Uri?)null, 500);
         Assert.Equal(HttpMethod.Post, httpStressTestHarnessBuilder2.HttpMethod);
         Assert.Null(httpStressTestHarnessBuilder2.RequestUri);
         Assert.Equal(500, httpStressTestHarnessBuilder2.NumberOfRequests);
@@ -501,6 +529,11 @@ public class HttpRequestBuilderStaticMethodsTests
         Assert.Equal(HttpMethod.Get, httpStressTestHarnessBuilder6.HttpMethod);
         Assert.NotNull(httpStressTestHarnessBuilder6.RequestUri);
         Assert.Equal("http://localhost/", httpStressTestHarnessBuilder6.RequestUri.ToString());
+
+        var httpStressTestHarnessBuilder7 = HttpRequestBuilder.StressTestHarness(HttpMethod.Post, "http://localhost");
+        Assert.Equal(HttpMethod.Post, httpStressTestHarnessBuilder7.HttpMethod);
+        Assert.NotNull(httpStressTestHarnessBuilder7.RequestUri);
+        Assert.Equal("http://localhost/", httpStressTestHarnessBuilder7.RequestUri.ToString());
     }
 
     [Fact]
@@ -515,7 +548,7 @@ public class HttpRequestBuilderStaticMethodsTests
         Assert.Equal("http://localhost/", httpLongPollingBuilder.RequestUri.ToString());
 
         var httpLongPollingBuilder2 =
-            HttpRequestBuilder.LongPolling(HttpMethod.Get, null, (_, _) => Task.CompletedTask);
+            HttpRequestBuilder.LongPolling(HttpMethod.Get, (Uri?)null, (_, _) => Task.CompletedTask);
         Assert.Equal(HttpMethod.Get, httpLongPollingBuilder2.HttpMethod);
         Assert.Null(httpLongPollingBuilder2.RequestUri);
 
@@ -547,7 +580,7 @@ public class HttpRequestBuilderStaticMethodsTests
         Assert.Equal("http://localhost/", httpLongPollingBuilder7.RequestUri.ToString());
 
         var httpLongPollingBuilder8 =
-            HttpRequestBuilder.LongPolling(HttpMethod.Get, null);
+            HttpRequestBuilder.LongPolling(HttpMethod.Get, (Uri?)null);
         Assert.Equal(HttpMethod.Get, httpLongPollingBuilder8.HttpMethod);
         Assert.Null(httpLongPollingBuilder8.RequestUri);
 
@@ -569,6 +602,19 @@ public class HttpRequestBuilderStaticMethodsTests
         Assert.Equal(HttpMethod.Get, httpLongPollingBuilder12.HttpMethod);
         Assert.NotNull(httpLongPollingBuilder12.RequestUri);
         Assert.Equal("http://localhost/", httpLongPollingBuilder12.RequestUri.ToString());
+
+        var httpLongPollingBuilder13 =
+            HttpRequestBuilder.LongPolling(HttpMethod.Post, "http://localhost");
+        Assert.NotNull(httpLongPollingBuilder13.RequestUri);
+        Assert.Equal("http://localhost/", httpLongPollingBuilder13.RequestUri.ToString());
+        Assert.Equal(HttpMethod.Post, httpLongPollingBuilder13.HttpMethod);
+
+        var httpLongPollingBuilder14 =
+            HttpRequestBuilder.LongPolling(HttpMethod.Post, "http://localhost", (_, _) => Task.CompletedTask);
+        Assert.NotNull(httpLongPollingBuilder14.RequestUri);
+        Assert.Equal("http://localhost/", httpLongPollingBuilder14.RequestUri.ToString());
+        Assert.NotNull(httpLongPollingBuilder14.OnDataReceived);
+        Assert.Equal(HttpMethod.Post, httpLongPollingBuilder14.HttpMethod);
     }
 
     [Fact]

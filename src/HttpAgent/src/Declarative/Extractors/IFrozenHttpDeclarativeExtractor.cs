@@ -10,7 +10,8 @@ namespace HttpAgent;
 public interface IFrozenHttpDeclarativeExtractor : IHttpDeclarativeExtractor
 {
     /// <summary>
-    ///     获取提取器的顺序值。值越小，提取器越晚被调用
+    ///     获取提取器的顺序值
     /// </summary>
+    /// <remarks>值越小，提取器越晚被调用。</remarks>
     int Order { get; }
 }

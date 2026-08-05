@@ -191,22 +191,90 @@ public class HelpersTests
     public void ExtractFileNameFromContentDisposition_ReturnOK()
     {
         Assert.Null(HttpAgent.Helpers.ExtractFileNameFromContentDisposition(null));
-        Assert.Equal("长风.safetensors",
-            HttpAgent.Helpers.ExtractFileNameFromContentDisposition(
-                new ContentDispositionHeaderValue("attachment") { FileName = "长风.safetensors" }));
+
         Assert.Equal("test.safetensors",
             HttpAgent.Helpers.ExtractFileNameFromContentDisposition(
                 new ContentDispositionHeaderValue("attachment") { FileName = "test.safetensors" }));
-        Assert.Equal("test中文.safetensors",
-            HttpAgent.Helpers.ExtractFileNameFromContentDisposition(
-                new ContentDispositionHeaderValue("attachment") { FileName = "test中文.safetensors" }));
 
-        const string fileName = "\"é¿é£.safetensors\"";
-        var contentDisposition = new ContentDispositionHeaderValue("attachment") { FileName = fileName };
-        contentDisposition.Parameters.Clear();
-        contentDisposition.Parameters.Add(new NameValueHeaderValue("filename", fileName));
-        Assert.Equal("长风.safetensors",
-            HttpAgent.Helpers.ExtractFileNameFromContentDisposition(contentDisposition));
+        Assert.Equal("100%_complete.txt",
+            HttpAgent.Helpers.ExtractFileNameFromContentDisposition(
+                new ContentDispositionHeaderValue("attachment") { FileName = "\"100%_complete.txt\"" }));
+
+        var cdStar = new ContentDispositionHeaderValue("attachment");
+        cdStar.Parameters.Add(new NameValueHeaderValue("filename*", "UTF-8''%E4%B8%AD%E6%96%87.txt"));
+        Assert.Equal("中文.txt", HttpAgent.Helpers.ExtractFileNameFromContentDisposition(cdStar));
+
+        var cd2047Quoted = new ContentDispositionHeaderValue("attachment");
+        cd2047Quoted.Parameters.Add(new NameValueHeaderValue("filename", "\"=?utf-8?B?5Lit5paH?=\""));
+        Assert.Equal("中文", HttpAgent.Helpers.ExtractFileNameFromContentDisposition(cd2047Quoted));
+
+        var cd2047Unquoted = new ContentDispositionHeaderValue("attachment");
+        cd2047Unquoted.Parameters.Add(new NameValueHeaderValue("filename", "=?utf-8?B?5Lit5paH?="));
+        Assert.Equal("中文", HttpAgent.Helpers.ExtractFileNameFromContentDisposition(cd2047Unquoted));
+
+        var cdMojibake = new ContentDispositionHeaderValue("attachment");
+        cdMojibake.Parameters.Add(new NameValueHeaderValue("filename", "\"é¿é£.safetensors\""));
+        Assert.Equal("长风.safetensors", HttpAgent.Helpers.ExtractFileNameFromContentDisposition(cdMojibake));
+    }
+
+    [Fact]
+    public void DecodeEncodedWord_ReturnOK()
+    {
+        Assert.Equal("", HttpAgent.Helpers.DecodeEncodedWord(null));
+        Assert.Equal("", HttpAgent.Helpers.DecodeEncodedWord(""));
+        Assert.Equal("", HttpAgent.Helpers.DecodeEncodedWord(" "));
+
+        Assert.Equal("DateOnly之后文档.txt",
+            HttpAgent.Helpers.DecodeEncodedWord("=?utf-8?B?RGF0ZU9ubHnkuYvlkI7mlofmoaMudHh0?="));
+
+        Assert.Equal("Hello World!", HttpAgent.Helpers.DecodeEncodedWord("=?utf-8?Q?Hello_World=21?="));
+
+        Assert.Equal("中文", HttpAgent.Helpers.DecodeEncodedWord("=?utf-8?B?5Lit?= =?utf-8?B?5paH?="));
+
+        Assert.Equal("DateOnly之后文档.txt",
+            HttpAgent.Helpers.DecodeEncodedWord("UTF-8''DateOnly%E4%B9%8B%E5%90%8E%E6%96%87%E6%A1%A3.txt"));
+
+        Assert.Equal("长风.safetensors", HttpAgent.Helpers.DecodeEncodedWord("é¿é£.safetensors"));
+
+        Assert.Equal("hello.txt", HttpAgent.Helpers.DecodeEncodedWord("hello.txt"));
+
+        Assert.Equal("100%_complete.txt", HttpAgent.Helpers.DecodeEncodedWord("100%_complete.txt"));
+
+        Assert.Equal("abc\uFFFDxyz", HttpAgent.Helpers.DecodeEncodedWord("abc\uFFFDxyz"));
+    }
+
+    [Fact]
+    public void DecodeEncodedBytes_ReturnOK()
+    {
+        Assert.Equal(new byte[] { 72, 101, 108, 108, 111, 32, 87, 111, 114, 108, 100, 33 },
+            HttpAgent.Helpers.DecodeEncodedBytes("Hello_World=21", '='));
+
+        Assert.Equal(new byte[] { 49, 48, 48, 37, 95, 99, 111, 109, 112, 108, 101, 116, 101 },
+            HttpAgent.Helpers.DecodeEncodedBytes("100%25_complete", '%'));
+
+        Assert.Equal(new byte[] { 61, 90, 90 },
+            HttpAgent.Helpers.DecodeEncodedBytes("=ZZ", '='));
+
+        Assert.Equal(new byte[] { 116, 101, 115, 116, 61, 50 },
+            HttpAgent.Helpers.DecodeEncodedBytes("test=2", '='));
+
+        Assert.Equal(new byte[] { 116, 101, 115, 116, 61 },
+            HttpAgent.Helpers.DecodeEncodedBytes("test=", '='));
+
+        Assert.Equal(new byte[] { 97, 98, 99 },
+            HttpAgent.Helpers.DecodeEncodedBytes("abc", '='));
+
+        Assert.Equal(new byte[] { 171 },
+            HttpAgent.Helpers.DecodeEncodedBytes("=aB", '='));
+    }
+
+    [Fact]
+    public void GetEncodingSafe_ReturnOK()
+    {
+        Assert.Equal(Encoding.UTF8, HttpAgent.Helpers.GetEncodingSafe("utf-8"));
+
+        Assert.Equal(Encoding.UTF8, HttpAgent.Helpers.GetEncodingSafe("invalid-charset-xxx"));
+        Assert.Equal(Encoding.UTF8, HttpAgent.Helpers.GetEncodingSafe(""));
     }
 
     [Fact]

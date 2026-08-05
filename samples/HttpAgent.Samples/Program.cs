@@ -1,7 +1,6 @@
 using System.Net;
 using System.Reflection;
 using HttpAgent;
-using HttpAgent.AspNetCore.Extensions;
 using HttpAgent.Samples;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shapeless.Extensions;
@@ -64,7 +63,7 @@ builder.Services.AddHttpRemote(options =>
         clientBuilder.AddProfilerDelegatingHandler();
     });
 
-var app = builder.Build();
+var app = builder.Build().UseHttpRemoteClient();
 
 // 启用请求正文缓存（支持 Body 重复读）
 app.UseEnableBuffering();

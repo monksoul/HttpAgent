@@ -151,7 +151,7 @@ public sealed partial class WebSocketClient : IDisposable
             }
 
             // 触发开始连接事件
-            OnConnecting();
+            await OnConnectingAsync();
 
             try
             {
@@ -165,12 +165,12 @@ public sealed partial class WebSocketClient : IDisposable
                 CurrentReconnectRetries = 0;
 
                 // 触发连接成功事件（首次连接）
-                OnConnected();
+                await OnConnectedAsync();
 
                 // 如果是重连成功，额外触发重新连接成功事件
                 if (wasReconnecting)
                 {
-                    OnReconnected();
+                    await OnReconnectedAsync();
                 }
 
                 // 启动后台消息监听（非阻塞）
@@ -201,7 +201,7 @@ public sealed partial class WebSocketClient : IDisposable
                 CurrentReconnectRetries++;
 
                 // 触发开始重新连接事件
-                OnReconnecting();
+                await OnReconnectingAsync();
 
                 // 等待重连间隔
                 await Task.Delay(Options.ReconnectInterval, cancellationToken);
@@ -386,7 +386,7 @@ public sealed partial class WebSocketClient : IDisposable
         ArgumentNullException.ThrowIfNull(_clientWebSocket);
 
         // 触发开始关闭连接事件
-        OnClosing();
+        await OnClosingAsync();
 
         try
         {
@@ -422,7 +422,7 @@ public sealed partial class WebSocketClient : IDisposable
             _receiveMessageTask = null;
 
             // 触发关闭连接完成事件
-            OnClosed();
+            await OnClosedAsync();
 
             // 重置当前重连次数
             CurrentReconnectRetries = 0;
@@ -482,7 +482,7 @@ public sealed partial class WebSocketClient : IDisposable
         _messageCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
         // 触发开始接收消息事件
-        OnReceivingStarted();
+        await OnReceivingStartedAsync();
 
         // 初始化缓冲区大小
         var buffer = new byte[Options.ReceiveBufferSize];
@@ -550,7 +550,7 @@ public sealed partial class WebSocketClient : IDisposable
                                 };
 
                             // 触发接收文本消息事件
-                            OnTextReceived(textResult);
+                            await OnTextReceivedAsync(textResult);
                             break;
                         case WebSocketMessageType.Binary:
                             // 获取完整二进制数据
@@ -562,7 +562,7 @@ public sealed partial class WebSocketClient : IDisposable
                                 };
 
                             // 触发接收二进制消息事件
-                            OnBinaryReceived(binaryResult);
+                            await OnBinaryReceivedAsync(binaryResult);
                             break;
                         case WebSocketMessageType.Close:
                         default:
@@ -594,7 +594,7 @@ public sealed partial class WebSocketClient : IDisposable
             }
 
             // 触发停止接收消息事件
-            OnReceivingStopped();
+            await OnReceivingStoppedAsync();
         }
     }
 }

@@ -136,8 +136,8 @@ public class HttpRequestBuilderTests
             exception.Message);
 
         var httpRequestBuilder11 = new HttpRequestBuilder(HttpMethod.Get, new Uri("https://furion.net/job/"));
-        httpRequestBuilder11.SetUriBuilder(uriBuilder => { uriBuilder.Path = "/service/user" + uriBuilder.Path; })
-            .SetUriBuilder(uriBuilder => { uriBuilder.Query = "?id=10"; });
+        httpRequestBuilder11.SetOnUriBuilding(uriBuilder => { uriBuilder.Path = "/service/user" + uriBuilder.Path; })
+            .SetOnUriBuilding(uriBuilder => { uriBuilder.Query = "?id=10"; });
         var finalRequestUri12 = httpRequestBuilder11.BuildFinalRequestUri(null, httpRemoteOptions);
         Assert.Equal("https://furion.net/service/user/job/?id=10", finalRequestUri12);
 
@@ -303,6 +303,44 @@ public class HttpRequestBuilderTests
         var uriBuilder7 = new UriBuilder(httpRequestBuilder7.RequestUri!);
         httpRequestBuilder7.AppendQueryParameters(uriBuilder7, formatter);
         Assert.Equal("?age=30&id=10&name=monksoul", uriBuilder7.Query);
+    }
+
+    [Fact]
+    public void AppendQueryParameters_WithReplace_ReturnOK()
+    {
+        var formatter = new UrlParameterFormatter();
+
+        var builder1 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost?v=1&name=Fur&age=20"))
+            .WithQueryParameter("name", "Furion", true);
+        var uriBuilder1 = new UriBuilder(builder1.RequestUri!);
+        builder1.AppendQueryParameters(uriBuilder1, formatter);
+        Assert.Equal("?v=1&name=Furion&age=20", uriBuilder1.Query);
+
+        var builder2 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost?v=1&name=Fur&age=20"))
+            .WithQueryParameters(new { name = "Furion", age = 30 }, replace: true);
+        var uriBuilder2 = new UriBuilder(builder2.RequestUri!);
+        builder2.AppendQueryParameters(uriBuilder2, formatter);
+        Assert.Equal("?v=1&name=Furion&age=30", uriBuilder2.Query);
+
+        var builder3 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost?v=1"))
+            .WithQueryParameter("newParam", "value", true);
+        var uriBuilder3 = new UriBuilder(builder3.RequestUri!);
+        builder3.AppendQueryParameters(uriBuilder3, formatter);
+        Assert.Equal("?v=1&newParam=value", uriBuilder3.Query);
+
+        var builder4 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost?x=1&y=2"))
+            .WithQueryParameter("x", "10", true)
+            .WithQueryParameter("y", "20");
+        var uriBuilder4 = new UriBuilder(builder4.RequestUri!);
+        builder4.AppendQueryParameters(uriBuilder4, formatter);
+        Assert.Equal("?x=10&y=2&y=20", uriBuilder4.Query);
+
+        var builder5 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost?a=1&b=2"))
+            .WithQueryParameter("a", "newA", true)
+            .RemoveQueryParameters("a");
+        var uriBuilder5 = new UriBuilder(builder5.RequestUri!);
+        builder5.AppendQueryParameters(uriBuilder5, formatter);
+        Assert.Equal("?b=2", uriBuilder5.Query);
     }
 
     [Fact]

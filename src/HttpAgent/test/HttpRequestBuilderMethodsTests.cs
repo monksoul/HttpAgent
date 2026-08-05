@@ -417,6 +417,28 @@ public class HttpRequestBuilderMethodsTests
     }
 
     [Fact]
+    public void WithMultipart_Invalid_Parameters()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        Assert.Throws<ArgumentNullException>(() => httpRequestBuilder.WithMultipart(null!));
+    }
+
+    [Fact]
+    public void WithMultipart_ReturnOK()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        httpRequestBuilder.WithMultipart(_ => { });
+        Assert.Null(httpRequestBuilder.MultipartFormDataBuilder);
+
+        httpRequestBuilder.SetMultipartContent(_ => { }).WithMultipart(u => u.AddJson("{}", "name"));
+        Assert.NotNull(httpRequestBuilder.MultipartFormDataBuilder);
+        Assert.Single(httpRequestBuilder.MultipartFormDataBuilder._partContents);
+
+        httpRequestBuilder.WithMultipart(u => u.AddText("furion", "txt"));
+        Assert.Equal(2, httpRequestBuilder.MultipartFormDataBuilder._partContents.Count);
+    }
+
+    [Fact]
     public void WithHeader_Invalid_Parameters()
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
@@ -779,6 +801,11 @@ public class HttpRequestBuilderMethodsTests
         httpRequestBuilder4.WithQueryParameters(new Dictionary<string, object?> { { "expired", null } },
             ignoreNullValues: false);
         Assert.Contains(httpRequestBuilder4.QueryParameters, p => p.Key == "expired");
+
+        httpRequestBuilder4.WithQueryParameters(new Dictionary<string, object?> { { "replaceKey", "key" } },
+            true);
+        Assert.NotNull(httpRequestBuilder4.ReplacedQueryParameterKeys);
+        Assert.Contains(httpRequestBuilder4.ReplacedQueryParameterKeys, p => p == "replaceKey");
     }
 
     [Fact]
@@ -1254,7 +1281,7 @@ public class HttpRequestBuilderMethodsTests
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
 
-        httpRequestBuilder.SetOnPostReceiveResponse(_ => { });
+        httpRequestBuilder.SetOnPostReceiveResponse((_, _) => Task.CompletedTask);
         Assert.NotNull(httpRequestBuilder.OnPostReceiveResponse);
     }
 
@@ -1318,24 +1345,36 @@ public class HttpRequestBuilderMethodsTests
     }
 
     [Fact]
-    public void AddJwtBearerAuthentication_Invalid_Parameters()
+    public void AddBearerAuthentication_Invalid_Parameters()
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
 
-        Assert.Throws<ArgumentNullException>(() => httpRequestBuilder.AddJwtBearerAuthentication(null!));
-        Assert.Throws<ArgumentException>(() => httpRequestBuilder.AddJwtBearerAuthentication(string.Empty));
-        Assert.Throws<ArgumentException>(() => httpRequestBuilder.AddJwtBearerAuthentication(" "));
+        Assert.Throws<ArgumentNullException>(() => httpRequestBuilder.AddBearerAuthentication(null!));
+        Assert.Throws<ArgumentException>(() => httpRequestBuilder.AddBearerAuthentication(string.Empty));
+        Assert.Throws<ArgumentException>(() => httpRequestBuilder.AddBearerAuthentication(" "));
+
+        Assert.Throws<ArgumentNullException>(() => httpRequestBuilder.AddBearerAuthentication(null!, null!));
+        Assert.Throws<ArgumentException>(() => httpRequestBuilder.AddBearerAuthentication(string.Empty, null!));
+        Assert.Throws<ArgumentException>(() => httpRequestBuilder.AddBearerAuthentication(" ", null!));
+
+        Assert.Throws<ArgumentNullException>(() => httpRequestBuilder.AddBearerAuthentication("x-token", null!));
+        Assert.Throws<ArgumentException>(() => httpRequestBuilder.AddBearerAuthentication("x-token", string.Empty));
+        Assert.Throws<ArgumentException>(() => httpRequestBuilder.AddBearerAuthentication("x-token", " "));
     }
 
     [Fact]
-    public void AddJwtBearerAuthentication_ReturnOK()
+    public void AddBearerAuthentication_ReturnOK()
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
-        httpRequestBuilder.AddJwtBearerAuthentication("jwtbearer");
+        httpRequestBuilder.AddBearerAuthentication("token");
 
         Assert.NotNull(httpRequestBuilder.AuthenticationHeader);
-        Assert.Equal("Bearer jwtbearer", httpRequestBuilder.AuthenticationHeader.ToString());
+        Assert.Equal("Bearer token", httpRequestBuilder.AuthenticationHeader.ToString());
         Assert.Equal("Bearer", httpRequestBuilder.AuthenticationHeader.Scheme);
+
+        httpRequestBuilder.AddBearerAuthentication("x-token", "token");
+        Assert.NotNull(httpRequestBuilder.Headers);
+        Assert.StartsWith("Bearer ", httpRequestBuilder.Headers["x-token"].First());
     }
 
     [Fact]
@@ -1960,56 +1999,58 @@ public class HttpRequestBuilderMethodsTests
     }
 
     [Fact]
-    public void ConfigureForRedirect_Invalid_Parameters()
+    public void CreateRedirectBuilder_Invalid_Parameters()
     {
         var httpRequestBuilder =
             new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost")).WithQueryParameter("id", 1)
                 .RemoveQueryParameters("name");
-        Assert.Throws<ArgumentNullException>(() => httpRequestBuilder.ConfigureForRedirect(null, null!));
+        Assert.Throws<ArgumentNullException>(() => httpRequestBuilder.CreateRedirectBuilder(null, null!));
     }
 
     [Fact]
-    public void ConfigureForRedirect_ReturnOK()
+    public void CreateRedirectBuilder_ReturnOK()
     {
-        var httpRequestBuilder =
-            new HttpRequestBuilder(HttpMethod.Post, new Uri("http://localhost")).WithQueryParameter("id", 1)
-                .RemoveQueryParameters("name").SetJsonContent("{}").WithPathSegment("user").RemovePathSegments("user");
-        httpRequestBuilder.ConfigureForRedirect(null, HttpMethod.Get);
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Post, new Uri("http://localhost"))
+            .WithQueryParameter("id", 1).RemoveQueryParameters("name").SetJsonContent("{}").WithPathSegment("user")
+            .RemovePathSegments("user");
 
-        Assert.Null(httpRequestBuilder.RequestUri);
-        Assert.Equal(HttpMethod.Get, httpRequestBuilder.HttpMethod);
+        var redirectBuilder = httpRequestBuilder.CreateRedirectBuilder(null, HttpMethod.Get);
+
+        Assert.Null(redirectBuilder.RequestUri);
+        Assert.Equal(HttpMethod.Get, redirectBuilder.HttpMethod);
+        Assert.Null(redirectBuilder.QueryParameters);
+        Assert.Null(redirectBuilder.QueryParametersToRemove);
+        Assert.Null(redirectBuilder.ReplacedQueryParameterKeys);
+        Assert.Null(redirectBuilder.PathSegments);
+        Assert.Null(redirectBuilder.PathSegmentsToRemove);
+        Assert.Null(redirectBuilder.RawContent);
+        Assert.Null(redirectBuilder.MultipartFormDataBuilder);
+        Assert.Null(redirectBuilder.PathParameters);
+        Assert.Null(redirectBuilder.ObjectPathParameters);
+        Assert.Null(redirectBuilder.Disposables);
+        Assert.Null(redirectBuilder.HttpClientPooling);
+
+        Assert.Equal(HttpMethod.Post, httpRequestBuilder.HttpMethod);
         Assert.NotNull(httpRequestBuilder.QueryParameters);
-        Assert.Empty(httpRequestBuilder.QueryParameters);
-        Assert.NotNull(httpRequestBuilder.QueryParametersToRemove);
-        Assert.Empty(httpRequestBuilder.QueryParametersToRemove);
-        Assert.Null(httpRequestBuilder.RawContent);
-        Assert.Null(httpRequestBuilder.MultipartFormDataBuilder);
+        Assert.Single(httpRequestBuilder.QueryParameters);
+        Assert.NotNull(httpRequestBuilder.RawContent);
 
-        Assert.NotNull(httpRequestBuilder.PathSegments);
-        Assert.Empty(httpRequestBuilder.PathSegments);
-        Assert.NotNull(httpRequestBuilder.PathSegmentsToRemove);
-        Assert.Empty(httpRequestBuilder.PathSegmentsToRemove);
+        var builder2 = new HttpRequestBuilder(HttpMethod.Post, new Uri("http://localhost"))
+            .SetMultipartContent(_ => { });
+        var redirectBuilder2 = builder2.CreateRedirectBuilder(new Uri("https://furion.net/"), HttpMethod.Head);
 
-        var httpRequestBuilder2 =
-            new HttpRequestBuilder(HttpMethod.Post, new Uri("http://localhost")).WithQueryParameter("id", 1)
-                .RemoveQueryParameters("name").SetMultipartContent(_ => { });
-        httpRequestBuilder2.ConfigureForRedirect(new Uri("https://furion.net/"), HttpMethod.Head);
+        Assert.Equal("https://furion.net/", redirectBuilder2.RequestUri?.ToString());
+        Assert.Equal(HttpMethod.Head, redirectBuilder2.HttpMethod);
+        Assert.Null(redirectBuilder2.RawContent);
+        Assert.Null(redirectBuilder2.MultipartFormDataBuilder);
+        Assert.NotNull(builder2.MultipartFormDataBuilder);
 
-        Assert.NotNull(httpRequestBuilder2.RequestUri);
-        Assert.Equal("https://furion.net/", httpRequestBuilder2.RequestUri.ToString());
-        Assert.Null(httpRequestBuilder2.RawContent);
-        Assert.Null(httpRequestBuilder2.MultipartFormDataBuilder);
+        var builder3 = new HttpRequestBuilder(HttpMethod.Post, new Uri("http://localhost"))
+            .SetJsonContent("{}");
+        var redirectBuilder3 = builder3.CreateRedirectBuilder(new Uri("https://furion.net/"), HttpMethod.Post);
 
-        var httpRequestBuilder3 =
-            new HttpRequestBuilder(HttpMethod.Post, new Uri("http://localhost")).WithQueryParameter("id", 1)
-                .RemoveQueryParameters("name").SetMultipartContent(_ => { });
-        Assert.NotNull(httpRequestBuilder3.MultipartFormDataBuilder);
-
-        var httpRequestBuilder4 =
-            new HttpRequestBuilder(HttpMethod.Post, new Uri("http://localhost")).WithQueryParameter("id", 1)
-                .RemoveQueryParameters("name").SetJsonContent("{}");
-        httpRequestBuilder4.ConfigureForRedirect(new Uri("https://furion.net/"), HttpMethod.Post);
-        Assert.NotNull(httpRequestBuilder4.RawContent);
+        Assert.Equal(HttpMethod.Post, redirectBuilder3.HttpMethod);
+        Assert.NotNull(redirectBuilder3.RawContent);
     }
 
     [Fact]
@@ -2122,22 +2163,42 @@ public class HttpRequestBuilderMethodsTests
     }
 
     [Fact]
-    public void SetUriBuilder_Invalid_Parameters()
+    public void SetOnUriBuilding_Invalid_Parameters()
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
-        Assert.Throws<ArgumentNullException>(() => httpRequestBuilder.SetUriBuilder(null!));
+        Assert.Throws<ArgumentNullException>(() => httpRequestBuilder.SetOnUriBuilding(null!));
     }
 
     [Fact]
-    public void SetUriBuilder_ReturnOK()
+    public void SetOnUriBuilding_ReturnOK()
     {
         var i = 0;
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
 
-        httpRequestBuilder.SetUriBuilder(uriBuilder => { i++; }).SetUriBuilder(uriBuilder => { i++; });
+        httpRequestBuilder.SetOnUriBuilding(_ => { i++; }).SetOnUriBuilding(_ => { i++; });
         Assert.NotNull(httpRequestBuilder.OnUriBuilding);
 
         httpRequestBuilder.OnUriBuilding.Invoke(null!);
+        Assert.Equal(2, i);
+    }
+
+    [Fact]
+    public void SetOnRedirect_Invalid_Parameters()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        Assert.Throws<ArgumentNullException>(() => httpRequestBuilder.SetOnRedirect(null!));
+    }
+
+    [Fact]
+    public void SetOnRedirect_ReturnOK()
+    {
+        var i = 0;
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+
+        httpRequestBuilder.SetOnRedirect((_, _) => { i++; }).SetOnRedirect((_, _) => { i++; });
+        Assert.NotNull(httpRequestBuilder.OnRedirect);
+
+        httpRequestBuilder.OnRedirect.Invoke(null!, null!);
         Assert.Equal(2, i);
     }
 
@@ -2224,6 +2285,31 @@ public class HttpRequestBuilderMethodsTests
     }
 
     [Fact]
+    public void SetSOAPAction_Invalid_Parameters()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+
+        Assert.Throws<ArgumentNullException>(() => httpRequestBuilder.SetSOAPAction(null!));
+        Assert.Throws<ArgumentException>(() => httpRequestBuilder.SetSOAPAction(string.Empty));
+        Assert.Throws<ArgumentException>(() => httpRequestBuilder.SetSOAPAction(" "));
+    }
+
+    [Fact]
+    public void SetSOAPAction_ReturnOK()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        httpRequestBuilder.SetSOAPAction("http://localhost");
+
+        Assert.NotNull(httpRequestBuilder.Headers);
+        Assert.Equal("http://localhost", httpRequestBuilder.Headers["SOAPAction"].First());
+
+        httpRequestBuilder.SetSOAPAction("http://localhost", true);
+
+        Assert.NotNull(httpRequestBuilder.Headers);
+        Assert.Equal("\"http://localhost\"", httpRequestBuilder.Headers["SOAPAction"].First());
+    }
+
+    [Fact]
     public void MergeHeaders_Invalid_Parameters() =>
         Assert.Throws<ArgumentNullException>(() => HttpRequestBuilder.MergeHeaders(null, null!, false, false));
 
@@ -2242,5 +2328,20 @@ public class HttpRequestBuilderMethodsTests
         Assert.NotNull(concatHeaders);
         Assert.Equal(["one", "two", "three"], concatHeaders.Keys);
         Assert.Equal(["1", "2"], concatHeaders["one"]);
+    }
+
+    [Fact]
+    public void SetHttpMethod_Invalid_Parameters()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        Assert.Throws<ArgumentNullException>(() => httpRequestBuilder.SetHttpMethod(null!));
+    }
+
+    [Fact]
+    public void SetHttpMethod_ReturnOK()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        httpRequestBuilder.SetHttpMethod(HttpMethod.Post);
+        Assert.Equal(HttpMethod.Post, httpRequestBuilder.HttpMethod);
     }
 }

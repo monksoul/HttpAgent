@@ -24,13 +24,14 @@ public class RequestEventPipelineHandlerTests
     }
 
     [Fact]
-    public void HandlePostReceiveResponse_ReturnOK()
+    public async Task HandlePostReceiveResponseAsync_ReturnOK()
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
-        httpRequestBuilder.SetOnPostReceiveResponse(_ => throw new Exception("出错了"));
+        httpRequestBuilder.SetOnPostReceiveResponse((_, _) => throw new Exception("出错了"));
 
-        RequestEventPipelineHandler.HandlePostReceiveResponse(httpRequestBuilder, null, new CustomRequestEventHandler(),
-            new HttpResponseMessage());
+        await RequestEventPipelineHandler.HandlePostReceiveResponseAsync(httpRequestBuilder, null,
+            new CustomRequestEventHandler(),
+            new HttpResponseMessage(), TestContext.Current.CancellationToken);
     }
 
     [Fact]

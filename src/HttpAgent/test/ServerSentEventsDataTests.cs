@@ -14,14 +14,22 @@ public class ServerSentEventsDataTests
         Assert.NotNull(serverSentEventsData._dataBuffer);
         Assert.Equal(0, serverSentEventsData._dataBuffer.Length);
         Assert.Null(serverSentEventsData._cachedData);
+
+        Assert.NotNull(serverSentEventsData._rawLineBuffer);
+        Assert.Equal(0, serverSentEventsData._rawLineBuffer.Length);
+        Assert.Null(serverSentEventsData._cachedRawLine);
+
         Assert.NotNull(serverSentEventsData._customFields);
         Assert.Empty(serverSentEventsData._customFields);
         Assert.Null(serverSentEventsData.Event);
         Assert.NotNull(serverSentEventsData.Data);
         Assert.Empty(serverSentEventsData.Data);
+        Assert.NotNull(serverSentEventsData.RawLine);
+        Assert.Empty(serverSentEventsData.RawLine);
         Assert.Null(serverSentEventsData.Id);
         Assert.NotNull(serverSentEventsData.CustomFields);
         Assert.Empty(serverSentEventsData.CustomFields);
+        Assert.False(serverSentEventsData.IsDone);
     }
 
     [Fact]
@@ -37,6 +45,20 @@ public class ServerSentEventsDataTests
         Assert.Null(serverSentEventsData._cachedData);
         Assert.Equal("\nfurion", serverSentEventsData.Data);
         Assert.NotNull(serverSentEventsData._cachedData);
+
+        var serverSentEventsData2 = new ServerSentEventsData();
+        serverSentEventsData2.AppendData("[DONE]");
+        Assert.True(serverSentEventsData2.IsDone);
+    }
+
+    [Fact]
+    public void AppendRawLine_ReturnOK()
+    {
+        var serverSentEventsData = new ServerSentEventsData();
+        serverSentEventsData.AppendRawLine("data: some text");
+        Assert.Null(serverSentEventsData._cachedRawLine);
+        Assert.Equal("data: some text", serverSentEventsData.RawLine);
+        Assert.NotNull(serverSentEventsData._cachedRawLine);
     }
 
     [Fact]

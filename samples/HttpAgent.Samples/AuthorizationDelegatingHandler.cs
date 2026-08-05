@@ -12,7 +12,7 @@ public class AuthorizationDelegatingHandler : DelegatingHandler
     protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
         CancellationToken cancellationToken)
     {
-        // 添加 JWT (JSON Web Token) 身份验证
+        // 添加 Bearer 身份验证
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", "your token");
 
         // 添加 Basic 身份验证

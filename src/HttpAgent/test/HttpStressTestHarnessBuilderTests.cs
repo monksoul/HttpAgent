@@ -22,6 +22,8 @@ public class HttpStressTestHarnessBuilderTests
         Assert.Equal(100, builder.MaxDegreeOfParallelism);
         Assert.Equal(1, builder.NumberOfRounds);
         Assert.Null(builder._configureRequest);
+        Assert.Null(builder.Configure);
+        Assert.Same(builder, builder.This);
     }
 
     [Fact]
@@ -97,6 +99,7 @@ public class HttpStressTestHarnessBuilderTests
         Assert.Null(builder._configureRequest);
         builder.With(requestBuilder => requestBuilder.WithHeader("framework", "Furion"));
         Assert.NotNull(builder._configureRequest);
+        Assert.NotNull(builder.Configure);
     }
 
     [Fact]
@@ -112,6 +115,49 @@ public class HttpStressTestHarnessBuilderTests
         builder.DisableCache(false);
         builder._configureRequest?.Invoke(httpRequestBuilder);
         Assert.False(httpRequestBuilder.DisableCacheEnabled);
+    }
+
+    [Fact]
+    public void AddBearerAuthentication_ReturnOK()
+    {
+        var builder = new HttpStressTestHarnessBuilder(HttpMethod.Get, null);
+        builder.AddBearerAuthentication("token");
+
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, null);
+        builder._configureRequest?.Invoke(httpRequestBuilder);
+        Assert.NotNull(httpRequestBuilder.AuthenticationHeader);
+        Assert.Equal("Bearer", httpRequestBuilder.AuthenticationHeader.Scheme);
+
+        builder.AddBearerAuthentication("x-header", "token");
+        builder._configureRequest?.Invoke(httpRequestBuilder);
+        Assert.NotNull(httpRequestBuilder.Headers);
+        Assert.StartsWith("Bearer", httpRequestBuilder.Headers["x-header"].First());
+    }
+
+    [Fact]
+    public void SetJsonContent_ReturnOK()
+    {
+        var builder = new HttpStressTestHarnessBuilder(HttpMethod.Get, null);
+        builder.SetJsonContent(new { });
+
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, null);
+        builder._configureRequest?.Invoke(httpRequestBuilder);
+        Assert.NotNull(httpRequestBuilder.RawContent);
+
+        builder.SetJsonContentWithoutValidation("[]");
+        builder._configureRequest?.Invoke(httpRequestBuilder);
+        Assert.NotNull(httpRequestBuilder.RawContent);
+    }
+
+    [Fact]
+    public void SetContent_ReturnOK()
+    {
+        var builder = new HttpStressTestHarnessBuilder(HttpMethod.Get, null);
+        builder.SetContent(new { });
+
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, null);
+        builder._configureRequest?.Invoke(httpRequestBuilder);
+        Assert.NotNull(httpRequestBuilder.RawContent);
     }
 
     [Fact]

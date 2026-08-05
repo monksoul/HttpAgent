@@ -73,4 +73,18 @@ public class HttpRemoteServiceCollectionExtensionsTests
         var services = new ServiceCollection();
         services.AddHttpRemote().ConfigureOptions(options => { options.DefaultContentType = "application/json"; });
     }
+
+    [Fact]
+    public void UseHttpRemoteClient_ReturnOK()
+    {
+        Assert.Null(HttpRemoteClient._externalServiceProvider);
+        var services = new ServiceCollection();
+        services.AddHttpRemote();
+        using var serviceProvider = services.BuildServiceProvider();
+
+        serviceProvider.UseHttpRemoteClient();
+        Assert.NotNull(HttpRemoteClient._externalServiceProvider);
+
+        Assert.Same(serviceProvider.GetRequiredService<IHttpRemoteService>(), HttpRemoteClient.Service);
+    }
 }

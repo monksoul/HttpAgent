@@ -7,62 +7,74 @@ namespace HttpAgent.Tests;
 public class WebSocketClientEventsTests
 {
     [Fact]
-    public void New_ReturnOK()
+    public async Task New_ReturnOK()
     {
         var webSocketClient = new WebSocketClient("ws://localhost:12345");
         var events = new string[10];
 
-        webSocketClient.Connecting += (s, e) =>
+        webSocketClient.Connecting += (_, _) =>
         {
             events[0] = nameof(webSocketClient.Connecting);
+            return Task.CompletedTask;
         };
-        webSocketClient.Connected += (s, e) =>
+        webSocketClient.Connected += (_, _) =>
         {
             events[1] = nameof(webSocketClient.Connected);
+            return Task.CompletedTask;
         };
-        webSocketClient.Reconnecting += (s, e) =>
+        webSocketClient.Reconnecting += (_, _) =>
         {
             events[2] = nameof(webSocketClient.Reconnecting);
+            return Task.CompletedTask;
         };
-        webSocketClient.Reconnected += (s, e) =>
+        webSocketClient.Reconnected += (_, _) =>
         {
             events[3] = nameof(webSocketClient.Reconnected);
+            return Task.CompletedTask;
         };
-        webSocketClient.Closing += (s, e) =>
+        webSocketClient.Closing += (_, _) =>
         {
             events[4] = nameof(webSocketClient.Closing);
+            return Task.CompletedTask;
         };
-        webSocketClient.Closed += (s, e) =>
+        webSocketClient.Closed += (_, _) =>
         {
             events[5] = nameof(webSocketClient.Closed);
+            return Task.CompletedTask;
         };
-        webSocketClient.ReceivingStarted += (s, e) =>
+        webSocketClient.ReceivingStarted += (_, _) =>
         {
             events[6] = nameof(webSocketClient.ReceivingStarted);
+            return Task.CompletedTask;
         };
-        webSocketClient.ReceivingStopped += (s, e) =>
+        webSocketClient.ReceivingStopped += (_, _) =>
         {
             events[7] = nameof(webSocketClient.ReceivingStopped);
+            return Task.CompletedTask;
         };
-        webSocketClient.TextReceived += (s, e) =>
+        webSocketClient.TextReceived += (_, _) =>
         {
             events[8] = nameof(webSocketClient.TextReceived);
+            return Task.CompletedTask;
         };
-        webSocketClient.BinaryReceived += (s, e) =>
+        webSocketClient.BinaryReceived += (_, _) =>
         {
             events[9] = nameof(webSocketClient.BinaryReceived);
+            return Task.CompletedTask;
         };
 
-        webSocketClient.OnConnecting();
-        webSocketClient.OnConnected();
-        webSocketClient.OnReconnecting();
-        webSocketClient.OnReconnected();
-        webSocketClient.OnClosing();
-        webSocketClient.OnClosed();
-        webSocketClient.OnReceivingStarted();
-        webSocketClient.OnReceivingStopped();
-        webSocketClient.OnTextReceived(new WebSocketTextReceiveResult(0, true, WebSocketCloseStatus.Empty, null));
-        webSocketClient.OnBinaryReceived(new WebSocketBinaryReceiveResult(0, true, WebSocketCloseStatus.Empty, null));
+        await webSocketClient.OnConnectingAsync();
+        await webSocketClient.OnConnectedAsync();
+        await webSocketClient.OnReconnectingAsync();
+        await webSocketClient.OnReconnectedAsync();
+        await webSocketClient.OnClosingAsync();
+        await webSocketClient.OnClosedAsync();
+        await webSocketClient.OnReceivingStartedAsync();
+        await webSocketClient.OnReceivingStoppedAsync();
+        await webSocketClient.OnTextReceivedAsync(new WebSocketTextReceiveResult(0, true, WebSocketCloseStatus.Empty,
+            null));
+        await webSocketClient.OnBinaryReceivedAsync(
+            new WebSocketBinaryReceiveResult(0, true, WebSocketCloseStatus.Empty, null));
 
         Assert.Equal(
         [

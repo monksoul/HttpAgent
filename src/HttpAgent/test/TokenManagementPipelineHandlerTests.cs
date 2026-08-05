@@ -103,7 +103,7 @@ public class TokenManagementPipelineHandlerTests
     {
         /// <inheritdoc />
         public void Configure(HttpRequestBuilder httpRequestBuilder, HttpAccessToken httpAccessToken) =>
-            httpRequestBuilder.AddJwtBearerAuthentication(httpAccessToken.Value);
+            httpRequestBuilder.AddBearerAuthentication(httpAccessToken.Value);
 
         /// <inheritdoc />
         public Task<HttpAccessToken?> GetAsync(HttpAccessTokenContext context, CancellationToken cancellationToken) =>
@@ -117,10 +117,7 @@ public class TokenManagementPipelineHandlerTests
         {
             httpRequestBuilder.AddAuthentication("Custom", httpAccessToken.Value);
 
-            httpRequestBuilder.SetOnPostReceiveResponse(response =>
-            {
-                // 更新 httpAccessToken
-            });
+            httpRequestBuilder.SetOnPostReceiveResponse((_, _) => Task.CompletedTask);
         }
     }
 }

@@ -24,7 +24,10 @@ public class HttpServerSentEventsBuilderTests
         Assert.Null(builder2.OnMessage);
         Assert.Null(builder2.OnError);
         Assert.Null(builder2.ServerSentEventsEventHandlerType);
+        Assert.True(builder2.AutoCorrectMethod);
         Assert.Null(builder2._configureRequest);
+        Assert.Null(builder2.Configure);
+        Assert.Same(builder2, builder2.This);
 
         var builder3 = new HttpServerSentEventsBuilder(HttpMethod.Post, new Uri("http://localhost"));
         Assert.NotNull(builder3);
@@ -158,6 +161,7 @@ public class HttpServerSentEventsBuilderTests
         Assert.Null(builder._configureRequest);
         builder.With(requestBuilder => requestBuilder.WithHeader("framework", "Furion"));
         Assert.NotNull(builder._configureRequest);
+        Assert.NotNull(builder.Configure);
     }
 
     [Fact]
@@ -177,6 +181,74 @@ public class HttpServerSentEventsBuilderTests
         builder.Profiler(_ => { });
         builder._configureRequest?.Invoke(httpRequestBuilder);
         Assert.True(httpRequestBuilder.ProfilerEnabled);
+    }
+
+    [Fact]
+    public void DisableCache_ReturnOK()
+    {
+        var builder = new HttpServerSentEventsBuilder(new Uri("http://localhost"));
+        builder.DisableCache();
+
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, null);
+        builder._configureRequest?.Invoke(httpRequestBuilder);
+        Assert.True(httpRequestBuilder.DisableCacheEnabled);
+
+        builder.DisableCache(false);
+        builder._configureRequest?.Invoke(httpRequestBuilder);
+        Assert.False(httpRequestBuilder.DisableCacheEnabled);
+    }
+
+    [Fact]
+    public void AddBearerAuthentication_ReturnOK()
+    {
+        var builder = new HttpServerSentEventsBuilder(new Uri("http://localhost"));
+        builder.AddBearerAuthentication("token");
+
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, null);
+        builder._configureRequest?.Invoke(httpRequestBuilder);
+        Assert.NotNull(httpRequestBuilder.AuthenticationHeader);
+        Assert.Equal("Bearer", httpRequestBuilder.AuthenticationHeader.Scheme);
+
+        builder.AddBearerAuthentication("x-header", "token");
+        builder._configureRequest?.Invoke(httpRequestBuilder);
+        Assert.NotNull(httpRequestBuilder.Headers);
+        Assert.StartsWith("Bearer", httpRequestBuilder.Headers["x-header"].First());
+    }
+
+    [Fact]
+    public void SetJsonContent_ReturnOK()
+    {
+        var builder = new HttpServerSentEventsBuilder(new Uri("http://localhost"));
+        builder.SetJsonContent(new { });
+
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, null);
+        builder._configureRequest?.Invoke(httpRequestBuilder);
+        Assert.NotNull(httpRequestBuilder.RawContent);
+
+        builder.SetJsonContentWithoutValidation("[]");
+        builder._configureRequest?.Invoke(httpRequestBuilder);
+        Assert.NotNull(httpRequestBuilder.RawContent);
+    }
+
+    [Fact]
+    public void SetContent_ReturnOK()
+    {
+        var builder = new HttpServerSentEventsBuilder(new Uri("http://localhost"));
+        builder.SetContent(new { });
+
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, null);
+        builder._configureRequest?.Invoke(httpRequestBuilder);
+        Assert.NotNull(httpRequestBuilder.RawContent);
+    }
+
+    [Fact]
+    public void SetAutoCorrectMethod_ReturnOK()
+    {
+        var builder = new HttpServerSentEventsBuilder(new Uri("http://localhost"));
+        Assert.True(builder.AutoCorrectMethod);
+
+        builder.SetAutoCorrectMethod(false);
+        Assert.False(builder.AutoCorrectMethod);
     }
 
     [Fact]
@@ -210,5 +282,25 @@ public class HttpServerSentEventsBuilderTests
 
         Assert.Equal(TimeSpan.FromMilliseconds(100), httpRequestBuilder2.TimeoutOptions?.Timeout);
         Assert.NotNull(httpRequestBuilder2.RequestEventHandlerType);
+    }
+
+    [Fact]
+    public void Build_AutoCorrectMethod_ReturnOK()
+    {
+        var httpRemoteOptions = new HttpRemoteOptions();
+        var httpServerSentEventsBuilder = new HttpServerSentEventsBuilder(new Uri("http://localhost")).Profiler();
+        httpServerSentEventsBuilder.SetJsonContent("{}");
+        Assert.Equal(HttpMethod.Get, httpServerSentEventsBuilder.HttpMethod);
+
+        var httpRequestBuilder = httpServerSentEventsBuilder.Build(httpRemoteOptions);
+        Assert.Equal(HttpMethod.Post, httpRequestBuilder.HttpMethod);
+
+        var httpServerSentEventsBuilder2 =
+            new HttpServerSentEventsBuilder(HttpMethod.Head, new Uri("http://localhost")).Profiler();
+        httpServerSentEventsBuilder2.SetJsonContent("{}");
+        Assert.Equal(HttpMethod.Head, httpServerSentEventsBuilder2.HttpMethod);
+
+        var httpRequestBuilder2 = httpServerSentEventsBuilder2.Build(httpRemoteOptions);
+        Assert.Equal(HttpMethod.Post, httpRequestBuilder2.HttpMethod);
     }
 }

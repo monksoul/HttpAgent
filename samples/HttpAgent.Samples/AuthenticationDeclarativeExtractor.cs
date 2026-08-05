@@ -21,7 +21,7 @@ public class AuthenticationDeclarativeExtractor : IHttpDeclarativeExtractor
         if (httpRequestBuilder.AuthenticationHeader is not null) return;
 
         // 添加授权标头（这里可以实现任何授权的逻辑，比如从参数获取 token 等等）
-        httpRequestBuilder.AddJwtBearerAuthentication(
+        httpRequestBuilder.AddBearerAuthentication(
             "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c");
     }
 }

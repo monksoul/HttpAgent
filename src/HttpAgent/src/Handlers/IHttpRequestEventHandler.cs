@@ -23,7 +23,13 @@ public interface IHttpRequestEventHandler
     /// <param name="httpResponseMessage">
     ///     <see cref="HttpResponseMessage" />
     /// </param>
-    void OnPostReceiveResponse(HttpResponseMessage httpResponseMessage);
+    /// <param name="cancellationToken">
+    ///     <see cref="CancellationToken" />
+    /// </param>
+    /// <returns>
+    ///     <see cref="Task" />
+    /// </returns>
+    Task OnPostReceiveResponseAsync(HttpResponseMessage httpResponseMessage, CancellationToken cancellationToken);
 
     /// <summary>
     ///     用于处理在发送 HTTP 请求发生异常时的操作

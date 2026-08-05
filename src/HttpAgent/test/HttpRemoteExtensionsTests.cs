@@ -230,10 +230,10 @@ public class HttpRemoteExtensionsTests
 
         var largeBinary = new byte[2048];
         var largeBinaryResult = HttpRemoteExtensions.FormatBytes(largeBinary, 2048, 5120, true, 2048, false, null);
-        Assert.Contains("\e[36m\e[1m... [Binary content, showing first 1024 bytes of 2048 total bytes]\e[0m",
+        Assert.Contains("\e[36m\e[1m... [Binary content, showing first 512 bytes of 2048 total bytes]\e[0m",
             largeBinaryResult);
 
-        var textBuffer = Encoding.UTF8.GetBytes("Hello World");
+        var textBuffer = "Hello World"u8.ToArray();
         var textResult = HttpRemoteExtensions.FormatBytes(textBuffer, 11, 5120, false, 11, false, null);
         Assert.Equal("Hello World", textResult);
 
@@ -241,7 +241,7 @@ public class HttpRemoteExtensionsTests
         var longTextResult = HttpRemoteExtensions.FormatBytes(longTextBuffer, 5120, 5120, true, 6000, false, null);
         Assert.Contains("\e[36m\e[1m ... [truncated, > 5120 bytes]\e[0m", longTextResult);
 
-        var utf8Buffer = Encoding.UTF8.GetBytes("Test");
+        var utf8Buffer = "Test"u8.ToArray();
         var fallbackResult =
             HttpRemoteExtensions.FormatBytes(utf8Buffer, 4, 5120, false, 4, false, null, "invalid-charset-xxx");
         Assert.Equal("Test", fallbackResult);

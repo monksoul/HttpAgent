@@ -36,6 +36,72 @@ public class HttpContextExtensionsTests
     }
 
     [Fact]
+    public void EnableServerSentEvents_Invalid_Parameters() =>
+        Assert.Throws<ArgumentNullException>(() => HttpContextExtensions.EnableServerSentEvents(null!));
+
+    [Fact]
+    public async Task EnableServerSentEvents_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        string[] urls = ["--urls", $"http://localhost:{port}"];
+        var builder = WebApplication.CreateBuilder(urls);
+
+        await using var app = builder.Build();
+
+        app.MapGet("/test", async httpContext =>
+        {
+            httpContext.Response.EnableServerSentEvents();
+            Assert.Equal("text/event-stream; charset=utf-8", httpContext.Response.ContentType);
+            Assert.Equal("no-cache", httpContext.Response.Headers.CacheControl);
+            Assert.Equal("no", httpContext.Response.Headers["X-Accel-Buffering"]);
+
+            await Task.CompletedTask;
+        });
+
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient httpClient = new();
+        httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(nameof(HttpContextExtensionsTests));
+
+        var httpResponseMessage =
+            await httpClient.GetAsync($"http://localhost:{port}/test", TestContext.Current.CancellationToken);
+        httpResponseMessage.EnsureSuccessStatusCode();
+
+        await app.StopAsync(TestContext.Current.CancellationToken);
+    }
+
+    [Fact]
+    public async Task WriteAndFlushAsync_Invalid_Parameters() =>
+        await Assert.ThrowsAsync<ArgumentNullException>(() =>
+            HttpContextExtensions.WriteAndFlushAsync(null!, null, TestContext.Current.CancellationToken));
+
+    [Fact]
+    public async Task WriteAndFlushAsync_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        string[] urls = ["--urls", $"http://localhost:{port}"];
+        var builder = WebApplication.CreateBuilder(urls);
+
+        await using var app = builder.Build();
+
+        app.MapGet("/test", async httpContext =>
+        {
+            await httpContext.Response.WriteAndFlushAsync("ok");
+        });
+
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient httpClient = new();
+        httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(nameof(HttpContextExtensionsTests));
+
+        var httpResponseMessage =
+            await httpClient.GetAsync($"http://localhost:{port}/test", TestContext.Current.CancellationToken);
+        httpResponseMessage.EnsureSuccessStatusCode();
+        Assert.Equal("ok", await httpResponseMessage.Content.ReadAsStringAsync(TestContext.Current.CancellationToken));
+        await app.StopAsync(TestContext.Current.CancellationToken);
+    }
+
+    [Fact]
     public void CreateForwardBuilder_ReturnOK()
     {
         var services = new ServiceCollection();

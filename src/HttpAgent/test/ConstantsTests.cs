@@ -14,8 +14,8 @@ public class ConstantsTests
     public void BASIC_AUTHENTICATION_SCHEME() => Assert.Equal("Basic", Constants.BASIC_AUTHENTICATION_SCHEME);
 
     [Fact]
-    public void JWT_BEARER_AUTHENTICATION_SCHEME() =>
-        Assert.Equal("Bearer", Constants.JWT_BEARER_AUTHENTICATION_SCHEME);
+    public void BEARER_AUTHENTICATION_SCHEME() =>
+        Assert.Equal("Bearer", Constants.BEARER_AUTHENTICATION_SCHEME);
 
     [Fact]
     public void DIGEST_AUTHENTICATION_SCHEME() =>

@@ -9,7 +9,7 @@ public class FurionAccessTokenProviderTests
     [Fact]
     public void New_ReturnOK()
     {
-        var provider = new FurionAccessTokenProvider();
+        var provider = new FurionAccessTokenProvider(new HttpAccessTokenManager());
         Assert.NotNull(provider);
         Assert.True(typeof(IHttpAccessTokenProvider).IsAssignableFrom(typeof(FurionAccessTokenProvider)));
         Assert.True(typeof(IHttpAccessTokenConfigurator).IsAssignableFrom(typeof(FurionAccessTokenProvider)));
@@ -17,7 +17,6 @@ public class FurionAccessTokenProviderTests
         Assert.Equal("X-Authorization", FurionAccessTokenProvider.XAuthorizationHeaderName);
         Assert.Equal("access-token", FurionAccessTokenProvider.AccessTokenHeaderName);
         Assert.Equal("x-access-token", FurionAccessTokenProvider.XAccessTokenHeaderName);
-        Assert.Equal("Bearer {0}", FurionAccessTokenProvider.BearerTokenFormat);
     }
 
     [Fact]
@@ -25,7 +24,7 @@ public class FurionAccessTokenProviderTests
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
 
-        var provider = new FurionAccessTokenProvider();
+        var provider = new FurionAccessTokenProvider(new HttpAccessTokenManager());
         provider.Configure(httpRequestBuilder,
             new HttpAccessToken("new token value", DateTimeOffset.Now.AddMinutes(20)));
 
@@ -36,7 +35,7 @@ public class FurionAccessTokenProviderTests
     [Fact]
     public async Task GetAsync_ReturnOK()
     {
-        var provider = new FurionAccessTokenProvider();
+        var provider = new FurionAccessTokenProvider(new HttpAccessTokenManager());
         var accessToken =
             await provider.GetAsync(new HttpAccessTokenContext(null, provider), CancellationToken.None);
         Assert.Null(accessToken);
@@ -45,7 +44,7 @@ public class FurionAccessTokenProviderTests
     [Fact]
     public async Task RefreshAsync_ReturnOK()
     {
-        var provider = new FurionAccessTokenProvider();
+        IHttpAccessTokenProvider provider = new FurionAccessTokenProvider(new HttpAccessTokenManager());
         var accessToken =
             await provider.RefreshAsync(new HttpAccessTokenContext(null, provider), null, CancellationToken.None);
         Assert.Null(accessToken);
@@ -53,7 +52,14 @@ public class FurionAccessTokenProviderTests
         var accessToken2 =
             await provider.RefreshAsync(new HttpAccessTokenContext(null, provider),
                 new HttpAccessToken("new token value", DateTimeOffset.Now.AddMinutes(20)), CancellationToken.None);
-        Assert.NotNull(accessToken2);
-        Assert.Equal("new token value", accessToken2.Value);
+        Assert.Null(accessToken2);
+    }
+
+    [Fact]
+    public async Task ShouldRefreshAsync_ReturnOK()
+    {
+        var provider = new FurionAccessTokenProvider(new HttpAccessTokenManager()) as IHttpAccessTokenProvider;
+        Assert.False(await provider.ShouldRefreshAsync(new HttpAccessTokenContext(null, provider),
+            new HttpResponseMessage(HttpStatusCode.OK), TestContext.Current.CancellationToken));
     }
 }
