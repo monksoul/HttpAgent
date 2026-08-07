@@ -13,7 +13,7 @@ public class ForwardAttributeTests
         Assert.Null(attribute.RequestUri);
         Assert.Null(attribute.Method);
         Assert.Null(attribute.HttpClientName);
-        Assert.Equal(HttpCompletionOption.ResponseContentRead, attribute.CompletionOption);
+        Assert.Equal(HttpCompletionOption.ResponseHeadersRead, attribute.CompletionOption);
         Assert.True(attribute.WithQueryParameters);
         Assert.True(attribute.WithRequestHeaders);
         Assert.True(attribute.WithResponseStatusCode);

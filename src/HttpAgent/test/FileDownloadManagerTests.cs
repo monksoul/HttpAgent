@@ -33,6 +33,7 @@ public class FileDownloadManagerTests
         Assert.NotNull(fileDownloadManager.RequestBuilder);
         Assert.Null(fileDownloadManager.FileTransferEventHandler);
         Assert.Equal(0, fileDownloadManager._totalBytesReceived);
+        Assert.NotNull(fileDownloadManager._throttler);
 
         var fileDownloadManager2 = new FileDownloadManager(httpRemoteService,
             new HttpFileDownloadBuilder(HttpMethod.Get, new Uri("http://localhost:5000")).SetDestinationPath(
@@ -1298,14 +1299,15 @@ public class FileDownloadManagerTests
         var httpResponseMessage = new HttpResponseMessage();
         httpResponseMessage.Content = new StringContent("测试文件内容", Encoding.UTF8, "text/plain");
 
-        await using var fileStream = new FileStream(Path.GetTempFileName(), FileMode.Create, FileAccess.Write,
-            FileShare.Read,
-            httpFileDownloadBuilder.BufferSize, true);
+        var chunkTempFilePath = Path.GetTempFileName();
 
-        var fileWriteLock = new SemaphoreSlim(1, 1);
-
-        await fileDownloadManager.DownloadChunkAsync(0, 420374, fileStream, fileWriteLock,
+        await fileDownloadManager.DownloadChunkAsync(0, 420374, chunkTempFilePath,
             new FileTransferProgress(@"C:\Workspaces\R-C.jpg", 21), new Stopwatch(), CancellationToken.None);
+
+        if (File.Exists(chunkTempFilePath))
+        {
+            File.Delete(chunkTempFilePath);
+        }
 
         await serviceProvider.DisposeAsync();
     }
@@ -1331,28 +1333,5 @@ public class FileDownloadManagerTests
             new FileTransferProgress(@"C:\Workspaces\index.html", 21), new Stopwatch(), CancellationToken.None);
 
         await serviceProvider.DisposeAsync();
-    }
-
-    [Fact]
-    public void WrapDecompressionStream_ReturnOK()
-    {
-        var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
-        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
-
-        var httpFileDownloadBuilder =
-            new HttpFileDownloadBuilder(HttpMethod.Get, new Uri("https://furion.net")).SetDestinationPath(filePath);
-        var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
-
-        var httpResponseMessage =
-            httpRemoteService.Send(fileDownloadManager.RequestBuilder, HttpCompletionOption.ResponseHeadersRead,
-                TestContext.Current.CancellationToken)!;
-
-        using var rawStream = httpResponseMessage.Content.ReadAsStream(TestContext.Current.CancellationToken);
-
-        using var stream = FileDownloadManager.WrapDecompressionStream(rawStream, httpResponseMessage);
-
-        Assert.NotNull(stream);
-
-        serviceProvider.Dispose();
     }
 }

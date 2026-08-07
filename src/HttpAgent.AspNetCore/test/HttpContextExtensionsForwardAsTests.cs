@@ -1063,11 +1063,12 @@ public class HttpContextExtensionsForwardAsTests
 
     private static string ActionResultToString(IActionResult actionResult)
     {
-        if (actionResult is ContentResult contentResult)
+        if (actionResult is not FileStreamResult streamResult)
         {
-            return contentResult.Content!;
+            return string.Empty;
         }
 
-        return string.Empty;
+        using var reader = new StreamReader(streamResult.FileStream, Encoding.UTF8);
+        return reader.ReadToEnd();
     }
 }

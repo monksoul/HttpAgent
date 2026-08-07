@@ -78,6 +78,9 @@ internal sealed class LongPollingManager
     /// <exception cref="InvalidOperationException"></exception>
     internal async Task StartAsync(CancellationToken cancellationToken = default)
     {
+        // 初始化关联取消 Token
+        using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+
         // 初始化数据接收传输的通道
         var dataChannel = Channel.CreateUnbounded<HttpResponseMessage>(new UnboundedChannelOptions
         {
@@ -85,20 +88,46 @@ internal sealed class LongPollingManager
         });
 
         // 初始化接收服务器响应数据任务
-        var fetchResponseTask = FetchResponseAsync(dataChannel, cancellationToken);
+        var fetchResponseTask = FetchResponseAsync(dataChannel, linkedCts.Token);
+
+        // 初始化记录原始异常
+        Exception? originalException = null;
 
         try
         {
             // 开始接收（核心）
-            await StartCoreAsync(dataChannel.Writer, cancellationToken);
+            await StartCoreAsync(dataChannel.Writer, linkedCts.Token);
+        }
+        catch (Exception ex)
+        {
+            // 生产者出错，取消订阅
+            await linkedCts.CancelAsync();
+            originalException = ex;
         }
         finally
         {
             // 关闭通道，通知接收任务结束
             dataChannel.Writer.TryComplete();
 
-            // 等待接收服务器响应数据任务完成
-            await fetchResponseTask;
+            try
+            {
+                // 等待接收服务器响应数据任务完成
+                await fetchResponseTask;
+            }
+            catch (Exception ex)
+            {
+                // 只有当生产者没出错，且消费者抛出的是真实的业务异常时才记录
+                if (originalException is null && ex is not OperationCanceledException)
+                {
+                    originalException = ex;
+                }
+            }
+        }
+
+        // 空检查
+        if (originalException is not null)
+        {
+            ExceptionDispatchInfo.Capture(originalException).Throw();
         }
     }
 
@@ -114,6 +143,9 @@ internal sealed class LongPollingManager
     internal async IAsyncEnumerable<HttpResponseMessage> StartAsAsyncEnumerable(
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
+        // 初始化关联取消 Token
+        using var internalCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+
         // 初始化数据接收传输的通道
         var dataChannel = Channel.CreateUnbounded<HttpResponseMessage>(new UnboundedChannelOptions
         {
@@ -121,23 +153,33 @@ internal sealed class LongPollingManager
         });
 
         // 开始接收（核心）
-        var producerTask = StartCoreAsync(dataChannel.Writer, cancellationToken);
+        var producerTask = StartCoreAsync(dataChannel.Writer, internalCts.Token);
 
         try
         {
             // 从通道中读取响应
-            await foreach (var httpResponseMessage in dataChannel.Reader.ReadAllAsync(cancellationToken))
+            await foreach (var httpResponseMessage in dataChannel.Reader.ReadAllAsync(internalCts.Token))
             {
                 yield return httpResponseMessage;
             }
         }
         finally
         {
+            // 外部退出终止推送
+            await internalCts.CancelAsync();
+
             // 关闭通道，通知接收任务结束
             dataChannel.Writer.TryComplete();
 
-            // 等待接收服务器响应数据任务完成
-            await producerTask;
+            try
+            {
+                // 等待接收服务器响应数据任务完成
+                await producerTask;
+            }
+            catch (OperationCanceledException)
+            {
+                // 忽略因外部退出导致的取消异常
+            }
         }
     }
 
@@ -179,6 +221,14 @@ internal sealed class LongPollingManager
                         if (httpResponseMessage.Headers.TryGetValues(Constants.X_END_OF_STREAM_HEADER, out _))
                         {
                             await HandleEndOfStreamAsync(httpResponseMessage, cancellationToken);
+                        }
+                        else
+                        {
+                            // 释放 httpResponseMessage
+                            httpResponseMessage.Dispose();
+
+                            throw new InvalidOperationException(
+                                $"Long polling terminated after `{_httpLongPollingBuilder.MaxRetries}` consecutive failures.");
                         }
 
                         // 释放 httpResponseMessage
@@ -279,12 +329,9 @@ internal sealed class LongPollingManager
         // 空检查
         ArgumentNullException.ThrowIfNull(dataChannel);
 
-        // 空检查
-        if (_httpLongPollingBuilder.OnDataReceived is null && _httpLongPollingBuilder.OnError is null &&
-            LongPollingEventHandler is null)
-        {
-            return;
-        }
+        // 检查是否注册了回调
+        var hasCallbacks = _httpLongPollingBuilder.OnDataReceived is not null ||
+                           _httpLongPollingBuilder.OnError is not null || LongPollingEventHandler is not null;
 
         try
         {
@@ -298,17 +345,16 @@ internal sealed class LongPollingManager
                     cancellationToken.ThrowIfCancellationRequested();
 
                     // 处理服务器响应数据
-                    await HandleResponseAsync(httpResponseMessage, cancellationToken);
+                    if (hasCallbacks)
+                    {
+                        await HandleResponseAsync(httpResponseMessage, cancellationToken);
+                    }
                 }
             }
         }
         catch (Exception e) when (cancellationToken.IsCancellationRequested || e is OperationCanceledException)
         {
             // 任务被取消
-        }
-        catch (Exception)
-        {
-            // ignored
         }
     }
 

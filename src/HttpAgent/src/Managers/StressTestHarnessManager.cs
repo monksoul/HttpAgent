@@ -81,13 +81,14 @@ internal sealed class StressTestHarnessManager
         // 初始化压力测试次数和轮次
         var numberOfRequests = _httpStressTestHarnessBuilder.NumberOfRequests;
         var numberOfRounds = _httpStressTestHarnessBuilder.NumberOfRounds;
+        var totalRequests = numberOfRequests * numberOfRounds;
 
         // 初始化总的成功/失败的请求数量
         var totalSuccessfulRequests = 0L;
         var totalFailedRequests = 0L;
 
         // 用于记录每个请求的响应时间
-        var allResponseTimes = new List<double>(numberOfRequests * numberOfRounds);
+        var allResponseTimes = new double[totalRequests];
 
         // 初始化总的测试时间
         var totalTime = TimeSpan.Zero;
@@ -129,7 +130,8 @@ internal sealed class StressTestHarnessManager
                 totalTime += stopwatch.Elapsed;
 
                 // 将本轮的响应时间追加到总的响应时间数组中
-                allResponseTimes.AddRange(responseTimes);
+                var offset = round * numberOfRequests;
+                Array.Copy(responseTimes, 0, allResponseTimes, offset, numberOfRequests);
             }
         }
         finally
@@ -145,11 +147,11 @@ internal sealed class StressTestHarnessManager
         var totalTimeInSeconds = totalTime.TotalSeconds;
 
         return new StressTestHarnessResult(
-            numberOfRequests * numberOfRounds,
+            totalRequests,
             totalTimeInSeconds,
             totalSuccessfulRequests,
             totalFailedRequests,
-            allResponseTimes.ToArray());
+            allResponseTimes);
 
         // 封装单次请求异步方法
         async Task ExecuteRequestAsync(int idx, SemaphoreSlim semaphore, HttpCompletionOption option, double[] times,
@@ -165,20 +167,22 @@ internal sealed class StressTestHarnessManager
 
                 try
                 {
+                    // 克隆 HttpRequestBuilder
+                    var clonedBuilder = RequestBuilder.Clone(nameof(HttpRequestBuilder.Disposables),
+                        nameof(HttpRequestBuilder.HttpClientPooling));
+
                     // 发送 HTTP 远程请求
                     using var httpResponseMessage =
-                        await _httpRemoteService.SendAsync(RequestBuilder, option, ct).ConfigureAwait(false);
+                        await _httpRemoteService.SendAsync(clonedBuilder, option, ct).ConfigureAwait(false);
 
                     // 空检查
                     if (httpResponseMessage is null)
                     {
                         // 原子递增失败请求计数
                         Interlocked.Increment(ref totalFailedRequests);
-                        return;
                     }
-
                     // 检查响应状态码是否是成功状态
-                    if (httpResponseMessage.IsSuccessStatusCode)
+                    else if (httpResponseMessage.IsSuccessStatusCode)
                     {
                         // 原子递增成功请求计数
                         Interlocked.Increment(ref totalSuccessfulRequests);
@@ -192,6 +196,9 @@ internal sealed class StressTestHarnessManager
                 // 任务被取消
                 catch (Exception e) when (ct.IsCancellationRequested || e is OperationCanceledException)
                 {
+                    // 被取消的请求计入失败总数，保证 成功+失败 = 总请求数
+                    Interlocked.Increment(ref totalFailedRequests);
+
                     throw;
                 }
                 catch (Exception)

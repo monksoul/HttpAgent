@@ -32,6 +32,8 @@ public class HttpFileDownloadBuilderTests
         Assert.Null(builder2.OnTransferFailed);
         Assert.Null(builder2.OnFileExistAndSkip);
         Assert.Null(builder2.FileTransferEventHandlerType);
+        Assert.Equal(TimeSpan.FromSeconds(30), builder2.ChunkTimeout);
+        Assert.Equal(3, builder2.ChunkMaxRetries);
         Assert.Null(builder2._configureRequest);
         Assert.Null(builder2.Configure);
         Assert.Same(builder2, builder2.This);
@@ -132,6 +134,54 @@ public class HttpFileDownloadBuilderTests
         builder.SetMaxThreads(2);
 
         Assert.Equal(2, builder.MaxThreads);
+    }
+
+    [Fact]
+    public void SetChunkTimeout_Invalid_Parameters()
+    {
+        var builder = new HttpFileDownloadBuilder(HttpMethod.Get, null);
+
+        var exception = Assert.Throws<ArgumentException>(() => builder.SetChunkTimeout(TimeSpan.Zero));
+        Assert.Equal("Chunk timeout must be greater than 0 or Timeout.InfiniteTimeSpan. (Parameter 'chunkTimeout')",
+            exception.Message);
+
+        var exception2 = Assert.Throws<ArgumentException>(() => builder.SetChunkTimeout(TimeSpan.FromSeconds(-1)));
+        Assert.Equal("Chunk timeout must be greater than 0 or Timeout.InfiniteTimeSpan. (Parameter 'chunkTimeout')",
+            exception2.Message);
+    }
+
+    [Fact]
+    public void SetChunkTimeout_ReturnOK()
+    {
+        var builder = new HttpFileDownloadBuilder(HttpMethod.Get, null);
+        builder.SetChunkTimeout(TimeSpan.FromSeconds(60));
+        Assert.Equal(TimeSpan.FromSeconds(60), builder.ChunkTimeout);
+
+        var builder2 = new HttpFileDownloadBuilder(HttpMethod.Get, null);
+        builder2.SetChunkTimeout(Timeout.InfiniteTimeSpan);
+        Assert.Equal(Timeout.InfiniteTimeSpan, builder2.ChunkTimeout);
+    }
+
+    [Fact]
+    public void SetChunkMaxRetries_Invalid_Parameters()
+    {
+        var builder = new HttpFileDownloadBuilder(HttpMethod.Get, null);
+
+        var exception = Assert.Throws<ArgumentException>(() => builder.SetChunkMaxRetries(-1));
+        Assert.Equal("Chunk max retries must be greater than or equal to 0. (Parameter 'chunkMaxRetries')",
+            exception.Message);
+    }
+
+    [Fact]
+    public void SetChunkMaxRetries_ReturnOK()
+    {
+        var builder = new HttpFileDownloadBuilder(HttpMethod.Get, null);
+        builder.SetChunkMaxRetries(0);
+        Assert.Equal(0, builder.ChunkMaxRetries);
+
+        var builder2 = new HttpFileDownloadBuilder(HttpMethod.Get, null);
+        builder2.SetChunkMaxRetries(5);
+        Assert.Equal(5, builder2.ChunkMaxRetries);
     }
 
     [Fact]

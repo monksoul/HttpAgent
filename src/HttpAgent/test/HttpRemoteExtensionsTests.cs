@@ -369,7 +369,7 @@ public class HttpRemoteExtensionsTests
         streamingResp.Content = new NoLengthStreamContent("ignored"u8.ToArray());
         var streamSkipResult = await streamingResp.Content.ProfilerAsync(httpResponseMessage: streamingResp,
             cancellationToken: TestContext.Current.CancellationToken);
-        Assert.Contains("Skipped due to streaming", streamSkipResult);
+        Assert.Contains("Skipped: ResponseHeadersRead", streamSkipResult);
 
         var longText = new string('A', 11 * 1024);
         var truncContent = new StringContent(longText);
@@ -454,7 +454,7 @@ public class HttpRemoteExtensionsTests
 
         var streamContent = new StreamContent(nonSeekableStream);
         var result = await streamContent.ProfilerAsync(cancellationToken: TestContext.Current.CancellationToken);
-        Assert.Contains("buffering disabled to protect underlying stream", result);
+        Assert.Contains("underlying stream is not seekable and buffering is disabled to protect it", result);
     }
 
     [Fact]

@@ -453,11 +453,12 @@ public class HttpFileUploadBuilderTests
         Assert.Equal(HttpMethod.Post, httpRequestBuilder.HttpMethod);
         Assert.NotNull(httpRequestBuilder.RequestUri);
         Assert.Equal("http://localhost/", httpRequestBuilder.RequestUri.ToString());
-        Assert.False(httpRequestBuilder.EnsureSuccessStatusCodeEnabled);
+        Assert.True(httpRequestBuilder.EnsureSuccessStatusCodeEnabled);
         Assert.Null(httpRequestBuilder.RequestEventHandlerType);
         Assert.NotNull(httpRequestBuilder.MultipartFormDataBuilder);
         Assert.Single(httpRequestBuilder.MultipartFormDataBuilder._partContents);
         Assert.True(httpRequestBuilder.ProfilerEnabled);
+        Assert.True(httpRequestBuilder.EnsureSuccessStatusCodeEnabled);
 
         var item = httpRequestBuilder.MultipartFormDataBuilder._partContents[0];
         Assert.True(item.RawContent is ProgressFileStream);

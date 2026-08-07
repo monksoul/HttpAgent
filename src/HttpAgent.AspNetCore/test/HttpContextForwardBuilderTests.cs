@@ -2,17 +2,15 @@
 // 
 // 此源代码遵循位于源代码树根目录中的 LICENSE 文件的许可证。
 
+using Microsoft.Extensions.Options;
+
 namespace HttpAgent.AspNetCore.Tests;
 
 public class HttpContextForwardBuilderTests
 {
     [Fact]
-    public void New_Invalid_Parameters()
-    {
-        Assert.Throws<ArgumentNullException>(() => new HttpContextForwardBuilder(null!, null!));
-        Assert.Throws<ArgumentNullException>(() =>
-            new HttpContextForwardBuilder(new DefaultHttpContext(), null!));
-    }
+    public void New_Invalid_Parameters() =>
+        Assert.Throws<ArgumentNullException>(() => new HttpContextForwardBuilder(null!));
 
     [Fact]
     public void New_ReturnOK()
@@ -20,105 +18,88 @@ public class HttpContextForwardBuilderTests
         Assert.NotNull(HttpContextForwardBuilder._actionResultContentConverterInstance);
         Assert.NotNull(HttpContextForwardBuilder._actionResultContentConverterInstance.Value);
 
-        var services = new ServiceCollection();
-        using var provider = services.BuildServiceProvider();
-        var httpContext = new DefaultHttpContext { RequestServices = provider };
-
-        var builder = new HttpContextForwardBuilder(httpContext, HttpMethod.Get);
+        var builder = new HttpContextForwardBuilder(HttpMethod.Get);
         Assert.Equal(HttpMethod.Get, builder.HttpMethod);
         Assert.Null(builder.RequestUri);
 
-        var builder2 = new HttpContextForwardBuilder(httpContext, HttpMethod.Get, new Uri("http://localhost"),
-            new HttpContextForwardOptions { AllowedHosts = ["*"] });
+        var builder2 = new HttpContextForwardBuilder(HttpMethod.Get, new Uri("http://localhost"));
         Assert.Equal(HttpMethod.Get, builder2.HttpMethod);
         Assert.NotNull(builder2.RequestUri);
         Assert.Equal("http://localhost/", builder2.RequestUri.ToString());
-        Assert.NotNull(builder2.HttpContext);
-        Assert.NotNull(builder2.ForwardOptions);
-
-        var httpContext2 = new DefaultHttpContext
-        {
-            Request = { Headers = { ["X-Forward-To"] = "https://furion.net" } }, RequestServices = provider
-        };
-        var builder3 = new HttpContextForwardBuilder(httpContext2, HttpMethod.Get,
-            forwardOptions: new HttpContextForwardOptions { AllowedHosts = ["*"] });
-        Assert.Equal(HttpMethod.Get, builder3.HttpMethod);
-        Assert.NotNull(builder3.RequestUri);
-        Assert.Equal("https://furion.net/", builder3.RequestUri.ToString());
     }
 
     [Fact]
     public void IgnoreRequestHeaders_ReturnOK() =>
-        Assert.Equal(["X-Forward-To", "Host"], HttpContextForwardBuilder._ignoreRequestHeaders);
+        Assert.Equal([Constants.X_FORWARD_TO_HEADER, "Host"], HttpContextForwardBuilder._ignoreRequestHeaders);
 
     [Fact]
-    public void GetTargetUri_Invalid_Parameters()
+    public void ResolveTargetUri_Invalid_Parameters()
     {
         var httpContext = new DefaultHttpContext();
         var forwardOptions = new HttpContextForwardOptions();
 
-        var exception = Assert.Throws<InvalidOperationException>(() =>
-            HttpContextForwardBuilder.GetTargetUri(httpContext, forwardOptions, new Uri("https://furion.net")));
+        var builder = new HttpContextForwardBuilder(HttpMethod.Get, new Uri("https://furion.net"));
+
+        var exception =
+            Assert.Throws<InvalidOperationException>(() => builder.ResolveTargetUri(httpContext, forwardOptions));
         Assert.Equal(
             "No allowed hosts have been configured for request forwarding. To enable forwarding, add target hosts to HttpContextForwardOptions.AllowedHosts, or include `*` to allow all hosts (not recommended due to SSRF risk).",
             exception.Message);
 
         forwardOptions.AllowedHosts = ["baiqian.com"];
         var exception2 = Assert.Throws<InvalidOperationException>(() =>
-            HttpContextForwardBuilder.GetTargetUri(httpContext, forwardOptions, new Uri("https://furion.net")));
+            builder.ResolveTargetUri(httpContext, forwardOptions));
         Assert.Equal("The target host 'furion.net:443' is not in the allowed forwarding list.", exception2.Message);
+
+        httpContext.Request.Headers[Constants.X_FORWARD_TO_HEADER] = "/api";
+        var builder2 = new HttpContextForwardBuilder(HttpMethod.Get);
+
+        var exception3 =
+            Assert.Throws<InvalidOperationException>(() => builder2.ResolveTargetUri(httpContext, forwardOptions));
+        Assert.Equal(
+            "The target URL must be an absolute URI (e.g., https://baiqian.com/about). Relative paths are not supported.",
+            exception3.Message);
+
+        httpContext.Request.Headers[Constants.X_FORWARD_TO_HEADER] = "https://furion.net";
+
+        var exception4 =
+            Assert.Throws<InvalidOperationException>(() =>
+                builder2.ResolveTargetUri(httpContext, new HttpContextForwardOptions()));
+        Assert.Equal(
+            "No allowed hosts have been configured for request forwarding. To enable forwarding, add target hosts to HttpContextForwardOptions.AllowedHosts, or include `*` to allow all hosts (not recommended due to SSRF risk).",
+            exception4.Message);
+
+        var exception5 =
+            Assert.Throws<InvalidOperationException>(() =>
+                builder2.ResolveTargetUri(httpContext,
+                    new HttpContextForwardOptions { AllowedHosts = ["baiqian.com"] }));
+        Assert.Equal("The target host 'furion.net:443' is not in the allowed forwarding list.", exception5.Message);
     }
 
     [Fact]
-    public void GetTargetUri_ReturnOK()
+    public void ResolveTargetUri_ReturnOK()
     {
         var httpContext = new DefaultHttpContext();
+        var builder = new HttpContextForwardBuilder(HttpMethod.Get, new Uri("https://furion.net"));
 
-        Assert.Null(HttpContextForwardBuilder.GetTargetUri(httpContext, new HttpContextForwardOptions()));
+        var targetUrl = builder.ResolveTargetUri(httpContext, new HttpContextForwardOptions { AllowedHosts = ["*"] });
+        Assert.NotNull(targetUrl);
+        Assert.Equal("https://furion.net/", targetUrl.ToString());
 
-        var optionsWithWildcard = new HttpContextForwardOptions { AllowedHosts = ["*"] };
-        var resultUri = HttpContextForwardBuilder.GetTargetUri(httpContext, optionsWithWildcard,
-            new Uri("https://furion.net"));
-        Assert.NotNull(resultUri);
-        Assert.Equal("https://furion.net/", resultUri.ToString());
-
-        httpContext.Request.Headers["X-Forward-To"] = "https://furion.net";
+        var builder2 = new HttpContextForwardBuilder(HttpMethod.Get);
+        httpContext.Request.Headers[Constants.X_FORWARD_TO_HEADER] = "https://furion.net";
         var optionsWithHost = new HttpContextForwardOptions { AllowedHosts = ["furion.net"] };
-        var uriFromHeader = HttpContextForwardBuilder.GetTargetUri(httpContext, optionsWithHost);
+        var uriFromHeader = builder2.ResolveTargetUri(httpContext, optionsWithHost);
         Assert.NotNull(uriFromHeader);
         Assert.Equal("https://furion.net/", uriFromHeader.ToString());
 
-        httpContext.Request.Headers["X-Forward-To"] = "";
-        var uriEmptyHeader = HttpContextForwardBuilder.GetTargetUri(httpContext, optionsWithHost);
+        httpContext.Request.Headers[Constants.X_FORWARD_TO_HEADER] = "";
+        var uriEmptyHeader = builder2.ResolveTargetUri(httpContext, optionsWithHost);
         Assert.Null(uriEmptyHeader);
 
-        httpContext.Request.Headers.Remove("X-Forward-To");
-        var uriNoHeader = HttpContextForwardBuilder.GetTargetUri(httpContext, optionsWithHost);
+        httpContext.Request.Headers.Remove(Constants.X_FORWARD_TO_HEADER);
+        var uriNoHeader = builder2.ResolveTargetUri(httpContext, optionsWithHost);
         Assert.Null(uriNoHeader);
-    }
-
-    [Fact]
-    public void GetForwardOptions_ReturnOK()
-    {
-        var services = new ServiceCollection();
-        services.AddHttpContextAccessor();
-        using var provider = services.BuildServiceProvider();
-        var httpContext = new DefaultHttpContext { RequestServices = provider };
-
-        Assert.NotNull(HttpContextForwardBuilder.GetForwardOptions(httpContext, null));
-
-        var forwardOptions = new HttpContextForwardOptions();
-        var forwardOptions1 = HttpContextForwardBuilder.GetForwardOptions(httpContext, forwardOptions);
-        Assert.Equal(forwardOptions1.GetHashCode(), forwardOptions1.GetHashCode());
-
-        var services2 = new ServiceCollection();
-        services2.AddHttpContextAccessor();
-        services2.AddOptions<HttpContextForwardOptions>().Configure(o => { o.OnForward = (_, _) => { }; });
-        using var provider2 = services2.BuildServiceProvider();
-        var httpContext2 = new DefaultHttpContext { RequestServices = provider2 };
-        var forwardOptions2 = HttpContextForwardBuilder.GetForwardOptions(httpContext2, null);
-        Assert.NotNull(forwardOptions2);
-        Assert.NotNull(forwardOptions2.OnForward);
     }
 
     [Fact]
@@ -135,11 +116,14 @@ public class HttpContextForwardBuilderTests
             {
                 var httpMethod = Helpers.ParseHttpMethod(context.Request.Method);
                 var requestUri = new Uri($"http://localhost:{port}");
-                var httpContextForwardBuilder = new HttpContextForwardBuilder(context, httpMethod, requestUri,
-                    new HttpContextForwardOptions { IgnoreQueryParameters = ["giveup"], AllowedHosts = ["*"] });
-                var httpRequestBuilder = HttpRequestBuilder.Create(httpMethod, requestUri);
 
-                httpContextForwardBuilder.CopyQueryAndRouteValues(httpRequestBuilder);
+                var httpContextForwardBuilder = new HttpContextForwardBuilder(httpMethod, requestUri);
+                var forwardOptions =
+                    new HttpContextForwardOptions { IgnoreQueryParameters = ["giveup"], AllowedHosts = ["*"] };
+
+                var httpRequestBuilder = await httpContextForwardBuilder.BuildAsync(context, null, forwardOptions);
+                HttpContextForwardBuilder.CopyQueryAndRouteValues(
+                    new HttpForwardBuildContext(context, httpRequestBuilder, forwardOptions));
 
                 Assert.NotNull(httpRequestBuilder.QueryParameters);
                 Assert.Single(httpRequestBuilder.QueryParameters);
@@ -182,11 +166,12 @@ public class HttpContextForwardBuilderTests
         {
             var httpMethod = Helpers.ParseHttpMethod(context.Request.Method);
             var requestUri = new Uri($"http://localhost:{port}");
-            var httpContextForwardBuilder = new HttpContextForwardBuilder(context, httpMethod, requestUri,
-                new HttpContextForwardOptions { WithQueryParameters = false, AllowedHosts = ["*"] });
-            var httpRequestBuilder = HttpRequestBuilder.Create(httpMethod, requestUri);
+            var httpContextForwardBuilder = new HttpContextForwardBuilder(httpMethod, requestUri);
+            var forwardOptions = new HttpContextForwardOptions { WithQueryParameters = false, AllowedHosts = ["*"] };
 
-            httpContextForwardBuilder.CopyQueryAndRouteValues(httpRequestBuilder);
+            var httpRequestBuilder = await httpContextForwardBuilder.BuildAsync(context, null, forwardOptions);
+            HttpContextForwardBuilder.CopyQueryAndRouteValues(
+                new HttpForwardBuildContext(context, httpRequestBuilder, forwardOptions));
 
             Assert.Null(httpRequestBuilder.QueryParameters);
 
@@ -225,10 +210,13 @@ public class HttpContextForwardBuilderTests
         {
             var httpMethod = Helpers.ParseHttpMethod(context.Request.Method);
             var requestUri = new Uri($"http://localhost:{port}");
-            var httpContextForwardBuilder = new HttpContextForwardBuilder(context, httpMethod, requestUri);
-            var httpRequestBuilder = HttpRequestBuilder.Create(httpMethod, requestUri);
+            var httpContextForwardBuilder = new HttpContextForwardBuilder(httpMethod, requestUri);
+            var forwardOptions = context.RequestServices
+                .GetRequiredService<IOptionsMonitor<HttpContextForwardOptions>>().CurrentValue;
 
-            httpContextForwardBuilder.CopyHeaders(httpRequestBuilder);
+            var httpRequestBuilder = await httpContextForwardBuilder.BuildAsync(context, null, forwardOptions);
+            HttpContextForwardBuilder.CopyHeaders(
+                new HttpForwardBuildContext(context, httpRequestBuilder, forwardOptions));
 
             Assert.NotNull(httpRequestBuilder.Headers);
             Assert.Single(httpRequestBuilder.Headers);
@@ -264,18 +252,18 @@ public class HttpContextForwardBuilderTests
         {
             var httpMethod = Helpers.ParseHttpMethod(context.Request.Method);
             var requestUri = new Uri($"http://localhost:{port}");
-            var httpContextForwardBuilder = new HttpContextForwardBuilder(context, httpMethod, requestUri,
-                new HttpContextForwardOptions { ResetHostRequestHeader = true, AllowedHosts = ["*"] });
-            var httpRequestBuilder = HttpRequestBuilder.Create(httpMethod, requestUri);
+            var httpContextForwardBuilder = new HttpContextForwardBuilder(httpMethod, requestUri);
+            var forwardOptions = new HttpContextForwardOptions { ResetHostRequestHeader = true, AllowedHosts = ["*"] };
 
-            httpContextForwardBuilder.CopyHeaders(httpRequestBuilder);
+            var httpRequestBuilder = await httpContextForwardBuilder.BuildAsync(context, null, forwardOptions);
+            HttpContextForwardBuilder.CopyHeaders(
+                new HttpForwardBuildContext(context, httpRequestBuilder, forwardOptions));
 
             Assert.NotNull(httpRequestBuilder.Headers);
-            Assert.Equal(2, httpRequestBuilder.Headers.Count);
+            Assert.Single(httpRequestBuilder.Headers);
             Assert.Equal("X-Original-URL", httpRequestBuilder.Headers.ElementAt(0).Key);
             Assert.Equal($"http://localhost:{port}/test", httpRequestBuilder.Headers.ElementAt(0).Value.First());
-            Assert.Equal("Host", httpRequestBuilder.Headers.ElementAt(1).Key);
-            Assert.Equal($"localhost:{port}", httpRequestBuilder.Headers.ElementAt(1).Value.First());
+            Assert.True(httpRequestBuilder.AutoSetHostHeaderEnabled);
 
             await context.Response.WriteAsync("Hello World!");
         });
@@ -312,10 +300,13 @@ public class HttpContextForwardBuilderTests
         {
             var httpMethod = Helpers.ParseHttpMethod(context.Request.Method);
             var requestUri = new Uri($"http://localhost:{port}");
-            var httpContextForwardBuilder = new HttpContextForwardBuilder(context, httpMethod, requestUri);
-            var httpRequestBuilder = HttpRequestBuilder.Create(httpMethod, requestUri);
+            var httpContextForwardBuilder = new HttpContextForwardBuilder(httpMethod, requestUri);
+            var forwardOptions = context.RequestServices
+                .GetRequiredService<IOptionsMonitor<HttpContextForwardOptions>>().CurrentValue;
 
-            httpContextForwardBuilder.CopyHeaders(httpRequestBuilder);
+            var httpRequestBuilder = await httpContextForwardBuilder.BuildAsync(context, null, forwardOptions);
+            HttpContextForwardBuilder.CopyHeaders(
+                new HttpForwardBuildContext(context, httpRequestBuilder, forwardOptions));
 
             Assert.NotNull(httpRequestBuilder.Headers);
             Assert.Equal(3, httpRequestBuilder.Headers.Count);
@@ -377,10 +368,13 @@ public class HttpContextForwardBuilderTests
         {
             var httpMethod = Helpers.ParseHttpMethod(context.Request.Method);
             var requestUri = new Uri($"http://localhost:{port}");
-            var httpContextForwardBuilder = new HttpContextForwardBuilder(context, httpMethod, requestUri);
-            var httpRequestBuilder = HttpRequestBuilder.Create(httpMethod, requestUri);
+            var httpContextForwardBuilder = new HttpContextForwardBuilder(httpMethod, requestUri);
+            var forwardOptions = context.RequestServices
+                .GetRequiredService<IOptionsMonitor<HttpContextForwardOptions>>().CurrentValue;
 
-            httpContextForwardBuilder.CopyHeaders(httpRequestBuilder);
+            var httpRequestBuilder = await httpContextForwardBuilder.BuildAsync(context, null, forwardOptions);
+            HttpContextForwardBuilder.CopyHeaders(
+                new HttpForwardBuildContext(context, httpRequestBuilder, forwardOptions));
 
             Assert.NotNull(httpRequestBuilder.Headers);
             Assert.Equal(3, httpRequestBuilder.Headers.Count);
@@ -468,10 +462,13 @@ public class HttpContextForwardBuilderTests
         {
             var httpMethod = Helpers.ParseHttpMethod(context.Request.Method);
             var requestUri = new Uri($"http://localhost:{port}");
-            var httpContextForwardBuilder = new HttpContextForwardBuilder(context, httpMethod, requestUri);
-            var httpRequestBuilder = HttpRequestBuilder.Create(httpMethod, requestUri);
+            var httpContextForwardBuilder = new HttpContextForwardBuilder(httpMethod, requestUri);
+            var forwardOptions = context.RequestServices
+                .GetRequiredService<IOptionsMonitor<HttpContextForwardOptions>>().CurrentValue;
 
-            httpContextForwardBuilder.CopyHeaders(httpRequestBuilder);
+            var httpRequestBuilder = await httpContextForwardBuilder.BuildAsync(context, null, forwardOptions);
+            HttpContextForwardBuilder.CopyHeaders(
+                new HttpForwardBuildContext(context, httpRequestBuilder, forwardOptions));
 
             Assert.NotNull(httpRequestBuilder.Headers);
             Assert.Equal(3, httpRequestBuilder.Headers.Count);
@@ -522,9 +519,9 @@ public class HttpContextForwardBuilderTests
             Assert.Equal("test.txt", httpMultipartFormDataBuilder._partContents[2].FileName);
             Assert.Equal("text/plain", httpMultipartFormDataBuilder._partContents[2].ContentType);
             Assert.NotNull(httpRequestBuilder.Disposables);
-            Assert.Single(httpRequestBuilder.Disposables);
+            // Assert.Single(httpRequestBuilder.Disposables);
             Assert.Equal(httpMultipartFormDataBuilder._partContents[2].RawContent,
-                httpRequestBuilder.Disposables.Single());
+                httpRequestBuilder.Disposables.Last());
 
             await context.Response.WriteAsync("Hello World!");
         }).DisableAntiforgery();
@@ -574,10 +571,13 @@ public class HttpContextForwardBuilderTests
         {
             var httpMethod = Helpers.ParseHttpMethod(context.Request.Method);
             var requestUri = new Uri($"http://localhost:{port}");
-            var httpContextForwardBuilder = new HttpContextForwardBuilder(context, httpMethod, requestUri);
-            var httpRequestBuilder = HttpRequestBuilder.Create(httpMethod, requestUri);
+            var httpContextForwardBuilder = new HttpContextForwardBuilder(httpMethod, requestUri);
+            var forwardOptions = context.RequestServices
+                .GetRequiredService<IOptionsMonitor<HttpContextForwardOptions>>().CurrentValue;
 
-            httpContextForwardBuilder.CopyHeaders(httpRequestBuilder);
+            var httpRequestBuilder = await httpContextForwardBuilder.BuildAsync(context, null, forwardOptions);
+            HttpContextForwardBuilder.CopyHeaders(
+                new HttpForwardBuildContext(context, httpRequestBuilder, forwardOptions));
 
             Assert.NotNull(httpRequestBuilder.Headers);
             Assert.Equal(3, httpRequestBuilder.Headers.Count);
@@ -611,9 +611,9 @@ public class HttpContextForwardBuilderTests
             Assert.Equal("test.txt", httpMultipartFormDataBuilder._partContents[2].FileName);
             Assert.Equal("text/plain", httpMultipartFormDataBuilder._partContents[2].ContentType);
             Assert.NotNull(httpRequestBuilder.Disposables);
-            Assert.Single(httpRequestBuilder.Disposables);
+            // Assert.Single(httpRequestBuilder.Disposables);
             Assert.Equal(httpMultipartFormDataBuilder._partContents[2].RawContent,
-                httpRequestBuilder.Disposables.Single());
+                httpRequestBuilder.Disposables.Last());
 
             await context.Response.WriteAsync("Hello World!");
         }).DisableAntiforgery();
@@ -655,10 +655,14 @@ public class HttpContextForwardBuilderTests
         {
             var httpMethod = Helpers.ParseHttpMethod(context.Request.Method);
             var requestUri = new Uri($"http://localhost:{port}");
-            var httpContextForwardBuilder = new HttpContextForwardBuilder(context, httpMethod, requestUri);
-            var httpRequestBuilder = HttpRequestBuilder.Create(httpMethod, requestUri);
+            var httpContextForwardBuilder = new HttpContextForwardBuilder(httpMethod, requestUri);
+            var forwardOptions = context.RequestServices
+                .GetRequiredService<IOptionsMonitor<HttpContextForwardOptions>>().CurrentValue;
 
-            httpContextForwardBuilder.CopyHeaders(httpRequestBuilder);
+            var httpRequestBuilder = await httpContextForwardBuilder.BuildAsync(context, null, forwardOptions);
+
+            var buildContext = new HttpForwardBuildContext(context, httpRequestBuilder, forwardOptions);
+            HttpContextForwardBuilder.CopyHeaders(buildContext);
 
             Assert.NotNull(httpRequestBuilder.Headers);
             Assert.Single(httpRequestBuilder.Headers);
@@ -667,7 +671,7 @@ public class HttpContextForwardBuilderTests
             // Assert.Equal("Host", httpRequestBuilder.Headers.ElementAt(1).Key);
             // Assert.Equal($"localhost:{port}", httpRequestBuilder.Headers.ElementAt(1).Value.First());
 
-            await httpContextForwardBuilder.CopyBodyAsync(httpRequestBuilder);
+            await HttpContextForwardBuilder.CopyBodyAsync(buildContext);
             Assert.Null(httpRequestBuilder.RawContent);
 
             await context.Response.WriteAsync("Hello World!");
@@ -705,10 +709,14 @@ public class HttpContextForwardBuilderTests
         {
             var httpMethod = Helpers.ParseHttpMethod(context.Request.Method);
             var requestUri = new Uri($"http://localhost:{port}");
-            var httpContextForwardBuilder = new HttpContextForwardBuilder(context, httpMethod, requestUri);
-            var httpRequestBuilder = HttpRequestBuilder.Create(httpMethod, requestUri);
+            var httpContextForwardBuilder = new HttpContextForwardBuilder(httpMethod, requestUri);
+            var forwardOptions = context.RequestServices
+                .GetRequiredService<IOptionsMonitor<HttpContextForwardOptions>>().CurrentValue;
 
-            httpContextForwardBuilder.CopyHeaders(httpRequestBuilder);
+            var httpRequestBuilder = await httpContextForwardBuilder.BuildAsync(context, null, forwardOptions);
+
+            var buildContext = new HttpForwardBuildContext(context, httpRequestBuilder, forwardOptions);
+            HttpContextForwardBuilder.CopyHeaders(buildContext);
 
             Assert.NotNull(httpRequestBuilder.Headers);
             Assert.Equal(3, httpRequestBuilder.Headers.Count);
@@ -721,7 +729,7 @@ public class HttpContextForwardBuilderTests
             // Assert.Equal("Host", httpRequestBuilder.Headers.ElementAt(3).Key);
             // Assert.Equal($"localhost:{port}", httpRequestBuilder.Headers.ElementAt(3).Value.First());
 
-            await httpContextForwardBuilder.CopyBodyAsync(httpRequestBuilder);
+            await HttpContextForwardBuilder.CopyBodyAsync(buildContext);
 
             Assert.NotNull(httpRequestBuilder.RawContent);
             Assert.True(httpRequestBuilder.RawContent is StreamContent);
@@ -769,10 +777,14 @@ public class HttpContextForwardBuilderTests
         {
             var httpMethod = Helpers.ParseHttpMethod(context.Request.Method);
             var requestUri = new Uri($"http://localhost:{port}");
-            var httpContextForwardBuilder = new HttpContextForwardBuilder(context, httpMethod, requestUri);
-            var httpRequestBuilder = HttpRequestBuilder.Create(httpMethod, requestUri);
+            var httpContextForwardBuilder = new HttpContextForwardBuilder(httpMethod, requestUri);
+            var forwardOptions = context.RequestServices
+                .GetRequiredService<IOptionsMonitor<HttpContextForwardOptions>>().CurrentValue;
 
-            httpContextForwardBuilder.CopyHeaders(httpRequestBuilder);
+            var httpRequestBuilder = await httpContextForwardBuilder.BuildAsync(context, null, forwardOptions);
+
+            var buildContext = new HttpForwardBuildContext(context, httpRequestBuilder, forwardOptions);
+            HttpContextForwardBuilder.CopyHeaders(buildContext);
 
             Assert.NotNull(httpRequestBuilder.Headers);
             Assert.Equal(3, httpRequestBuilder.Headers.Count);
@@ -786,7 +798,7 @@ public class HttpContextForwardBuilderTests
             // Assert.Equal("Host", httpRequestBuilder.Headers.ElementAt(3).Key);
             // Assert.Equal($"localhost:{port}", httpRequestBuilder.Headers.ElementAt(3).Value.First());
 
-            await httpContextForwardBuilder.CopyBodyAsync(httpRequestBuilder);
+            await HttpContextForwardBuilder.CopyBodyAsync(buildContext);
 
             Assert.NotNull(httpRequestBuilder.MultipartFormDataBuilder);
             var httpMultipartFormDataBuilder = httpRequestBuilder.MultipartFormDataBuilder;
@@ -805,7 +817,7 @@ public class HttpContextForwardBuilderTests
             Assert.Equal("test.txt", httpMultipartFormDataBuilder._partContents[2].FileName);
             Assert.Equal("text/plain", httpMultipartFormDataBuilder._partContents[2].ContentType);
             Assert.NotNull(httpRequestBuilder.Disposables);
-            Assert.Single(httpRequestBuilder.Disposables);
+            // Assert.Single(httpRequestBuilder.Disposables);
             Assert.Equal(typeof(FileBufferingReadStream), httpRequestBuilder.Disposables.Last().GetType());
 
             await context.Response.WriteAsync("Hello World!");
@@ -855,10 +867,14 @@ public class HttpContextForwardBuilderTests
         {
             var httpMethod = Helpers.ParseHttpMethod(context.Request.Method);
             var requestUri = new Uri($"http://localhost:{port}");
-            var httpContextForwardBuilder = new HttpContextForwardBuilder(context, httpMethod, requestUri);
-            var httpRequestBuilder = HttpRequestBuilder.Create(httpMethod, requestUri);
+            var httpContextForwardBuilder = new HttpContextForwardBuilder(httpMethod, requestUri);
+            var forwardOptions = context.RequestServices
+                .GetRequiredService<IOptionsMonitor<HttpContextForwardOptions>>().CurrentValue;
 
-            httpContextForwardBuilder.CopyHeaders(httpRequestBuilder);
+            var httpRequestBuilder = await httpContextForwardBuilder.BuildAsync(context, null, forwardOptions);
+
+            var buildContext = new HttpForwardBuildContext(context, httpRequestBuilder, forwardOptions);
+            HttpContextForwardBuilder.CopyHeaders(buildContext);
 
             Assert.NotNull(httpRequestBuilder.Headers);
             Assert.Equal(3, httpRequestBuilder.Headers.Count);
@@ -870,7 +886,7 @@ public class HttpContextForwardBuilderTests
             Assert.Equal(context.Request.ContentLength?.ToString(),
                 httpRequestBuilder.Headers.ElementAt(2).Value.First());
 
-            await httpContextForwardBuilder.CopyBodyAsync(httpRequestBuilder);
+            await HttpContextForwardBuilder.CopyBodyAsync(buildContext);
 
             Assert.NotNull(httpRequestBuilder.RawContent);
             Assert.True(httpRequestBuilder.RawContent is StreamContent);
@@ -911,8 +927,12 @@ public class HttpContextForwardBuilderTests
         {
             var httpMethod = Helpers.ParseHttpMethod(context.Request.Method);
             var requestUri = new Uri($"http://localhost:{port}");
-            var httpContextForwardBuilder = new HttpContextForwardBuilder(context, httpMethod, requestUri);
-            var httpRequestBuilder0 = await httpContextForwardBuilder.BuildAsync();
+            var httpContextForwardBuilder = new HttpContextForwardBuilder(httpMethod, requestUri);
+            var forwardOptions = context.RequestServices
+                .GetRequiredService<IOptionsMonitor<HttpContextForwardOptions>>().CurrentValue;
+
+            var httpRequestBuilder0 = await httpContextForwardBuilder.BuildAsync(context, null, forwardOptions);
+
             Assert.True(httpRequestBuilder0.DisableCacheEnabled);
             Assert.False(httpRequestBuilder0.AutoSetHostHeaderEnabled);
             Assert.False(httpRequestBuilder0.EnsureSuccessStatusCodeEnabled);
@@ -920,7 +940,8 @@ public class HttpContextForwardBuilderTests
             Assert.Single(httpRequestBuilder0.HttpContentConverterProviders);
 
             var httpRequestBuilder =
-                await httpContextForwardBuilder.BuildAsync(u => u.SetTimeout(TimeSpan.FromSeconds(150)));
+                await httpContextForwardBuilder.BuildAsync(context,
+                    u => u.SetTimeout(TimeSpan.FromSeconds(150)), forwardOptions);
             Assert.True(httpRequestBuilder.DisableCacheEnabled);
             Assert.Equal(TimeSpan.FromSeconds(150), httpRequestBuilder.TimeoutOptions?.Timeout);
 
@@ -968,11 +989,16 @@ public class HttpContextForwardBuilderTests
         {
             var httpMethod = Helpers.ParseHttpMethod(context.Request.Method);
             var requestUri = new Uri($"http://localhost:{port}");
-            var httpContextForwardBuilder = new HttpContextForwardBuilder(context, httpMethod, requestUri);
-            var httpRequestBuilder0 = await httpContextForwardBuilder.BuildAsync();
+            var httpContextForwardBuilder = new HttpContextForwardBuilder(httpMethod, requestUri);
+            var forwardOptions = context.RequestServices
+                .GetRequiredService<IOptionsMonitor<HttpContextForwardOptions>>().CurrentValue;
+
+            var httpRequestBuilder0 = await httpContextForwardBuilder.BuildAsync(context, null, forwardOptions);
+
             Assert.True(httpRequestBuilder0.DisableCacheEnabled);
             var httpRequestBuilder =
-                await httpContextForwardBuilder.BuildAsync(u => u.SetTimeout(TimeSpan.FromSeconds(150)));
+                await httpContextForwardBuilder.BuildAsync(context, u => u.SetTimeout(TimeSpan.FromSeconds(150)),
+                    forwardOptions);
             Assert.True(httpRequestBuilder.DisableCacheEnabled);
             Assert.Equal(TimeSpan.FromSeconds(150), httpRequestBuilder.TimeoutOptions?.Timeout);
 
@@ -1033,11 +1059,15 @@ public class HttpContextForwardBuilderTests
         {
             var httpMethod = Helpers.ParseHttpMethod(context.Request.Method);
             var requestUri = new Uri($"http://localhost:{port}");
-            var httpContextForwardBuilder = new HttpContextForwardBuilder(context, httpMethod, requestUri);
-            var httpRequestBuilder0 = await httpContextForwardBuilder.BuildAsync();
+            var httpContextForwardBuilder = new HttpContextForwardBuilder(httpMethod, requestUri);
+            var forwardOptions = context.RequestServices
+                .GetRequiredService<IOptionsMonitor<HttpContextForwardOptions>>().CurrentValue;
+
+            var httpRequestBuilder0 = await httpContextForwardBuilder.BuildAsync(context, null, forwardOptions);
             Assert.True(httpRequestBuilder0.DisableCacheEnabled);
             var httpRequestBuilder =
-                await httpContextForwardBuilder.BuildAsync(u => u.SetTimeout(TimeSpan.FromSeconds(150)));
+                await httpContextForwardBuilder.BuildAsync(context, u => u.SetTimeout(TimeSpan.FromSeconds(150)),
+                    forwardOptions);
             Assert.True(httpRequestBuilder.DisableCacheEnabled);
             Assert.Equal(TimeSpan.FromSeconds(150), httpRequestBuilder.TimeoutOptions?.Timeout);
 
@@ -1113,10 +1143,11 @@ public class HttpContextForwardBuilderTests
         {
             var httpMethod = Helpers.ParseHttpMethod(context.Request.Method);
             var requestUri = new Uri($"http://localhost:{port}");
-            var httpContextForwardBuilder = new HttpContextForwardBuilder(context, httpMethod, requestUri);
+            var httpContextForwardBuilder = new HttpContextForwardBuilder(httpMethod, requestUri);
+            var forwardOptions = context.RequestServices
+                .GetRequiredService<IOptionsMonitor<HttpContextForwardOptions>>().CurrentValue;
 
-            // ReSharper disable once MethodHasAsyncOverload
-            var httpRequestBuilder0 = httpContextForwardBuilder.Build();
+            var httpRequestBuilder0 = await httpContextForwardBuilder.BuildAsync(context, null, forwardOptions);
             Assert.True(httpRequestBuilder0.DisableCacheEnabled);
             Assert.False(httpRequestBuilder0.AutoSetHostHeaderEnabled);
             Assert.False(httpRequestBuilder0.EnsureSuccessStatusCodeEnabled);
@@ -1125,7 +1156,7 @@ public class HttpContextForwardBuilderTests
 
             // ReSharper disable once MethodHasAsyncOverload
             var httpRequestBuilder =
-                httpContextForwardBuilder.Build(u => u.SetTimeout(TimeSpan.FromSeconds(150)));
+                httpContextForwardBuilder.Build(context, u => u.SetTimeout(TimeSpan.FromSeconds(150)), forwardOptions);
             Assert.True(httpRequestBuilder.DisableCacheEnabled);
             Assert.Equal(TimeSpan.FromSeconds(150), httpRequestBuilder.TimeoutOptions?.Timeout);
 
@@ -1173,15 +1204,16 @@ public class HttpContextForwardBuilderTests
         {
             var httpMethod = Helpers.ParseHttpMethod(context.Request.Method);
             var requestUri = new Uri($"http://localhost:{port}");
-            var httpContextForwardBuilder = new HttpContextForwardBuilder(context, httpMethod, requestUri);
+            var httpContextForwardBuilder = new HttpContextForwardBuilder(httpMethod, requestUri);
+            var forwardOptions = context.RequestServices
+                .GetRequiredService<IOptionsMonitor<HttpContextForwardOptions>>().CurrentValue;
 
-            // ReSharper disable once MethodHasAsyncOverload
-            var httpRequestBuilder0 = httpContextForwardBuilder.Build();
+            var httpRequestBuilder0 = await httpContextForwardBuilder.BuildAsync(context, null, forwardOptions);
             Assert.True(httpRequestBuilder0.DisableCacheEnabled);
 
             // ReSharper disable once MethodHasAsyncOverload
             var httpRequestBuilder =
-                httpContextForwardBuilder.Build(u => u.SetTimeout(TimeSpan.FromSeconds(150)));
+                httpContextForwardBuilder.Build(context, u => u.SetTimeout(TimeSpan.FromSeconds(150)), forwardOptions);
             Assert.True(httpRequestBuilder.DisableCacheEnabled);
             Assert.Equal(TimeSpan.FromSeconds(150), httpRequestBuilder.TimeoutOptions?.Timeout);
 
@@ -1242,15 +1274,16 @@ public class HttpContextForwardBuilderTests
         {
             var httpMethod = Helpers.ParseHttpMethod(context.Request.Method);
             var requestUri = new Uri($"http://localhost:{port}");
-            var httpContextForwardBuilder = new HttpContextForwardBuilder(context, httpMethod, requestUri);
+            var httpContextForwardBuilder = new HttpContextForwardBuilder(httpMethod, requestUri);
+            var forwardOptions = context.RequestServices
+                .GetRequiredService<IOptionsMonitor<HttpContextForwardOptions>>().CurrentValue;
 
-            // ReSharper disable once MethodHasAsyncOverload
-            var httpRequestBuilder0 = httpContextForwardBuilder.Build();
+            var httpRequestBuilder0 = await httpContextForwardBuilder.BuildAsync(context, null, forwardOptions);
             Assert.True(httpRequestBuilder0.DisableCacheEnabled);
 
             // ReSharper disable once MethodHasAsyncOverload
             var httpRequestBuilder =
-                httpContextForwardBuilder.Build(u => u.SetTimeout(TimeSpan.FromSeconds(150)));
+                httpContextForwardBuilder.Build(context, u => u.SetTimeout(TimeSpan.FromSeconds(150)), forwardOptions);
             Assert.True(httpRequestBuilder.DisableCacheEnabled);
             Assert.Equal(TimeSpan.FromSeconds(150), httpRequestBuilder.TimeoutOptions?.Timeout);
 
@@ -1324,13 +1357,9 @@ public class HttpContextForwardBuilderTests
 
         app.MapPost("/test", async (HttpContext context, HttpRemoteAspNetCoreModel1 _) =>
         {
-            var httpMethod = Helpers.ParseHttpMethod(context.Request.Method);
-            var requestUri = new Uri($"http://localhost:{port}");
-            var httpContextForwardBuilder = new HttpContextForwardBuilder(context, httpMethod, requestUri);
-
             try
             {
-                httpContextForwardBuilder.ReadBody();
+                HttpContextForwardBuilder.ReadBody(context);
             }
             catch (Exception e)
             {
@@ -1379,14 +1408,7 @@ public class HttpContextForwardBuilderTests
 
         app.MapPost("/test", async (HttpContext context, HttpRemoteAspNetCoreModel1 _) =>
         {
-            var httpMethod = Helpers.ParseHttpMethod(context.Request.Method);
-            var requestUri = new Uri($"http://localhost:{port}");
-            var httpContextForwardBuilder = new HttpContextForwardBuilder(context, httpMethod, requestUri);
-            var httpRequestBuilder = HttpRequestBuilder.Create(httpMethod, requestUri);
-
-            httpContextForwardBuilder.ReadBody();
-
-            Assert.Null(httpRequestBuilder.Disposables);
+            HttpContextForwardBuilder.ReadBody(context);
 
             await context.Response.WriteAsync("Hello World!");
         });

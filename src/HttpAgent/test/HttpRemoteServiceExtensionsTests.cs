@@ -1,5 +1,5 @@
 ﻿// 版权归百小僧及百签科技（广东）有限公司所有。
-// 
+//
 // 此源代码遵循位于源代码树根目录中的 LICENSE 文件的许可证。
 
 namespace HttpAgent.Tests;
@@ -24,7 +24,6 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             await Task.Delay(50);
-
             await context.Response.WriteAsync("Hello World!");
         });
 
@@ -38,7 +37,6 @@ public class HttpRemoteServiceExtensionsTests
 
         Assert.True(File.Exists(destinationPath));
         Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath, TestContext.Current.CancellationToken)).Length);
-
         Assert.True(fileTransferResult.IsSuccess);
         Assert.Equal(12, fileTransferResult.FileSize);
         Assert.Equal(destinationPath, fileTransferResult.FilePath);
@@ -47,7 +45,6 @@ public class HttpRemoteServiceExtensionsTests
         Assert.Equal($"http://localhost:{port}/test", fileTransferResult.RequestUri?.ToString());
 
         File.Delete(destinationPath);
-
         await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
@@ -69,7 +66,6 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             await Task.Delay(200, TestContext.Current.CancellationToken);
-
             await context.Response.WriteAsync("Hello World!");
         });
 
@@ -80,7 +76,7 @@ public class HttpRemoteServiceExtensionsTests
         using var cancellationTokenSource = new CancellationTokenSource();
         cancellationTokenSource.CancelAfter(100);
 
-        Assert.Throws<TaskCanceledException>(() =>
+        Assert.ThrowsAny<OperationCanceledException>(() =>
         {
             _ = httpRemoteService.DownloadFile($"http://localhost:{port}/test", destinationPath,
                 cancellationToken: cancellationTokenSource.Token);
@@ -109,15 +105,14 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             await Task.Delay(50);
-
             await context.Response.WriteAsync("Hello World!");
         });
 
         await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
-
         var i = 0;
+
         // ReSharper disable once MethodHasAsyncOverload
         var fileTransferResult = httpRemoteService.DownloadFile($"http://localhost:{port}/test", destinationPath,
             configure: downloadBuilder => downloadBuilder.With(requestBuilder =>
@@ -129,7 +124,6 @@ public class HttpRemoteServiceExtensionsTests
         Assert.True(File.Exists(destinationPath));
         Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath, TestContext.Current.CancellationToken)).Length);
         Assert.Equal(1, i);
-
         Assert.True(fileTransferResult.IsSuccess);
         Assert.Equal(12, fileTransferResult.FileSize);
         Assert.Equal(destinationPath, fileTransferResult.FilePath);
@@ -138,7 +132,6 @@ public class HttpRemoteServiceExtensionsTests
         Assert.Equal($"http://localhost:{port}/test", fileTransferResult.RequestUri?.ToString());
 
         File.Delete(destinationPath);
-
         await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
@@ -160,7 +153,6 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             await Task.Delay(50);
-
             await context.Response.WriteAsync("Hello World!");
         });
 
@@ -175,7 +167,6 @@ public class HttpRemoteServiceExtensionsTests
 
         Assert.True(File.Exists(destinationPath));
         Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath, TestContext.Current.CancellationToken)).Length);
-
         Assert.True(fileTransferResult.IsSuccess);
         Assert.Equal(12, fileTransferResult.FileSize);
         Assert.Equal(destinationPath, fileTransferResult.FilePath);
@@ -184,7 +175,6 @@ public class HttpRemoteServiceExtensionsTests
         Assert.Equal($"http://localhost:{port}/test", fileTransferResult.RequestUri?.ToString());
 
         File.Delete(destinationPath);
-
         await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
@@ -206,7 +196,6 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             await Task.Delay(50);
-
             await context.Response.WriteAsync("Hello World!");
         });
 
@@ -220,7 +209,6 @@ public class HttpRemoteServiceExtensionsTests
 
         Assert.True(File.Exists(destinationPath));
         Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath, TestContext.Current.CancellationToken)).Length);
-
         Assert.True(fileTransferResult.IsSuccess);
         Assert.Equal(12, fileTransferResult.FileSize);
         Assert.Equal(destinationPath, fileTransferResult.FilePath);
@@ -229,7 +217,6 @@ public class HttpRemoteServiceExtensionsTests
         Assert.Equal($"http://localhost:{port}/test", fileTransferResult.RequestUri?.ToString());
 
         File.Delete(destinationPath);
-
         await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
@@ -251,7 +238,6 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             await Task.Delay(200, TestContext.Current.CancellationToken);
-
             await context.Response.WriteAsync("Hello World!");
         });
 
@@ -262,7 +248,7 @@ public class HttpRemoteServiceExtensionsTests
         using var cancellationTokenSource = new CancellationTokenSource();
         cancellationTokenSource.CancelAfter(100);
 
-        await Assert.ThrowsAsync<TaskCanceledException>(async () =>
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(async () =>
         {
             _ = await httpRemoteService.DownloadFileAsync($"http://localhost:{port}/test", destinationPath,
                 cancellationToken: cancellationTokenSource.Token);
@@ -291,15 +277,14 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             await Task.Delay(50);
-
             await context.Response.WriteAsync("Hello World!");
         });
 
         await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
-
         var i = 0;
+
         var fileTransferResult = await httpRemoteService.DownloadFileAsync($"http://localhost:{port}/test",
             destinationPath, configure: downloadBuilder => downloadBuilder.With(requestBuilder =>
                 requestBuilder.SetOnPreSendRequest(_ =>
@@ -310,7 +295,6 @@ public class HttpRemoteServiceExtensionsTests
         Assert.True(File.Exists(destinationPath));
         Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath, TestContext.Current.CancellationToken)).Length);
         Assert.Equal(1, i);
-
         Assert.True(fileTransferResult.IsSuccess);
         Assert.Equal(12, fileTransferResult.FileSize);
         Assert.Equal(destinationPath, fileTransferResult.FilePath);
@@ -319,7 +303,6 @@ public class HttpRemoteServiceExtensionsTests
         Assert.Equal($"http://localhost:{port}/test", fileTransferResult.RequestUri?.ToString());
 
         File.Delete(destinationPath);
-
         await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
@@ -341,7 +324,6 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             await Task.Delay(50);
-
             await context.Response.WriteAsync("Hello World!");
         });
 
@@ -355,7 +337,6 @@ public class HttpRemoteServiceExtensionsTests
 
         Assert.True(File.Exists(destinationPath));
         Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath, TestContext.Current.CancellationToken)).Length);
-
         Assert.True(fileTransferResult.IsSuccess);
         Assert.Equal(12, fileTransferResult.FileSize);
         Assert.Equal(destinationPath, fileTransferResult.FilePath);
@@ -364,7 +345,6 @@ public class HttpRemoteServiceExtensionsTests
         Assert.Equal($"http://localhost:{port}/test", fileTransferResult.RequestUri?.ToString());
 
         File.Delete(destinationPath);
-
         await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
@@ -386,7 +366,6 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             await Task.Delay(50);
-
             await context.Response.WriteAsync("Hello World!");
         });
 
@@ -402,7 +381,6 @@ public class HttpRemoteServiceExtensionsTests
 
         Assert.True(File.Exists(destinationPath));
         Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath, TestContext.Current.CancellationToken)).Length);
-
         Assert.True(fileTransferResult.IsSuccess);
         Assert.Equal(12, fileTransferResult.FileSize);
         Assert.Equal(destinationPath, fileTransferResult.FilePath);
@@ -411,7 +389,6 @@ public class HttpRemoteServiceExtensionsTests
         Assert.Equal($"http://localhost:{port}/test", fileTransferResult.RequestUri?.ToString());
 
         File.Delete(destinationPath);
-
         await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
@@ -433,7 +410,6 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             await Task.Delay(200, TestContext.Current.CancellationToken);
-
             await context.Response.WriteAsync("Hello World!");
         });
 
@@ -451,7 +427,7 @@ public class HttpRemoteServiceExtensionsTests
         using var cancellationTokenSource = new CancellationTokenSource();
         cancellationTokenSource.CancelAfter(100);
 
-        Assert.Throws<TaskCanceledException>(() =>
+        Assert.ThrowsAny<OperationCanceledException>(() =>
         {
             _ = httpRemoteService.Send(httpFileDownloadBuilder, cancellationTokenSource.Token);
         });
@@ -479,15 +455,14 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             await Task.Delay(50);
-
             await context.Response.WriteAsync("Hello World!");
         });
 
         await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
-
         var i = 0;
+
         var httpFileDownloadBuilder =
             HttpRequestBuilder.DownloadFile(new Uri($"http://localhost:{port}/test"), destinationPath)
                 .SetOnProgressChanged(async _ =>
@@ -502,7 +477,6 @@ public class HttpRemoteServiceExtensionsTests
         Assert.Equal(2, i);
         Assert.True(File.Exists(destinationPath));
         Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath, TestContext.Current.CancellationToken)).Length);
-
         Assert.True(fileTransferResult.IsSuccess);
         Assert.Equal(12, fileTransferResult.FileSize);
         Assert.Equal(destinationPath, fileTransferResult.FilePath);
@@ -511,7 +485,6 @@ public class HttpRemoteServiceExtensionsTests
         Assert.Equal($"http://localhost:{port}/test", fileTransferResult.RequestUri?.ToString());
 
         File.Delete(destinationPath);
-
         await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
@@ -533,7 +506,6 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             await Task.Delay(50);
-
             await context.Response.WriteAsync("Hello World!");
         });
 
@@ -543,8 +515,8 @@ public class HttpRemoteServiceExtensionsTests
 
         var httpFileDownloadBuilder =
             HttpRequestBuilder.DownloadFile(new Uri($"http://localhost:{port}/test"), destinationPath);
-
         var i = 0;
+
         // ReSharper disable once MethodHasAsyncOverload
         var fileTransferResult = httpRemoteService.Send(httpFileDownloadBuilder.With(requestBuilder =>
             requestBuilder.SetOnPreSendRequest(_ =>
@@ -555,7 +527,6 @@ public class HttpRemoteServiceExtensionsTests
         Assert.True(File.Exists(destinationPath));
         Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath, TestContext.Current.CancellationToken)).Length);
         Assert.Equal(1, i);
-
         Assert.True(fileTransferResult.IsSuccess);
         Assert.Equal(12, fileTransferResult.FileSize);
         Assert.Equal(destinationPath, fileTransferResult.FilePath);
@@ -564,7 +535,6 @@ public class HttpRemoteServiceExtensionsTests
         Assert.Equal($"http://localhost:{port}/test", fileTransferResult.RequestUri?.ToString());
 
         File.Delete(destinationPath);
-
         await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
@@ -586,7 +556,6 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             await Task.Delay(50);
-
             await context.Response.WriteAsync("Hello World!");
         });
 
@@ -607,7 +576,6 @@ public class HttpRemoteServiceExtensionsTests
         Assert.True(File.Exists(destinationPath));
         Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath, TestContext.Current.CancellationToken)).Length);
         Assert.Equal(2, customFileTransferEventHandler.counter);
-
         Assert.True(fileTransferResult.IsSuccess);
         Assert.Equal(12, fileTransferResult.FileSize);
         Assert.Equal(destinationPath, fileTransferResult.FilePath);
@@ -616,7 +584,6 @@ public class HttpRemoteServiceExtensionsTests
         Assert.Equal($"http://localhost:{port}/test", fileTransferResult.RequestUri?.ToString());
 
         File.Delete(destinationPath);
-
         await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
@@ -638,7 +605,6 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             await Task.Delay(50);
-
             await context.Response.WriteAsync("Hello World!");
         });
 
@@ -654,7 +620,6 @@ public class HttpRemoteServiceExtensionsTests
 
         Assert.True(File.Exists(destinationPath));
         Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath, TestContext.Current.CancellationToken)).Length);
-
         Assert.True(fileTransferResult.IsSuccess);
         Assert.Equal(12, fileTransferResult.FileSize);
         Assert.Equal(destinationPath, fileTransferResult.FilePath);
@@ -663,7 +628,6 @@ public class HttpRemoteServiceExtensionsTests
         Assert.Equal($"http://localhost:{port}/test", fileTransferResult.RequestUri?.ToString());
 
         File.Delete(destinationPath);
-
         await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
@@ -685,7 +649,6 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             await Task.Delay(200, TestContext.Current.CancellationToken);
-
             await context.Response.WriteAsync("Hello World!");
         });
 
@@ -703,7 +666,7 @@ public class HttpRemoteServiceExtensionsTests
         using var cancellationTokenSource = new CancellationTokenSource();
         cancellationTokenSource.CancelAfter(100);
 
-        await Assert.ThrowsAsync<TaskCanceledException>(async () =>
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(async () =>
         {
             _ = await httpRemoteService.SendAsync(httpFileDownloadBuilder, cancellationTokenSource.Token);
         });
@@ -731,15 +694,14 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             await Task.Delay(50);
-
             await context.Response.WriteAsync("Hello World!");
         });
 
         await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
-
         var i = 0;
+
         var httpFileDownloadBuilder =
             HttpRequestBuilder.DownloadFile(new Uri($"http://localhost:{port}/test"), destinationPath)
                 .SetOnProgressChanged(async _ =>
@@ -754,7 +716,6 @@ public class HttpRemoteServiceExtensionsTests
         Assert.Equal(2, i);
         Assert.True(File.Exists(destinationPath));
         Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath, TestContext.Current.CancellationToken)).Length);
-
         Assert.True(fileTransferResult.IsSuccess);
         Assert.Equal(12, fileTransferResult.FileSize);
         Assert.Equal(destinationPath, fileTransferResult.FilePath);
@@ -763,7 +724,6 @@ public class HttpRemoteServiceExtensionsTests
         Assert.Equal($"http://localhost:{port}/test", fileTransferResult.RequestUri?.ToString());
 
         File.Delete(destinationPath);
-
         await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
@@ -785,7 +745,6 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             await Task.Delay(50);
-
             await context.Response.WriteAsync("Hello World!");
         });
 
@@ -795,8 +754,8 @@ public class HttpRemoteServiceExtensionsTests
 
         var httpFileDownloadBuilder =
             HttpRequestBuilder.DownloadFile(new Uri($"http://localhost:{port}/test"), destinationPath);
-
         var i = 0;
+
         var fileTransferResult = await httpRemoteService.SendAsync(httpFileDownloadBuilder.With(requestBuilder =>
             requestBuilder.SetOnPreSendRequest(_ =>
             {
@@ -806,7 +765,6 @@ public class HttpRemoteServiceExtensionsTests
         Assert.True(File.Exists(destinationPath));
         Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath, TestContext.Current.CancellationToken)).Length);
         Assert.Equal(1, i);
-
         Assert.True(fileTransferResult.IsSuccess);
         Assert.Equal(12, fileTransferResult.FileSize);
         Assert.Equal(destinationPath, fileTransferResult.FilePath);
@@ -815,7 +773,6 @@ public class HttpRemoteServiceExtensionsTests
         Assert.Equal($"http://localhost:{port}/test", fileTransferResult.RequestUri?.ToString());
 
         File.Delete(destinationPath);
-
         await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
@@ -837,7 +794,6 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             await Task.Delay(50);
-
             await context.Response.WriteAsync("Hello World!");
         });
 
@@ -856,7 +812,6 @@ public class HttpRemoteServiceExtensionsTests
         Assert.True(File.Exists(destinationPath));
         Assert.Equal(12, (await File.ReadAllBytesAsync(destinationPath, TestContext.Current.CancellationToken)).Length);
         Assert.Equal(2, customFileTransferEventHandler.counter);
-
         Assert.True(fileTransferResult.IsSuccess);
         Assert.Equal(12, fileTransferResult.FileSize);
         Assert.Equal(destinationPath, fileTransferResult.FilePath);
@@ -865,7 +820,6 @@ public class HttpRemoteServiceExtensionsTests
         Assert.Equal($"http://localhost:{port}/test", fileTransferResult.RequestUri?.ToString());
 
         File.Delete(destinationPath);
-
         await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
@@ -874,7 +828,6 @@ public class HttpRemoteServiceExtensionsTests
     public async Task UploadFile_ReturnOK()
     {
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
-
         var port = NetworkUtility.FindAvailableTcpPort();
         var urls = new[] { "--urls", $"http://localhost:{port}" };
         var builder = WebApplication.CreateBuilder(urls);
@@ -883,7 +836,6 @@ public class HttpRemoteServiceExtensionsTests
         app.MapPost("/test", async (HttpContext context, IFormFile file) =>
             {
                 await Task.Delay(50);
-
                 await context.Response.WriteAsync(file.FileName);
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
@@ -895,7 +847,9 @@ public class HttpRemoteServiceExtensionsTests
         // ReSharper disable once MethodHasAsyncOverload
         var httpResponseMessage = httpRemoteService.UploadFile($"http://localhost:{port}/test", filePath,
             cancellationToken: TestContext.Current.CancellationToken);
+
         var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.Equal("test.txt", result);
 
@@ -907,7 +861,6 @@ public class HttpRemoteServiceExtensionsTests
     public async Task UploadFile_WithCancellationToken_ReturnOK()
     {
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
-
         var port = NetworkUtility.FindAvailableTcpPort();
         var urls = new[] { "--urls", $"http://localhost:{port}" };
         var builder = WebApplication.CreateBuilder(urls);
@@ -916,7 +869,6 @@ public class HttpRemoteServiceExtensionsTests
         app.MapPost("/test", async (HttpContext context, IFormFile file) =>
             {
                 await Task.Delay(200, TestContext.Current.CancellationToken);
-
                 await context.Response.WriteAsync(file.FileName);
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
@@ -928,7 +880,7 @@ public class HttpRemoteServiceExtensionsTests
         using var cancellationTokenSource = new CancellationTokenSource();
         cancellationTokenSource.CancelAfter(100);
 
-        Assert.Throws<TaskCanceledException>(() =>
+        Assert.ThrowsAny<OperationCanceledException>(() =>
         {
             _ = httpRemoteService.UploadFile($"http://localhost:{port}/test", filePath,
                 cancellationToken: cancellationTokenSource.Token);
@@ -942,7 +894,6 @@ public class HttpRemoteServiceExtensionsTests
     public async Task UploadFile_WithHttpRequestBuilder_ReturnOK()
     {
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
-
         var port = NetworkUtility.FindAvailableTcpPort();
         var urls = new[] { "--urls", $"http://localhost:{port}" };
         var builder = WebApplication.CreateBuilder(urls);
@@ -951,7 +902,6 @@ public class HttpRemoteServiceExtensionsTests
         app.MapPost("/test", async (HttpContext context, IFormFile file) =>
             {
                 await Task.Delay(50);
-
                 await context.Response.WriteAsync(file.FileName);
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
@@ -959,8 +909,8 @@ public class HttpRemoteServiceExtensionsTests
         await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
-
         var i = 0;
+
         // ReSharper disable once MethodHasAsyncOverload
         var httpResponseMessage = httpRemoteService.UploadFile($"http://localhost:{port}/test", filePath,
             configure: uploadBuilder => uploadBuilder.With(requestBuilder =>
@@ -970,6 +920,7 @@ public class HttpRemoteServiceExtensionsTests
                 })), cancellationToken: TestContext.Current.CancellationToken);
 
         var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.Equal("test.txt", result);
         Assert.Equal(1, i);
@@ -982,7 +933,6 @@ public class HttpRemoteServiceExtensionsTests
     public async Task UploadFileWithConsoleProgress_ReturnOK()
     {
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
-
         var port = NetworkUtility.FindAvailableTcpPort();
         var urls = new[] { "--urls", $"http://localhost:{port}" };
         var builder = WebApplication.CreateBuilder(urls);
@@ -991,7 +941,6 @@ public class HttpRemoteServiceExtensionsTests
         app.MapPost("/test", async (HttpContext context, IFormFile file) =>
             {
                 await Task.Delay(50);
-
                 await context.Response.WriteAsync(file.FileName);
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
@@ -1004,7 +953,9 @@ public class HttpRemoteServiceExtensionsTests
         var httpResponseMessage =
             httpRemoteService.UploadFileWithConsoleProgress($"http://localhost:{port}/test", filePath,
                 cancellationToken: TestContext.Current.CancellationToken);
+
         var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.Equal("test.txt", result);
 
@@ -1016,7 +967,6 @@ public class HttpRemoteServiceExtensionsTests
     public async Task UploadFileAsync_ReturnOK()
     {
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
-
         var port = NetworkUtility.FindAvailableTcpPort();
         var urls = new[] { "--urls", $"http://localhost:{port}" };
         var builder = WebApplication.CreateBuilder(urls);
@@ -1025,7 +975,6 @@ public class HttpRemoteServiceExtensionsTests
         app.MapPost("/test", async (HttpContext context, IFormFile file) =>
             {
                 await Task.Delay(50);
-
                 await context.Response.WriteAsync(file.FileName);
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
@@ -1039,6 +988,7 @@ public class HttpRemoteServiceExtensionsTests
                 cancellationToken: TestContext.Current.CancellationToken);
 
         var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.Equal("test.txt", result);
 
@@ -1050,7 +1000,6 @@ public class HttpRemoteServiceExtensionsTests
     public async Task UploadFileAsync_WithCancellationToken_ReturnOK()
     {
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
-
         var port = NetworkUtility.FindAvailableTcpPort();
         var urls = new[] { "--urls", $"http://localhost:{port}" };
         var builder = WebApplication.CreateBuilder(urls);
@@ -1059,7 +1008,6 @@ public class HttpRemoteServiceExtensionsTests
         app.MapPost("/test", async (HttpContext context, IFormFile file) =>
             {
                 await Task.Delay(200, TestContext.Current.CancellationToken);
-
                 await context.Response.WriteAsync(file.FileName);
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
@@ -1071,7 +1019,7 @@ public class HttpRemoteServiceExtensionsTests
         using var cancellationTokenSource = new CancellationTokenSource();
         cancellationTokenSource.CancelAfter(100);
 
-        await Assert.ThrowsAsync<TaskCanceledException>(async () =>
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(async () =>
         {
             _ = await httpRemoteService.UploadFileAsync($"http://localhost:{port}/test",
                 filePath, cancellationToken: cancellationTokenSource.Token);
@@ -1085,7 +1033,6 @@ public class HttpRemoteServiceExtensionsTests
     public async Task UploadFileAsync_WithHttpRequestBuilder_ReturnOK()
     {
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
-
         var port = NetworkUtility.FindAvailableTcpPort();
         var urls = new[] { "--urls", $"http://localhost:{port}" };
         var builder = WebApplication.CreateBuilder(urls);
@@ -1094,7 +1041,6 @@ public class HttpRemoteServiceExtensionsTests
         app.MapPost("/test", async (HttpContext context, IFormFile file) =>
             {
                 await Task.Delay(50);
-
                 await context.Response.WriteAsync(file.FileName);
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
@@ -1102,8 +1048,8 @@ public class HttpRemoteServiceExtensionsTests
         await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
-
         var i = 0;
+
         var httpResponseMessage = await httpRemoteService.UploadFileAsync($"http://localhost:{port}/test", filePath,
             configure: uploadBuilder => uploadBuilder.With(requestBuilder =>
                 requestBuilder.SetOnPreSendRequest(_ =>
@@ -1112,6 +1058,7 @@ public class HttpRemoteServiceExtensionsTests
                 })), cancellationToken: TestContext.Current.CancellationToken);
 
         var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.Equal("test.txt", result);
         Assert.Equal(1, i);
@@ -1124,7 +1071,6 @@ public class HttpRemoteServiceExtensionsTests
     public async Task UploadFileWithConsoleProgressAsync_ReturnOK()
     {
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
-
         var port = NetworkUtility.FindAvailableTcpPort();
         var urls = new[] { "--urls", $"http://localhost:{port}" };
         var builder = WebApplication.CreateBuilder(urls);
@@ -1133,7 +1079,6 @@ public class HttpRemoteServiceExtensionsTests
         app.MapPost("/test", async (HttpContext context, IFormFile file) =>
             {
                 await Task.Delay(50);
-
                 await context.Response.WriteAsync(file.FileName);
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
@@ -1147,6 +1092,7 @@ public class HttpRemoteServiceExtensionsTests
                 cancellationToken: TestContext.Current.CancellationToken);
 
         var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.Equal("test.txt", result);
 
@@ -1158,7 +1104,6 @@ public class HttpRemoteServiceExtensionsTests
     public async Task Send_UploadFile_ReturnOK()
     {
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
-
         var port = NetworkUtility.FindAvailableTcpPort();
         var urls = new[] { "--urls", $"http://localhost:{port}" };
         var builder = WebApplication.CreateBuilder(urls);
@@ -1167,7 +1112,6 @@ public class HttpRemoteServiceExtensionsTests
         app.MapPost("/test", async (HttpContext context, IFormFile file) =>
             {
                 await Task.Delay(50);
-
                 await context.Response.WriteAsync(file.FileName);
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
@@ -1181,7 +1125,9 @@ public class HttpRemoteServiceExtensionsTests
 
         // ReSharper disable once MethodHasAsyncOverload
         var httpResponseMessage = httpRemoteService.Send(httpFileUploadBuilder, TestContext.Current.CancellationToken);
+
         var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.Equal("test.txt", result);
 
@@ -1193,7 +1139,6 @@ public class HttpRemoteServiceExtensionsTests
     public async Task Send_UploadFile_WithCancellationToken_ReturnOK()
     {
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
-
         var port = NetworkUtility.FindAvailableTcpPort();
         var urls = new[] { "--urls", $"http://localhost:{port}" };
         var builder = WebApplication.CreateBuilder(urls);
@@ -1202,7 +1147,6 @@ public class HttpRemoteServiceExtensionsTests
         app.MapPost("/test", async (HttpContext context, IFormFile file) =>
             {
                 await Task.Delay(200, TestContext.Current.CancellationToken);
-
                 await context.Response.WriteAsync(file.FileName);
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
@@ -1221,7 +1165,7 @@ public class HttpRemoteServiceExtensionsTests
         using var cancellationTokenSource = new CancellationTokenSource();
         cancellationTokenSource.CancelAfter(100);
 
-        Assert.Throws<TaskCanceledException>(() =>
+        Assert.ThrowsAny<OperationCanceledException>(() =>
         {
             httpRemoteService.Send(httpFileUploadBuilder, cancellationTokenSource.Token);
         });
@@ -1234,7 +1178,6 @@ public class HttpRemoteServiceExtensionsTests
     public async Task Send_UploadFile_WithOnProgressChanged_ReturnOK()
     {
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
-
         var port = NetworkUtility.FindAvailableTcpPort();
         var urls = new[] { "--urls", $"http://localhost:{port}" };
         var builder = WebApplication.CreateBuilder(urls);
@@ -1243,7 +1186,6 @@ public class HttpRemoteServiceExtensionsTests
         app.MapPost("/test", async (HttpContext context, IFormFile file) =>
             {
                 await Task.Delay(50);
-
                 await context.Response.WriteAsync(file.FileName);
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
@@ -1251,8 +1193,8 @@ public class HttpRemoteServiceExtensionsTests
         await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
-
         var i = 0;
+
         var httpFileUploadBuilder =
             HttpRequestBuilder.UploadFile(new Uri($"http://localhost:{port}/test"), filePath).SetOnProgressChanged(async
                 _ =>
@@ -1265,7 +1207,9 @@ public class HttpRemoteServiceExtensionsTests
         var httpResponseMessage = httpRemoteService.Send(httpFileUploadBuilder, TestContext.Current.CancellationToken);
 
         Assert.Equal(1, i);
+
         var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.Equal("test.txt", result);
 
@@ -1277,7 +1221,6 @@ public class HttpRemoteServiceExtensionsTests
     public async Task Send_UploadFile_WithHttpRequestBuilder_ReturnOK()
     {
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
-
         var port = NetworkUtility.FindAvailableTcpPort();
         var urls = new[] { "--urls", $"http://localhost:{port}" };
         var builder = WebApplication.CreateBuilder(urls);
@@ -1286,7 +1229,6 @@ public class HttpRemoteServiceExtensionsTests
         app.MapPost("/test", async (HttpContext context, IFormFile file) =>
             {
                 await Task.Delay(50);
-
                 await context.Response.WriteAsync(file.FileName);
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
@@ -1297,8 +1239,8 @@ public class HttpRemoteServiceExtensionsTests
 
         var httpFileUploadBuilder =
             HttpRequestBuilder.UploadFile(new Uri($"http://localhost:{port}/test"), filePath);
-
         var i = 0;
+
         // ReSharper disable once MethodHasAsyncOverload
         var httpResponseMessage = httpRemoteService.Send(httpFileUploadBuilder.With(requestBuilder =>
             requestBuilder.SetOnPreSendRequest(_ =>
@@ -1307,6 +1249,7 @@ public class HttpRemoteServiceExtensionsTests
             })), TestContext.Current.CancellationToken);
 
         var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.Equal(1, i);
         Assert.Equal("test.txt", result);
@@ -1319,7 +1262,6 @@ public class HttpRemoteServiceExtensionsTests
     public async Task Send_UploadFile_EventHandler_ReturnOK()
     {
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
-
         var port = NetworkUtility.FindAvailableTcpPort();
         var urls = new[] { "--urls", $"http://localhost:{port}" };
         var builder = WebApplication.CreateBuilder(urls);
@@ -1328,7 +1270,6 @@ public class HttpRemoteServiceExtensionsTests
         app.MapPost("/test", async (HttpContext context, IFormFile file) =>
             {
                 await Task.Delay(50);
-
                 await context.Response.WriteAsync(file.FileName);
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
@@ -1348,6 +1289,7 @@ public class HttpRemoteServiceExtensionsTests
                 TestContext.Current.CancellationToken);
 
         var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.Equal("test.txt", result);
         Assert.Equal(2, customFileTransferEventHandler.counter);
@@ -1360,7 +1302,6 @@ public class HttpRemoteServiceExtensionsTests
     public async Task SendAsync_UploadFile_ReturnOK()
     {
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
-
         var port = NetworkUtility.FindAvailableTcpPort();
         var urls = new[] { "--urls", $"http://localhost:{port}" };
         var builder = WebApplication.CreateBuilder(urls);
@@ -1369,7 +1310,6 @@ public class HttpRemoteServiceExtensionsTests
         app.MapPost("/test", async (HttpContext context, IFormFile file) =>
             {
                 await Task.Delay(50);
-
                 await context.Response.WriteAsync(file.FileName);
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
@@ -1385,6 +1325,7 @@ public class HttpRemoteServiceExtensionsTests
             await httpRemoteService.SendAsync(httpFileUploadBuilder, TestContext.Current.CancellationToken);
 
         var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.Equal("test.txt", result);
 
@@ -1396,7 +1337,6 @@ public class HttpRemoteServiceExtensionsTests
     public async Task SendAsync_UploadFile_WithCancellationToken_ReturnOK()
     {
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
-
         var port = NetworkUtility.FindAvailableTcpPort();
         var urls = new[] { "--urls", $"http://localhost:{port}" };
         var builder = WebApplication.CreateBuilder(urls);
@@ -1405,7 +1345,6 @@ public class HttpRemoteServiceExtensionsTests
         app.MapPost("/test", async (HttpContext context, IFormFile file) =>
             {
                 await Task.Delay(200, TestContext.Current.CancellationToken);
-
                 await context.Response.WriteAsync(file.FileName);
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
@@ -1424,7 +1363,7 @@ public class HttpRemoteServiceExtensionsTests
         using var cancellationTokenSource = new CancellationTokenSource();
         cancellationTokenSource.CancelAfter(100);
 
-        await Assert.ThrowsAsync<TaskCanceledException>(async () =>
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(async () =>
         {
             _ =
                 await httpRemoteService.SendAsync(httpFileUploadBuilder, cancellationTokenSource.Token);
@@ -1438,7 +1377,6 @@ public class HttpRemoteServiceExtensionsTests
     public async Task SendAsync_UploadFile_WithOnProgressChanged_ReturnOK()
     {
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
-
         var port = NetworkUtility.FindAvailableTcpPort();
         var urls = new[] { "--urls", $"http://localhost:{port}" };
         var builder = WebApplication.CreateBuilder(urls);
@@ -1447,17 +1385,15 @@ public class HttpRemoteServiceExtensionsTests
         app.MapPost("/test", async (HttpContext context, IFormFile file) =>
             {
                 await Task.Delay(50);
-
                 await context.Response.WriteAsync(file.FileName);
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
 
-
         await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
-
         var i = 0;
+
         var httpFileUploadBuilder =
             HttpRequestBuilder.UploadFile(new Uri($"http://localhost:{port}/test"), filePath).SetOnProgressChanged(async
                 _ =>
@@ -1470,7 +1406,9 @@ public class HttpRemoteServiceExtensionsTests
             await httpRemoteService.SendAsync(httpFileUploadBuilder, TestContext.Current.CancellationToken);
 
         Assert.Equal(1, i);
+
         var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.Equal("test.txt", result);
 
@@ -1482,7 +1420,6 @@ public class HttpRemoteServiceExtensionsTests
     public async Task SendAsync_UploadFile_WithHttpRequestBuilder_ReturnOK()
     {
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
-
         var port = NetworkUtility.FindAvailableTcpPort();
         var urls = new[] { "--urls", $"http://localhost:{port}" };
         var builder = WebApplication.CreateBuilder(urls);
@@ -1491,7 +1428,6 @@ public class HttpRemoteServiceExtensionsTests
         app.MapPost("/test", async (HttpContext context, IFormFile file) =>
             {
                 await Task.Delay(50);
-
                 await context.Response.WriteAsync(file.FileName);
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
@@ -1502,8 +1438,8 @@ public class HttpRemoteServiceExtensionsTests
 
         var httpFileUploadBuilder =
             HttpRequestBuilder.UploadFile(new Uri($"http://localhost:{port}/test"), filePath);
-
         var i = 0;
+
         var httpResponseMessage = await httpRemoteService.SendAsync(httpFileUploadBuilder.With(requestBuilder =>
             requestBuilder.SetOnPreSendRequest(_ =>
             {
@@ -1511,6 +1447,7 @@ public class HttpRemoteServiceExtensionsTests
             })), TestContext.Current.CancellationToken);
 
         var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.Equal("test.txt", result);
         Assert.Equal(1, i);
@@ -1523,7 +1460,6 @@ public class HttpRemoteServiceExtensionsTests
     public async Task SendAsync_UploadFile_EventHandler_ReturnOK()
     {
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
-
         var port = NetworkUtility.FindAvailableTcpPort();
         var urls = new[] { "--urls", $"http://localhost:{port}" };
         var builder = WebApplication.CreateBuilder(urls);
@@ -1532,7 +1468,6 @@ public class HttpRemoteServiceExtensionsTests
         app.MapPost("/test", async (HttpContext context, IFormFile file) =>
             {
                 await Task.Delay(50);
-
                 await context.Response.WriteAsync(file.FileName);
             })
             .DisableAntiforgery(); // 禁用跨站攻击：https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/8.0/antiforgery-checks
@@ -1550,6 +1485,7 @@ public class HttpRemoteServiceExtensionsTests
             .SetEventHandler<CustomFileTransferEventHandler>(), TestContext.Current.CancellationToken);
 
         var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.Equal("test.txt", result);
         Assert.Equal(2, customFileTransferEventHandler.counter);
@@ -1573,31 +1509,49 @@ public class HttpRemoteServiceExtensionsTests
             context.Response.Headers.Connection = "keep-alive";
             context.Response.Headers["X-Accel-Buffering"] = "no";
 
-            var eventId = 0;
-            while (eventId < 5)
+            try
             {
-                eventId++;
+                var eventId = 0;
+                while (eventId < 5 && !context.RequestAborted.IsCancellationRequested)
+                {
+                    eventId++;
+                    var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
+                    await context.Response.WriteAsync(message, context.RequestAborted);
+                    await Task.Delay(10, context.RequestAborted);
+                }
 
-                var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
-                await context.Response.WriteAsync(message);
-
-                await Task.Delay(10);
+                if (!context.RequestAborted.IsCancellationRequested)
+                {
+                    await Task.Delay(Timeout.Infinite, context.RequestAborted);
+                }
             }
+            catch (OperationCanceledException) { }
+            catch (IOException) { }
         });
 
         await app.StartAsync(TestContext.Current.CancellationToken);
 
+        using var cts = new CancellationTokenSource();
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
         var httpServerSentEventsBuilder =
-            new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test")).SetOnMessage(async (_, _) =>
+            new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test")).SetOnMessage((_, _) =>
             {
                 i++;
-                await Task.CompletedTask;
+                if (i >= 5)
+                {
+                    cts.Cancel();
+                }
+
+                return Task.CompletedTask;
             });
 
-        // ReSharper disable once MethodHasAsyncOverload
-        httpRemoteService.Send(httpServerSentEventsBuilder, TestContext.Current.CancellationToken);
+        Assert.ThrowsAny<OperationCanceledException>(() =>
+        {
+            // ReSharper disable once MethodHasAsyncOverload
+            httpRemoteService.Send(httpServerSentEventsBuilder, cts.Token);
+        });
 
         Assert.Equal(5, i);
 
@@ -1620,39 +1574,43 @@ public class HttpRemoteServiceExtensionsTests
             context.Response.Headers.Connection = "keep-alive";
             context.Response.Headers["X-Accel-Buffering"] = "no";
 
-            var eventId = 0;
-            while (eventId < 5)
+            try
             {
-                eventId++;
-
-                var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
-                await context.Response.WriteAsync(message);
-
-                await Task.Delay(120);
+                var eventId = 0;
+                while (eventId < 5 && !context.RequestAborted.IsCancellationRequested)
+                {
+                    eventId++;
+                    var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
+                    await context.Response.WriteAsync(message, context.RequestAborted);
+                    await Task.Delay(120, context.RequestAborted);
+                }
             }
+            catch (OperationCanceledException) { }
+            catch (IOException) { }
         });
 
         await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
         var httpServerSentEventsBuilder =
-            new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test")).SetOnMessage(async (_, _) =>
+            new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test")).SetOnMessage((_, _) =>
             {
                 i++;
-                await Task.CompletedTask;
+                return Task.CompletedTask;
             });
 
         using var cancellationTokenSource = new CancellationTokenSource();
         cancellationTokenSource.CancelAfter(50);
 
-        Assert.Throws<TaskCanceledException>(() =>
+        Assert.ThrowsAny<OperationCanceledException>(() =>
         {
             // ReSharper disable once MethodHasAsyncOverload
             httpRemoteService.Send(httpServerSentEventsBuilder, cancellationTokenSource.Token);
         });
 
-        Assert.Equal(0, i);
+        Assert.Equal(1, i);
 
         await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
@@ -1673,22 +1631,33 @@ public class HttpRemoteServiceExtensionsTests
             context.Response.Headers.Connection = "keep-alive";
             context.Response.Headers["X-Accel-Buffering"] = "no";
 
-            var eventId = 0;
-            while (eventId < 5)
+            try
             {
-                eventId++;
+                var eventId = 0;
+                while (eventId < 5 && !context.RequestAborted.IsCancellationRequested)
+                {
+                    eventId++;
+                    var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
+                    await context.Response.WriteAsync(message, context.RequestAborted);
+                    await Task.Delay(10, context.RequestAborted);
+                }
 
-                var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
-                await context.Response.WriteAsync(message);
-
-                await Task.Delay(10);
+                if (!context.RequestAborted.IsCancellationRequested)
+                {
+                    await Task.Delay(Timeout.Infinite, context.RequestAborted);
+                }
             }
+            catch (OperationCanceledException) { }
+            catch (IOException) { }
         });
 
         await app.StartAsync(TestContext.Current.CancellationToken);
 
+        using var cts = new CancellationTokenSource();
+        cts.CancelAfter(500);
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
         var httpServerSentEventsBuilder =
             new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test")).SetOnOpen(() =>
             {
@@ -1698,8 +1667,11 @@ public class HttpRemoteServiceExtensionsTests
                 i++;
             });
 
-        // ReSharper disable once MethodHasAsyncOverload
-        httpRemoteService.Send(httpServerSentEventsBuilder, TestContext.Current.CancellationToken);
+        Assert.ThrowsAny<OperationCanceledException>(() =>
+        {
+            // ReSharper disable once MethodHasAsyncOverload
+            httpRemoteService.Send(httpServerSentEventsBuilder, cts.Token);
+        });
 
         Assert.Equal(1, i);
 
@@ -1722,25 +1694,36 @@ public class HttpRemoteServiceExtensionsTests
             context.Response.Headers.Connection = "keep-alive";
             context.Response.Headers["X-Accel-Buffering"] = "no";
 
-            var eventId = 0;
-            while (eventId < 5)
+            try
             {
-                eventId++;
+                var eventId = 0;
+                while (eventId < 5 && !context.RequestAborted.IsCancellationRequested)
+                {
+                    eventId++;
+                    var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
+                    await context.Response.WriteAsync(message, context.RequestAborted);
+                    await Task.Delay(10, context.RequestAborted);
+                }
 
-                var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
-                await context.Response.WriteAsync(message);
-
-                await Task.Delay(10);
+                if (!context.RequestAborted.IsCancellationRequested)
+                {
+                    await Task.Delay(Timeout.Infinite, context.RequestAborted);
+                }
             }
+            catch (OperationCanceledException) { }
+            catch (IOException) { }
         });
 
         await app.StartAsync(TestContext.Current.CancellationToken);
 
+        using var cts = new CancellationTokenSource();
+        cts.CancelAfter(500);
         var i = 0;
         var customServerSentEventsEventHandler = new CustomServerSentEventsEventHandler();
 
         var (httpRemoteService, serviceProvider) =
             Helpers.CreateHttpRemoteService(sentEventsEventHandler: customServerSentEventsEventHandler);
+
         var httpServerSentEventsBuilder =
             new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test"))
                 .SetOnOpen(() =>
@@ -1752,8 +1735,11 @@ public class HttpRemoteServiceExtensionsTests
                 })
                 .SetEventHandler<CustomServerSentEventsEventHandler>();
 
-        // ReSharper disable once MethodHasAsyncOverload
-        httpRemoteService.Send(httpServerSentEventsBuilder, TestContext.Current.CancellationToken);
+        Assert.ThrowsAny<OperationCanceledException>(() =>
+        {
+            // ReSharper disable once MethodHasAsyncOverload
+            httpRemoteService.Send(httpServerSentEventsBuilder, cts.Token);
+        });
 
         Assert.Equal(1, i);
         Assert.Equal(6, customServerSentEventsEventHandler.counter);
@@ -1777,34 +1763,52 @@ public class HttpRemoteServiceExtensionsTests
             context.Response.Headers.Connection = "keep-alive";
             context.Response.Headers["X-Accel-Buffering"] = "no";
 
-            var eventId = 0;
-            while (eventId < 5)
+            try
             {
-                eventId++;
+                var eventId = 0;
+                while (eventId < 5 && !context.RequestAborted.IsCancellationRequested)
+                {
+                    eventId++;
+                    var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
+                    await context.Response.WriteAsync(message, context.RequestAborted);
+                    await Task.Delay(10, context.RequestAborted);
+                }
 
-                var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
-                await context.Response.WriteAsync(message);
-
-                await Task.Delay(10);
+                if (!context.RequestAborted.IsCancellationRequested)
+                {
+                    await Task.Delay(Timeout.Infinite, context.RequestAborted);
+                }
             }
+            catch (OperationCanceledException) { }
+            catch (IOException) { }
         });
 
         await app.StartAsync(TestContext.Current.CancellationToken);
 
+        using var cts = new CancellationTokenSource();
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
         var httpServerSentEventsBuilder =
-            new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test")).SetOnMessage(async (_, _) =>
+            new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test")).SetOnMessage((_, _) =>
             {
                 i++;
-                await Task.CompletedTask;
+                if (i >= 5)
+                {
+                    cts.Cancel();
+                }
+
+                return Task.CompletedTask;
             });
 
-        // ReSharper disable once MethodHasAsyncOverload
-        httpRemoteService.Send(httpServerSentEventsBuilder.With(b => b.SetOnPreSendRequest(_ =>
+        Assert.ThrowsAny<OperationCanceledException>(() =>
         {
-            i++;
-        })), TestContext.Current.CancellationToken);
+            // ReSharper disable once MethodHasAsyncOverload
+            httpRemoteService.Send(httpServerSentEventsBuilder.With(b => b.SetOnPreSendRequest(_ =>
+            {
+                i++;
+            })), cts.Token);
+        });
 
         Assert.Equal(6, i);
 
@@ -1827,30 +1831,48 @@ public class HttpRemoteServiceExtensionsTests
             context.Response.Headers.Connection = "keep-alive";
             context.Response.Headers["X-Accel-Buffering"] = "no";
 
-            var eventId = 0;
-            while (eventId < 5)
+            try
             {
-                eventId++;
+                var eventId = 0;
+                while (eventId < 5 && !context.RequestAborted.IsCancellationRequested)
+                {
+                    eventId++;
+                    var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
+                    await context.Response.WriteAsync(message, context.RequestAborted);
+                    await Task.Delay(10, context.RequestAborted);
+                }
 
-                var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
-                await context.Response.WriteAsync(message);
-
-                await Task.Delay(10);
+                if (!context.RequestAborted.IsCancellationRequested)
+                {
+                    await Task.Delay(Timeout.Infinite, context.RequestAborted);
+                }
             }
+            catch (OperationCanceledException) { }
+            catch (IOException) { }
         });
 
         await app.StartAsync(TestContext.Current.CancellationToken);
 
+        using var cts = new CancellationTokenSource();
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
         var httpServerSentEventsBuilder =
-            new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test")).SetOnMessage(async (_, _) =>
+            new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test")).SetOnMessage((_, _) =>
             {
                 i++;
-                await Task.CompletedTask;
+                if (i >= 5)
+                {
+                    cts.Cancel();
+                }
+
+                return Task.CompletedTask;
             });
 
-        await httpRemoteService.SendAsync(httpServerSentEventsBuilder, TestContext.Current.CancellationToken);
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(async () =>
+        {
+            await httpRemoteService.SendAsync(httpServerSentEventsBuilder, cts.Token);
+        });
 
         Assert.Equal(5, i);
 
@@ -1873,33 +1895,37 @@ public class HttpRemoteServiceExtensionsTests
             context.Response.Headers.Connection = "keep-alive";
             context.Response.Headers["X-Accel-Buffering"] = "no";
 
-            var eventId = 0;
-            while (eventId < 5)
+            try
             {
-                eventId++;
-
-                var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
-                await context.Response.WriteAsync(message);
-
-                await Task.Delay(120);
+                var eventId = 0;
+                while (eventId < 5 && !context.RequestAborted.IsCancellationRequested)
+                {
+                    eventId++;
+                    var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
+                    await context.Response.WriteAsync(message, context.RequestAborted);
+                    await Task.Delay(120, context.RequestAborted);
+                }
             }
+            catch (OperationCanceledException) { }
+            catch (IOException) { }
         });
 
         await app.StartAsync(TestContext.Current.CancellationToken);
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
         var httpServerSentEventsBuilder =
-            new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test")).SetOnMessage(async (_, _) =>
+            new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test")).SetOnMessage((_, _) =>
             {
                 i++;
-                await Task.CompletedTask;
+                return Task.CompletedTask;
             });
 
         using var cancellationTokenSource = new CancellationTokenSource();
         cancellationTokenSource.CancelAfter(100);
 
-        await Assert.ThrowsAsync<TaskCanceledException>(async () =>
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(async () =>
         {
             await httpRemoteService.SendAsync(httpServerSentEventsBuilder, cancellationTokenSource.Token);
         });
@@ -1925,22 +1951,33 @@ public class HttpRemoteServiceExtensionsTests
             context.Response.Headers.Connection = "keep-alive";
             context.Response.Headers["X-Accel-Buffering"] = "no";
 
-            var eventId = 0;
-            while (eventId < 5)
+            try
             {
-                eventId++;
+                var eventId = 0;
+                while (eventId < 5 && !context.RequestAborted.IsCancellationRequested)
+                {
+                    eventId++;
+                    var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
+                    await context.Response.WriteAsync(message, context.RequestAborted);
+                    await Task.Delay(10, context.RequestAborted);
+                }
 
-                var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
-                await context.Response.WriteAsync(message);
-
-                await Task.Delay(10);
+                if (!context.RequestAborted.IsCancellationRequested)
+                {
+                    await Task.Delay(Timeout.Infinite, context.RequestAborted);
+                }
             }
+            catch (OperationCanceledException) { }
+            catch (IOException) { }
         });
 
         await app.StartAsync(TestContext.Current.CancellationToken);
 
+        using var cts = new CancellationTokenSource();
+        cts.CancelAfter(500);
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
         var httpServerSentEventsBuilder =
             new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test")).SetOnOpen(() =>
             {
@@ -1950,7 +1987,10 @@ public class HttpRemoteServiceExtensionsTests
                 i++;
             });
 
-        await httpRemoteService.SendAsync(httpServerSentEventsBuilder, TestContext.Current.CancellationToken);
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(async () =>
+        {
+            await httpRemoteService.SendAsync(httpServerSentEventsBuilder, cts.Token);
+        });
 
         Assert.Equal(1, i);
 
@@ -1973,25 +2013,36 @@ public class HttpRemoteServiceExtensionsTests
             context.Response.Headers.Connection = "keep-alive";
             context.Response.Headers["X-Accel-Buffering"] = "no";
 
-            var eventId = 0;
-            while (eventId < 5)
+            try
             {
-                eventId++;
+                var eventId = 0;
+                while (eventId < 5 && !context.RequestAborted.IsCancellationRequested)
+                {
+                    eventId++;
+                    var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
+                    await context.Response.WriteAsync(message, context.RequestAborted);
+                    await Task.Delay(10, context.RequestAborted);
+                }
 
-                var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
-                await context.Response.WriteAsync(message);
-
-                await Task.Delay(10);
+                if (!context.RequestAborted.IsCancellationRequested)
+                {
+                    await Task.Delay(Timeout.Infinite, context.RequestAborted);
+                }
             }
+            catch (OperationCanceledException) { }
+            catch (IOException) { }
         });
 
         await app.StartAsync(TestContext.Current.CancellationToken);
 
+        using var cts = new CancellationTokenSource();
+        cts.CancelAfter(500);
         var i = 0;
         var customServerSentEventsEventHandler = new CustomServerSentEventsEventHandler();
 
         var (httpRemoteService, serviceProvider) =
             Helpers.CreateHttpRemoteService(sentEventsEventHandler: customServerSentEventsEventHandler);
+
         var httpServerSentEventsBuilder =
             new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test"))
                 .SetOnOpen(() =>
@@ -2003,7 +2054,10 @@ public class HttpRemoteServiceExtensionsTests
                 })
                 .SetEventHandler<CustomServerSentEventsEventHandler>();
 
-        await httpRemoteService.SendAsync(httpServerSentEventsBuilder, TestContext.Current.CancellationToken);
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(async () =>
+        {
+            await httpRemoteService.SendAsync(httpServerSentEventsBuilder, cts.Token);
+        });
 
         Assert.Equal(1, i);
         Assert.Equal(6, customServerSentEventsEventHandler.counter);
@@ -2027,33 +2081,51 @@ public class HttpRemoteServiceExtensionsTests
             context.Response.Headers.Connection = "keep-alive";
             context.Response.Headers["X-Accel-Buffering"] = "no";
 
-            var eventId = 0;
-            while (eventId < 5)
+            try
             {
-                eventId++;
+                var eventId = 0;
+                while (eventId < 5 && !context.RequestAborted.IsCancellationRequested)
+                {
+                    eventId++;
+                    var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
+                    await context.Response.WriteAsync(message, context.RequestAborted);
+                    await Task.Delay(10, context.RequestAborted);
+                }
 
-                var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
-                await context.Response.WriteAsync(message);
-
-                await Task.Delay(10);
+                if (!context.RequestAborted.IsCancellationRequested)
+                {
+                    await Task.Delay(Timeout.Infinite, context.RequestAborted);
+                }
             }
+            catch (OperationCanceledException) { }
+            catch (IOException) { }
         });
 
         await app.StartAsync(TestContext.Current.CancellationToken);
 
+        using var cts = new CancellationTokenSource();
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
         var httpServerSentEventsBuilder =
-            new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test")).SetOnMessage(async (_, _) =>
+            new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test")).SetOnMessage((_, _) =>
             {
                 i++;
-                await Task.CompletedTask;
+                if (i >= 5)
+                {
+                    cts.Cancel();
+                }
+
+                return Task.CompletedTask;
             });
 
-        await httpRemoteService.SendAsync(httpServerSentEventsBuilder.With(b => b.SetOnPreSendRequest(_ =>
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(async () =>
         {
-            i++;
-        })), TestContext.Current.CancellationToken);
+            await httpRemoteService.SendAsync(httpServerSentEventsBuilder.With(b => b.SetOnPreSendRequest(_ =>
+            {
+                i++;
+            })), cts.Token);
+        });
 
         Assert.Equal(6, i);
 
@@ -2076,29 +2148,46 @@ public class HttpRemoteServiceExtensionsTests
             context.Response.Headers.Connection = "keep-alive";
             context.Response.Headers["X-Accel-Buffering"] = "no";
 
-            var eventId = 0;
-            while (eventId < 5)
+            try
             {
-                eventId++;
+                var eventId = 0;
+                while (eventId < 5 && !context.RequestAborted.IsCancellationRequested)
+                {
+                    eventId++;
+                    var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
+                    await context.Response.WriteAsync(message, context.RequestAborted);
+                    await Task.Delay(10, context.RequestAborted);
+                }
 
-                var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
-                await context.Response.WriteAsync(message);
-
-                await Task.Delay(10);
+                if (!context.RequestAborted.IsCancellationRequested)
+                {
+                    await Task.Delay(Timeout.Infinite, context.RequestAborted);
+                }
             }
+            catch (OperationCanceledException) { }
+            catch (IOException) { }
         });
 
         await app.StartAsync(TestContext.Current.CancellationToken);
 
+        using var cts = new CancellationTokenSource();
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        // ReSharper disable once MethodHasAsyncOverload
-        httpRemoteService.ServerSentEvents($"http://localhost:{port}/test", async (_, _) =>
+        Assert.ThrowsAny<OperationCanceledException>(() =>
         {
-            i++;
-            await Task.CompletedTask;
-        }, cancellationToken: TestContext.Current.CancellationToken);
+            // ReSharper disable once MethodHasAsyncOverload
+            httpRemoteService.ServerSentEvents($"http://localhost:{port}/test", (_, _) =>
+            {
+                i++;
+                if (i >= 5)
+                {
+                    cts.Cancel();
+                }
+
+                return Task.CompletedTask;
+            }, cancellationToken: cts.Token);
+        });
 
         Assert.Equal(5, i);
 
@@ -2122,16 +2211,19 @@ public class HttpRemoteServiceExtensionsTests
             context.Response.Headers.Connection = "keep-alive";
             context.Response.Headers["X-Accel-Buffering"] = "no";
 
-            var eventId = 0;
-            while (eventId < 5)
+            try
             {
-                eventId++;
-
-                var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
-                await context.Response.WriteAsync(message);
-
-                await Task.Delay(50);
+                var eventId = 0;
+                while (eventId < 5 && !context.RequestAborted.IsCancellationRequested)
+                {
+                    eventId++;
+                    var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
+                    await context.Response.WriteAsync(message, context.RequestAborted);
+                    await Task.Delay(50, context.RequestAborted);
+                }
             }
+            catch (OperationCanceledException) { }
+            catch (IOException) { }
         });
 
         await app.StartAsync(TestContext.Current.CancellationToken);
@@ -2142,19 +2234,15 @@ public class HttpRemoteServiceExtensionsTests
         using var cancellationTokenSource = new CancellationTokenSource();
         cancellationTokenSource.CancelAfter(10);
 
-        try
+        Assert.ThrowsAny<OperationCanceledException>(() =>
         {
             // ReSharper disable once MethodHasAsyncOverload
-            httpRemoteService.ServerSentEvents($"http://localhost:{port}/test", async (_, _) =>
+            httpRemoteService.ServerSentEvents($"http://localhost:{port}/test", (_, _) =>
             {
                 i++;
-                await Task.CompletedTask;
+                return Task.CompletedTask;
             }, cancellationToken: cancellationTokenSource.Token);
-        }
-        catch (Exception e)
-        {
-            Assert.True(e is OperationCanceledException);
-        }
+        });
 
         Assert.Equal(0, i);
 
@@ -2177,32 +2265,49 @@ public class HttpRemoteServiceExtensionsTests
             context.Response.Headers.Connection = "keep-alive";
             context.Response.Headers["X-Accel-Buffering"] = "no";
 
-            var eventId = 0;
-            while (eventId < 5)
+            try
             {
-                eventId++;
+                var eventId = 0;
+                while (eventId < 5 && !context.RequestAborted.IsCancellationRequested)
+                {
+                    eventId++;
+                    var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
+                    await context.Response.WriteAsync(message, context.RequestAborted);
+                    await Task.Delay(10, context.RequestAborted);
+                }
 
-                var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
-                await context.Response.WriteAsync(message);
-
-                await Task.Delay(10);
+                if (!context.RequestAborted.IsCancellationRequested)
+                {
+                    await Task.Delay(Timeout.Infinite, context.RequestAborted);
+                }
             }
+            catch (OperationCanceledException) { }
+            catch (IOException) { }
         });
 
         await app.StartAsync(TestContext.Current.CancellationToken);
 
+        using var cts = new CancellationTokenSource();
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        // ReSharper disable once MethodHasAsyncOverload
-        httpRemoteService.ServerSentEvents($"http://localhost:{port}/test", async (_, _) =>
+        Assert.ThrowsAny<OperationCanceledException>(() =>
         {
-            i++;
-            await Task.CompletedTask;
-        }, sseBuilder => sseBuilder.With(b => b.SetOnPreSendRequest(_ =>
-        {
-            i++;
-        })), TestContext.Current.CancellationToken);
+            // ReSharper disable once MethodHasAsyncOverload
+            httpRemoteService.ServerSentEvents($"http://localhost:{port}/test", (_, _) =>
+            {
+                i++;
+                if (i >= 5)
+                {
+                    cts.Cancel();
+                }
+
+                return Task.CompletedTask;
+            }, sseBuilder => sseBuilder.With(b => b.SetOnPreSendRequest(_ =>
+            {
+                i++;
+            })), cts.Token);
+        });
 
         Assert.Equal(6, i);
 
@@ -2225,28 +2330,45 @@ public class HttpRemoteServiceExtensionsTests
             context.Response.Headers.Connection = "keep-alive";
             context.Response.Headers["X-Accel-Buffering"] = "no";
 
-            var eventId = 0;
-            while (eventId < 5)
+            try
             {
-                eventId++;
+                var eventId = 0;
+                while (eventId < 5 && !context.RequestAborted.IsCancellationRequested)
+                {
+                    eventId++;
+                    var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
+                    await context.Response.WriteAsync(message, context.RequestAborted);
+                    await Task.Delay(10, context.RequestAborted);
+                }
 
-                var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
-                await context.Response.WriteAsync(message);
-
-                await Task.Delay(10);
+                if (!context.RequestAborted.IsCancellationRequested)
+                {
+                    await Task.Delay(Timeout.Infinite, context.RequestAborted);
+                }
             }
+            catch (OperationCanceledException) { }
+            catch (IOException) { }
         });
 
         await app.StartAsync(TestContext.Current.CancellationToken);
 
+        using var cts = new CancellationTokenSource();
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        await httpRemoteService.ServerSentEventsAsync($"http://localhost:{port}/test", async (_, _) =>
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(async () =>
         {
-            i++;
-            await Task.CompletedTask;
-        }, cancellationToken: TestContext.Current.CancellationToken);
+            await httpRemoteService.ServerSentEventsAsync($"http://localhost:{port}/test", (_, _) =>
+            {
+                i++;
+                if (i >= 5)
+                {
+                    cts.Cancel();
+                }
+
+                return Task.CompletedTask;
+            }, cancellationToken: cts.Token);
+        });
 
         Assert.Equal(5, i);
 
@@ -2269,16 +2391,19 @@ public class HttpRemoteServiceExtensionsTests
             context.Response.Headers.Connection = "keep-alive";
             context.Response.Headers["X-Accel-Buffering"] = "no";
 
-            var eventId = 0;
-            while (eventId < 5)
+            try
             {
-                eventId++;
-
-                var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
-                await context.Response.WriteAsync(message);
-
-                await Task.Delay(120);
+                var eventId = 0;
+                while (eventId < 5 && !context.RequestAborted.IsCancellationRequested)
+                {
+                    eventId++;
+                    var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
+                    await context.Response.WriteAsync(message, context.RequestAborted);
+                    await Task.Delay(120, context.RequestAborted);
+                }
             }
+            catch (OperationCanceledException) { }
+            catch (IOException) { }
         });
 
         await app.StartAsync(TestContext.Current.CancellationToken);
@@ -2289,12 +2414,12 @@ public class HttpRemoteServiceExtensionsTests
         using var cancellationTokenSource = new CancellationTokenSource();
         cancellationTokenSource.CancelAfter(100);
 
-        await Assert.ThrowsAsync<TaskCanceledException>(async () =>
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(async () =>
         {
-            await httpRemoteService.ServerSentEventsAsync($"http://localhost:{port}/test", async (_, _) =>
+            await httpRemoteService.ServerSentEventsAsync($"http://localhost:{port}/test", (_, _) =>
             {
                 i++;
-                await Task.CompletedTask;
+                return Task.CompletedTask;
             }, cancellationToken: cancellationTokenSource.Token);
         });
 
@@ -2319,31 +2444,48 @@ public class HttpRemoteServiceExtensionsTests
             context.Response.Headers.Connection = "keep-alive";
             context.Response.Headers["X-Accel-Buffering"] = "no";
 
-            var eventId = 0;
-            while (eventId < 5)
+            try
             {
-                eventId++;
+                var eventId = 0;
+                while (eventId < 5 && !context.RequestAborted.IsCancellationRequested)
+                {
+                    eventId++;
+                    var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
+                    await context.Response.WriteAsync(message, context.RequestAborted);
+                    await Task.Delay(10, context.RequestAborted);
+                }
 
-                var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
-                await context.Response.WriteAsync(message);
-
-                await Task.Delay(10);
+                if (!context.RequestAborted.IsCancellationRequested)
+                {
+                    await Task.Delay(Timeout.Infinite, context.RequestAborted);
+                }
             }
+            catch (OperationCanceledException) { }
+            catch (IOException) { }
         });
 
         await app.StartAsync(TestContext.Current.CancellationToken);
 
+        using var cts = new CancellationTokenSource();
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        await httpRemoteService.ServerSentEventsAsync($"http://localhost:{port}/test", async (_, _) =>
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(async () =>
         {
-            i++;
-            await Task.CompletedTask;
-        }, sseBuilder => sseBuilder.With(b => b.SetOnPreSendRequest(_ =>
-        {
-            i++;
-        })), TestContext.Current.CancellationToken);
+            await httpRemoteService.ServerSentEventsAsync($"http://localhost:{port}/test", (_, _) =>
+            {
+                i++;
+                if (i >= 5)
+                {
+                    cts.Cancel();
+                }
+
+                return Task.CompletedTask;
+            }, sseBuilder => sseBuilder.With(b => b.SetOnPreSendRequest(_ =>
+            {
+                i++;
+            })), cts.Token);
+        });
 
         Assert.Equal(6, i);
 
@@ -2368,6 +2510,7 @@ public class HttpRemoteServiceExtensionsTests
         await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
         var httpStressTestHarnessBuilder =
             new HttpStressTestHarnessBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"))
                 .SetNumberOfRequests(10);
@@ -2375,8 +2518,8 @@ public class HttpRemoteServiceExtensionsTests
         // ReSharper disable once MethodHasAsyncOverload
         var result = httpRemoteService.Send(httpStressTestHarnessBuilder,
             cancellationToken: TestContext.Current.CancellationToken);
-        Assert.NotNull(result);
 
+        Assert.NotNull(result);
         Assert.Equal(10, result.TotalRequests);
         Assert.Equal(10, result.SuccessfulRequests);
         Assert.Equal(0, result.FailedRequests);
@@ -2403,6 +2546,7 @@ public class HttpRemoteServiceExtensionsTests
         await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
         var httpStressTestHarnessBuilder =
             new HttpStressTestHarnessBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"))
                 .SetNumberOfRequests(10);
@@ -2410,7 +2554,7 @@ public class HttpRemoteServiceExtensionsTests
         using var cancellationTokenSource = new CancellationTokenSource();
         cancellationTokenSource.CancelAfter(50);
 
-        Assert.Throws<TaskCanceledException>(() =>
+        Assert.ThrowsAny<OperationCanceledException>(() =>
         {
             // ReSharper disable once MethodHasAsyncOverload
             httpRemoteService.Send(httpStressTestHarnessBuilder, HttpCompletionOption.ResponseContentRead,
@@ -2420,7 +2564,6 @@ public class HttpRemoteServiceExtensionsTests
         await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
-
 
     [Fact]
     public async Task Send_StressTestHarness_WithHttpRequestBuilder_ReturnOK()
@@ -2440,6 +2583,7 @@ public class HttpRemoteServiceExtensionsTests
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
         var httpStressTestHarnessBuilder =
             new HttpStressTestHarnessBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"))
                 .SetNumberOfRequests(10);
@@ -2449,13 +2593,12 @@ public class HttpRemoteServiceExtensionsTests
         {
             i++;
         })), cancellationToken: TestContext.Current.CancellationToken);
-        Assert.NotNull(result);
 
+        Assert.NotNull(result);
         Assert.Equal(10, result.TotalRequests);
         Assert.Equal(10, result.SuccessfulRequests);
         Assert.Equal(0, result.FailedRequests);
         Assert.True(result.QueriesPerSecond > 50);
-
         Assert.Equal(10, i);
 
         await app.StopAsync(TestContext.Current.CancellationToken);
@@ -2479,14 +2622,15 @@ public class HttpRemoteServiceExtensionsTests
         await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
         var httpStressTestHarnessBuilder =
             new HttpStressTestHarnessBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"))
                 .SetNumberOfRequests(10);
 
         var result = await httpRemoteService.SendAsync(httpStressTestHarnessBuilder,
             cancellationToken: TestContext.Current.CancellationToken);
-        Assert.NotNull(result);
 
+        Assert.NotNull(result);
         Assert.Equal(10, result.TotalRequests);
         Assert.Equal(10, result.SuccessfulRequests);
         Assert.Equal(0, result.FailedRequests);
@@ -2513,6 +2657,7 @@ public class HttpRemoteServiceExtensionsTests
         await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
         var httpStressTestHarnessBuilder =
             new HttpStressTestHarnessBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"))
                 .SetNumberOfRequests(10);
@@ -2520,7 +2665,7 @@ public class HttpRemoteServiceExtensionsTests
         using var cancellationTokenSource = new CancellationTokenSource();
         cancellationTokenSource.CancelAfter(50);
 
-        await Assert.ThrowsAsync<TaskCanceledException>(async () =>
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(async () =>
         {
             await httpRemoteService.SendAsync(httpStressTestHarnessBuilder, HttpCompletionOption.ResponseContentRead,
                 cancellationTokenSource.Token);
@@ -2547,29 +2692,28 @@ public class HttpRemoteServiceExtensionsTests
         await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
         var httpStressTestHarnessBuilder =
             new HttpStressTestHarnessBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"))
                 .SetNumberOfRequests(10);
-
         var i = 0;
+
         var result = await httpRemoteService.SendAsync(httpStressTestHarnessBuilder.With(b =>
             b.SetOnPreSendRequest(_ =>
             {
                 i++;
             })), cancellationToken: TestContext.Current.CancellationToken);
-        Assert.NotNull(result);
 
+        Assert.NotNull(result);
         Assert.Equal(10, result.TotalRequests);
         Assert.Equal(10, result.SuccessfulRequests);
         Assert.Equal(0, result.FailedRequests);
         Assert.True(result.QueriesPerSecond > 50);
-
         Assert.Equal(10, i);
 
         await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
-
 
     [Fact]
     public async Task StressTestHarness_ReturnOK()
@@ -2592,8 +2736,8 @@ public class HttpRemoteServiceExtensionsTests
         // ReSharper disable once MethodHasAsyncOverload
         var result = httpRemoteService.StressTestHarness($"http://localhost:{port}/test", 10,
             cancellationToken: TestContext.Current.CancellationToken);
-        Assert.NotNull(result);
 
+        Assert.NotNull(result);
         Assert.Equal(10, result.TotalRequests);
         Assert.Equal(10, result.SuccessfulRequests);
         Assert.Equal(0, result.FailedRequests);
@@ -2624,7 +2768,7 @@ public class HttpRemoteServiceExtensionsTests
         using var cancellationTokenSource = new CancellationTokenSource();
         cancellationTokenSource.CancelAfter(50);
 
-        Assert.Throws<TaskCanceledException>(() =>
+        Assert.ThrowsAny<OperationCanceledException>(() =>
         {
             // ReSharper disable once MethodHasAsyncOverload
             httpRemoteService.StressTestHarness($"http://localhost:{port}/test", 10,
@@ -2660,13 +2804,12 @@ public class HttpRemoteServiceExtensionsTests
             {
                 i++;
             })), cancellationToken: TestContext.Current.CancellationToken);
-        Assert.NotNull(result);
 
+        Assert.NotNull(result);
         Assert.Equal(10, result.TotalRequests);
         Assert.Equal(10, result.SuccessfulRequests);
         Assert.Equal(0, result.FailedRequests);
         Assert.True(result.QueriesPerSecond > 15);
-
         Assert.Equal(10, i);
 
         await app.StopAsync(TestContext.Current.CancellationToken);
@@ -2693,8 +2836,8 @@ public class HttpRemoteServiceExtensionsTests
 
         var result = await httpRemoteService.StressTestHarnessAsync($"http://localhost:{port}/test", 10,
             cancellationToken: TestContext.Current.CancellationToken);
-        Assert.NotNull(result);
 
+        Assert.NotNull(result);
         Assert.Equal(10, result.TotalRequests);
         Assert.Equal(10, result.SuccessfulRequests);
         Assert.Equal(0, result.FailedRequests);
@@ -2725,7 +2868,7 @@ public class HttpRemoteServiceExtensionsTests
         using var cancellationTokenSource = new CancellationTokenSource();
         cancellationTokenSource.CancelAfter(50);
 
-        await Assert.ThrowsAsync<TaskCanceledException>(async () =>
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(async () =>
         {
             await httpRemoteService.StressTestHarnessAsync($"http://localhost:{port}/test", 10,
                 cancellationToken: cancellationTokenSource.Token);
@@ -2759,13 +2902,12 @@ public class HttpRemoteServiceExtensionsTests
             {
                 i++;
             })), cancellationToken: TestContext.Current.CancellationToken);
-        Assert.NotNull(result);
 
+        Assert.NotNull(result);
         Assert.Equal(10, result.TotalRequests);
         Assert.Equal(10, result.SuccessfulRequests);
         Assert.Equal(0, result.FailedRequests);
         Assert.True(result.QueriesPerSecond > 50);
-
         Assert.Equal(10, i);
 
         await app.StopAsync(TestContext.Current.CancellationToken);
@@ -2784,9 +2926,7 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             j++;
-
             var message = $"Message at {DateTime.UtcNow}\n\n";
-
             await Task.Delay(50, context.RequestAborted);
 
             if (j <= 5)
@@ -2803,12 +2943,13 @@ public class HttpRemoteServiceExtensionsTests
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
         var httpLongPollingBuilder =
             new HttpLongPollingBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"))
-                .SetOnDataReceived(async (_, _) =>
+                .SetOnDataReceived((_, _) =>
                 {
                     i++;
-                    await Task.CompletedTask;
+                    return Task.CompletedTask;
                 });
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -2832,9 +2973,7 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             j++;
-
             var message = $"Message at {DateTime.UtcNow}\n\n";
-
             await Task.Delay(120, context.RequestAborted);
 
             if (j <= 5)
@@ -2851,26 +2990,23 @@ public class HttpRemoteServiceExtensionsTests
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
         var httpLongPollingBuilder =
             new HttpLongPollingBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"))
-                .SetOnDataReceived(async (_, _) =>
+                .SetOnDataReceived((_, _) =>
                 {
                     i++;
-                    await Task.CompletedTask;
+                    return Task.CompletedTask;
                 });
 
         using var cancellationTokenSource = new CancellationTokenSource();
         cancellationTokenSource.CancelAfter(100);
 
-        try
+        Assert.ThrowsAny<OperationCanceledException>(() =>
         {
             // ReSharper disable once MethodHasAsyncOverload
             httpRemoteService.Send(httpLongPollingBuilder, cancellationTokenSource.Token);
-        }
-        catch (Exception e)
-        {
-            Assert.True(e is OperationCanceledException);
-        }
+        });
 
         Assert.Equal(0, i);
 
@@ -2890,9 +3026,7 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             j++;
-
             var message = $"Message at {DateTime.UtcNow}\n\n";
-
             await Task.Delay(50, context.RequestAborted);
 
             if (j <= 5)
@@ -2912,6 +3046,7 @@ public class HttpRemoteServiceExtensionsTests
 
         var (httpRemoteService, serviceProvider) =
             Helpers.CreateHttpRemoteService(longPollingEventHandler: customLongPollingEventHandler);
+
         var httpLongPollingBuilder =
             new HttpLongPollingBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"))
                 .SetOnDataReceived((_, _) =>
@@ -2943,9 +3078,7 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             j++;
-
             var message = $"Message at {DateTime.UtcNow}\n\n";
-
             await Task.Delay(50, context.RequestAborted);
 
             if (j <= 5)
@@ -2962,12 +3095,13 @@ public class HttpRemoteServiceExtensionsTests
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
         var httpLongPollingBuilder =
             new HttpLongPollingBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"))
-                .SetOnDataReceived(async (_, _) =>
+                .SetOnDataReceived((_, _) =>
                 {
                     i++;
-                    await Task.CompletedTask;
+                    return Task.CompletedTask;
                 });
 
         // ReSharper disable once MethodHasAsyncOverload
@@ -2976,6 +3110,7 @@ public class HttpRemoteServiceExtensionsTests
             i++;
         })), TestContext.Current.CancellationToken);
 
+        // 5次 DataReceived + 6次 PreSendRequest (包含最后一次获取 X-End-Of-Stream 的请求) = 11
         Assert.Equal(11, i);
 
         await app.StopAsync(TestContext.Current.CancellationToken);
@@ -2994,9 +3129,7 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             j++;
-
             var message = $"Message at {DateTime.UtcNow}\n\n";
-
             await Task.Delay(50, context.RequestAborted);
 
             if (j <= 5)
@@ -3013,12 +3146,13 @@ public class HttpRemoteServiceExtensionsTests
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
         var httpLongPollingBuilder =
             new HttpLongPollingBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"))
-                .SetOnDataReceived(async (_, _) =>
+                .SetOnDataReceived((_, _) =>
                 {
                     i++;
-                    await Task.CompletedTask;
+                    return Task.CompletedTask;
                 });
 
         await httpRemoteService.SendAsync(httpLongPollingBuilder, TestContext.Current.CancellationToken);
@@ -3041,9 +3175,7 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             j++;
-
             var message = $"Message at {DateTime.UtcNow}\n\n";
-
             await Task.Delay(120, context.RequestAborted);
 
             if (j <= 5)
@@ -3060,18 +3192,19 @@ public class HttpRemoteServiceExtensionsTests
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
         var httpLongPollingBuilder =
             new HttpLongPollingBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"))
-                .SetOnDataReceived(async (_, _) =>
+                .SetOnDataReceived((_, _) =>
                 {
                     i++;
-                    await Task.CompletedTask;
+                    return Task.CompletedTask;
                 });
 
         using var cancellationTokenSource = new CancellationTokenSource();
         cancellationTokenSource.CancelAfter(100);
 
-        await Assert.ThrowsAsync<TaskCanceledException>(async () =>
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(async () =>
         {
             await httpRemoteService.SendAsync(httpLongPollingBuilder, cancellationTokenSource.Token);
         });
@@ -3094,9 +3227,7 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             j++;
-
             var message = $"Message at {DateTime.UtcNow}\n\n";
-
             await Task.Delay(50, context.RequestAborted);
 
             if (j <= 5)
@@ -3116,6 +3247,7 @@ public class HttpRemoteServiceExtensionsTests
 
         var (httpRemoteService, serviceProvider) =
             Helpers.CreateHttpRemoteService(longPollingEventHandler: customLongPollingEventHandler);
+
         var httpLongPollingBuilder =
             new HttpLongPollingBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"))
                 .SetOnDataReceived((_, _) =>
@@ -3146,9 +3278,7 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             j++;
-
             var message = $"Message at {DateTime.UtcNow}\n\n";
-
             await Task.Delay(50, context.RequestAborted);
 
             if (j <= 5)
@@ -3165,12 +3295,13 @@ public class HttpRemoteServiceExtensionsTests
 
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
         var httpLongPollingBuilder =
             new HttpLongPollingBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"))
-                .SetOnDataReceived(async (_, _) =>
+                .SetOnDataReceived((_, _) =>
                 {
                     i++;
-                    await Task.CompletedTask;
+                    return Task.CompletedTask;
                 });
 
         await httpRemoteService.SendAsync(httpLongPollingBuilder.With(b => b.SetOnPreSendRequest(_ =>
@@ -3196,9 +3327,7 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             j++;
-
             var message = $"Message at {DateTime.UtcNow}\n\n";
-
             await Task.Delay(50, context.RequestAborted);
 
             if (j <= 5)
@@ -3217,10 +3346,10 @@ public class HttpRemoteServiceExtensionsTests
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
-        httpRemoteService.LongPolling($"http://localhost:{port}/test", async (_, _) =>
+        httpRemoteService.LongPolling($"http://localhost:{port}/test", (_, _) =>
         {
             i++;
-            await Task.CompletedTask;
+            return Task.CompletedTask;
         }, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal(5, i);
@@ -3241,9 +3370,7 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             j++;
-
             var message = $"Message at {DateTime.UtcNow}\n\n";
-
             await Task.Delay(120, context.RequestAborted);
 
             if (j <= 5)
@@ -3264,19 +3391,15 @@ public class HttpRemoteServiceExtensionsTests
         using var cancellationTokenSource = new CancellationTokenSource();
         cancellationTokenSource.CancelAfter(100);
 
-        try
+        Assert.ThrowsAny<OperationCanceledException>(() =>
         {
             // ReSharper disable once MethodHasAsyncOverload
-            httpRemoteService.LongPolling($"http://localhost:{port}/test", async (_, _) =>
+            httpRemoteService.LongPolling($"http://localhost:{port}/test", (_, _) =>
             {
                 i++;
-                await Task.CompletedTask;
+                return Task.CompletedTask;
             }, cancellationToken: cancellationTokenSource.Token);
-        }
-        catch (Exception e)
-        {
-            Assert.True(e is OperationCanceledException);
-        }
+        });
 
         Assert.Equal(0, i);
 
@@ -3296,9 +3419,7 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             j++;
-
             var message = $"Message at {DateTime.UtcNow}\n\n";
-
             await Task.Delay(50, context.RequestAborted);
 
             if (j <= 5)
@@ -3317,10 +3438,10 @@ public class HttpRemoteServiceExtensionsTests
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         // ReSharper disable once MethodHasAsyncOverload
-        httpRemoteService.LongPolling($"http://localhost:{port}/test", async (_, _) =>
+        httpRemoteService.LongPolling($"http://localhost:{port}/test", (_, _) =>
         {
             i++;
-            await Task.CompletedTask;
+            return Task.CompletedTask;
         }, lpBuilder => lpBuilder.With(b => b.SetOnPreSendRequest(_ =>
         {
             i++;
@@ -3344,9 +3465,7 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             j++;
-
             var message = $"Message at {DateTime.UtcNow}\n\n";
-
             await Task.Delay(50, context.RequestAborted);
 
             if (j <= 5)
@@ -3364,10 +3483,10 @@ public class HttpRemoteServiceExtensionsTests
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        await httpRemoteService.LongPollingAsync($"http://localhost:{port}/test", async (_, _) =>
+        await httpRemoteService.LongPollingAsync($"http://localhost:{port}/test", (_, _) =>
         {
             i++;
-            await Task.CompletedTask;
+            return Task.CompletedTask;
         }, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal(5, i);
@@ -3388,9 +3507,7 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             j++;
-
             var message = $"Message at {DateTime.UtcNow}\n\n";
-
             await Task.Delay(120, context.RequestAborted);
 
             if (j <= 5)
@@ -3411,12 +3528,12 @@ public class HttpRemoteServiceExtensionsTests
         using var cancellationTokenSource = new CancellationTokenSource();
         cancellationTokenSource.CancelAfter(100);
 
-        await Assert.ThrowsAsync<TaskCanceledException>(async () =>
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(async () =>
         {
-            await httpRemoteService.LongPollingAsync($"http://localhost:{port}/test", async (_, _) =>
+            await httpRemoteService.LongPollingAsync($"http://localhost:{port}/test", (_, _) =>
             {
                 i++;
-                await Task.CompletedTask;
+                return Task.CompletedTask;
             }, cancellationToken: cancellationTokenSource.Token);
         });
 
@@ -3438,9 +3555,7 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             j++;
-
             var message = $"Message at {DateTime.UtcNow}\n\n";
-
             await Task.Delay(50, context.RequestAborted);
 
             if (j <= 5)
@@ -3458,10 +3573,10 @@ public class HttpRemoteServiceExtensionsTests
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        await httpRemoteService.LongPollingAsync($"http://localhost:{port}/test", async (_, _) =>
+        await httpRemoteService.LongPollingAsync($"http://localhost:{port}/test", (_, _) =>
         {
             i++;
-            await Task.CompletedTask;
+            return Task.CompletedTask;
         }, lpBuilder => lpBuilder.With(b => b.SetOnPreSendRequest(_ =>
         {
             i++;
@@ -3484,18 +3599,19 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             await Task.Delay(50);
-
             await context.Response.WriteAsync("Hello World!");
         });
 
         await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
         var method = typeof(IHttpDeclarativeTest).GetMethod(nameof(IHttpDeclarativeTest.GetUrl))!;
 
         // ReSharper disable once MethodHasAsyncOverload
         var result = httpRemoteService.Declarative(method, [$"http://localhost:{port}/test", CancellationToken.None],
             typeof(IHttpDeclarativeTest));
+
         Assert.Equal("Hello World!", result);
 
         await app.StopAsync(TestContext.Current.CancellationToken);
@@ -3513,7 +3629,6 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             await Task.Delay(200, TestContext.Current.CancellationToken);
-
             await context.Response.WriteAsync("Hello World!");
         });
 
@@ -3526,7 +3641,7 @@ public class HttpRemoteServiceExtensionsTests
 
         var method = typeof(IHttpDeclarativeTest).GetMethod(nameof(IHttpDeclarativeTest.GetUrl))!;
 
-        Assert.Throws<TaskCanceledException>(() =>
+        Assert.ThrowsAny<OperationCanceledException>(() =>
         {
             // ReSharper disable once MethodHasAsyncOverload
             _ = httpRemoteService.Declarative(method, [$"http://localhost:{port}/test", cancellationTokenSource.Token],
@@ -3548,7 +3663,6 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             await Task.Delay(50);
-
             await context.Response.WriteAsync("Hello World!");
         });
 
@@ -3560,6 +3674,7 @@ public class HttpRemoteServiceExtensionsTests
 
         var result = await httpRemoteService.DeclarativeAsync<string>(method,
             [$"http://localhost:{port}/test", CancellationToken.None], typeof(IHttpDeclarativeTest));
+
         Assert.Equal("Hello World!", result);
 
         await app.StopAsync(TestContext.Current.CancellationToken);
@@ -3577,7 +3692,6 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             await Task.Delay(200, TestContext.Current.CancellationToken);
-
             await context.Response.WriteAsync("Hello World!");
         });
 
@@ -3590,7 +3704,7 @@ public class HttpRemoteServiceExtensionsTests
 
         var method = typeof(IHttpDeclarativeTest).GetMethod(nameof(IHttpDeclarativeTest.GetUrlAsync))!;
 
-        await Assert.ThrowsAsync<TaskCanceledException>(async () =>
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(async () =>
         {
             _ = await httpRemoteService.DeclarativeAsync<string>(method,
                 [$"http://localhost:{port}/test", cancellationTokenSource.Token], typeof(IHttpDeclarativeTest));
@@ -3611,19 +3725,20 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             await Task.Delay(50);
-
             await context.Response.WriteAsync("Hello World!");
         });
 
         await app.StartAsync(TestContext.Current.CancellationToken);
 
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
         var method = typeof(IHttpDeclarativeTest).GetMethod(nameof(IHttpDeclarativeTest.GetUrl))!;
 
         // ReSharper disable once MethodHasAsyncOverload
         var result =
             httpRemoteService.SendAs(HttpRequestBuilder.Declarative(method,
                 [$"http://localhost:{port}/test", CancellationToken.None], typeof(IHttpDeclarativeTest)));
+
         Assert.Equal("Hello World!", result);
 
         await app.StopAsync(TestContext.Current.CancellationToken);
@@ -3641,7 +3756,6 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             await Task.Delay(200, TestContext.Current.CancellationToken);
-
             await context.Response.WriteAsync("Hello World!");
         });
 
@@ -3654,7 +3768,7 @@ public class HttpRemoteServiceExtensionsTests
 
         var method = typeof(IHttpDeclarativeTest).GetMethod(nameof(IHttpDeclarativeTest.GetUrl))!;
 
-        Assert.Throws<TaskCanceledException>(() =>
+        Assert.ThrowsAny<OperationCanceledException>(() =>
         {
             // ReSharper disable once MethodHasAsyncOverload
             _ = httpRemoteService.SendAs(HttpRequestBuilder.Declarative(method,
@@ -3676,7 +3790,6 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             await Task.Delay(50);
-
             await context.Response.WriteAsync("Hello World!");
         });
 
@@ -3689,6 +3802,7 @@ public class HttpRemoteServiceExtensionsTests
         var result =
             await httpRemoteService.SendAsAsync<string>(HttpRequestBuilder.Declarative(method,
                 [$"http://localhost:{port}/test", CancellationToken.None], typeof(IHttpDeclarativeTest)));
+
         Assert.Equal("Hello World!", result);
 
         await app.StopAsync(TestContext.Current.CancellationToken);
@@ -3706,7 +3820,6 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             await Task.Delay(200, TestContext.Current.CancellationToken);
-
             await context.Response.WriteAsync("Hello World!");
         });
 
@@ -3719,7 +3832,7 @@ public class HttpRemoteServiceExtensionsTests
 
         var method = typeof(IHttpDeclarativeTest).GetMethod(nameof(IHttpDeclarativeTest.GetUrlAsync))!;
 
-        await Assert.ThrowsAsync<TaskCanceledException>(async () =>
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(async () =>
         {
             _ = await httpRemoteService.SendAsAsync<string>(HttpRequestBuilder.Declarative(method,
                 [$"http://localhost:{port}/test", cancellationTokenSource.Token], typeof(IHttpDeclarativeTest)));
@@ -3741,9 +3854,7 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             j++;
-
             var message = $"Message at {DateTime.UtcNow}\n\n";
-
             await Task.Delay(50, context.RequestAborted);
 
             if (j <= 5)
@@ -3753,21 +3864,34 @@ public class HttpRemoteServiceExtensionsTests
             else
             {
                 context.Response.Headers["X-End-Of-Stream"] = "1";
+                if (!context.RequestAborted.IsCancellationRequested)
+                {
+                    await Task.Delay(Timeout.Infinite, context.RequestAborted);
+                }
             }
         });
 
         await app.StartAsync(TestContext.Current.CancellationToken);
 
+        using var cts = new CancellationTokenSource();
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
         var httpLongPollingBuilder =
             new HttpLongPollingBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
 
-        await foreach (var _ in httpRemoteService.SendAsAsyncEnumerable(httpLongPollingBuilder,
-                           TestContext.Current.CancellationToken))
+        try
         {
-            i++;
+            await foreach (var _ in httpRemoteService.SendAsAsyncEnumerable(httpLongPollingBuilder, cts.Token))
+            {
+                i++;
+                if (i >= 5)
+                {
+                    cts.Cancel();
+                }
+            }
         }
+        catch (OperationCanceledException) { }
 
         Assert.Equal(5, i);
 
@@ -3790,30 +3914,47 @@ public class HttpRemoteServiceExtensionsTests
             context.Response.Headers.Connection = "keep-alive";
             context.Response.Headers["X-Accel-Buffering"] = "no";
 
-            var eventId = 0;
-            while (eventId < 5)
+            try
             {
-                eventId++;
+                var eventId = 0;
+                while (eventId < 5 && !context.RequestAborted.IsCancellationRequested)
+                {
+                    eventId++;
+                    var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
+                    await context.Response.WriteAsync(message, context.RequestAborted);
+                    await Task.Delay(10, context.RequestAborted);
+                }
 
-                var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
-                await context.Response.WriteAsync(message);
-
-                await Task.Delay(10);
+                if (!context.RequestAborted.IsCancellationRequested)
+                {
+                    await Task.Delay(Timeout.Infinite, context.RequestAborted);
+                }
             }
+            catch (OperationCanceledException) { }
+            catch (IOException) { }
         });
 
         await app.StartAsync(TestContext.Current.CancellationToken);
 
+        using var cts = new CancellationTokenSource();
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
         var httpServerSentEventsBuilder =
             new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test"));
 
-        await foreach (var _ in httpRemoteService.SendAsAsyncEnumerable(httpServerSentEventsBuilder,
-                           TestContext.Current.CancellationToken))
+        try
         {
-            i++;
+            await foreach (var _ in httpRemoteService.SendAsAsyncEnumerable(httpServerSentEventsBuilder, cts.Token))
+            {
+                i++;
+                if (i >= 5)
+                {
+                    cts.Cancel();
+                }
+            }
         }
+        catch (OperationCanceledException) { }
 
         Assert.Equal(5, i);
 
@@ -3836,28 +3977,45 @@ public class HttpRemoteServiceExtensionsTests
             context.Response.Headers.Connection = "keep-alive";
             context.Response.Headers["X-Accel-Buffering"] = "no";
 
-            var eventId = 0;
-            while (eventId < 5)
+            try
             {
-                eventId++;
+                var eventId = 0;
+                while (eventId < 5 && !context.RequestAborted.IsCancellationRequested)
+                {
+                    eventId++;
+                    var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
+                    await context.Response.WriteAsync(message, context.RequestAborted);
+                    await Task.Delay(10, context.RequestAborted);
+                }
 
-                var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
-                await context.Response.WriteAsync(message);
-
-                await Task.Delay(10);
+                if (!context.RequestAborted.IsCancellationRequested)
+                {
+                    await Task.Delay(Timeout.Infinite, context.RequestAborted);
+                }
             }
+            catch (OperationCanceledException) { }
+            catch (IOException) { }
         });
 
         await app.StartAsync(TestContext.Current.CancellationToken);
 
+        using var cts = new CancellationTokenSource();
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        await foreach (var _ in httpRemoteService.ServerSentEventsAsAsyncEnumerable($"http://localhost:{port}/test",
-                           cancellationToken: TestContext.Current.CancellationToken))
+        try
         {
-            i++;
+            await foreach (var _ in httpRemoteService.ServerSentEventsAsAsyncEnumerable($"http://localhost:{port}/test",
+                               cancellationToken: cts.Token))
+            {
+                i++;
+                if (i >= 5)
+                {
+                    cts.Cancel();
+                }
+            }
         }
+        catch (OperationCanceledException) { }
 
         Assert.Equal(5, i);
 
@@ -3877,9 +4035,7 @@ public class HttpRemoteServiceExtensionsTests
         app.MapGet("/test", async context =>
         {
             j++;
-
             var message = $"Message at {DateTime.UtcNow}\n\n";
-
             await Task.Delay(50, context.RequestAborted);
 
             if (j <= 5)
@@ -3889,19 +4045,32 @@ public class HttpRemoteServiceExtensionsTests
             else
             {
                 context.Response.Headers["X-End-Of-Stream"] = "1";
+                if (!context.RequestAborted.IsCancellationRequested)
+                {
+                    await Task.Delay(Timeout.Infinite, context.RequestAborted);
+                }
             }
         });
 
         await app.StartAsync(TestContext.Current.CancellationToken);
 
+        using var cts = new CancellationTokenSource();
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        await foreach (var _ in httpRemoteService.LongPollingAsAsyncEnumerable($"http://localhost:{port}/test",
-                           cancellationToken: TestContext.Current.CancellationToken))
+        try
         {
-            i++;
+            await foreach (var _ in httpRemoteService.LongPollingAsAsyncEnumerable($"http://localhost:{port}/test",
+                               cancellationToken: cts.Token))
+            {
+                i++;
+                if (i >= 5)
+                {
+                    cts.Cancel();
+                }
+            }
         }
+        catch (OperationCanceledException) { }
 
         Assert.Equal(5, i);
 

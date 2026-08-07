@@ -101,5 +101,11 @@ public class WeChatAccessTokenProviderTests
             TestContext.Current.CancellationToken));
         Assert.Equal("{\"errcode\":40013,\"errmsg\":\"invalid appid rid: 6a72d87d-02a061cf-740bf233\"}",
             await httpResponseMessage.Content.ReadAsStringAsync(TestContext.Current.CancellationToken));
+
+        httpResponseMessage.Content =
+            new StringContent("<html><body><h1>502 Bad Gateway</h1></body></html>",
+                new MediaTypeHeaderValue("text/html"));
+        Assert.False(await provider.ShouldRefreshAsync(context, httpResponseMessage,
+            TestContext.Current.CancellationToken));
     }
 }

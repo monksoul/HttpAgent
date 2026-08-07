@@ -7,6 +7,31 @@ namespace HttpAgent.Tests;
 public class HelpersTests
 {
     [Fact]
+    public void WrapDecompressionStream_ReturnOK()
+    {
+        var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
+        var httpFileDownloadBuilder =
+            new HttpFileDownloadBuilder(HttpMethod.Get, new Uri("https://furion.net")).SetDestinationPath(filePath);
+        var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
+
+        var httpResponseMessage =
+            httpRemoteService.Send(fileDownloadManager.RequestBuilder, HttpCompletionOption.ResponseHeadersRead,
+                TestContext.Current.CancellationToken)!;
+
+        using var rawStream = httpResponseMessage.Content.ReadAsStream(TestContext.Current.CancellationToken);
+
+        using var stream = HttpAgent.Helpers.WrapDecompressionStream(rawStream, httpResponseMessage);
+        Assert.NotNull(stream);
+
+        using var stream2 = HttpAgent.Helpers.WrapDecompressionStream(rawStream, (string?)null);
+        Assert.NotNull(stream2);
+
+        serviceProvider.Dispose();
+    }
+
+    [Fact]
     public void HttpQuery_ReturnOK()
     {
         Assert.Equal("QUERY", HttpAgent.Helpers.HttpQuery.ToString());

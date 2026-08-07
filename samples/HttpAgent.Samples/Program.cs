@@ -27,7 +27,8 @@ builder.Services.AddHttpClient(string.Empty, client => { })
         // 忽略 SSL 证书验证
         ServerCertificateCustomValidationCallback = HttpRemoteUtility.IgnoreSslErrors,
         SslProtocols = HttpRemoteUtility.AllSslProtocols,
-        AllowAutoRedirect = false
+        AllowAutoRedirect = false,
+        AutomaticDecompression = DecompressionMethods.All
     });
 //.AddProfilerDelegatingHandler();
 

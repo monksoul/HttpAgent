@@ -480,15 +480,8 @@ public class LongPollingManagerTests
                 });
         var longPollingManagerManager = new LongPollingManager(httpRemoteService, httpLongPollingBuilder);
 
-        try
-        {
-            // ReSharper disable once MethodHasAsyncOverload
-            longPollingManagerManager.Start(cancellationTokenSource.Token);
-        }
-        catch (Exception e)
-        {
-            Assert.True(e is OperationCanceledException);
-        }
+        Assert.ThrowsAny<OperationCanceledException>(() =>
+            longPollingManagerManager.Start(cancellationTokenSource.Token));
 
         Assert.Equal(0, i);
 
@@ -593,8 +586,9 @@ public class LongPollingManagerTests
                 }).SetRetryInterval(TimeSpan.FromMilliseconds(100)).SetMaxRetries(10);
         var longPollingManagerManager = new LongPollingManager(httpRemoteService, httpLongPollingBuilder);
 
-        // ReSharper disable once MethodHasAsyncOverload
-        longPollingManagerManager.Start(TestContext.Current.CancellationToken);
+        var ex = Assert.Throws<InvalidOperationException>(() =>
+            longPollingManagerManager.Start(TestContext.Current.CancellationToken));
+        Assert.Contains("Failed to establish server connection", ex.Message);
 
         Assert.Equal(0, i);
 
@@ -693,7 +687,7 @@ public class LongPollingManagerTests
                 });
         var longPollingManagerManager = new LongPollingManager(httpRemoteService, httpLongPollingBuilder);
 
-        await Assert.ThrowsAsync<TaskCanceledException>(async () =>
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(async () =>
         {
             await longPollingManagerManager.StartAsync(cancellationTokenSource.Token);
         });
@@ -800,7 +794,11 @@ public class LongPollingManagerTests
                 }).SetRetryInterval(TimeSpan.FromMilliseconds(100)).SetMaxRetries(10);
         var longPollingManagerManager = new LongPollingManager(httpRemoteService, httpLongPollingBuilder);
 
-        await longPollingManagerManager.StartAsync(TestContext.Current.CancellationToken);
+        var ex = await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+        {
+            await longPollingManagerManager.StartAsync(TestContext.Current.CancellationToken);
+        });
+        Assert.Contains("Failed to establish server connection", ex.Message);
 
         Assert.Equal(0, i);
 

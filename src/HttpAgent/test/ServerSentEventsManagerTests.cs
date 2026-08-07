@@ -128,10 +128,10 @@ public class ServerSentEventsManagerTests
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var httpServerSentEventsBuilder =
-            new HttpServerSentEventsBuilder(new Uri("https://furion.net")).SetOnMessage(async (_, _) =>
+            new HttpServerSentEventsBuilder(new Uri("https://furion.net")).SetOnMessage((_, _) =>
             {
                 i += 1;
-                await Task.CompletedTask;
+                return Task.CompletedTask;
             });
         var serverSentEventsManager = new ServerSentEventsManager(httpRemoteService, httpServerSentEventsBuilder);
 
@@ -165,13 +165,10 @@ public class ServerSentEventsManagerTests
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var httpServerSentEventsBuilder =
-            new HttpServerSentEventsBuilder(new Uri("https://furion.net")).SetOnMessage(async (_, _) =>
+            new HttpServerSentEventsBuilder(new Uri("https://furion.net")).SetOnMessage((_, _) =>
             {
                 i += 1;
                 throw new Exception("Error");
-#pragma warning disable CS0162 // 检测到不可到达的代码
-                await Task.CompletedTask;
-#pragma warning restore CS0162 // 检测到不可到达的代码
             });
         var serverSentEventsManager = new ServerSentEventsManager(httpRemoteService, httpServerSentEventsBuilder);
 
@@ -258,10 +255,10 @@ public class ServerSentEventsManagerTests
             TestContext.Current.CancellationToken);
 
         var i = 0;
-        httpServerSentEventsBuilder.SetOnMessage(async (_, _) =>
+        httpServerSentEventsBuilder.SetOnMessage((_, _) =>
         {
             i++;
-            await Task.CompletedTask;
+            return Task.CompletedTask;
         });
 
         var serverSentEventsManager2 = new ServerSentEventsManager(httpRemoteService, httpServerSentEventsBuilder);
@@ -293,35 +290,48 @@ public class ServerSentEventsManagerTests
         {
             context.Response.ContentType = "text/event-stream";
             context.Response.Headers.CacheControl = "no-cache";
-            context.Response.Headers.Connection = "keep-alive";
             context.Response.Headers["X-Accel-Buffering"] = "no";
 
-            var eventId = 0;
-            while (eventId < 5)
+            try
             {
-                eventId++;
+                var eventId = 0;
+                while (eventId < 5 && !context.RequestAborted.IsCancellationRequested)
+                {
+                    eventId++;
+                    var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
+                    await context.Response.WriteAsync(message, context.RequestAborted);
+                    await Task.Delay(10, context.RequestAborted);
+                }
 
-                var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
-                await context.Response.WriteAsync(message);
-
-                await Task.Delay(10);
+                if (!context.RequestAborted.IsCancellationRequested)
+                {
+                    await Task.Delay(Timeout.Infinite, context.RequestAborted);
+                }
             }
+            catch (OperationCanceledException) { }
+            catch (IOException) { }
         });
 
         await app.StartAsync(TestContext.Current.CancellationToken);
 
+        using var cts = new CancellationTokenSource();
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpServerSentEventsBuilder =
-            new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test")).SetOnMessage(async (_, _) =>
-            {
-                i++;
-                await Task.CompletedTask;
-            });
+            new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test"))
+                .SetOnMessage((_, _) =>
+                {
+                    i++;
+                    if (i >= 5)
+                    {
+                        cts.Cancel();
+                    }
+
+                    return Task.CompletedTask;
+                });
         var serverSentEventsManager = new ServerSentEventsManager(httpRemoteService, httpServerSentEventsBuilder);
 
-        // ReSharper disable once MethodHasAsyncOverload
-        serverSentEventsManager.Start(TestContext.Current.CancellationToken);
+        Assert.ThrowsAny<OperationCanceledException>(() => serverSentEventsManager.Start(cts.Token));
 
         Assert.Equal(5, i);
 
@@ -341,19 +351,21 @@ public class ServerSentEventsManagerTests
         {
             context.Response.ContentType = "text/event-stream";
             context.Response.Headers.CacheControl = "no-cache";
-            context.Response.Headers.Connection = "keep-alive";
             context.Response.Headers["X-Accel-Buffering"] = "no";
 
-            var eventId = 0;
-            while (eventId < 5)
+            try
             {
-                eventId++;
-
-                var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
-                await context.Response.WriteAsync(message);
-
-                await Task.Delay(120);
+                var eventId = 0;
+                while (eventId < 5 && !context.RequestAborted.IsCancellationRequested)
+                {
+                    eventId++;
+                    var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
+                    await context.Response.WriteAsync(message, context.RequestAborted);
+                    await Task.Delay(120, context.RequestAborted);
+                }
             }
+            catch (OperationCanceledException) { }
+            catch (IOException) { }
         });
 
         await app.StartAsync(TestContext.Current.CancellationToken);
@@ -361,20 +373,22 @@ public class ServerSentEventsManagerTests
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpServerSentEventsBuilder =
-            new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test")).SetOnMessage(async (_, _) =>
+            new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test")).SetOnMessage((_, _) =>
             {
                 i++;
-                await Task.CompletedTask;
+                return Task.CompletedTask;
             });
         var serverSentEventsManager = new ServerSentEventsManager(httpRemoteService, httpServerSentEventsBuilder);
 
         using var cancellationTokenSource = new CancellationTokenSource();
         cancellationTokenSource.CancelAfter(50);
 
-        Assert.Throws<TaskCanceledException>(() => { serverSentEventsManager.Start(cancellationTokenSource.Token); });
-        // ReSharper disable once MethodHasAsyncOverload
+        Assert.ThrowsAny<OperationCanceledException>(() =>
+        {
+            serverSentEventsManager.Start(cancellationTokenSource.Token);
+        });
 
-        Assert.Equal(0, i);
+        Assert.Equal(1, i);
 
         await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
@@ -392,39 +406,41 @@ public class ServerSentEventsManagerTests
         {
             context.Response.ContentType = "text/event-stream";
             context.Response.Headers.CacheControl = "no-cache";
-            context.Response.Headers.Connection = "keep-alive";
             context.Response.Headers["X-Accel-Buffering"] = "no";
 
-            var eventId = 0;
-            while (eventId < 5)
+            try
             {
-                eventId++;
+                var eventId = 0;
+                while (eventId < 5 && !context.RequestAborted.IsCancellationRequested)
+                {
+                    eventId++;
+                    var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
+                    await context.Response.WriteAsync(message, context.RequestAborted);
+                    await Task.Delay(10, context.RequestAborted);
+                }
 
-                var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
-                await context.Response.WriteAsync(message);
-
-                await Task.Delay(10);
+                if (!context.RequestAborted.IsCancellationRequested)
+                {
+                    await Task.Delay(Timeout.Infinite, context.RequestAborted);
+                }
             }
+            catch (OperationCanceledException) { }
+            catch (IOException) { }
         });
 
         await app.StartAsync(TestContext.Current.CancellationToken);
 
+        using var cts = new CancellationTokenSource();
+        cts.CancelAfter(500);
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpServerSentEventsBuilder =
-            new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test")).SetOnOpen(() =>
-            {
-                i++;
-                Console.WriteLine("准备连接...");
-            }).SetOnError(_ =>
-            {
-                i++;
-                Console.WriteLine("连接失败...");
-            });
+            new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test"))
+                .SetOnOpen(() => i++)
+                .SetOnError(_ => i++);
         var serverSentEventsManager = new ServerSentEventsManager(httpRemoteService, httpServerSentEventsBuilder);
 
-        // ReSharper disable once MethodHasAsyncOverload
-        serverSentEventsManager.Start(TestContext.Current.CancellationToken);
+        Assert.ThrowsAny<OperationCanceledException>(() => serverSentEventsManager.Start(cts.Token));
 
         Assert.Equal(1, i);
 
@@ -444,23 +460,32 @@ public class ServerSentEventsManagerTests
         {
             context.Response.ContentType = "text/event-stream";
             context.Response.Headers.CacheControl = "no-cache";
-            context.Response.Headers.Connection = "keep-alive";
             context.Response.Headers["X-Accel-Buffering"] = "no";
 
-            var eventId = 0;
-            while (eventId < 5)
+            try
             {
-                eventId++;
+                var eventId = 0;
+                while (eventId < 5 && !context.RequestAborted.IsCancellationRequested)
+                {
+                    eventId++;
+                    var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
+                    await context.Response.WriteAsync(message, context.RequestAborted);
+                    await Task.Delay(10, context.RequestAborted);
+                }
 
-                var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
-                await context.Response.WriteAsync(message);
-
-                await Task.Delay(10);
+                if (!context.RequestAborted.IsCancellationRequested)
+                {
+                    await Task.Delay(Timeout.Infinite, context.RequestAborted);
+                }
             }
+            catch (OperationCanceledException) { }
+            catch (IOException) { }
         });
 
         await app.StartAsync(TestContext.Current.CancellationToken);
 
+        using var cts = new CancellationTokenSource();
+        cts.CancelAfter(500);
         var i = 0;
         var customServerSentEventsEventHandler = new CustomServerSentEventsEventHandler();
 
@@ -468,20 +493,12 @@ public class ServerSentEventsManagerTests
             Helpers.CreateHttpRemoteService(sentEventsEventHandler: customServerSentEventsEventHandler);
         var httpServerSentEventsBuilder =
             new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test"))
-                .SetOnOpen(() =>
-                {
-                    i++;
-                    Console.WriteLine("准备连接...");
-                }).SetOnError(_ =>
-                {
-                    i++;
-                    Console.WriteLine("连接失败...");
-                })
+                .SetOnOpen(() => i++)
+                .SetOnError(_ => i++)
                 .SetEventHandler<CustomServerSentEventsEventHandler>();
         var serverSentEventsManager = new ServerSentEventsManager(httpRemoteService, httpServerSentEventsBuilder);
 
-        // ReSharper disable once MethodHasAsyncOverload
-        serverSentEventsManager.Start(TestContext.Current.CancellationToken);
+        Assert.ThrowsAny<OperationCanceledException>(() => serverSentEventsManager.Start(cts.Token));
 
         Assert.Equal(1, i);
         Assert.Equal(6, customServerSentEventsEventHandler.counter);
@@ -502,34 +519,49 @@ public class ServerSentEventsManagerTests
         {
             context.Response.ContentType = "text/event-stream";
             context.Response.Headers.CacheControl = "no-cache";
-            context.Response.Headers.Connection = "keep-alive";
             context.Response.Headers["X-Accel-Buffering"] = "no";
 
-            var eventId = 0;
-            while (eventId < 5)
+            try
             {
-                eventId++;
+                var eventId = 0;
+                while (eventId < 5 && !context.RequestAborted.IsCancellationRequested)
+                {
+                    eventId++;
+                    var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
+                    await context.Response.WriteAsync(message, context.RequestAborted);
+                    await Task.Delay(10, context.RequestAborted);
+                }
 
-                var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
-                await context.Response.WriteAsync(message);
-
-                await Task.Delay(10);
+                if (!context.RequestAborted.IsCancellationRequested)
+                {
+                    await Task.Delay(Timeout.Infinite, context.RequestAborted);
+                }
             }
+            catch (OperationCanceledException) { }
+            catch (IOException) { }
         });
 
         await app.StartAsync(TestContext.Current.CancellationToken);
 
+        using var cts = new CancellationTokenSource();
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpServerSentEventsBuilder =
-            new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test")).SetOnMessage(async (_, _) =>
-            {
-                i++;
-                await Task.CompletedTask;
-            });
+            new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test"))
+                .SetOnMessage((_, _) =>
+                {
+                    i++;
+                    if (i >= 5)
+                    {
+                        cts.Cancel();
+                    }
+
+                    return Task.CompletedTask;
+                });
         var serverSentEventsManager = new ServerSentEventsManager(httpRemoteService, httpServerSentEventsBuilder);
 
-        await serverSentEventsManager.StartAsync(TestContext.Current.CancellationToken);
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(async () =>
+            await serverSentEventsManager.StartAsync(cts.Token));
 
         Assert.Equal(5, i);
 
@@ -550,19 +582,21 @@ public class ServerSentEventsManagerTests
             await Task.Delay(100);
             context.Response.ContentType = "text/event-stream";
             context.Response.Headers.CacheControl = "no-cache";
-            context.Response.Headers.Connection = "keep-alive";
             context.Response.Headers["X-Accel-Buffering"] = "no";
 
-            var eventId = 0;
-            while (eventId < 5)
+            try
             {
-                eventId++;
-
-                var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
-                await context.Response.WriteAsync(message);
-
-                await Task.Delay(50);
+                var eventId = 0;
+                while (eventId < 5 && !context.RequestAborted.IsCancellationRequested)
+                {
+                    eventId++;
+                    var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
+                    await context.Response.WriteAsync(message, context.RequestAborted);
+                    await Task.Delay(50, context.RequestAborted);
+                }
             }
+            catch (OperationCanceledException) { }
+            catch (IOException) { }
         });
 
         await app.StartAsync(TestContext.Current.CancellationToken);
@@ -570,17 +604,17 @@ public class ServerSentEventsManagerTests
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpServerSentEventsBuilder =
-            new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test")).SetOnMessage(async (_, _) =>
+            new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test")).SetOnMessage((_, _) =>
             {
                 i++;
-                await Task.CompletedTask;
+                return Task.CompletedTask;
             });
         var serverSentEventsManager = new ServerSentEventsManager(httpRemoteService, httpServerSentEventsBuilder);
 
         using var cancellationTokenSource = new CancellationTokenSource();
         cancellationTokenSource.CancelAfter(10);
 
-        await Assert.ThrowsAsync<TaskCanceledException>(async () =>
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(async () =>
         {
             await serverSentEventsManager.StartAsync(cancellationTokenSource.Token);
         });
@@ -603,38 +637,42 @@ public class ServerSentEventsManagerTests
         {
             context.Response.ContentType = "text/event-stream";
             context.Response.Headers.CacheControl = "no-cache";
-            context.Response.Headers.Connection = "keep-alive";
             context.Response.Headers["X-Accel-Buffering"] = "no";
 
-            var eventId = 0;
-            while (eventId < 5)
+            try
             {
-                eventId++;
+                var eventId = 0;
+                while (eventId < 5 && !context.RequestAborted.IsCancellationRequested)
+                {
+                    eventId++;
+                    var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
+                    await context.Response.WriteAsync(message, context.RequestAborted);
+                    await Task.Delay(10, context.RequestAborted);
+                }
 
-                var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
-                await context.Response.WriteAsync(message);
-
-                await Task.Delay(10);
+                if (!context.RequestAborted.IsCancellationRequested)
+                {
+                    await Task.Delay(Timeout.Infinite, context.RequestAborted);
+                }
             }
+            catch (OperationCanceledException) { }
+            catch (IOException) { }
         });
 
         await app.StartAsync(TestContext.Current.CancellationToken);
 
+        using var cts = new CancellationTokenSource();
+        cts.CancelAfter(500);
         var i = 0;
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var httpServerSentEventsBuilder =
-            new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test")).SetOnOpen(() =>
-            {
-                i++;
-                Console.WriteLine("准备连接...");
-            }).SetOnError(_ =>
-            {
-                i++;
-                Console.WriteLine("连接失败...");
-            });
+            new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test"))
+                .SetOnOpen(() => i++)
+                .SetOnError(_ => i++);
         var serverSentEventsManager = new ServerSentEventsManager(httpRemoteService, httpServerSentEventsBuilder);
 
-        await serverSentEventsManager.StartAsync(TestContext.Current.CancellationToken);
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(async () =>
+            await serverSentEventsManager.StartAsync(cts.Token));
 
         Assert.Equal(1, i);
 
@@ -654,23 +692,32 @@ public class ServerSentEventsManagerTests
         {
             context.Response.ContentType = "text/event-stream";
             context.Response.Headers.CacheControl = "no-cache";
-            context.Response.Headers.Connection = "keep-alive";
             context.Response.Headers["X-Accel-Buffering"] = "no";
 
-            var eventId = 0;
-            while (eventId < 5)
+            try
             {
-                eventId++;
+                var eventId = 0;
+                while (eventId < 5 && !context.RequestAborted.IsCancellationRequested)
+                {
+                    eventId++;
+                    var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
+                    await context.Response.WriteAsync(message, context.RequestAborted);
+                    await Task.Delay(10, context.RequestAborted);
+                }
 
-                var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
-                await context.Response.WriteAsync(message);
-
-                await Task.Delay(10);
+                if (!context.RequestAborted.IsCancellationRequested)
+                {
+                    await Task.Delay(Timeout.Infinite, context.RequestAborted);
+                }
             }
+            catch (OperationCanceledException) { }
+            catch (IOException) { }
         });
 
         await app.StartAsync(TestContext.Current.CancellationToken);
 
+        using var cts = new CancellationTokenSource();
+        cts.CancelAfter(500);
         var i = 0;
         var customServerSentEventsEventHandler = new CustomServerSentEventsEventHandler();
 
@@ -678,19 +725,13 @@ public class ServerSentEventsManagerTests
             Helpers.CreateHttpRemoteService(sentEventsEventHandler: customServerSentEventsEventHandler);
         var httpServerSentEventsBuilder =
             new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test"))
-                .SetOnOpen(() =>
-                {
-                    i++;
-                    Console.WriteLine("准备连接...");
-                }).SetOnError(_ =>
-                {
-                    i++;
-                    Console.WriteLine("连接失败...");
-                })
+                .SetOnOpen(() => i++)
+                .SetOnError(_ => i++)
                 .SetEventHandler<CustomServerSentEventsEventHandler>();
         var serverSentEventsManager = new ServerSentEventsManager(httpRemoteService, httpServerSentEventsBuilder);
 
-        await serverSentEventsManager.StartAsync(TestContext.Current.CancellationToken);
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(async () =>
+            await serverSentEventsManager.StartAsync(cts.Token));
 
         Assert.Equal(1, i);
         Assert.Equal(6, customServerSentEventsEventHandler.counter);
@@ -711,19 +752,123 @@ public class ServerSentEventsManagerTests
         {
             context.Response.ContentType = "text/event-stream";
             context.Response.Headers.CacheControl = "no-cache";
-            context.Response.Headers.Connection = "keep-alive";
             context.Response.Headers["X-Accel-Buffering"] = "no";
 
-            var eventId = 0;
-            while (eventId < 5)
+            try
             {
-                eventId++;
+                var eventId = 0;
+                while (eventId < 5 && !context.RequestAborted.IsCancellationRequested)
+                {
+                    eventId++;
+                    var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
+                    await context.Response.WriteAsync(message, context.RequestAborted);
+                    await Task.Delay(10, context.RequestAborted);
+                }
 
-                var message = $"id: {eventId}\nevent: update\ndata: Message {eventId} at {DateTime.UtcNow}\n\n";
-                await context.Response.WriteAsync(message);
-
-                await Task.Delay(10);
+                if (!context.RequestAborted.IsCancellationRequested)
+                {
+                    await Task.Delay(Timeout.Infinite, context.RequestAborted);
+                }
             }
+            catch (OperationCanceledException) { }
+            catch (IOException) { }
+        });
+
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using var cts = new CancellationTokenSource();
+        var i = 0;
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+        var httpServerSentEventsBuilder = new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test"));
+        var serverSentEventsManager = new ServerSentEventsManager(httpRemoteService, httpServerSentEventsBuilder);
+
+        try
+        {
+            await foreach (var _ in serverSentEventsManager.StartAsAsyncEnumerable(cts.Token))
+            {
+                i++;
+                if (i >= 5)
+                {
+                    cts.Cancel();
+                }
+            }
+        }
+        catch (OperationCanceledException) { }
+
+        Assert.Equal(5, i);
+
+        await app.StopAsync(TestContext.Current.CancellationToken);
+        await serviceProvider.DisposeAsync();
+    }
+
+    [Fact]
+    public async Task StartAsync_GracefulShutdown_OnEOF_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        await using var app = builder.Build();
+
+        app.MapGet("/test", async context =>
+        {
+            context.Response.ContentType = "text/event-stream";
+            context.Response.Headers.CacheControl = "no-cache";
+            context.Response.Headers["X-Accel-Buffering"] = "no";
+
+            for (var i = 1; i <= 3; i++)
+            {
+                var message = $"id: {i}\ndata: Message {i}\n\n";
+                await context.Response.WriteAsync(message, context.RequestAborted);
+                await Task.Delay(10, context.RequestAborted);
+            }
+        });
+
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        var i = 0;
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+        var httpServerSentEventsBuilder =
+            new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test"))
+                .SetOnMessage((_, _) =>
+                {
+                    i++;
+                    return Task.CompletedTask;
+                });
+        var serverSentEventsManager = new ServerSentEventsManager(httpRemoteService, httpServerSentEventsBuilder);
+
+        await serverSentEventsManager.StartAsync(TestContext.Current.CancellationToken);
+
+        Assert.Equal(3, i);
+
+        await app.StopAsync(TestContext.Current.CancellationToken);
+        await serviceProvider.DisposeAsync();
+    }
+
+    [Fact]
+    public async Task StartAsAsyncEnumerable_GracefulShutdown_OnDoneMessage_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        await using var app = builder.Build();
+
+        app.MapGet("/test", async context =>
+        {
+            context.Response.ContentType = "text/event-stream";
+            context.Response.Headers.CacheControl = "no-cache";
+            context.Response.Headers["X-Accel-Buffering"] = "no";
+
+            for (var i = 1; i <= 3; i++)
+            {
+                var message = $"id: {i}\ndata: Message {i}\n\n";
+                await context.Response.WriteAsync(message, context.RequestAborted);
+                await Task.Delay(10, context.RequestAborted);
+            }
+
+            await context.Response.WriteAsync("data: [DONE]\n\n", context.RequestAborted);
+
+            try { await Task.Delay(1000, context.RequestAborted); }
+            catch { }
         });
 
         await app.StartAsync(TestContext.Current.CancellationToken);
@@ -733,12 +878,52 @@ public class ServerSentEventsManagerTests
         var httpServerSentEventsBuilder = new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test"));
         var serverSentEventsManager = new ServerSentEventsManager(httpRemoteService, httpServerSentEventsBuilder);
 
-        await foreach (var _ in serverSentEventsManager.StartAsAsyncEnumerable(TestContext.Current.CancellationToken))
+        await foreach (var data in
+                       serverSentEventsManager.StartAsAsyncEnumerable(TestContext.Current.CancellationToken))
         {
             i++;
         }
 
-        Assert.Equal(5, i);
+        Assert.Equal(3, i);
+
+        await app.StopAsync(TestContext.Current.CancellationToken);
+        await serviceProvider.DisposeAsync();
+    }
+
+    [Fact]
+    public async Task StartAsync_GracefulShutdown_OnLargeRetry_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        await using var app = builder.Build();
+
+        app.MapGet("/test", async context =>
+        {
+            context.Response.ContentType = "text/event-stream";
+            context.Response.Headers.CacheControl = "no-cache";
+            context.Response.Headers["X-Accel-Buffering"] = "no";
+
+            await context.Response.WriteAsync("data: Message 1\n\nretry: 999999\n\n", context.RequestAborted);
+        });
+
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        var i = 0;
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+        var httpServerSentEventsBuilder =
+            new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test"))
+                .SetOnMessage((_, _) =>
+                {
+                    i++;
+                    return Task.CompletedTask;
+                });
+        var serverSentEventsManager = new ServerSentEventsManager(httpRemoteService, httpServerSentEventsBuilder);
+
+        // 【核心验证】：遇到极大 retry 值时，应正常接收完前面的数据，然后优雅退出，不抛异常，不重连。
+        await serverSentEventsManager.StartAsync(TestContext.Current.CancellationToken);
+
+        Assert.Equal(1, i);
 
         await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();

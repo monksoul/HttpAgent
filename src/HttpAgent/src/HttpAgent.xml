@@ -360,8 +360,11 @@
             <param name="accessTokenManager">
                 <see cref="T:HttpAgent.IHttpAccessTokenManager" />
             </param>
+            <param name="logger">
+                <see cref="T:HttpAgent.IHttpRemoteLogger" />
+            </param>
         </member>
-        <member name="M:HttpAgent.FurionAccessTokenProvider.#ctor(HttpAgent.IHttpAccessTokenManager)">
+        <member name="M:HttpAgent.FurionAccessTokenProvider.#ctor(HttpAgent.IHttpAccessTokenManager,HttpAgent.IHttpRemoteLogger)">
             <summary>
                 Furion 框架 Access Token 提供器
             </summary>
@@ -369,11 +372,17 @@
             <param name="accessTokenManager">
                 <see cref="T:HttpAgent.IHttpAccessTokenManager" />
             </param>
+            <param name="logger">
+                <see cref="T:HttpAgent.IHttpRemoteLogger" />
+            </param>
         </member>
         <member name="M:HttpAgent.FurionAccessTokenProvider.Configure(HttpAgent.HttpRequestBuilder,HttpAgent.HttpAccessToken)">
             <inheritdoc />
         </member>
         <member name="M:HttpAgent.FurionAccessTokenProvider.GetAsync(HttpAgent.HttpAccessTokenContext,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.FurionAccessTokenProvider.RefreshAsync(HttpAgent.HttpAccessTokenContext,HttpAgent.HttpAccessToken,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="M:HttpAgent.FurionAccessTokenProvider.ShouldRefreshAsync(HttpAgent.HttpAccessTokenContext,System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
@@ -1386,6 +1395,21 @@
             </summary>
             <remarks>推荐值为 4 或 8。默认值为：1。</remarks>
         </member>
+        <member name="P:HttpAgent.HttpFileDownloadBuilder.ChunkTimeout">
+            <summary>
+                分块下载单次读取数据的最大空闲等待时间
+            </summary>
+            <remarks>
+                注意：这是“读取空闲超时”而非“总超时”。只要数据在持续流入，下载不会中断；若在此时间内未读取到任何字节，则视为网络假死并触发重试。设置为 <see cref="F:System.Threading.Timeout.InfiniteTimeSpan" />
+                表示不超时。默认值为 30 秒。
+            </remarks>
+        </member>
+        <member name="P:HttpAgent.HttpFileDownloadBuilder.ChunkMaxRetries">
+            <summary>
+                分块下载最大重试次数
+            </summary>
+            <remarks>默认值为 3 次。</remarks>
+        </member>
         <member name="P:HttpAgent.HttpFileDownloadBuilder.OnTransferStarted">
             <summary>
                 用于处理在文件开始传输时的操作
@@ -1469,6 +1493,26 @@
                 设置下载最大线程数
             </summary>
             <param name="maxThreads">下载最大线程数，推荐值为 4 或 8</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpFileDownloadBuilder" />
+            </returns>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
+        <member name="M:HttpAgent.HttpFileDownloadBuilder.SetChunkTimeout(System.TimeSpan)">
+            <summary>
+                设置分块下载单次读取数据的最大空闲等待时间
+            </summary>
+            <param name="chunkTimeout">分块下载单次读取数据的最大空闲等待时间</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpFileDownloadBuilder" />
+            </returns>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
+        <member name="M:HttpAgent.HttpFileDownloadBuilder.SetChunkMaxRetries(System.Int32)">
+            <summary>
+                设置分块下载最大重试次数
+            </summary>
+            <param name="chunkMaxRetries">分块下载最大重试次数</param>
             <returns>
                 <see cref="T:HttpAgent.HttpFileDownloadBuilder" />
             </returns>
@@ -2173,7 +2217,7 @@
             <exception cref="T:System.ArgumentException"></exception>
             <exception cref="T:System.IO.FileNotFoundException"></exception>
         </member>
-        <member name="M:HttpAgent.HttpMultipartFormDataBuilder.AddFileWithProgressAsStream(System.String,System.Threading.Channels.Channel{HttpAgent.FileTransferProgress},System.String,System.String,System.String,System.Text.Encoding)">
+        <member name="M:HttpAgent.HttpMultipartFormDataBuilder.AddFileWithProgressAsStream(System.String,System.Threading.Channels.Channel{HttpAgent.FileTransferProgress},System.String,System.String,System.String,System.Text.Encoding,System.Nullable{System.TimeSpan})">
             <summary>
                 从本地路径中添加文件（带文件传输进度）
             </summary>
@@ -2183,6 +2227,7 @@
             <param name="fileName">文件的名称</param>
             <param name="contentType">内容类型</param>
             <param name="contentEncoding">内容编码</param>
+            <param name="progressInterval">进度更新（通知）的间隔时间。默认值为 250 毫秒。</param>
             <returns>
                 <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
             </returns>
@@ -6487,7 +6532,7 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Match the string "/Date(".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [+\-] atomically any number of times.<br/>
+                ○ Match a character in the set [+-] atomically any number of times.<br/>
                 ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match the string ")/".<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
@@ -6516,10 +6561,10 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Match the string "/Date(".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [+\-] atomically any number of times.<br/>
+                ○ Match a character in the set [+-] atomically any number of times.<br/>
                 ○ Match a Unicode digit atomically at least once.<br/>
             ○ 2nd capture group.<br/>
-                ○ Match a character in the set [+\-].<br/>
+                ○ Match a character in the set [+-].<br/>
             ○ 3rd capture group.<br/>
                 ○ Match a Unicode digit exactly 2 times.<br/>
             ○ 4th capture group.<br/>
@@ -7131,13 +7176,13 @@
                 ○ Match the string "**".<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [\-:\w] greedily at least once.<br/>
+                ○ Match a character in the set [-:\w] greedily at least once.<br/>
             ○ 2nd capture group.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match a whitespace character atomically any number of times.<br/>
                     ○ Match '|'.<br/>
                     ○ Match a whitespace character greedily any number of times.<br/>
-                    ○ Match a character in the set [\-:\w] greedily at least once.<br/>
+                    ○ Match a character in the set [-:\w] greedily at least once.<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ Optional (greedy).<br/>
                 ○ Match the string "||".<br/>
@@ -7164,32 +7209,32 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Loop greedily at least once.<br/>
                 ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [\-.0-9A-Z_a-z~].<br/>
+                    ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
                     ○ Match a sequence of expressions.<br/>
                         ○ Match '%'.<br/>
-                        ○ Match a hexadecimal digit exactly 2 times.<br/>
+                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
             ○ Match '='.<br/>
             ○ Loop greedily any number of times.<br/>
                 ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [+\-.0-9A-Z_a-z~].<br/>
+                    ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
                     ○ Match a sequence of expressions.<br/>
                         ○ Match '%'.<br/>
-                        ○ Match a hexadecimal digit exactly 2 times.<br/>
+                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
             ○ Loop greedily any number of times.<br/>
                 ○ Match '&amp;'.<br/>
                 ○ Loop greedily at least once.<br/>
                     ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [\-.0-9A-Z_a-z~].<br/>
+                        ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
                         ○ Match a sequence of expressions.<br/>
                             ○ Match '%'.<br/>
-                            ○ Match a hexadecimal digit exactly 2 times.<br/>
+                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
                 ○ Match '='.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [+\-.0-9A-Z_a-z~].<br/>
+                        ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
                         ○ Match a sequence of expressions.<br/>
                             ○ Match '%'.<br/>
-                            ○ Match a hexadecimal digit exactly 2 times.<br/>
+                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
             </remarks>
@@ -10318,7 +10363,7 @@
             <summary>
                 从流中读取最多指定数量的解压后字节
             </summary>
-            <param name="compressedStream">压缩数据流</param>
+            <param name="rawStream">压缩数据流</param>
             <param name="contentEncoding">内容编码（gzip, deflate, br, zstd 等）</param>
             <param name="maxBytes">最多读取的字节数（解压后）</param>
             <param name="cancellationToken">
@@ -10537,7 +10582,7 @@
             <code>
             ○ Match the string "\\u".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a hexadecimal digit exactly 4 times.<br/>
+                ○ Match a character in the set [0-9A-Fa-f] exactly 4 times.<br/>
             </code>
             </remarks>
         </member>
@@ -11030,6 +11075,34 @@
                 HTTP QUERY <see cref="T:System.Net.Http.HttpMethod" /> 静态实例
             </summary>
         </member>
+        <member name="M:HttpAgent.Helpers.WrapDecompressionStream(System.IO.Stream,System.Net.Http.HttpResponseMessage)">
+            <summary>
+                根据 Content-Encoding 自动包装解压流
+            </summary>
+            <remarks>支持 gzip/deflate/br/zstd 解压。</remarks>
+            <param name="rawStream">
+                <see cref="T:System.IO.Stream" />
+            </param>
+            <param name="httpResponseMessage">
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </param>
+            <returns>
+                <see cref="T:System.IO.Stream" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Helpers.WrapDecompressionStream(System.IO.Stream,System.String)">
+            <summary>
+                根据 Content-Encoding 自动包装解压流
+            </summary>
+            <remarks>支持 gzip/deflate/br/zstd 解压。</remarks>
+            <param name="rawStream">
+                <see cref="T:System.IO.Stream" />
+            </param>
+            <param name="contentEncoding">内容编码</param>
+            <returns>
+                <see cref="T:System.IO.Stream" />
+            </returns>
+        </member>
         <member name="M:HttpAgent.Helpers.GetStreamFromRemote(System.String,System.Action{System.Net.Http.HttpClient,System.Net.Http.HttpRequestMessage},System.Int64,System.Net.Http.HttpMethod)">
             <summary>
                 从互联网 URL 地址中加载流
@@ -11402,18 +11475,13 @@
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
         </member>
-        <member name="M:HttpAgent.FileDownloadManager.DownloadChunkAsync(System.Int64,System.Int64,System.IO.FileStream,System.Threading.SemaphoreSlim,HttpAgent.FileTransferProgress,System.Diagnostics.Stopwatch,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.FileDownloadManager.DownloadChunkAsync(System.Int64,System.Int64,System.String,HttpAgent.FileTransferProgress,System.Diagnostics.Stopwatch,System.Threading.CancellationToken)">
             <summary>
                 下载单个分块
             </summary>
             <param name="start">分块起始字节位置</param>
             <param name="end">分块结束字节位置</param>
-            <param name="fileStream">
-                <see cref="T:System.IO.FileStream" />
-            </param>
-            <param name="fileWriteLock">
-                <see cref="T:System.Threading.SemaphoreSlim" />
-            </param>
+            <param name="chunkTempFilePath">分块专属的临时文件路径</param>
             <param name="fileTransferProgress">
                 <see cref="T:HttpAgent.FileTransferProgress" />
             </param>
@@ -11528,21 +11596,6 @@
             </param>
             <param name="tempDestinationPath">临时文件路径</param>
             <param name="destinationPath">文件保存的目标路径</param>
-        </member>
-        <member name="M:HttpAgent.FileDownloadManager.WrapDecompressionStream(System.IO.Stream,System.Net.Http.HttpResponseMessage)">
-            <summary>
-                根据 Content-Encoding 自动包装解压流
-            </summary>
-            <remarks>支持 gzip/deflate/br/zstd 解压。</remarks>
-            <param name="rawContentStream">
-                <see cref="T:System.IO.Stream" />
-            </param>
-            <param name="httpResponseMessage">
-                <see cref="T:System.Net.Http.HttpResponseMessage" />
-            </param>
-            <returns>
-                <see cref="T:System.IO.Stream" />
-            </returns>
         </member>
         <member name="T:HttpAgent.FileUploadManager">
             <summary>
@@ -12172,7 +12225,7 @@
         </member>
         <member name="F:HttpAgent.FileTransferProgress._multiLineTotalRows">
             <summary>
-                多行进度条模式下已输出的总行数
+                多行模式下已输出的总行数
             </summary>
         </member>
         <member name="F:HttpAgent.FileTransferProgress._historyLock">
@@ -12379,12 +12432,19 @@
         <member name="M:HttpAgent.FileTransferProgress.AnsiRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\e\\[[\\d;]*[a-zA-Z]</code><br/>
+            <code>\\x1b\\[[0-9;]*[a-zA-Z]|\\x1b\\].*?\\x07</code><br/>
             Explanation:<br/>
             <code>
-            ○ Match the string "\u001b[".<br/>
-            ○ Match a character in the set [;\d] atomically any number of times.<br/>
-            ○ Match an ASCII letter.<br/>
+            ○ Match '\u001b'.<br/>
+            ○ Match with 2 alternative expressions, atomically.<br/>
+                ○ Match a sequence of expressions.<br/>
+                    ○ Match '['.<br/>
+                    ○ Match a character in the set [0-9;] atomically any number of times.<br/>
+                    ○ Match a character in the set [A-Za-z].<br/>
+                ○ Match a sequence of expressions.<br/>
+                    ○ Match ']'.<br/>
+                    ○ Match a character other than '\n' lazily any number of times.<br/>
+                    ○ Match '\a'.<br/>
             </code>
             </remarks>
         </member>
@@ -13171,6 +13231,9 @@
         <member name="F:HttpAgent.ProgressFileStream._stopwatch">
             <inheritdoc cref="T:System.Diagnostics.Stopwatch" />
         </member>
+        <member name="F:HttpAgent.ProgressFileStream._throttler">
+            <inheritdoc cref="T:HttpAgent.Core.Utilities.Throttler" />
+        </member>
         <member name="F:HttpAgent.ProgressFileStream._hasStarted">
             <summary>
                 是否已经开始读取或写入
@@ -13181,7 +13244,7 @@
                 已传输的数据量
             </summary>
         </member>
-        <member name="M:HttpAgent.ProgressFileStream.#ctor(System.IO.Stream,System.String,System.Threading.Channels.Channel{HttpAgent.FileTransferProgress},System.String)">
+        <member name="M:HttpAgent.ProgressFileStream.#ctor(System.IO.Stream,System.String,System.Threading.Channels.Channel{HttpAgent.FileTransferProgress},System.TimeSpan,System.String)">
             <summary>
                 <inheritdoc cref="T:HttpAgent.ProgressFileStream" />
             </summary>
@@ -13190,6 +13253,7 @@
             </param>
             <param name="filePath">文件路径或文件的名称</param>
             <param name="progressChannel">文件传输进度信息的通道</param>
+            <param name="progressInterval">进度更新（通知）的间隔时间</param>
             <param name="fileName">文件的名称</param>
         </member>
         <member name="P:HttpAgent.ProgressFileStream.CanRead">
@@ -14306,7 +14370,7 @@
             <code>
             ○ Match if at the beginning of the string.<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
-            ○ Match a character in the set [\-~].<br/>
+            ○ Match a character in the set [-~].<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
@@ -21957,26 +22021,8 @@
         <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32,System.Int32,System.Int32)">
             <summary>Pushes 3 values onto the backtracking stack.</summary>
         </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.WordCategoriesMask">
-            <summary>Provides a mask of Unicode categories that combine to form [\w].</summary>
-        </member>
-        <member name="P:System.Text.RegularExpressions.Generated.Utilities.WordCharBitmap">
-            <summary>Gets a bitmap for whether each character 0 through 127 is in [\w]</summary>
-        </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_1F52B1A4D2E82B6FEDE25EC8C55F85BB36775196837076691C96925040F90D32">
-            <summary>Supports searching for the string "\\u".</summary>
-        </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_24065539CD2593CB885B6092E92443DA15A8A09A496B09D6CC4B4CECC1ECA7AC">
-            <summary>Supports searching for the string "=?".</summary>
-        </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_4A5B154448624742176A7AE18EDA0762C946CBB1B19F68418DD573D0A698E642">
-            <summary>Supports searching for the string "\u001b[".</summary>
-        </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_98B3E663A7AAF3D02DF13A5CC650116209DEF2EA5FBA87F199F35B6DBB3C92E3">
-            <summary>Supports searching for the string "?=".</summary>
-        </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_EBC667BDABA1472FA863B5B39B31251EF2B4C95DD643BDECF694CB1CE7BDC178">
-            <summary>Supports searching for the string "[[".</summary>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_ascii_FF0B0000000000000000">
+            <summary>Supports searching for characters in or not in "0123456789;".</summary>
         </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions">
             <summary>
@@ -22022,6 +22068,37 @@
                 <para>注意：请确保使用的是根容器（Root ServiceProvider），使用作用域容器可能导致对象生命周期异常。</para>
             </remarks>
             <param name="serviceProvider">应用程序的根服务提供器，必须已完成 <see cref="T:HttpAgent.IHttpRemoteService" /> 的注册。</param>
+            <returns>
+                <see cref="T:System.IServiceProvider" />
+            </returns>
+        </member>
+    </members>
+</doc>
+>
+            <returns>
+                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
+            </returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions.UseHttpRemoteClient(System.IServiceProvider)">
+            <summary>
+                将应用程序的主 <see cref="T:System.IServiceProvider" /> 注入到 <see cref="T:HttpAgent.HttpRemoteClient" />，使其优先使用该容器解析
+                <see cref="T:HttpAgent.IHttpRemoteService" /> 服务
+            </summary>
+            <remarks>
+                <para>
+                    调用此方法后，<see cref="P:HttpAgent.HttpRemoteClient.Service" /> 将从外部容器获取服务实例，而非自行构建独立 DI 容器。注入的容器生命周期由调用方管理，
+                    <see cref="M:HttpAgent.HttpRemoteClient.Dispose" /> 不会释放它。
+                </para>
+                <para>注意：请确保使用的是根容器（Root ServiceProvider），使用作用域容器可能导致对象生命周期异常。</para>
+            </remarks>
+            <param name="serviceProvider">应用程序的根服务提供器，必须已完成 <see cref="T:HttpAgent.IHttpRemoteService" /> 的注册。</param>
+            <returns>
+                <see cref="T:System.IServiceProvider" />
+            </returns>
+        </member>
+    </members>
+</doc>
+" /> 的注册。</param>
             <returns>
                 <see cref="T:System.IServiceProvider" />
             </returns>

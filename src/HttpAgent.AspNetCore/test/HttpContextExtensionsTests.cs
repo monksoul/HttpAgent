@@ -7,6 +7,30 @@ namespace HttpAgent.AspNetCore.Tests;
 public class HttpContextExtensionsTests
 {
     [Fact]
+    public void ResolveForwardOptions_ReturnOK()
+    {
+        var services = new ServiceCollection();
+        services.AddHttpContextAccessor();
+        using var provider = services.BuildServiceProvider();
+        var httpContext = new DefaultHttpContext { RequestServices = provider };
+
+        Assert.NotNull(httpContext.ResolveForwardOptions(null));
+
+        var forwardOptions = new HttpContextForwardOptions();
+        var forwardOptions1 = httpContext.ResolveForwardOptions(forwardOptions);
+        Assert.Equal(forwardOptions1.GetHashCode(), forwardOptions1.GetHashCode());
+
+        var services2 = new ServiceCollection();
+        services2.AddHttpContextAccessor();
+        services2.AddOptions<HttpContextForwardOptions>().Configure(o => { o.OnForward = (_, _) => { }; });
+        using var provider2 = services2.BuildServiceProvider();
+        var httpContext2 = new DefaultHttpContext { RequestServices = provider2 };
+        var forwardOptions2 = httpContext2.ResolveForwardOptions(null);
+        Assert.NotNull(forwardOptions2);
+        Assert.NotNull(forwardOptions2.OnForward);
+    }
+
+    [Fact]
     public async Task GetFullRequestUrl_ReturnOK()
     {
         var port = NetworkUtility.FindAvailableTcpPort();
@@ -99,93 +123,6 @@ public class HttpContextExtensionsTests
         httpResponseMessage.EnsureSuccessStatusCode();
         Assert.Equal("ok", await httpResponseMessage.Content.ReadAsStringAsync(TestContext.Current.CancellationToken));
         await app.StopAsync(TestContext.Current.CancellationToken);
-    }
-
-    [Fact]
-    public void CreateForwardBuilder_ReturnOK()
-    {
-        var services = new ServiceCollection();
-        using var provider = services.BuildServiceProvider();
-
-        var httpContext = new DefaultHttpContext { RequestServices = provider };
-        var builder = httpContext.CreateForwardBuilder(HttpMethod.Get, (Uri?)null);
-        Assert.NotNull(builder);
-        Assert.Equal(HttpMethod.Get, builder.HttpMethod);
-        Assert.Null(builder.RequestUri);
-        Assert.NotNull(builder.ForwardOptions);
-
-        var httpContext2 = new DefaultHttpContext
-        {
-            Request = { Headers = { ["X-Forward-To"] = "https://furion.net" }, Method = "GET" },
-            RequestServices = provider
-        };
-
-        var builder2 = httpContext2.CreateForwardBuilder(HttpMethod.Get, (Uri?)null,
-            new HttpContextForwardOptions { AllowedHosts = ["*"] });
-        Assert.NotNull(builder2);
-        Assert.Equal(HttpMethod.Get, builder2.HttpMethod);
-        Assert.NotNull(builder2.RequestUri);
-        Assert.Equal("https://furion.net/", builder2.RequestUri.ToString());
-        Assert.NotNull(builder2.ForwardOptions);
-
-        var services2 = new ServiceCollection();
-        services2.AddOptions<HttpContextForwardOptions>().Configure(options =>
-        {
-            options.WithResponseContentHeaders = false;
-        });
-        using var provider2 = services2.BuildServiceProvider();
-        var httpContext3 = new DefaultHttpContext { RequestServices = provider2 };
-        var builder3 = httpContext3.CreateForwardBuilder(HttpMethod.Get, (Uri?)null);
-        Assert.NotNull(builder3);
-        Assert.Equal(HttpMethod.Get, builder3.HttpMethod);
-        Assert.Null(builder3.RequestUri);
-        Assert.NotNull(builder3.ForwardOptions);
-        Assert.False(builder3.ForwardOptions.WithResponseContentHeaders);
-
-        var builder4 = httpContext2.CreateForwardBuilder((Uri?)null,
-            new HttpContextForwardOptions { AllowedHosts = ["*"] });
-        Assert.NotNull(builder4);
-        Assert.Equal(HttpMethod.Get, builder4.HttpMethod);
-
-        var builder5 = httpContext2.CreateForwardBuilder(HttpMethod.Get, "https://furion.net",
-            new HttpContextForwardOptions { AllowedHosts = ["*"] });
-        Assert.NotNull(builder5);
-        Assert.Equal("https://furion.net/", builder4.RequestUri?.ToString());
-
-        var builder6 = httpContext2.CreateForwardBuilder("https://furion.net",
-            new HttpContextForwardOptions { AllowedHosts = ["*"] });
-        Assert.NotNull(builder6);
-        Assert.Equal(HttpMethod.Get, builder6.HttpMethod);
-    }
-
-    [Fact]
-    public void PrepareForwardBuilder_ReturnOK()
-    {
-        var services = new ServiceCollection();
-        services.AddHttpRemote();
-        services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
-        using var provider = services.BuildServiceProvider();
-
-        var httpContext = new DefaultHttpContext { RequestServices = provider };
-
-        var tuple = HttpContextExtensions.PrepareForwardBuilder(httpContext, HttpMethod.Get, null);
-        Assert.NotNull(tuple.ForwardBuilder);
-        Assert.NotNull(tuple.RequestBuilder);
-    }
-
-    [Fact]
-    public async Task PrepareForwardBuilderAsync_ReturnOK()
-    {
-        var services = new ServiceCollection();
-        services.AddHttpRemote();
-        services.Configure<HttpContextForwardOptions>(options => { options.AllowedHosts = ["*"]; });
-        await using var provider = services.BuildServiceProvider();
-
-        var httpContext = new DefaultHttpContext { RequestServices = provider };
-
-        var tuple = await HttpContextExtensions.PrepareForwardBuilderAsync(httpContext, HttpMethod.Get, null);
-        Assert.NotNull(tuple.ForwardBuilder);
-        Assert.NotNull(tuple.RequestBuilder);
     }
 
     [Fact]
@@ -1652,9 +1589,13 @@ public class HttpContextExtensionsTests
                 new Uri($"http://localhost:{port}/HttpRemote/Request11"),
                 hbuilder => { hbuilder.AddHttpContentConverters(() => [new IActionResultContentConverter()]); });
 
-            var contentResult = actionResult!.Result as ContentResult;
+            var streamResult = (actionResult!.Result as FileStreamResult)!;
 
-            await context.Response.WriteAsync(contentResult?.Content ?? string.Empty);
+            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            await streamResult.ExecuteResultAsync(new ActionContext
+            {
+                HttpContext = context, RouteData = context.GetRouteData(), ActionDescriptor = new ActionDescriptor()
+            });
         });
 
         await app.StartAsync(TestContext.Current.CancellationToken);

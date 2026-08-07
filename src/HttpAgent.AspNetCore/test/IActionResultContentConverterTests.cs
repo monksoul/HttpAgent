@@ -60,12 +60,11 @@ public class IActionResultContentConverterTests
                 TestContext.Current.CancellationToken);
 
         Assert.NotNull(actionResult);
-        Assert.True(actionResult is ContentResult);
+        Assert.True(actionResult is FileStreamResult);
 
-        var contentResult = actionResult as ContentResult;
-        Assert.NotNull(contentResult);
-        Assert.Equal(200, contentResult.StatusCode);
-        Assert.Equal(contentType, contentResult.ContentType);
+        var streamResult = actionResult as FileStreamResult;
+        Assert.NotNull(streamResult);
+        Assert.Equal(contentType, streamResult.ContentType);
     }
 
     [Theory]
@@ -113,12 +112,11 @@ public class IActionResultContentConverterTests
                 TestContext.Current.CancellationToken);
 
         Assert.NotNull(actionResult);
-        Assert.True(actionResult is ContentResult);
+        Assert.True(actionResult is FileStreamResult);
 
-        var contentResult = actionResult as ContentResult;
-        Assert.NotNull(contentResult);
-        Assert.Equal(200, contentResult.StatusCode);
-        Assert.Equal(contentType, contentResult.ContentType);
+        var streamResult = actionResult as FileStreamResult;
+        Assert.NotNull(streamResult);
+        Assert.Equal(contentType, streamResult.ContentType);
     }
 
     [Theory]
@@ -165,12 +163,11 @@ public class IActionResultContentConverterTests
             new HttpContentConverterContext(httpResponseMessage), TestContext.Current.CancellationToken);
 
         Assert.NotNull(actionResult);
-        Assert.True(actionResult is ContentResult);
+        Assert.True(actionResult is FileStreamResult);
 
-        var contentResult = actionResult as ContentResult;
-        Assert.NotNull(contentResult);
-        Assert.Equal(200, contentResult.StatusCode);
-        Assert.Equal(contentType, contentResult.ContentType);
+        var streamResult = actionResult as FileStreamResult;
+        Assert.NotNull(streamResult);
+        Assert.Equal(contentType, streamResult.ContentType);
     }
 
     [Theory]
@@ -216,12 +213,11 @@ public class IActionResultContentConverterTests
             new HttpContentConverterContext(httpResponseMessage), TestContext.Current.CancellationToken);
 
         Assert.NotNull(actionResult);
-        Assert.True(actionResult is ContentResult);
+        Assert.True(actionResult is FileStreamResult);
 
-        var contentResult = actionResult as ContentResult;
-        Assert.NotNull(contentResult);
-        Assert.Equal(200, contentResult.StatusCode);
-        Assert.Equal(contentType, contentResult.ContentType);
+        var streamResult = actionResult as FileStreamResult;
+        Assert.NotNull(streamResult);
+        Assert.Equal(contentType, streamResult.ContentType);
     }
 
     [Theory]
