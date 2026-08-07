@@ -11,8 +11,10 @@ public class FileUploadManagerTests
     {
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        Assert.Throws<ArgumentNullException>(() => new FileUploadManager(null!, null!));
-        Assert.Throws<ArgumentNullException>(() => new FileUploadManager(httpRemoteService, null!));
+        Assert.Throws<ArgumentNullException>(() => new FileUploadManager(null!, null!, null!));
+        Assert.Throws<ArgumentNullException>(() => new FileUploadManager(httpRemoteService, null!, null!));
+        Assert.Throws<ArgumentNullException>(() =>
+            new FileUploadManager(httpRemoteService, httpRemoteService._logger, null!));
 
         serviceProvider.Dispose();
     }
@@ -23,17 +25,18 @@ public class FileUploadManagerTests
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
-        var fileUploadManager = new FileUploadManager(httpRemoteService,
+        var fileUploadManager = new FileUploadManager(httpRemoteService, httpRemoteService._logger,
             new HttpFileUploadBuilder(HttpMethod.Post, new Uri("http://localhost:5000"), filePath, "file"));
 
         Assert.NotNull(fileUploadManager._httpFileUploadBuilder);
         Assert.NotNull(fileUploadManager._httpRemoteService);
+        Assert.NotNull(fileUploadManager._logger);
         Assert.NotNull(fileUploadManager._progressChannel);
         Assert.Equal("BoundedChannel`1", fileUploadManager._progressChannel.GetType().Name);
         Assert.NotNull(fileUploadManager.RequestBuilder);
         Assert.Null(fileUploadManager.FileTransferEventHandler);
 
-        var fileUploadManager2 = new FileUploadManager(httpRemoteService,
+        var fileUploadManager2 = new FileUploadManager(httpRemoteService, httpRemoteService._logger,
             new HttpFileUploadBuilder(HttpMethod.Post, new Uri("http://localhost:5000"), filePath, "file")
                 .With(builder => builder.SetTimeout(100)));
         Assert.NotNull(fileUploadManager2.RequestBuilder);
@@ -56,7 +59,8 @@ public class FileUploadManagerTests
                     i += 1;
                     await Task.CompletedTask;
                 }).SetProgressInterval(TimeSpan.FromMilliseconds(50));
-        var fileUploadManager = new FileUploadManager(httpRemoteService, httpFileUploadBuilder);
+        var fileUploadManager =
+            new FileUploadManager(httpRemoteService, httpRemoteService._logger, httpFileUploadBuilder);
 
         using var progressCancellationTokenSource = new CancellationTokenSource();
         var reportProgressTask =
@@ -97,7 +101,8 @@ public class FileUploadManagerTests
                     await Task.CompletedTask;
 #pragma warning restore CS0162 // 检测到不可到达的代码
                 }).SetProgressInterval(TimeSpan.FromMilliseconds(50));
-        var fileUploadManager = new FileUploadManager(httpRemoteService, httpFileUploadBuilder);
+        var fileUploadManager =
+            new FileUploadManager(httpRemoteService, httpRemoteService._logger, httpFileUploadBuilder);
 
         using var progressCancellationTokenSource = new CancellationTokenSource();
         var reportProgressTask =
@@ -132,7 +137,8 @@ public class FileUploadManagerTests
         var httpFileUploadBuilder =
             new HttpFileUploadBuilder(HttpMethod.Post, new Uri("https://furion.net"), filePath, "file")
                 .SetOnTransferStarted(() => throw new Exception("出错了"));
-        var fileUploadManager = new FileUploadManager(httpRemoteService, httpFileUploadBuilder);
+        var fileUploadManager =
+            new FileUploadManager(httpRemoteService, httpRemoteService._logger, httpFileUploadBuilder);
 
         fileUploadManager.HandleTransferStarted();
 
@@ -150,7 +156,8 @@ public class FileUploadManagerTests
         var httpFileUploadBuilder =
             new HttpFileUploadBuilder(HttpMethod.Post, new Uri("https://furion.net"), filePath, "file")
                 .SetOnTransferCompleted(_ => throw new Exception("出错了"));
-        var fileUploadManager = new FileUploadManager(httpRemoteService, httpFileUploadBuilder);
+        var fileUploadManager =
+            new FileUploadManager(httpRemoteService, httpRemoteService._logger, httpFileUploadBuilder);
 
         fileUploadManager.HandleTransferCompleted(100);
 
@@ -168,7 +175,8 @@ public class FileUploadManagerTests
         var httpFileUploadBuilder =
             new HttpFileUploadBuilder(HttpMethod.Post, new Uri("https://furion.net"), filePath, "file")
                 .SetOnTransferFailed(_ => throw new Exception("出错了"));
-        var fileUploadManager = new FileUploadManager(httpRemoteService, httpFileUploadBuilder);
+        var fileUploadManager =
+            new FileUploadManager(httpRemoteService, httpRemoteService._logger, httpFileUploadBuilder);
 
         fileUploadManager.HandleTransferFailed(new Exception("出错了"));
 
@@ -183,7 +191,8 @@ public class FileUploadManagerTests
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
         var httpFileUploadBuilder =
             new HttpFileUploadBuilder(HttpMethod.Post, new Uri("https://furion.net"), filePath, "file");
-        var fileUploadManager = new FileUploadManager(httpRemoteService, httpFileUploadBuilder);
+        var fileUploadManager =
+            new FileUploadManager(httpRemoteService, httpRemoteService._logger, httpFileUploadBuilder);
 
         await Assert.ThrowsAsync<ArgumentNullException>(async () =>
             await fileUploadManager.HandleProgressChangedAsync(null!));
@@ -201,7 +210,8 @@ public class FileUploadManagerTests
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
         var httpFileUploadBuilder =
             new HttpFileUploadBuilder(HttpMethod.Post, new Uri("https://furion.net"), filePath, "file");
-        var fileUploadManager = new FileUploadManager(httpRemoteService, httpFileUploadBuilder);
+        var fileUploadManager =
+            new FileUploadManager(httpRemoteService, httpRemoteService._logger, httpFileUploadBuilder);
 
         var fileTransferProgress =
             new FileTransferProgress(filePath, -1);
@@ -214,14 +224,16 @@ public class FileUploadManagerTests
             await Task.CompletedTask;
         });
 
-        var fileUploadManager2 = new FileUploadManager(httpRemoteService, httpFileUploadBuilder);
+        var fileUploadManager2 =
+            new FileUploadManager(httpRemoteService, httpRemoteService._logger, httpFileUploadBuilder);
         await fileUploadManager2.HandleProgressChangedAsync(fileTransferProgress);
 
         Assert.Equal(1, i);
         Assert.Equal(0, customFileTransferEventHandler.counter2);
 
         httpFileUploadBuilder.SetEventHandler<CustomFileTransferEventHandler>();
-        var fileUploadManager3 = new FileUploadManager(httpRemoteService, httpFileUploadBuilder);
+        var fileUploadManager3 =
+            new FileUploadManager(httpRemoteService, httpRemoteService._logger, httpFileUploadBuilder);
         await fileUploadManager3.HandleProgressChangedAsync(fileTransferProgress);
 
         Assert.Equal(1, customFileTransferEventHandler.counter2);
@@ -252,7 +264,8 @@ public class FileUploadManagerTests
 
         var httpFileUploadBuilder =
             new HttpFileUploadBuilder(HttpMethod.Post, new Uri($"http://localhost:{port}/test"), filePath, "file");
-        var fileUploadManager = new FileUploadManager(httpRemoteService, httpFileUploadBuilder);
+        var fileUploadManager =
+            new FileUploadManager(httpRemoteService, httpRemoteService._logger, httpFileUploadBuilder);
 
         // ReSharper disable once MethodHasAsyncOverload
         var httpResponseMessage = fileUploadManager.Start(TestContext.Current.CancellationToken);
@@ -288,7 +301,8 @@ public class FileUploadManagerTests
 
         var httpFileUploadBuilder =
             new HttpFileUploadBuilder(HttpMethod.Post, new Uri($"http://localhost:{port}/test"), filePath, "file");
-        var fileUploadManager = new FileUploadManager(httpRemoteService, httpFileUploadBuilder);
+        var fileUploadManager =
+            new FileUploadManager(httpRemoteService, httpRemoteService._logger, httpFileUploadBuilder);
 
         using var cancellationTokenSource = new CancellationTokenSource();
         cancellationTokenSource.CancelAfter(100);
@@ -331,7 +345,8 @@ public class FileUploadManagerTests
                     i += 1;
                     await Task.CompletedTask;
                 });
-        var fileUploadManager = new FileUploadManager(httpRemoteService, httpFileUploadBuilder);
+        var fileUploadManager =
+            new FileUploadManager(httpRemoteService, httpRemoteService._logger, httpFileUploadBuilder);
 
         // ReSharper disable once MethodHasAsyncOverload
         var httpResponseMessage = fileUploadManager.Start(TestContext.Current.CancellationToken);
@@ -379,7 +394,8 @@ public class FileUploadManagerTests
                     i += 1;
                     Console.WriteLine($"上传完成 {elapsed}");
                 });
-        var fileUploadManager = new FileUploadManager(httpRemoteService, httpFileUploadBuilder);
+        var fileUploadManager =
+            new FileUploadManager(httpRemoteService, httpRemoteService._logger, httpFileUploadBuilder);
 
         // ReSharper disable once MethodHasAsyncOverload
         var httpResponseMessage = fileUploadManager.Start(TestContext.Current.CancellationToken);
@@ -429,7 +445,8 @@ public class FileUploadManagerTests
                     i += 1;
                     Console.WriteLine($"上传完成 {elapsed}");
                 }).SetEventHandler<CustomFileTransferEventHandler>();
-        var fileUploadManager = new FileUploadManager(httpRemoteService, httpFileUploadBuilder);
+        var fileUploadManager =
+            new FileUploadManager(httpRemoteService, httpRemoteService._logger, httpFileUploadBuilder);
 
         // ReSharper disable once MethodHasAsyncOverload
         var httpResponseMessage = fileUploadManager.Start(TestContext.Current.CancellationToken);
@@ -488,7 +505,8 @@ public class FileUploadManagerTests
                 {
                     b.EnsureSuccessStatusCode();
                 });
-        var fileUploadManager = new FileUploadManager(httpRemoteService, httpFileUploadBuilder);
+        var fileUploadManager =
+            new FileUploadManager(httpRemoteService, httpRemoteService._logger, httpFileUploadBuilder);
 
         Assert.Throws<HttpRequestException>(() =>
         {
@@ -523,7 +541,8 @@ public class FileUploadManagerTests
 
         var httpFileUploadBuilder =
             new HttpFileUploadBuilder(HttpMethod.Post, new Uri($"http://localhost:{port}/test"), filePath, "file");
-        var fileUploadManager = new FileUploadManager(httpRemoteService, httpFileUploadBuilder);
+        var fileUploadManager =
+            new FileUploadManager(httpRemoteService, httpRemoteService._logger, httpFileUploadBuilder);
 
         var httpResponseMessage = await fileUploadManager.StartAsync(TestContext.Current.CancellationToken);
         var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
@@ -558,7 +577,8 @@ public class FileUploadManagerTests
 
         var httpFileUploadBuilder =
             new HttpFileUploadBuilder(HttpMethod.Post, new Uri($"http://localhost:{port}/test"), filePath, "file");
-        var fileUploadManager = new FileUploadManager(httpRemoteService, httpFileUploadBuilder);
+        var fileUploadManager =
+            new FileUploadManager(httpRemoteService, httpRemoteService._logger, httpFileUploadBuilder);
 
         using var cancellationTokenSource = new CancellationTokenSource();
         cancellationTokenSource.CancelAfter(100);
@@ -601,7 +621,8 @@ public class FileUploadManagerTests
                     i += 1;
                     await Task.CompletedTask;
                 });
-        var fileUploadManager = new FileUploadManager(httpRemoteService, httpFileUploadBuilder);
+        var fileUploadManager =
+            new FileUploadManager(httpRemoteService, httpRemoteService._logger, httpFileUploadBuilder);
 
         var httpResponseMessage = await fileUploadManager.StartAsync(TestContext.Current.CancellationToken);
         var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
@@ -648,7 +669,8 @@ public class FileUploadManagerTests
                     i += 1;
                     Console.WriteLine($"上传完成 {elapsed}");
                 });
-        var fileUploadManager = new FileUploadManager(httpRemoteService, httpFileUploadBuilder);
+        var fileUploadManager =
+            new FileUploadManager(httpRemoteService, httpRemoteService._logger, httpFileUploadBuilder);
 
         var httpResponseMessage = await fileUploadManager.StartAsync(TestContext.Current.CancellationToken);
         var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
@@ -697,7 +719,8 @@ public class FileUploadManagerTests
                     i += 1;
                     Console.WriteLine($"上传完成 {elapsed}");
                 }).SetEventHandler<CustomFileTransferEventHandler>();
-        var fileUploadManager = new FileUploadManager(httpRemoteService, httpFileUploadBuilder);
+        var fileUploadManager =
+            new FileUploadManager(httpRemoteService, httpRemoteService._logger, httpFileUploadBuilder);
 
         var httpResponseMessage = await fileUploadManager.StartAsync(TestContext.Current.CancellationToken);
         var result = await httpResponseMessage!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
@@ -755,7 +778,8 @@ public class FileUploadManagerTests
                 {
                     b.EnsureSuccessStatusCode();
                 });
-        var fileUploadManager = new FileUploadManager(httpRemoteService, httpFileUploadBuilder);
+        var fileUploadManager =
+            new FileUploadManager(httpRemoteService, httpRemoteService._logger, httpFileUploadBuilder);
 
         await Assert.ThrowsAsync<HttpRequestException>(async () =>
         {

@@ -868,7 +868,7 @@ public class GetStartController(
             "https://buildbot.libretro.com/stable/1.21.0/windows/x86_64/RetroArch-Win64-setup.exe"
             , @"C:\Workspaces\"
             , FileExistsBehavior.Overwrite,
-            builder => builder.SetBufferSize(1024 * 1024).SetMaxThreads(4), cancellationToken);
+            builder => builder.EnableHighSpeedMode(), cancellationToken);
     }
 
     /// <summary>

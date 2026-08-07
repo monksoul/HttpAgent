@@ -14,7 +14,8 @@ public class HelpersTests
 
         var httpFileDownloadBuilder =
             new HttpFileDownloadBuilder(HttpMethod.Get, new Uri("https://furion.net")).SetDestinationPath(filePath);
-        var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
+        var fileDownloadManager =
+            new FileDownloadManager(httpRemoteService, httpRemoteService._logger, httpFileDownloadBuilder);
 
         var httpResponseMessage =
             httpRemoteService.Send(fileDownloadManager.RequestBuilder, HttpCompletionOption.ResponseHeadersRead,

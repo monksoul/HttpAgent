@@ -32,7 +32,7 @@ public class HttpFileDownloadBuilderTests
         Assert.Null(builder2.OnTransferFailed);
         Assert.Null(builder2.OnFileExistAndSkip);
         Assert.Null(builder2.FileTransferEventHandlerType);
-        Assert.Equal(TimeSpan.FromSeconds(30), builder2.ChunkTimeout);
+        Assert.Equal(TimeSpan.FromSeconds(100), builder2.ChunkTimeout);
         Assert.Equal(3, builder2.ChunkMaxRetries);
         Assert.Null(builder2._configureRequest);
         Assert.Null(builder2.Configure);
@@ -182,6 +182,35 @@ public class HttpFileDownloadBuilderTests
         var builder2 = new HttpFileDownloadBuilder(HttpMethod.Get, null);
         builder2.SetChunkMaxRetries(5);
         Assert.Equal(5, builder2.ChunkMaxRetries);
+    }
+
+    [Fact]
+    public void EnableHighSpeedMode_Invalid_Parameters()
+    {
+        var builder = new HttpFileDownloadBuilder(HttpMethod.Get, null);
+
+        var exception = Assert.Throws<ArgumentException>(() => builder.EnableHighSpeedMode(0));
+        Assert.Equal("Max Threads must be greater than 0. (Parameter 'maxThreads')", exception.Message);
+
+        var exception2 = Assert.Throws<ArgumentException>(() => builder.EnableHighSpeedMode(-1));
+        Assert.Equal("Max Threads must be greater than 0. (Parameter 'maxThreads')", exception2.Message);
+    }
+
+    [Fact]
+    public void EnableHighSpeedMode_ReturnOK()
+    {
+        var builder = new HttpFileDownloadBuilder(HttpMethod.Get, null);
+        builder.EnableHighSpeedMode();
+        Assert.Equal(4, builder.MaxThreads);
+        Assert.Equal(4 * 1024 * 1024, builder.BufferSize);
+        Assert.Equal(5, builder.ChunkMaxRetries);
+        Assert.Equal(TimeSpan.FromMinutes(2), builder.ChunkTimeout);
+
+        builder.EnableHighSpeedMode(8);
+        Assert.Equal(8, builder.MaxThreads);
+        Assert.Equal(4 * 1024 * 1024, builder.BufferSize);
+        Assert.Equal(5, builder.ChunkMaxRetries);
+        Assert.Equal(TimeSpan.FromMinutes(2), builder.ChunkTimeout);
     }
 
     [Fact]
