@@ -51,7 +51,7 @@ public class ValidationDeclarativeExtractorTests
     }
 
     [Fact]
-    public void ValidateParameter_Invalid_Parameter()
+    public void ValidateParameter_Invalid_Parameters()
     {
         Assert.Throws<ArgumentNullException>(() =>
             ValidationDeclarativeExtractor.ValidateParameter(null!, null));

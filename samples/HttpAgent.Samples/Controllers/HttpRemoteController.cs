@@ -73,10 +73,7 @@ public class HttpRemoteController : ControllerBase
         // 空检查
         ArgumentNullException.ThrowIfNull(httpContext);
 
-        httpContext.Response.ContentType = "text/event-stream";
-        httpContext.Response.Headers.CacheControl = "no-cache";
-        httpContext.Response.Headers.Connection = "keep-alive";
-        httpContext.Response.Headers["X-Accel-Buffering"] = "no";
+        httpContext.Response.EnableServerSentEvents();
 
         // 模拟事件流
         var eventId = 0;

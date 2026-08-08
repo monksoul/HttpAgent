@@ -12,10 +12,8 @@ public class FileDownloadManagerTests
     {
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
-        Assert.Throws<ArgumentNullException>(() => new FileDownloadManager(null!, null!, null!));
-        Assert.Throws<ArgumentNullException>(() => new FileDownloadManager(httpRemoteService, null!, null!));
-        Assert.Throws<ArgumentNullException>(() =>
-            new FileDownloadManager(httpRemoteService, httpRemoteService._logger, null!));
+        Assert.Throws<ArgumentNullException>(() => new FileDownloadManager(null!, null!));
+        Assert.Throws<ArgumentNullException>(() => new FileDownloadManager(httpRemoteService, null!));
 
         serviceProvider.Dispose();
     }
@@ -24,13 +22,12 @@ public class FileDownloadManagerTests
     public void New_ReturnOK()
     {
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
-        var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpRemoteService._logger,
+        var fileDownloadManager = new FileDownloadManager(httpRemoteService,
             new HttpFileDownloadBuilder(HttpMethod.Get, new Uri("http://localhost:5000")).SetDestinationPath(
                 @"C:\Workspaces"));
 
         Assert.NotNull(fileDownloadManager._httpFileDownloadBuilder);
         Assert.NotNull(fileDownloadManager._httpRemoteService);
-        Assert.NotNull(fileDownloadManager._logger);
         Assert.NotNull(fileDownloadManager._progressChannel);
         Assert.Equal("SingleConsumerUnboundedChannel`1", fileDownloadManager._progressChannel.GetType().Name);
         Assert.NotNull(fileDownloadManager.RequestBuilder);
@@ -38,7 +35,7 @@ public class FileDownloadManagerTests
         Assert.Equal(0, fileDownloadManager._totalBytesReceived);
         Assert.NotNull(fileDownloadManager._throttler);
 
-        var fileDownloadManager2 = new FileDownloadManager(httpRemoteService, httpRemoteService._logger,
+        var fileDownloadManager2 = new FileDownloadManager(httpRemoteService,
             new HttpFileDownloadBuilder(HttpMethod.Get, new Uri("http://localhost:5000")).SetDestinationPath(
                 @"C:\Workspaces").With(builder => builder.SetTimeout(100)));
         Assert.NotNull(fileDownloadManager2.RequestBuilder);
@@ -71,7 +68,7 @@ public class FileDownloadManagerTests
             new HttpFileDownloadBuilder(HttpMethod.Get, new Uri("https://furion.net/index.html")).SetDestinationPath(
                 @"C:\Workspaces\");
         var fileDownloadManager =
-            new FileDownloadManager(httpRemoteService, httpRemoteService._logger, httpFileDownloadBuilder);
+            new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         var httpResponseMessage =
             httpRemoteService.Send(fileDownloadManager.RequestBuilder, HttpCompletionOption.ResponseHeadersRead,
@@ -107,7 +104,7 @@ public class FileDownloadManagerTests
             new HttpFileDownloadBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test")).SetDestinationPath(
                 @"C:\Workspaces\");
         var fileDownloadManager =
-            new FileDownloadManager(httpRemoteService, httpRemoteService._logger, httpFileDownloadBuilder);
+            new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         var httpResponseMessage =
             await httpRemoteService.SendAsync(fileDownloadManager.RequestBuilder,
@@ -156,7 +153,7 @@ public class FileDownloadManagerTests
             new HttpFileDownloadBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test")).SetDestinationPath(
                 @"C:\Workspaces\");
         var fileDownloadManager =
-            new FileDownloadManager(httpRemoteService, httpRemoteService._logger, httpFileDownloadBuilder);
+            new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         var httpResponseMessage =
             await httpRemoteService.SendAsync(fileDownloadManager.RequestBuilder,
@@ -177,7 +174,7 @@ public class FileDownloadManagerTests
         var httpFileDownloadBuilder =
             new HttpFileDownloadBuilder(HttpMethod.Get, new Uri("https://furion.net")).SetDestinationPath(filePath);
         var fileDownloadManager =
-            new FileDownloadManager(httpRemoteService, httpRemoteService._logger, httpFileDownloadBuilder);
+            new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         var httpResponseMessage =
             httpRemoteService.Send(fileDownloadManager.RequestBuilder, HttpCompletionOption.ResponseHeadersRead,
@@ -206,7 +203,7 @@ public class FileDownloadManagerTests
                 new HttpFileDownloadBuilder(HttpMethod.Get, new Uri("https://furion.net"))
                     .SetDestinationPath(baseDir);
             var fileDownloadManager =
-                new FileDownloadManager(httpRemoteService, httpRemoteService._logger, httpFileDownloadBuilder);
+                new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
             var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK)
             {
@@ -245,7 +242,7 @@ public class FileDownloadManagerTests
 
             var builder = new HttpFileDownloadBuilder(HttpMethod.Get, new Uri("https://furion.net/720153914265669.png"))
                 .SetDestinationPath(tempDir);
-            var manager = new FileDownloadManager(httpRemoteService, httpRemoteService._logger, builder);
+            var manager = new FileDownloadManager(httpRemoteService, builder);
 
             var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK)
             {
@@ -286,7 +283,7 @@ public class FileDownloadManagerTests
 
         var builder = new HttpFileDownloadBuilder(HttpMethod.Get, new Uri("https://furion.net/720153914265669.png"))
             .SetDestinationPath(nonExistentFilePath);
-        var manager = new FileDownloadManager(httpRemoteService, httpRemoteService._logger, builder);
+        var manager = new FileDownloadManager(httpRemoteService, builder);
 
         var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK)
         {
@@ -311,7 +308,7 @@ public class FileDownloadManagerTests
             new HttpFileDownloadBuilder(HttpMethod.Get, new Uri("https://furion.net")).SetDestinationPath(
                 @"C:\Workspaces\index.html");
         var fileDownloadManager =
-            new FileDownloadManager(httpRemoteService, httpRemoteService._logger, httpFileDownloadBuilder);
+            new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         var httpResponseMessage =
             httpRemoteService.Send(fileDownloadManager.RequestBuilder, HttpCompletionOption.ResponseHeadersRead,
@@ -320,13 +317,13 @@ public class FileDownloadManagerTests
         Assert.True(fileDownloadManager.ShouldContinueWithDownload(httpResponseMessage!, out var destinationPath));
         Assert.Equal(@"C:\Workspaces\index.html", destinationPath);
 
-        var fileDownloadManager2 = new FileDownloadManager(httpRemoteService, httpRemoteService._logger,
+        var fileDownloadManager2 = new FileDownloadManager(httpRemoteService,
             httpFileDownloadBuilder.SetFileExistsBehavior(FileExistsBehavior.CreateNew));
         Assert.True(fileDownloadManager2.ShouldContinueWithDownload(httpResponseMessage!, out var destinationPath2));
         Assert.Equal(@"C:\Workspaces\index.html", destinationPath2);
 
         var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
-        var fileDownloadManager3 = new FileDownloadManager(httpRemoteService, httpRemoteService._logger,
+        var fileDownloadManager3 = new FileDownloadManager(httpRemoteService,
             httpFileDownloadBuilder.SetFileExistsBehavior(FileExistsBehavior.Skip).SetDestinationPath(filePath));
         Assert.False(fileDownloadManager3.ShouldContinueWithDownload(httpResponseMessage!, out var destinationPath3));
         Assert.Equal(filePath, destinationPath3);
@@ -348,7 +345,7 @@ public class FileDownloadManagerTests
                 await Task.CompletedTask;
             }).SetProgressInterval(TimeSpan.FromMilliseconds(50));
         var fileDownloadManager =
-            new FileDownloadManager(httpRemoteService, httpRemoteService._logger, httpFileDownloadBuilder);
+            new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         using var progressCancellationTokenSource = new CancellationTokenSource();
         var reportProgressTask =
@@ -389,7 +386,7 @@ public class FileDownloadManagerTests
 #pragma warning restore CS0162 // 检测到不可到达的代码
             }).SetProgressInterval(TimeSpan.FromMilliseconds(50));
         var fileDownloadManager =
-            new FileDownloadManager(httpRemoteService, httpRemoteService._logger, httpFileDownloadBuilder);
+            new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         using var progressCancellationTokenSource = new CancellationTokenSource();
         var reportProgressTask =
@@ -423,7 +420,7 @@ public class FileDownloadManagerTests
             new HttpFileDownloadBuilder(HttpMethod.Get, new Uri("https://furion.net")).SetDestinationPath(
                 @"C:\Workspaces\index.html").SetOnTransferStarted(() => throw new Exception("出错了"));
         var fileDownloadManager =
-            new FileDownloadManager(httpRemoteService, httpRemoteService._logger, httpFileDownloadBuilder);
+            new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         fileDownloadManager.HandleTransferStarted();
 
@@ -440,7 +437,7 @@ public class FileDownloadManagerTests
             new HttpFileDownloadBuilder(HttpMethod.Get, new Uri("https://furion.net")).SetDestinationPath(
                 @"C:\Workspaces\index.html").SetOnTransferCompleted(_ => throw new Exception("出错了"));
         var fileDownloadManager =
-            new FileDownloadManager(httpRemoteService, httpRemoteService._logger, httpFileDownloadBuilder);
+            new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         fileDownloadManager.HandleTransferCompleted(100);
 
@@ -457,7 +454,7 @@ public class FileDownloadManagerTests
             new HttpFileDownloadBuilder(HttpMethod.Get, new Uri("https://furion.net")).SetDestinationPath(
                 @"C:\Workspaces\index.html").SetOnTransferFailed(_ => throw new Exception("出错了"));
         var fileDownloadManager =
-            new FileDownloadManager(httpRemoteService, httpRemoteService._logger, httpFileDownloadBuilder);
+            new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         fileDownloadManager.HandleTransferFailed(new Exception("出错了"));
 
@@ -476,7 +473,7 @@ public class FileDownloadManagerTests
                 i++;
             });
         var fileDownloadManager =
-            new FileDownloadManager(httpRemoteService, httpRemoteService._logger, httpFileDownloadBuilder);
+            new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         fileDownloadManager.HandleFileExistAndSkip();
         Assert.Equal(1, i);
@@ -492,7 +489,7 @@ public class FileDownloadManagerTests
             new HttpFileDownloadBuilder(HttpMethod.Get, new Uri("https://furion.net")).SetDestinationPath(
                 @"C:\Workspaces\index.html");
         var fileDownloadManager =
-            new FileDownloadManager(httpRemoteService, httpRemoteService._logger, httpFileDownloadBuilder);
+            new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         await Assert.ThrowsAsync<ArgumentNullException>(async () =>
             await fileDownloadManager.HandleProgressChangedAsync(null!));
@@ -510,7 +507,7 @@ public class FileDownloadManagerTests
             new HttpFileDownloadBuilder(HttpMethod.Get, new Uri("https://furion.net")).SetDestinationPath(
                 @"C:\Workspaces\index.html");
         var fileDownloadManager =
-            new FileDownloadManager(httpRemoteService, httpRemoteService._logger, httpFileDownloadBuilder);
+            new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         var fileTransferProgress =
             new FileTransferProgress(@"C:\Workspaces\index.html", -1);
@@ -524,7 +521,7 @@ public class FileDownloadManagerTests
         });
 
         var fileDownloadManager2 =
-            new FileDownloadManager(httpRemoteService, httpRemoteService._logger, httpFileDownloadBuilder);
+            new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
         await fileDownloadManager2.HandleProgressChangedAsync(fileTransferProgress);
 
         Assert.Equal(1, i);
@@ -532,7 +529,7 @@ public class FileDownloadManagerTests
 
         httpFileDownloadBuilder.SetEventHandler<CustomFileTransferEventHandler>();
         var fileDownloadManager3 =
-            new FileDownloadManager(httpRemoteService, httpRemoteService._logger, httpFileDownloadBuilder);
+            new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
         await fileDownloadManager3.HandleProgressChangedAsync(fileTransferProgress);
 
         Assert.Equal(1, customFileTransferEventHandler.counter2);
@@ -641,7 +638,7 @@ public class FileDownloadManagerTests
             new HttpFileDownloadBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test")).SetDestinationPath(
                 destinationPath);
         var fileDownloadManager =
-            new FileDownloadManager(httpRemoteService, httpRemoteService._logger, httpFileDownloadBuilder);
+            new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         // ReSharper disable once MethodHasAsyncOverload
         var fileTransferResult = fileDownloadManager.Start(TestContext.Current.CancellationToken);
@@ -694,7 +691,7 @@ public class FileDownloadManagerTests
                 await Task.CompletedTask;
             });
         var fileDownloadManager =
-            new FileDownloadManager(httpRemoteService, httpRemoteService._logger, httpFileDownloadBuilder);
+            new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         using var cancellationTokenSource = new CancellationTokenSource();
         cancellationTokenSource.CancelAfter(100);
@@ -749,7 +746,7 @@ public class FileDownloadManagerTests
                 await Task.CompletedTask;
             });
         var fileDownloadManager =
-            new FileDownloadManager(httpRemoteService, httpRemoteService._logger, httpFileDownloadBuilder);
+            new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         // ReSharper disable once MethodHasAsyncOverload
         var fileTransferResult = fileDownloadManager.Start(TestContext.Current.CancellationToken);
@@ -809,7 +806,7 @@ public class FileDownloadManagerTests
                 Console.WriteLine($"下载完成 {elapsed}");
             });
         var fileDownloadManager =
-            new FileDownloadManager(httpRemoteService, httpRemoteService._logger, httpFileDownloadBuilder);
+            new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         // ReSharper disable once MethodHasAsyncOverload
         var fileTransferResult = fileDownloadManager.Start(TestContext.Current.CancellationToken);
@@ -872,7 +869,7 @@ public class FileDownloadManagerTests
             }).SetEventHandler<CustomFileTransferEventHandler>();
 
         var fileDownloadManager =
-            new FileDownloadManager(httpRemoteService, httpRemoteService._logger, httpFileDownloadBuilder);
+            new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         // ReSharper disable once MethodHasAsyncOverload
         var fileTransferResult = fileDownloadManager.Start(TestContext.Current.CancellationToken);
@@ -940,7 +937,7 @@ public class FileDownloadManagerTests
                 Console.WriteLine($"下载出错 {e.Message}");
             });
         var fileDownloadManager =
-            new FileDownloadManager(httpRemoteService, httpRemoteService._logger, httpFileDownloadBuilder);
+            new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         Assert.Throws<HttpRequestException>(() =>
         {
@@ -984,7 +981,7 @@ public class FileDownloadManagerTests
             new HttpFileDownloadBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test")).SetDestinationPath(
                 destinationPath);
         var fileDownloadManager =
-            new FileDownloadManager(httpRemoteService, httpRemoteService._logger, httpFileDownloadBuilder);
+            new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         var fileTransferResult = await fileDownloadManager.StartAsync(TestContext.Current.CancellationToken);
 
@@ -1036,7 +1033,7 @@ public class FileDownloadManagerTests
                 await Task.CompletedTask;
             });
         var fileDownloadManager =
-            new FileDownloadManager(httpRemoteService, httpRemoteService._logger, httpFileDownloadBuilder);
+            new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         using var cancellationTokenSource = new CancellationTokenSource();
         cancellationTokenSource.CancelAfter(100);
@@ -1086,7 +1083,7 @@ public class FileDownloadManagerTests
                 await Task.CompletedTask;
             });
         var fileDownloadManager =
-            new FileDownloadManager(httpRemoteService, httpRemoteService._logger, httpFileDownloadBuilder);
+            new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         var fileTransferResult = await fileDownloadManager.StartAsync(TestContext.Current.CancellationToken);
 
@@ -1145,7 +1142,7 @@ public class FileDownloadManagerTests
                 Console.WriteLine($"下载完成 {elapsed}");
             });
         var fileDownloadManager =
-            new FileDownloadManager(httpRemoteService, httpRemoteService._logger, httpFileDownloadBuilder);
+            new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         var fileTransferResult = await fileDownloadManager.StartAsync(TestContext.Current.CancellationToken);
 
@@ -1207,7 +1204,7 @@ public class FileDownloadManagerTests
             }).SetEventHandler<CustomFileTransferEventHandler>();
 
         var fileDownloadManager =
-            new FileDownloadManager(httpRemoteService, httpRemoteService._logger, httpFileDownloadBuilder);
+            new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         var fileTransferResult = await fileDownloadManager.StartAsync(TestContext.Current.CancellationToken);
 
@@ -1274,7 +1271,7 @@ public class FileDownloadManagerTests
                 Console.WriteLine($"下载出错 {e.Message}");
             });
         var fileDownloadManager =
-            new FileDownloadManager(httpRemoteService, httpRemoteService._logger, httpFileDownloadBuilder);
+            new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         await Assert.ThrowsAsync<HttpRequestException>(async () =>
         {
@@ -1300,7 +1297,7 @@ public class FileDownloadManagerTests
                 .SetDestinationPath(
                     @"C:\Workspaces\R-C.jpg").SetMaxThreads(2);
         var fileDownloadManager =
-            new FileDownloadManager(httpRemoteService, httpRemoteService._logger, httpFileDownloadBuilder);
+            new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         var httpResponseMessage = new HttpResponseMessage();
         httpResponseMessage.Content = new StringContent("测试文件内容", Encoding.UTF8, "text/plain");
@@ -1327,7 +1324,7 @@ public class FileDownloadManagerTests
                 .SetDestinationPath(
                     @"C:\Workspaces\R-C.jpg").SetMaxThreads(2);
         var fileDownloadManager =
-            new FileDownloadManager(httpRemoteService, httpRemoteService._logger, httpFileDownloadBuilder);
+            new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         var httpResponseMessage = new HttpResponseMessage();
         httpResponseMessage.Content = new StringContent("测试文件内容", Encoding.UTF8, "text/plain");
@@ -1354,7 +1351,7 @@ public class FileDownloadManagerTests
             new HttpFileDownloadBuilder(HttpMethod.Get, new Uri("https://furion.net")).SetDestinationPath(
                 @"C:\Workspaces\index.html");
         var fileDownloadManager =
-            new FileDownloadManager(httpRemoteService, httpRemoteService._logger, httpFileDownloadBuilder);
+            new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         var httpResponseMessage = new HttpResponseMessage();
         httpResponseMessage.Content = new StringContent("测试文件内容", Encoding.UTF8, "text/plain");
@@ -1381,7 +1378,7 @@ public class FileDownloadManagerTests
             new HttpFileDownloadBuilder(HttpMethod.Get, new Uri("https://furion.net")).SetDestinationPath(
                 @"C:\Workspaces\index.html");
         var fileDownloadManager =
-            new FileDownloadManager(httpRemoteService, httpRemoteService._logger, httpFileDownloadBuilder);
+            new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         var httpResponseMessage = new HttpResponseMessage();
         httpResponseMessage.Content = new StringContent("测试文件内容", Encoding.UTF8, "text/plain");

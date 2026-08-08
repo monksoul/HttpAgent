@@ -701,12 +701,14 @@ public class HttpRequestBuilderTests
         compositeHttpContent.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
         httpRequestBuilder.RemoveContent();
         httpRequestBuilder.SetContent(compositeHttpContent, "text/plain");
+        httpRequestBuilder.WithHeader("Content-Language", "zh-cn");
         httpRequestBuilder.BuildAndSetContent(httpRequestMessage, httpContentProcessorFactory,
             httpRemoteOptions);
         Assert.Equal("text/plain", httpRequestBuilder.ContentType);
         Assert.NotNull(httpRequestBuilder.RawContent);
         Assert.NotNull(httpRequestMessage.Content);
         Assert.Equal(typeof(StringContent), httpRequestMessage.Content.GetType());
+        Assert.Equal("zh-cn", httpRequestMessage.Content.Headers.ContentLanguage.FirstOrDefault());
     }
 
     [Fact]
@@ -836,6 +838,13 @@ public class HttpRequestBuilderTests
             MultipartFile.CreateFromPath(Path.Combine(AppContext.BaseDirectory, "test.txt")));
         httpRequestBuilder15.SetDefaultContentType(MediaTypeNames.Application.Octet);
         Assert.Equal(MediaTypeNames.Application.Octet, httpRequestBuilder15.ContentType);
+
+        var httpRequestBuilder16 =
+            new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost")).WithHeader(
+                "Content-Type: application/json");
+        httpRequestBuilder16.SetContent("{}");
+        httpRequestBuilder16.SetDefaultContentType(MediaTypeNames.Application.Json);
+        Assert.Equal(MediaTypeNames.Application.Json, httpRequestBuilder16.ContentType);
     }
 
     [Fact]
@@ -926,21 +935,20 @@ public class HttpRequestBuilderTests
     }
 
     [Fact]
-    public void EnablePerformanceOptimization_ReturnOK()
+    public void EnableStandardRequestHeaders_ReturnOK()
     {
         var httpRequestBuilder =
             new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost/"));
         var finalRequestUri = httpRequestBuilder.BuildFinalRequestUri(null, new HttpRemoteOptions());
         var httpRequestMessage = new HttpRequestMessage(httpRequestBuilder.HttpMethod!, finalRequestUri);
 
-        httpRequestBuilder.EnablePerformanceOptimization(httpRequestMessage);
+        httpRequestBuilder.EnableStandardRequestHeaders(httpRequestMessage);
         Assert.Empty(httpRequestMessage.Headers);
 
-        httpRequestBuilder.PerformanceOptimization();
-        httpRequestBuilder.EnablePerformanceOptimization(httpRequestMessage);
+        httpRequestBuilder.UseStandardRequestHeaders();
+        httpRequestBuilder.EnableStandardRequestHeaders(httpRequestMessage);
         Assert.NotEmpty(httpRequestMessage.Headers);
-        Assert.Equal("*/*", httpRequestMessage.Headers.Accept.ToString());
-        Assert.Equal("gzip, deflate, br", httpRequestMessage.Headers.AcceptEncoding.ToString());
+        Assert.Equal("application/json, text/plain; q=0.9, */*; q=0.8", httpRequestMessage.Headers.Accept.ToString());
         Assert.False(httpRequestMessage.Headers.ConnectionClose);
     }
 

@@ -425,7 +425,7 @@ public class HttpFileDownloadBuilderTests
         Assert.Equal("http://localhost/", httpRequestBuilder.RequestUri.ToString());
         Assert.True(httpRequestBuilder.EnsureSuccessStatusCodeEnabled);
         Assert.Null(httpRequestBuilder.RequestEventHandlerType);
-        Assert.True(httpRequestBuilder.PerformanceOptimizationEnabled);
+        Assert.True(httpRequestBuilder.StandardRequestHeadersEnabled);
         Assert.True(httpRequestBuilder.ProfilerEnabled);
 
         var httpRequestBuilder2 = httpFileDownloadBuilder.SetEventHandler<CustomFileTransferEventHandler2>()

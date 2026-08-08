@@ -37,8 +37,7 @@ public class HttpDeclarativeBuilderTests
             { typeof(BaseAddressDeclarativeExtractor), new BaseAddressDeclarativeExtractor() },
             { typeof(ValidationDeclarativeExtractor), new ValidationDeclarativeExtractor() },
             {
-                typeof(PerformanceOptimizationDeclarativeExtractor),
-                new PerformanceOptimizationDeclarativeExtractor()
+                typeof(StandardRequestHeadersDeclarativeExtractor), new StandardRequestHeadersDeclarativeExtractor()
             },
             { typeof(AutoSetHostHeaderDeclarativeExtractor), new AutoSetHostHeaderDeclarativeExtractor() },
             { typeof(HttpClientNameDeclarativeExtractor), new HttpClientNameDeclarativeExtractor() },
@@ -159,8 +158,7 @@ public class HttpDeclarativeBuilderTests
             { typeof(BaseAddressDeclarativeExtractor), new BaseAddressDeclarativeExtractor() },
             { typeof(ValidationDeclarativeExtractor), new ValidationDeclarativeExtractor() },
             {
-                typeof(PerformanceOptimizationDeclarativeExtractor),
-                new PerformanceOptimizationDeclarativeExtractor()
+                typeof(StandardRequestHeadersDeclarativeExtractor), new StandardRequestHeadersDeclarativeExtractor()
             },
             { typeof(AutoSetHostHeaderDeclarativeExtractor), new AutoSetHostHeaderDeclarativeExtractor() },
             { typeof(HttpClientNameDeclarativeExtractor), new HttpClientNameDeclarativeExtractor() },

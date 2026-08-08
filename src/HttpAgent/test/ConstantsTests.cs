@@ -82,4 +82,8 @@ public class ConstantsTests
     [Fact]
     public void ETAG_CACHED_KEY() =>
         Assert.Equal("__ETAG_CACHED__", Constants.ETAG_CACHED_KEY);
+
+    [Fact]
+    public void CURL_COMMAND_KEY() =>
+        Assert.Equal("CURL_COMMAND", Constants.CURL_COMMAND_KEY);
 }

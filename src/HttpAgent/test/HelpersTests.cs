@@ -15,7 +15,7 @@ public class HelpersTests
         var httpFileDownloadBuilder =
             new HttpFileDownloadBuilder(HttpMethod.Get, new Uri("https://furion.net")).SetDestinationPath(filePath);
         var fileDownloadManager =
-            new FileDownloadManager(httpRemoteService, httpRemoteService._logger, httpFileDownloadBuilder);
+            new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
         var httpResponseMessage =
             httpRemoteService.Send(fileDownloadManager.RequestBuilder, HttpCompletionOption.ResponseHeadersRead,
@@ -30,6 +30,32 @@ public class HelpersTests
         Assert.NotNull(stream2);
 
         serviceProvider.Dispose();
+    }
+
+    [Fact]
+    public void TrySplitHeader_ReturnOK()
+    {
+        Assert.False(HttpAgent.Helpers.TrySplitHeader(null!, out _, out _));
+        Assert.False(HttpAgent.Helpers.TrySplitHeader(string.Empty, out _, out _));
+        Assert.False(HttpAgent.Helpers.TrySplitHeader(" ", out _, out _));
+        Assert.False(HttpAgent.Helpers.TrySplitHeader("Content-Type", out _, out _));
+
+        Assert.True(HttpAgent.Helpers.TrySplitHeader("Content-Type:", out var key1, out var value1));
+        Assert.Equal("Content-Type", key1);
+        Assert.NotNull(value1);
+        Assert.Empty(value1);
+
+        Assert.True(HttpAgent.Helpers.TrySplitHeader("Content-Type: application/json", out var key2,
+            out var value2));
+        Assert.Equal("Content-Type", key2);
+        Assert.NotNull(value2);
+        Assert.Equal("application/json", value2);
+
+        Assert.True(HttpAgent.Helpers.TrySplitHeader("X-Emoji: :rocket:", out var key3,
+            out var value3));
+        Assert.Equal("X-Emoji", key3);
+        Assert.NotNull(value3);
+        Assert.Equal(":rocket:", value3);
     }
 
     [Fact]

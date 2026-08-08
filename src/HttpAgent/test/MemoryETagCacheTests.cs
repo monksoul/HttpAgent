@@ -15,7 +15,7 @@ public class MemoryETagCacheTests
     }
 
     [Fact]
-    public void TryGet_Invalid_Parameter()
+    public void TryGet_Invalid_Parameters()
     {
         var memoryETagCache = new MemoryETagCache();
         Assert.Throws<ArgumentNullException>(() => memoryETagCache.TryGet(null!, out _));
@@ -35,7 +35,7 @@ public class MemoryETagCacheTests
     }
 
     [Fact]
-    public void Set_Invalid_Parameter()
+    public void Set_Invalid_Parameters()
     {
         var memoryETagCache = new MemoryETagCache();
         Assert.Throws<ArgumentNullException>(() => memoryETagCache.Set(null!, null!));
@@ -57,7 +57,7 @@ public class MemoryETagCacheTests
     }
 
     [Fact]
-    public void Remove_Invalid_Parameter()
+    public void Remove_Invalid_Parameters()
     {
         var memoryETagCache = new MemoryETagCache();
         Assert.Throws<ArgumentNullException>(() => memoryETagCache.Remove(null!));

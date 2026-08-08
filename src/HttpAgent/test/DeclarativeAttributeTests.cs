@@ -374,17 +374,17 @@ public class DeclarativeAttributeTests
     }
 
     [Fact]
-    public void PerformanceOptimizationAttribute_ReturnOK()
+    public void StandardRequestHeadersAttribute_ReturnOK()
     {
-        var attributeUsage = typeof(PerformanceOptimizationAttribute).GetCustomAttribute<AttributeUsageAttribute>();
+        var attributeUsage = typeof(StandardRequestHeadersAttribute).GetCustomAttribute<AttributeUsageAttribute>();
         Assert.NotNull(attributeUsage);
         Assert.Equal(AttributeTargets.Method | AttributeTargets.Interface, attributeUsage.ValidOn);
         Assert.False(attributeUsage.AllowMultiple);
 
-        var attribute = new PerformanceOptimizationAttribute();
+        var attribute = new StandardRequestHeadersAttribute();
         Assert.True(attribute.Enabled);
 
-        var attribute2 = new PerformanceOptimizationAttribute(false);
+        var attribute2 = new StandardRequestHeadersAttribute(false);
         Assert.False(attribute2.Enabled);
     }
 

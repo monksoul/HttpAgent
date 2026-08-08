@@ -42,14 +42,16 @@ integration**, and is characterized by low resource consumption and high test co
   returns `304 Not Modified`, reducing data transfer.
 - **Media Type Handling**: Provides predefined handling mechanisms for mainstream `MediaTypes` and offers an open
   interface for custom handling.
-- **Declarative Requests**: Specifying the behavior of requests through simple attribute annotations or interface
-  definitions.
 - **`MessagePack` Support**: Integrates `MessagePack` serialization and deserialization capabilities to enhance data
   exchange efficiency.
 - **`WebService` Support**: Comprehensive support for `SOAP` and `RESTful WebService`, including automatic client proxy
   generation, `WSDL` parsing, `XML/JSON` data binding, simplifying integration and interaction.
 - **`OData` Support**: Built-in `OData` client with support for standard query options including `$filter`, `$select`,
   and `$expand`, streamlining `OData` service integration.
+- **`cURL` Command Parsing**: Initiate HTTP requests directly from native `cURL` command strings, covering common
+  options and freely extensible with custom flags.
+- **Declarative Requests**: Specifying the behavior of requests through simple attribute annotations or interface
+  definitions.
 - **Flexible Response Transformation**: Provides common `HTTP` response transformers and supports custom transformation
   logic.
 - **High Performance and Resource Management**: Employs memory optimization techniques and connection pool management to

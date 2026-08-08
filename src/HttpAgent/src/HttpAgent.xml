@@ -1329,6 +1329,16 @@
                 <see cref="T:HttpAgent.HttpDeclarativeBuilder" />
             </returns>
         </member>
+        <member name="M:HttpAgent.HttpBuilder.FromCurl(System.String,System.Action{HttpAgent.HttpCurlParsingOptions})">
+            <summary>
+                从 cURL 命令字符串中创建 <see cref="T:HttpAgent.HttpRequestBuilder" /> 实例
+            </summary>
+            <param name="curlCommand">cURL 命令字符串</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
         <member name="M:HttpAgent.HttpBuilder.FromJson(System.String,System.Action{System.Text.Json.Nodes.JsonObject,HttpAgent.HttpRequestBuilder})">
             <summary>
                 从 JSON 中创建 <see cref="T:HttpAgent.HttpRequestBuilder" /> 实例
@@ -2859,9 +2869,9 @@
                 <see cref="T:System.Net.Http.HttpRequestMessage" />
             </param>
         </member>
-        <member name="M:HttpAgent.HttpRequestBuilder.EnablePerformanceOptimization(System.Net.Http.HttpRequestMessage)">
+        <member name="M:HttpAgent.HttpRequestBuilder.EnableStandardRequestHeaders(System.Net.Http.HttpRequestMessage)">
             <summary>
-                启用性能优化
+                启用标准请求标头
             </summary>
             <param name="httpRequestMessage">
                 <see cref="T:System.Net.Http.HttpRequestMessage" />
@@ -3071,6 +3081,34 @@
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
         </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.AppendContent(System.Object)">
+            <summary>
+                追加请求内容
+            </summary>
+            <remarks>
+                <para>仅当 <see cref="P:HttpAgent.HttpRequestBuilder.RawContent" /> 不为空时有效。</para>
+                <para>该方法仅负责合并内容，不会改变已有的 <see cref="P:HttpAgent.HttpRequestBuilder.ContentType" /> 和 <see cref="P:HttpAgent.HttpRequestBuilder.ContentEncoding" />。</para>
+                <para>支持多次调用，根据 <see cref="P:HttpAgent.HttpRequestBuilder.RawContent" /> 与传入内容的类型进行智能合并：</para>
+                <list type="bullet">
+                    <item>
+                        <description>字符串 + 字符串：使用 <c>&amp;</c> 拼接</description>
+                    </item>
+                    <item>
+                        <description>字典 + 字典：合并键值对（已存在的键更新值）</description>
+                    </item>
+                    <item>
+                        <description>列表 + 集合：追加元素</description>
+                    </item>
+                    <item>
+                        <description>其他情况：覆盖原有内容</description>
+                    </item>
+                </list>
+            </remarks>
+            <param name="rawContent">原始请求内容</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
         <member name="M:HttpAgent.HttpRequestBuilder.SetMultipartContent(System.Action{HttpAgent.HttpMultipartFormDataBuilder})">
             <summary>
                 设置多部分表单内容，请求类型为 <c>multipart/form-data</c>
@@ -3125,6 +3163,18 @@
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
             <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.WithHeader(System.String,System.Boolean,System.Boolean)">
+            <summary>
+                设置请求标头
+            </summary>
+            <remarks>支持多次调用。</remarks>
+            <param name="headerValue">请求标头值格式化字符串</param>
+            <param name="escape">是否转义字符串，默认 <c>false</c></param>
+            <param name="replace">是否替换已存在的请求标头。默认值为 <c>false</c></param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.WithHeader(System.String,System.Object,System.Boolean,System.Boolean,System.String)">
             <summary>
@@ -3862,20 +3912,18 @@
             </returns>
             <exception cref="T:System.ArgumentNullException"></exception>
         </member>
-        <member name="M:HttpAgent.HttpRequestBuilder.PerformanceOptimization">
+        <member name="M:HttpAgent.HttpRequestBuilder.UseStandardRequestHeaders">
             <summary>
-                设置是否启用性能优化
+                设置启用标准请求标头
             </summary>
-            <remarks>当需要返回 <see cref="T:System.IO.Stream" /> 内容或进行 <c>HttpContext</c> 网页转发时，请勿启用此配置，因为流会因压缩而变得不可读，同时该配置也不适用于网页转发的场景。</remarks>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpRequestBuilder.PerformanceOptimization(System.Boolean)">
+        <member name="M:HttpAgent.HttpRequestBuilder.UseStandardRequestHeaders(System.Boolean)">
             <summary>
-                设置是否启用性能优化
+                设置是否启用标准请求标头
             </summary>
-            <remarks>当需要返回 <see cref="T:System.IO.Stream" /> 内容或进行 <c>HttpContext</c> 网页转发时，请勿启用此配置，因为流会因压缩而变得不可读，同时该配置也不适用于网页转发的场景。</remarks>
             <param name="enabled">是否启用</param>
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
@@ -4203,6 +4251,16 @@
             </returns>
             <exception cref="T:System.ArgumentNullException"></exception>
         </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.MergeContent(System.Object,System.Object)">
+            <summary>
+                合并请求内容
+            </summary>
+            <param name="existing">当前请求内容</param>
+            <param name="incoming">传入请求内容</param>
+            <returns>
+                <see cref="T:System.Object" />
+            </returns>
+        </member>
         <member name="M:HttpAgent.HttpRequestBuilder.ReleaseDisposables">
             <summary>
                 释放可释放的对象集合
@@ -4236,11 +4294,25 @@
             </returns>
             <exception cref="T:System.ArgumentNullException"></exception>
         </member>
-        <member name="F:HttpAgent.HttpRequestBuilder._cachedProperties">
+        <member name="M:HttpAgent.HttpRequestBuilder.SetRequestUri(System.Uri)">
+            <summary>
+                设置请求地址
+            </summary>
+            <param name="requestUri">请求地址</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="F:HttpAgent.HttpRequestBuilder.CachedProperties">
             <summary>
                 <see cref="T:HttpAgent.HttpRequestBuilder" /> 类型的所有实例属性信息
             </summary>
             <remarks>避免在每次调用 <see cref="M:HttpAgent.HttpRequestBuilder.Clone(System.String[])" /> 方法时重复进行反射操作，提升性能。</remarks>
+        </member>
+        <member name="F:HttpAgent.HttpRequestBuilder.KnownContentHeaders">
+            <summary>
+                已知标准内容标头集合
+            </summary>
         </member>
         <member name="P:HttpAgent.HttpRequestBuilder.RequestUri">
             <summary>
@@ -4280,6 +4352,11 @@
         <member name="P:HttpAgent.HttpRequestBuilder.Headers">
             <summary>
                 请求标头集合
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpRequestBuilder.ContentHeaders">
+            <summary>
+                请求内容标头集合
             </summary>
         </member>
         <member name="P:HttpAgent.HttpRequestBuilder.HeadersToRemove">
@@ -4515,9 +4592,9 @@
                 请求分析工具委托
             </summary>
         </member>
-        <member name="P:HttpAgent.HttpRequestBuilder.PerformanceOptimizationEnabled">
+        <member name="P:HttpAgent.HttpRequestBuilder.StandardRequestHeadersEnabled">
             <summary>
-                是否启用性能优化
+                是否启用标准请求标头
             </summary>
             <remarks>默认值为：<c>false</c>。</remarks>
         </member>
@@ -5424,6 +5501,18 @@
                 <see cref="T:HttpAgent.HttpDeclarativeBuilder" />
             </returns>
         </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.FromCurl(System.String,System.Action{HttpAgent.HttpCurlParsingOptions})">
+            <summary>
+                从 cURL 命令字符串中创建 <see cref="T:HttpAgent.HttpRequestBuilder" /> 实例
+            </summary>
+            <param name="curlCommand">cURL 命令字符串</param>
+            <param name="configure">自定义配置委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+            <exception cref="T:System.ArgumentException"></exception>
+            <exception cref="T:System.InvalidOperationException"></exception>
+        </member>
         <member name="M:HttpAgent.HttpRequestBuilder.FromJson(System.String,System.Action{System.Text.Json.Nodes.JsonObject,HttpAgent.HttpRequestBuilder})">
             <summary>
                 从 JSON 中创建 <see cref="T:HttpAgent.HttpRequestBuilder" /> 实例
@@ -6025,6 +6114,12 @@
                 <c>Options</c> 属性中读取。
             </remarks>
         </member>
+        <member name="F:HttpAgent.Constants.CURL_COMMAND_KEY">
+            <summary>
+                cURL 命令字符串键
+            </summary>
+            <remarks>被用于从 <see cref="T:System.Net.Http.HttpRequestMessage" /> 的 <c>Options</c> 属性中读取。</remarks>
+        </member>
         <member name="T:HttpAgent.FileExistsBehavior">
             <summary>
                 指定当目标文件已存在时的行为
@@ -6556,7 +6651,7 @@
         <member name="M:HttpAgent.Core.Converters.Json.FlexibleDateTimeConverter.Regex">
             <remarks>
             Pattern:<br/>
-            <code>^/Date\\(([+-]*\\d+)\\)/$</code><br/>
+            <code>^/Date\(([+-]*\d+)\)/$</code><br/>
             Options:<br/>
             <code>RegexOptions.CultureInvariant</code><br/>
             Explanation:<br/>
@@ -6564,7 +6659,7 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Match the string "/Date(".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [+-] atomically any number of times.<br/>
+                ○ Match a character in the set [+\-] atomically any number of times.<br/>
                 ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match the string ")/".<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
@@ -6585,7 +6680,7 @@
         <member name="M:HttpAgent.Core.Converters.Json.FlexibleDateTimeOffsetConverter.Regex">
             <remarks>
             Pattern:<br/>
-            <code>^/Date\\(([+-]*\\d+)([+-])(\\d{2})(\\d{2})\\)/$</code><br/>
+            <code>^/Date\(([+-]*\d+)([+-])(\d{2})(\d{2})\)/$</code><br/>
             Options:<br/>
             <code>RegexOptions.CultureInvariant</code><br/>
             Explanation:<br/>
@@ -6593,10 +6688,10 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Match the string "/Date(".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [+-] atomically any number of times.<br/>
+                ○ Match a character in the set [+\-] atomically any number of times.<br/>
                 ○ Match a Unicode digit atomically at least once.<br/>
             ○ 2nd capture group.<br/>
-                ○ Match a character in the set [+-].<br/>
+                ○ Match a character in the set [+\-].<br/>
             ○ 3rd capture group.<br/>
                 ○ Match a Unicode digit exactly 2 times.<br/>
             ○ 4th capture group.<br/>
@@ -7061,16 +7156,6 @@
                 <see cref="T:System.String" />
             </returns>
         </member>
-        <member name="M:HttpAgent.Core.Extensions.StringExtensions.IsUrlEncodedFormFormat(System.String)">
-            <summary>
-                验证字符串是否是 <c>application/x-www-form-urlencoded</c> 格式
-            </summary>
-            <param name="output">字符串</param>
-            <returns>
-                <see cref="T:System.Boolean" />
-            </returns>
-            <exception cref="T:System.ArgumentException"></exception>
-        </member>
         <member name="M:HttpAgent.Core.Extensions.StringExtensions.ResolveNestedPathFromDictionary(System.String,System.Collections.Generic.IDictionary{System.String,System.String})">
             <summary>
                 从字典中按路径逐级解析值
@@ -7163,7 +7248,7 @@
         <member name="M:HttpAgent.Core.Extensions.StringExtensions.PlaceholderRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\{\\s*(?:\\*\\*)?\\s*(\\w+(?:\\s*\\.\\s*\\w+|\\s*\\[\\s*\\d+\\s*\\])*)\\s*(\\?)?\\s*\\}</code><br/>
+            <code>\{\s*(?:\*\*)?\s*(\w+(?:\s*\.\s*\w+|\s*\[\s*\d+\s*\])*)\s*(\?)?\s*\}</code><br/>
             Explanation:<br/>
             <code>
             ○ Match '{'.<br/>
@@ -7174,14 +7259,13 @@
             ○ 1st capture group.<br/>
                 ○ Match a word character greedily at least once.<br/>
                 ○ Loop greedily any number of times.<br/>
+                    ○ Match a whitespace character atomically any number of times.<br/>
                     ○ Match with 2 alternative expressions.<br/>
                         ○ Match a sequence of expressions.<br/>
-                            ○ Match a whitespace character atomically any number of times.<br/>
                             ○ Match '.'.<br/>
                             ○ Match a whitespace character atomically any number of times.<br/>
                             ○ Match a word character greedily at least once.<br/>
                         ○ Match a sequence of expressions.<br/>
-                            ○ Match a whitespace character atomically any number of times.<br/>
                             ○ Match '['.<br/>
                             ○ Match a whitespace character atomically any number of times.<br/>
                             ○ Match a Unicode digit atomically at least once.<br/>
@@ -7199,7 +7283,7 @@
         <member name="M:HttpAgent.Core.Extensions.StringExtensions.ConfigurationKeyRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\[\\[\\s*(?:\\*\\*)?\\s*([\\w\\-:]+)((?:\\s*\\|\\s*[\\w\\-:]+)*)\\s*(?:\\|\\|\\s*([^\\]]*))?\\s*(\\?)?\\s*\\]\\]</code><br/>
+            <code>\[\[\s*(?:\*\*)?\s*([\w\-:]+)((?:\s*\|\s*[\w\-:]+)*)\s*(?:\|\|\s*([^\]]*))?\s*(\?)?\s*\]\]</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "[[".<br/>
@@ -7208,13 +7292,13 @@
                 ○ Match the string "**".<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [-:\w] greedily at least once.<br/>
+                ○ Match a character in the set [\-:\w] greedily at least once.<br/>
             ○ 2nd capture group.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match a whitespace character atomically any number of times.<br/>
                     ○ Match '|'.<br/>
                     ○ Match a whitespace character greedily any number of times.<br/>
-                    ○ Match a character in the set [-:\w] greedily at least once.<br/>
+                    ○ Match a character in the set [\-:\w] greedily at least once.<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ Optional (greedy).<br/>
                 ○ Match the string "||".<br/>
@@ -7227,47 +7311,6 @@
                     ○ Match '?'.<br/>
             ○ Match a whitespace character atomically any number of times.<br/>
             ○ Match the string "]]".<br/>
-            </code>
-            </remarks>
-        </member>
-        <member name="M:HttpAgent.Core.Extensions.StringExtensions.UrlEncodedFormFormatRegex">
-            <remarks>
-            Pattern:<br/>
-            <code>^(?:(?:[a-zA-Z0-9-._~]|%[0-9A-Fa-f]{2})+=(?:[a-zA-Z0-9-._~+]|%[0-9A-Fa-f]{2})*)(?:&amp;(?:[a-zA-Z0-9-._~]|%[0-9A-Fa-f]{2})+=(?:[a-zA-Z0-9-._~+]|%[0-9A-Fa-f]{2})*)*$</code><br/>
-            Options:<br/>
-            <code>RegexOptions.IgnorePatternWhitespace</code><br/>
-            Explanation:<br/>
-            <code>
-            ○ Match if at the beginning of the string.<br/>
-            ○ Loop greedily at least once.<br/>
-                ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
-                    ○ Match a sequence of expressions.<br/>
-                        ○ Match '%'.<br/>
-                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
-            ○ Match '='.<br/>
-            ○ Loop greedily any number of times.<br/>
-                ○ Match with 2 alternative expressions.<br/>
-                    ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
-                    ○ Match a sequence of expressions.<br/>
-                        ○ Match '%'.<br/>
-                        ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
-            ○ Loop greedily any number of times.<br/>
-                ○ Match '&amp;'.<br/>
-                ○ Loop greedily at least once.<br/>
-                    ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [-.0-9A-Z_a-z~].<br/>
-                        ○ Match a sequence of expressions.<br/>
-                            ○ Match '%'.<br/>
-                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
-                ○ Match '='.<br/>
-                ○ Loop greedily any number of times.<br/>
-                    ○ Match with 2 alternative expressions.<br/>
-                        ○ Match a character in the set [+-.0-9A-Z_a-z~].<br/>
-                        ○ Match a sequence of expressions.<br/>
-                            ○ Match '%'.<br/>
-                            ○ Match a character in the set [0-9A-Fa-f] exactly 2 times.<br/>
-            ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
             </remarks>
         </member>
@@ -8100,6 +8143,412 @@
                 <see cref="T:System.Int64" />
             </returns>
         </member>
+        <member name="T:HttpAgent.CurlAuthExtractor">
+            <summary>
+                cURL 身份认证提取器
+            </summary>
+        </member>
+        <member name="F:HttpAgent.CurlAuthExtractor._flagsWithArgument">
+            <summary>
+                需要携带参数的认证标志集合
+            </summary>
+        </member>
+        <member name="F:HttpAgent.CurlAuthExtractor._flagsWithoutArgument">
+            <summary>
+                不需要携带参数的认证方案标志集合
+            </summary>
+        </member>
+        <member name="M:HttpAgent.CurlAuthExtractor.TryExtract(HttpAgent.HttpRequestBuilder,HttpAgent.HttpCurlTokenExtractorContext)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.CurlAuthExtractor.ProcessAuthWithArgument(HttpAgent.HttpRequestBuilder,System.String,System.String)">
+            <summary>
+                处理带参数的认证标志
+            </summary>
+            <param name="httpRequestBuilder">
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </param>
+            <param name="flag">当前匹配的命令标志</param>
+            <param name="argument">携带的参数值</param>
+        </member>
+        <member name="M:HttpAgent.CurlAuthExtractor.ProcessAuthScheme(HttpAgent.HttpRequestBuilder,System.String)">
+            <summary>
+                处理不带参数的认证方案标志
+            </summary>
+            <param name="httpRequestBuilder">
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </param>
+            <param name="flag">当前匹配的命令标志</param>
+        </member>
+        <member name="T:HttpAgent.CurlCookieExtractor">
+            <summary>
+                cURL Cookies 提取器
+            </summary>
+        </member>
+        <member name="P:HttpAgent.CurlCookieExtractor.Flags">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.CurlCookieExtractor.Extract(HttpAgent.HttpRequestBuilder,System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="T:HttpAgent.CurlDataExtractor">
+            <summary>
+                cURL 请求内容提取器
+            </summary>
+        </member>
+        <member name="P:HttpAgent.CurlDataExtractor.Flags">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.CurlDataExtractor.Extract(HttpAgent.HttpRequestBuilder,System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="T:HttpAgent.CurlFormExtractor">
+            <summary>
+                cURL 多部分表单提取器
+            </summary>
+        </member>
+        <member name="P:HttpAgent.CurlFormExtractor.Flags">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.CurlFormExtractor.Extract(HttpAgent.HttpRequestBuilder,System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.CurlFormExtractor.ProcessFormItem(HttpAgent.HttpMultipartFormDataBuilder,System.String,System.String)">
+            <summary>
+                处理单个表单项
+            </summary>
+            <param name="multipart">
+                <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
+            </param>
+            <param name="name">表单名称</param>
+            <param name="rawValue">原始值</param>
+        </member>
+        <member name="M:HttpAgent.CurlFormExtractor.ProcessFileItem(HttpAgent.HttpMultipartFormDataBuilder,System.String,System.String)">
+            <summary>
+                处理文件表单项
+            </summary>
+            <remarks>支持格式：<c>@filepath</c>、<c>@filepath;type=mime/type</c>、<c>@filepath;filename=custom.txt</c></remarks>
+            <param name="multipart">
+                <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
+            </param>
+            <param name="name">表单名称</param>
+            <param name="filePart">文件部分字符串</param>
+        </member>
+        <member name="M:HttpAgent.CurlFormExtractor.ProcessTextItem(HttpAgent.HttpMultipartFormDataBuilder,System.String,System.String)">
+            <summary>
+                处理文本表单项
+            </summary>
+            <remarks>支持格式：<c>value</c>、<c>value;type=mime/type</c></remarks>
+            <param name="multipart">
+                <see cref="T:HttpAgent.HttpMultipartFormDataBuilder" />
+            </param>
+            <param name="name">表单名称</param>
+            <param name="textPart">文本部分字符串</param>
+        </member>
+        <member name="T:HttpAgent.CurlHeaderExtractor">
+            <summary>
+                cURL 请求标头提取器
+            </summary>
+        </member>
+        <member name="P:HttpAgent.CurlHeaderExtractor.Flags">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.CurlHeaderExtractor.Extract(HttpAgent.HttpRequestBuilder,System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="T:HttpAgent.CurlHeadExtractor">
+            <summary>
+                cURL HEAD 请求提取器
+            </summary>
+        </member>
+        <member name="P:HttpAgent.CurlHeadExtractor.Flags">
+            <inheritdoc />
+        </member>
+        <member name="P:HttpAgent.CurlHeadExtractor.RequiresArgument">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.CurlHeadExtractor.Extract(HttpAgent.HttpRequestBuilder,System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="T:HttpAgent.CurlMethodExtractor">
+            <summary>
+                cURL 请求方法提取器
+            </summary>
+        </member>
+        <member name="P:HttpAgent.CurlMethodExtractor.Flags">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.CurlMethodExtractor.Extract(HttpAgent.HttpRequestBuilder,System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="T:HttpAgent.CurlRefererExtractor">
+            <summary>
+                cURL Referer 提取器
+            </summary>
+        </member>
+        <member name="P:HttpAgent.CurlRefererExtractor.Flags">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.CurlRefererExtractor.Extract(HttpAgent.HttpRequestBuilder,System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="T:HttpAgent.CurlTimeoutExtractor">
+            <summary>
+                cURL 超时时间提取器
+            </summary>
+        </member>
+        <member name="P:HttpAgent.CurlTimeoutExtractor.Flags">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.CurlTimeoutExtractor.Extract(HttpAgent.HttpRequestBuilder,System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="T:HttpAgent.CurlUrlExtractor">
+            <summary>
+                cURL 请求地址提取器
+            </summary>
+        </member>
+        <member name="P:HttpAgent.CurlUrlExtractor.Order">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.CurlUrlExtractor.TryExtract(HttpAgent.HttpRequestBuilder,HttpAgent.HttpCurlTokenExtractorContext)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.CurlUrlExtractor.LooksLikeUrl(System.String)">
+            <summary>
+                检查 Token 是否看起来像 URL
+            </summary>
+            <param name="token">Token 值</param>
+            <returns>
+                <see cref="T:System.Boolean" />
+            </returns>
+        </member>
+        <member name="T:HttpAgent.CurlUserAgentExtractor">
+            <summary>
+                cURL User-Agent 提取器
+            </summary>
+        </member>
+        <member name="P:HttpAgent.CurlUserAgentExtractor.Flags">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.CurlUserAgentExtractor.Extract(HttpAgent.HttpRequestBuilder,System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="T:HttpAgent.CurlVersionExtractor">
+            <summary>
+                cURL HTTP 版本提取器
+            </summary>
+        </member>
+        <member name="P:HttpAgent.CurlVersionExtractor.Flags">
+            <inheritdoc />
+        </member>
+        <member name="P:HttpAgent.CurlVersionExtractor.RequiresArgument">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.CurlVersionExtractor.Extract(HttpAgent.HttpRequestBuilder,System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="T:HttpAgent.HttpCurlExtractorBase">
+            <summary>
+                cURL 提取器抽象基类
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpCurlExtractorBase.Flags">
+            <summary>
+                当前提取器匹配的命令标志集合
+            </summary>
+            <remarks>如 <c>["-H", "--header"]</c>。</remarks>
+        </member>
+        <member name="P:HttpAgent.HttpCurlExtractorBase.RequiresArgument">
+            <summary>
+                指示该命令是否携带参数
+            </summary>
+            <remarks>如 <c>-H</c> 携带，<c>--compressed</c> 不携带。默认为 <c>true</c>。</remarks>
+        </member>
+        <member name="M:HttpAgent.HttpCurlExtractorBase.TryExtract(HttpAgent.HttpRequestBuilder,HttpAgent.HttpCurlTokenExtractorContext)">
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.HttpCurlExtractorBase.Extract(HttpAgent.HttpRequestBuilder,System.String,System.String)">
+            <summary>
+                提取信息并构建 <see cref="T:HttpAgent.HttpRequestBuilder" /> 实例
+            </summary>
+            <param name="httpRequestBuilder">
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </param>
+            <param name="flag">当前匹配的命令标志</param>
+            <param name="argument">携带的参数值</param>
+        </member>
+        <member name="T:HttpAgent.HttpCurlParsingOptions">
+            <summary>
+                cURL 解析选项
+            </summary>
+        </member>
+        <member name="M:HttpAgent.HttpCurlParsingOptions.#ctor">
+            <summary>
+                <inheritdoc cref="T:HttpAgent.HttpCurlParsingOptions" />
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpCurlParsingOptions.Extractors">
+            <summary>
+                <see cref="T:HttpAgent.IHttpCurlExtractor" /> 提取器集合
+            </summary>
+        </member>
+        <member name="M:HttpAgent.HttpCurlParsingOptions.RemoveExtractor``1">
+            <summary>
+                移除指定类型的 <see cref="T:HttpAgent.IHttpCurlExtractor" /> 提取器
+            </summary>
+            <typeparam name="TExtractor">
+                <see cref="T:HttpAgent.IHttpCurlExtractor" />
+            </typeparam>
+            <returns>
+                <see cref="T:HttpAgent.HttpCurlParsingOptions" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpCurlParsingOptions.AddExtractor(HttpAgent.IHttpCurlExtractor)">
+            <summary>
+                添加自定义 <see cref="T:HttpAgent.IHttpCurlExtractor" /> 提取器
+            </summary>
+            <param name="extractor">
+                <see cref="T:HttpAgent.IHttpCurlExtractor" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.HttpCurlParsingOptions" />
+            </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:HttpAgent.HttpCurlParsingOptions.AddExtractors(System.Collections.Generic.IEnumerable{HttpAgent.IHttpCurlExtractor})">
+            <summary>
+                批量添加自定义 <see cref="T:HttpAgent.IHttpCurlExtractor" /> 提取器
+            </summary>
+            <param name="extractors">
+                <see cref="T:HttpAgent.IHttpCurlExtractor" /> 集合
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.HttpCurlParsingOptions" />
+            </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:HttpAgent.HttpCurlParsingOptions.GetDefaultExtractors">
+            <summary>
+                获取默认的内置提取器集合
+            </summary>
+            <returns>
+                <see cref="T:System.Collections.Generic.IEnumerable`1" />
+            </returns>
+        </member>
+        <member name="T:HttpAgent.HttpCurlTokenExtractorContext">
+            <summary>
+                cURL Token 提取器上下文
+            </summary>
+        </member>
+        <member name="M:HttpAgent.HttpCurlTokenExtractorContext.#ctor(System.Collections.Generic.IReadOnlyList{System.String})">
+            <summary>
+                <inheritdoc cref="T:HttpAgent.HttpCurlTokenExtractorContext" />
+            </summary>
+            <param name="tokens">Token 集合</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="P:HttpAgent.HttpCurlTokenExtractorContext.Tokens">
+            <summary>
+                Token 集合
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpCurlTokenExtractorContext.CurrentIndex">
+            <summary>
+                当前索引位置
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpCurlTokenExtractorContext.CurrentToken">
+            <summary>
+                获取当前 Token
+            </summary>
+            <exception cref="T:System.InvalidOperationException"></exception>
+        </member>
+        <member name="P:HttpAgent.HttpCurlTokenExtractorContext.HasNext">
+            <summary>
+                是否还有下一个 Token
+            </summary>
+        </member>
+        <member name="P:HttpAgent.HttpCurlTokenExtractorContext.IsEndOfTokens">
+            <summary>
+                是否已到达末尾
+            </summary>
+        </member>
+        <member name="M:HttpAgent.HttpCurlTokenExtractorContext.PeekNext">
+            <summary>
+                预览下一个 Token（不移动指针）
+            </summary>
+            <returns>
+                <see cref="T:System.String" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpCurlTokenExtractorContext.Advance(System.Int32)">
+            <summary>
+                前进指定步数
+            </summary>
+            <param name="count">前进步数，默认值为 <c>1</c>。</param>
+        </member>
+        <member name="M:HttpAgent.HttpCurlTokenExtractorContext.Reset">
+            <summary>
+                重置指针到起始位置
+            </summary>
+        </member>
+        <member name="M:HttpAgent.HttpCurlTokenExtractorContext.CurrentTokenMatches(System.String[])">
+            <summary>
+                检查当前 Token 是否匹配指定的任一值（不区分大小写）
+            </summary>
+            <param name="values">要匹配的值集合</param>
+            <returns>
+                <see cref="T:System.Boolean" />
+            </returns>
+        </member>
+        <member name="T:HttpAgent.HttpCurlTokenizer">
+            <summary>
+                cURL 命令词法分析器
+            </summary>
+        </member>
+        <member name="M:HttpAgent.HttpCurlTokenizer.Tokenize(System.String)">
+            <summary>
+                将 cURL 命令字符串拆分为 Token 集合
+            </summary>
+            <param name="curlCommand">cURL 命令字符串</param>
+            <returns><see cref="T:System.String" /> 集合</returns>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
+        <member name="T:HttpAgent.IHttpCurlExtractor">
+            <summary>
+                cURL 提取器接口
+            </summary>
+        </member>
+        <member name="M:HttpAgent.IHttpCurlExtractor.TryExtract(HttpAgent.HttpRequestBuilder,HttpAgent.HttpCurlTokenExtractorContext)">
+            <summary>
+                从当前 Token 位置提取信息并构建 <see cref="T:HttpAgent.HttpRequestBuilder" /> 实例
+            </summary>
+            <remarks>
+                <para>如果当前 Token 属于此提取器的管辖范围并成功消费，则返回 <c>true</c>；否则返回 <c>false</c>。</para>
+                <para>注意：当返回 <c>true</c> 时，实现类必须负责调用 <see cref="M:HttpAgent.HttpCurlTokenExtractorContext.Advance(System.Int32)" /> 推进游标，否则将导致解析死循环。</para>
+            </remarks>
+            <param name="httpRequestBuilder">
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </param>
+            <param name="context">
+                <see cref="T:HttpAgent.HttpCurlTokenExtractorContext" />
+            </param>
+            <returns>
+                <see cref="T:System.Boolean" />
+            </returns>
+        </member>
+        <member name="T:HttpAgent.IOrderedHttpCurlExtractor">
+            <summary>
+                支持自定义优先级的 cURL 提取器接口
+            </summary>
+        </member>
+        <member name="P:HttpAgent.IOrderedHttpCurlExtractor.Order">
+            <summary>
+                提取器的优先级
+            </summary>
+            <remarks>数值越小优先级越高。</remarks>
+        </member>
         <member name="T:HttpAgent.AcceptLanguageAttribute">
             <summary>
                 HTTP 声明式客户端所偏好的自然语言和区域特性
@@ -8840,30 +9289,6 @@
             </summary>
             <remarks>默认值为：<c>false</c>。设置为 <c>true</c> 表示移除路径片段。</remarks>
         </member>
-        <member name="T:HttpAgent.PerformanceOptimizationAttribute">
-            <summary>
-                HTTP 声明式启用性能优化特性
-            </summary>
-            <remarks>当需要返回 <see cref="T:System.IO.Stream" /> 内容或进行 <c>HttpContext</c> 网页转发时，请勿启用此配置，因为流会因压缩而变得不可读，同时该配置也不适用于网页转发的场景。</remarks>
-        </member>
-        <member name="M:HttpAgent.PerformanceOptimizationAttribute.#ctor">
-            <summary>
-                <inheritdoc cref="T:HttpAgent.PerformanceOptimizationAttribute" />
-            </summary>
-            <remarks>当需要返回 <see cref="T:System.IO.Stream" /> 内容或进行 <c>HttpContext</c> 网页转发时，请勿启用此配置，因为流会因压缩而变得不可读，同时该配置也不适用于网页转发的场景。</remarks>
-        </member>
-        <member name="M:HttpAgent.PerformanceOptimizationAttribute.#ctor(System.Boolean)">
-            <summary>
-                <inheritdoc cref="T:HttpAgent.PerformanceOptimizationAttribute" />
-            </summary>
-            <remarks>当需要返回 <see cref="T:System.IO.Stream" /> 内容或进行 <c>HttpContext</c> 网页转发时，请勿启用此配置，因为流会因压缩而变得不可读，同时该配置也不适用于网页转发的场景。</remarks>
-            <param name="enabled">是否启用</param>
-        </member>
-        <member name="P:HttpAgent.PerformanceOptimizationAttribute.Enabled">
-            <summary>
-                是否启用
-            </summary>
-        </member>
         <member name="T:HttpAgent.ProfilerAttribute">
             <summary>
                 HTTP 声明式启用请求分析工具特性
@@ -9186,6 +9611,27 @@
                 是否为移动端，默认值为：<c>false</c>（即桌面端）
             </summary>
         </member>
+        <member name="T:HttpAgent.StandardRequestHeadersAttribute">
+            <summary>
+                HTTP 声明式启用标准请求标头特性
+            </summary>
+        </member>
+        <member name="M:HttpAgent.StandardRequestHeadersAttribute.#ctor">
+            <summary>
+                <inheritdoc cref="T:HttpAgent.StandardRequestHeadersAttribute" />
+            </summary>
+        </member>
+        <member name="M:HttpAgent.StandardRequestHeadersAttribute.#ctor(System.Boolean)">
+            <summary>
+                <inheritdoc cref="T:HttpAgent.StandardRequestHeadersAttribute" />
+            </summary>
+            <param name="enabled">是否启用</param>
+        </member>
+        <member name="P:HttpAgent.StandardRequestHeadersAttribute.Enabled">
+            <summary>
+                是否启用
+            </summary>
+        </member>
         <member name="T:HttpAgent.SuppressExceptionsAttribute">
             <summary>
                 HTTP 声明式异常抑制特性
@@ -9504,18 +9950,6 @@
         <member name="M:HttpAgent.HeaderDeclarativeExtractor.Extract(HttpAgent.HttpRequestBuilder,HttpAgent.HttpDeclarativeExtractorContext)">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HeaderDeclarativeExtractor.TrySplitHeader(System.String,System.String@,System.String@)">
-            <summary>
-                尝试将字符串按第一个冒号拆分为键值对
-            </summary>
-            <remarks>如果输入非空且至少包含一个冒号，返回 <c>true</c>，否则返回 <c>false</c>。</remarks>
-            <param name="input">待拆分的字符串</param>
-            <param name="key">输出拆分后的键</param>
-            <param name="value">输出拆分后的值</param>
-            <returns>
-                <see cref="T:System.Boolean" />
-            </returns>
-        </member>
         <member name="T:HttpAgent.HttpClientNameDeclarativeExtractor">
             <summary>
                 HTTP 声明式 <see cref="T:HttpAgent.HttpClientNameAttribute" /> 特性提取器
@@ -9564,33 +9998,6 @@
         </member>
         <member name="M:HttpAgent.HttpVersionDeclarativeExtractor.Extract(HttpAgent.HttpRequestBuilder,HttpAgent.HttpDeclarativeExtractorContext)">
             <inheritdoc />
-        </member>
-        <member name="T:HttpAgent.IFrozenHttpDeclarativeExtractor">
-            <summary>
-                HTTP 声明式提取器排序（冻结）
-            </summary>
-        </member>
-        <member name="P:HttpAgent.IFrozenHttpDeclarativeExtractor.Order">
-            <summary>
-                获取提取器的顺序值
-            </summary>
-            <remarks>值越小，提取器越晚被调用。</remarks>
-        </member>
-        <member name="T:HttpAgent.IHttpDeclarativeExtractor">
-            <summary>
-                HTTP 声明式提取器
-            </summary>
-        </member>
-        <member name="M:HttpAgent.IHttpDeclarativeExtractor.Extract(HttpAgent.HttpRequestBuilder,HttpAgent.HttpDeclarativeExtractorContext)">
-            <summary>
-                提取方法信息构建 <see cref="T:HttpAgent.HttpRequestBuilder" /> 实例
-            </summary>
-            <param name="httpRequestBuilder">
-                <see cref="T:HttpAgent.HttpRequestBuilder" />
-            </param>
-            <param name="context">
-                <see cref="T:HttpAgent.HttpDeclarativeExtractorContext" />
-            </param>
         </member>
         <member name="T:HttpAgent.JsonResponseStringUnwrapDeclarativeExtractor">
             <summary>
@@ -9687,14 +10094,6 @@
         <member name="M:HttpAgent.PathSegmentDeclarativeExtractor.Extract(HttpAgent.HttpRequestBuilder,HttpAgent.HttpDeclarativeExtractorContext)">
             <inheritdoc />
         </member>
-        <member name="T:HttpAgent.PerformanceOptimizationDeclarativeExtractor">
-            <summary>
-                HTTP 声明式 <see cref="T:HttpAgent.PerformanceOptimizationAttribute" /> 特性提取器
-            </summary>
-        </member>
-        <member name="M:HttpAgent.PerformanceOptimizationDeclarativeExtractor.Extract(HttpAgent.HttpRequestBuilder,HttpAgent.HttpDeclarativeExtractorContext)">
-            <inheritdoc />
-        </member>
         <member name="T:HttpAgent.ProfilerDeclarativeExtractor">
             <summary>
                 HTTP 声明式 <see cref="T:HttpAgent.ProfilerAttribute" /> 特性提取器
@@ -9765,6 +10164,14 @@
             </summary>
         </member>
         <member name="M:HttpAgent.SimulateBrowserDeclarativeExtractor.Extract(HttpAgent.HttpRequestBuilder,HttpAgent.HttpDeclarativeExtractorContext)">
+            <inheritdoc />
+        </member>
+        <member name="T:HttpAgent.StandardRequestHeadersDeclarativeExtractor">
+            <summary>
+                HTTP 声明式 <see cref="T:HttpAgent.StandardRequestHeadersAttribute" /> 特性提取器
+            </summary>
+        </member>
+        <member name="M:HttpAgent.StandardRequestHeadersDeclarativeExtractor.Extract(HttpAgent.HttpRequestBuilder,HttpAgent.HttpDeclarativeExtractorContext)">
             <inheritdoc />
         </member>
         <member name="T:HttpAgent.SuppressExceptionsDeclarativeExtractor">
@@ -9991,6 +10398,33 @@
             <summary>
                 HTTP 声明式远程请求依赖接口
             </summary>
+        </member>
+        <member name="T:HttpAgent.IHttpDeclarativeExtractor">
+            <summary>
+                HTTP 声明式提取器接口
+            </summary>
+        </member>
+        <member name="M:HttpAgent.IHttpDeclarativeExtractor.Extract(HttpAgent.HttpRequestBuilder,HttpAgent.HttpDeclarativeExtractorContext)">
+            <summary>
+                提取方法信息并构建 <see cref="T:HttpAgent.HttpRequestBuilder" /> 实例
+            </summary>
+            <param name="httpRequestBuilder">
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </param>
+            <param name="context">
+                <see cref="T:HttpAgent.HttpDeclarativeExtractorContext" />
+            </param>
+        </member>
+        <member name="T:HttpAgent.IFrozenHttpDeclarativeExtractor">
+            <summary>
+                支持自定义优先级的 HTTP 声明式提取器接口
+            </summary>
+        </member>
+        <member name="P:HttpAgent.IFrozenHttpDeclarativeExtractor.Order">
+            <summary>
+                提取器的优先级
+            </summary>
+            <remarks>数值越小优先级越高。</remarks>
         </member>
         <member name="T:HttpAgent.ProfilerDelegatingHandler">
             <summary>
@@ -10268,13 +10702,14 @@
                 <see cref="T:Microsoft.Extensions.DependencyInjection.IHttpClientBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.PerformanceOptimization(System.Net.Http.HttpClient)">
+        <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.UseStandardRequestHeaders(System.Net.Http.HttpClient)">
             <summary>
-                为 <see cref="T:System.Net.Http.HttpClient" /> 启用性能优化
+                为 <see cref="T:System.Net.Http.HttpClient" /> 启用标准请求标头
             </summary>
             <param name="httpClient">
                 <see cref="T:System.Net.Http.HttpClient" />
             </param>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.ProfilerHeaders(System.Net.Http.HttpRequestMessage,System.Net.Http.HttpClient,System.String)">
             <summary>
@@ -10609,12 +11044,12 @@
         <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.UnicodeEscapeRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\\\u([0-9a-fA-F]{4})</code><br/>
+            <code>\\u([0-9a-fA-F]{4})</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "\\u".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [0-9A-Fa-f] exactly 4 times.<br/>
+                ○ Match a hexadecimal digit exactly 4 times.<br/>
             </code>
             </remarks>
         </member>
@@ -11135,6 +11570,18 @@
                 <see cref="T:System.IO.Stream" />
             </returns>
         </member>
+        <member name="M:HttpAgent.Helpers.TrySplitHeader(System.String,System.String@,System.String@)">
+            <summary>
+                尝试将字符串按第一个冒号拆分为键值对
+            </summary>
+            <remarks>如果输入非空且至少包含一个冒号，返回 <c>true</c>，否则返回 <c>false</c>。</remarks>
+            <param name="input">待拆分的字符串</param>
+            <param name="key">输出拆分后的键</param>
+            <param name="value">输出拆分后的值</param>
+            <returns>
+                <see cref="T:System.Boolean" />
+            </returns>
+        </member>
         <member name="M:HttpAgent.Helpers.GetStreamFromRemote(System.String,System.Action{System.Net.Http.HttpClient,System.Net.Http.HttpRequestMessage},System.Int64,System.Net.Http.HttpMethod)">
             <summary>
                 从互联网 URL 地址中加载流
@@ -11272,7 +11719,7 @@
         <member name="M:HttpAgent.Helpers.RFC2047Regex">
             <remarks>
             Pattern:<br/>
-            <code>=\\?(?&lt;charset&gt;[^?]+)\\?(?&lt;encoding&gt;[BbQq])\\?(?&lt;text&gt;[^?]*)\\?=</code><br/>
+            <code>=\?(?&lt;charset&gt;[^?]+)\?(?&lt;encoding&gt;[BbQq])\?(?&lt;text&gt;[^?]*)\?=</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "=?".<br/>
@@ -11291,7 +11738,7 @@
         <member name="M:HttpAgent.Helpers.EncodedWordGapRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\?=\\s+=\\?</code><br/>
+            <code>\?=\s+=\?</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "?=".<br/>
@@ -11431,9 +11878,6 @@
         <member name="F:HttpAgent.FileDownloadManager._httpRemoteService">
             <inheritdoc cref="T:HttpAgent.IHttpRemoteService" />
         </member>
-        <member name="F:HttpAgent.FileDownloadManager._logger">
-            <inheritdoc cref="T:HttpAgent.IHttpRemoteLogger" />
-        </member>
         <member name="F:HttpAgent.FileDownloadManager._progressChannel">
             <summary>
                 文件传输进度信息的通道
@@ -11448,15 +11892,12 @@
             </summary>
             <remarks>用于多线程分块下载进度计算。</remarks>
         </member>
-        <member name="M:HttpAgent.FileDownloadManager.#ctor(HttpAgent.IHttpRemoteService,HttpAgent.IHttpRemoteLogger,HttpAgent.HttpFileDownloadBuilder)">
+        <member name="M:HttpAgent.FileDownloadManager.#ctor(HttpAgent.IHttpRemoteService,HttpAgent.HttpFileDownloadBuilder)">
             <summary>
                 <inheritdoc cref="T:HttpAgent.FileDownloadManager" />
             </summary>
             <param name="httpRemoteService">
                 <see cref="T:HttpAgent.IHttpRemoteService" />
-            </param>
-            <param name="logger">
-                <see cref="T:HttpAgent.IHttpRemoteLogger" />
             </param>
             <param name="httpFileDownloadBuilder">
                 <see cref="T:HttpAgent.HttpFileDownloadBuilder" />
@@ -11648,23 +12089,17 @@
         <member name="F:HttpAgent.FileUploadManager._httpRemoteService">
             <inheritdoc cref="T:HttpAgent.IHttpRemoteService" />
         </member>
-        <member name="F:HttpAgent.FileUploadManager._logger">
-            <inheritdoc cref="T:HttpAgent.IHttpRemoteLogger" />
-        </member>
         <member name="F:HttpAgent.FileUploadManager._progressChannel">
             <summary>
                 文件传输进度信息的通道
             </summary>
         </member>
-        <member name="M:HttpAgent.FileUploadManager.#ctor(HttpAgent.IHttpRemoteService,HttpAgent.IHttpRemoteLogger,HttpAgent.HttpFileUploadBuilder)">
+        <member name="M:HttpAgent.FileUploadManager.#ctor(HttpAgent.IHttpRemoteService,HttpAgent.HttpFileUploadBuilder)">
             <summary>
                 <inheritdoc cref="T:HttpAgent.FileUploadManager" />
             </summary>
             <param name="httpRemoteService">
                 <see cref="T:HttpAgent.IHttpRemoteService" />
-            </param>
-            <param name="logger">
-                <see cref="T:HttpAgent.IHttpRemoteLogger" />
             </param>
             <param name="httpFileUploadBuilder">
                 <see cref="T:HttpAgent.HttpFileUploadBuilder" />
@@ -12194,6 +12629,8 @@
             <returns>
                 <see cref="T:System.String" />
             </returns>
+            <exception cref="T:System.ArgumentException"></exception>
+            <exception cref="T:System.ArgumentNullException"></exception>
             <exception cref="T:System.InvalidOperationException"></exception>
         </member>
         <member name="M:HttpAgent.DigestCredentials.Create(System.String,System.String,System.String)">
@@ -12478,17 +12915,17 @@
         <member name="M:HttpAgent.FileTransferProgress.AnsiRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\x1b\\[[0-9;]*[a-zA-Z]|\\x1b\\].*?\\x07</code><br/>
+            <code>\x1b\[[0-9;]*[a-zA-Z]|\x1b\].*?\x07</code><br/>
             Explanation:<br/>
             <code>
             ○ Match '\u001b'.<br/>
             ○ Match with 2 alternative expressions, atomically.<br/>
                 ○ Match a sequence of expressions.<br/>
-                    ○ Match an empty string.<br/>
+                    ○ Match '['.<br/>
                     ○ Match a character in the set [0-9;] atomically any number of times.<br/>
-                    ○ Match a character in the set [A-Za-z].<br/>
+                    ○ Match an ASCII letter.<br/>
                 ○ Match a sequence of expressions.<br/>
-                    ○ Match an empty string.<br/>
+                    ○ Match ']'.<br/>
                     ○ Match a character other than '\n' lazily any number of times.<br/>
                     ○ Match '\a'.<br/>
             </code>
@@ -14411,12 +14848,12 @@
         <member name="M:HttpAgent.StatusCodePipelineHandler.StatusCodeRangeRegex">
             <remarks>
             Pattern:<br/>
-            <code>^\\d+[-~]\\d+$</code><br/>
+            <code>^\d+[-~]\d+$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
-            ○ Match a character in the set [-~].<br/>
+            ○ Match a character in the set [\-~].<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
@@ -14425,7 +14862,7 @@
         <member name="M:HttpAgent.StatusCodePipelineHandler.StatusCodeCompareRegex">
             <remarks>
             Pattern:<br/>
-            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\\d+)$</code><br/>
+            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\d+)$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
@@ -14880,7 +15317,7 @@
             </summary>
             <remarks>
                 <para>默认值为：<c>true</c>。</para>
-                <para>设置为 <see langword="false" /> 时，表单数据将保持原始格式发送，不进行 URL 编码转义。</para>
+                <para>设置为 <c>false</c> 时，表单数据将保持原始格式发送，不进行 URL 编码转义。</para>
                 <para>注意：禁用编码可能导致特殊字符（如 <c>&amp;</c>, <c>=</c>, 空格等）被服务器错误解析。</para>
             </remarks>
         </member>
@@ -21819,226 +22256,194 @@
             <param name="inputSpan">The text being scanned by the regular expression.</param>
             <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
         </member>
-        <member name="T:System.Text.RegularExpressions.Generated.UrlEncodedFormFormatRegex_4">
-            <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the UrlEncodedFormFormatRegex method.</summary>
-        </member>
-        <member name="F:System.Text.RegularExpressions.Generated.UrlEncodedFormFormatRegex_4.Instance">
-            <summary>Cached, thread-safe singleton instance.</summary>
-        </member>
-        <member name="M:System.Text.RegularExpressions.Generated.UrlEncodedFormFormatRegex_4.#ctor">
-            <summary>Initializes the instance.</summary>
-        </member>
-        <member name="T:System.Text.RegularExpressions.Generated.UrlEncodedFormFormatRegex_4.RunnerFactory">
-            <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
-        </member>
-        <member name="M:System.Text.RegularExpressions.Generated.UrlEncodedFormFormatRegex_4.RunnerFactory.CreateInstance">
-            <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
-        </member>
-        <member name="T:System.Text.RegularExpressions.Generated.UrlEncodedFormFormatRegex_4.RunnerFactory.Runner">
-            <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
-        </member>
-        <member name="M:System.Text.RegularExpressions.Generated.UrlEncodedFormFormatRegex_4.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
-            <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
-            <param name="inputSpan">The text being scanned by the regular expression.</param>
-        </member>
-        <member name="M:System.Text.RegularExpressions.Generated.UrlEncodedFormFormatRegex_4.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
-            <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
-            <param name="inputSpan">The text being scanned by the regular expression.</param>
-            <returns>true if a possible match was found; false if no more matches are possible.</returns>
-        </member>
-        <member name="M:System.Text.RegularExpressions.Generated.UrlEncodedFormFormatRegex_4.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
-            <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
-            <param name="inputSpan">The text being scanned by the regular expression.</param>
-            <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
-        </member>
-        <member name="T:System.Text.RegularExpressions.Generated.UnicodeEscapeRegex_5">
+        <member name="T:System.Text.RegularExpressions.Generated.UnicodeEscapeRegex_4">
             <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the UnicodeEscapeRegex method.</summary>
         </member>
-        <member name="F:System.Text.RegularExpressions.Generated.UnicodeEscapeRegex_5.Instance">
+        <member name="F:System.Text.RegularExpressions.Generated.UnicodeEscapeRegex_4.Instance">
             <summary>Cached, thread-safe singleton instance.</summary>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.UnicodeEscapeRegex_5.#ctor">
+        <member name="M:System.Text.RegularExpressions.Generated.UnicodeEscapeRegex_4.#ctor">
             <summary>Initializes the instance.</summary>
         </member>
-        <member name="T:System.Text.RegularExpressions.Generated.UnicodeEscapeRegex_5.RunnerFactory">
+        <member name="T:System.Text.RegularExpressions.Generated.UnicodeEscapeRegex_4.RunnerFactory">
             <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.UnicodeEscapeRegex_5.RunnerFactory.CreateInstance">
+        <member name="M:System.Text.RegularExpressions.Generated.UnicodeEscapeRegex_4.RunnerFactory.CreateInstance">
             <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
         </member>
-        <member name="T:System.Text.RegularExpressions.Generated.UnicodeEscapeRegex_5.RunnerFactory.Runner">
+        <member name="T:System.Text.RegularExpressions.Generated.UnicodeEscapeRegex_4.RunnerFactory.Runner">
             <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.UnicodeEscapeRegex_5.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
+        <member name="M:System.Text.RegularExpressions.Generated.UnicodeEscapeRegex_4.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
             <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
             <param name="inputSpan">The text being scanned by the regular expression.</param>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.UnicodeEscapeRegex_5.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
+        <member name="M:System.Text.RegularExpressions.Generated.UnicodeEscapeRegex_4.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
             <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
             <param name="inputSpan">The text being scanned by the regular expression.</param>
             <returns>true if a possible match was found; false if no more matches are possible.</returns>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.UnicodeEscapeRegex_5.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
+        <member name="M:System.Text.RegularExpressions.Generated.UnicodeEscapeRegex_4.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
             <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
             <param name="inputSpan">The text being scanned by the regular expression.</param>
             <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
         </member>
-        <member name="T:System.Text.RegularExpressions.Generated.RFC2047Regex_6">
+        <member name="T:System.Text.RegularExpressions.Generated.RFC2047Regex_5">
             <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the RFC2047Regex method.</summary>
         </member>
-        <member name="F:System.Text.RegularExpressions.Generated.RFC2047Regex_6.Instance">
+        <member name="F:System.Text.RegularExpressions.Generated.RFC2047Regex_5.Instance">
             <summary>Cached, thread-safe singleton instance.</summary>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.RFC2047Regex_6.#ctor">
+        <member name="M:System.Text.RegularExpressions.Generated.RFC2047Regex_5.#ctor">
             <summary>Initializes the instance.</summary>
         </member>
-        <member name="T:System.Text.RegularExpressions.Generated.RFC2047Regex_6.RunnerFactory">
+        <member name="T:System.Text.RegularExpressions.Generated.RFC2047Regex_5.RunnerFactory">
             <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.RFC2047Regex_6.RunnerFactory.CreateInstance">
+        <member name="M:System.Text.RegularExpressions.Generated.RFC2047Regex_5.RunnerFactory.CreateInstance">
             <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
         </member>
-        <member name="T:System.Text.RegularExpressions.Generated.RFC2047Regex_6.RunnerFactory.Runner">
+        <member name="T:System.Text.RegularExpressions.Generated.RFC2047Regex_5.RunnerFactory.Runner">
             <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.RFC2047Regex_6.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
+        <member name="M:System.Text.RegularExpressions.Generated.RFC2047Regex_5.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
             <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
             <param name="inputSpan">The text being scanned by the regular expression.</param>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.RFC2047Regex_6.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
+        <member name="M:System.Text.RegularExpressions.Generated.RFC2047Regex_5.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
             <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
             <param name="inputSpan">The text being scanned by the regular expression.</param>
             <returns>true if a possible match was found; false if no more matches are possible.</returns>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.RFC2047Regex_6.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
+        <member name="M:System.Text.RegularExpressions.Generated.RFC2047Regex_5.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
             <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
             <param name="inputSpan">The text being scanned by the regular expression.</param>
             <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
         </member>
-        <member name="T:System.Text.RegularExpressions.Generated.EncodedWordGapRegex_7">
+        <member name="T:System.Text.RegularExpressions.Generated.EncodedWordGapRegex_6">
             <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the EncodedWordGapRegex method.</summary>
         </member>
-        <member name="F:System.Text.RegularExpressions.Generated.EncodedWordGapRegex_7.Instance">
+        <member name="F:System.Text.RegularExpressions.Generated.EncodedWordGapRegex_6.Instance">
             <summary>Cached, thread-safe singleton instance.</summary>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.EncodedWordGapRegex_7.#ctor">
+        <member name="M:System.Text.RegularExpressions.Generated.EncodedWordGapRegex_6.#ctor">
             <summary>Initializes the instance.</summary>
         </member>
-        <member name="T:System.Text.RegularExpressions.Generated.EncodedWordGapRegex_7.RunnerFactory">
+        <member name="T:System.Text.RegularExpressions.Generated.EncodedWordGapRegex_6.RunnerFactory">
             <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.EncodedWordGapRegex_7.RunnerFactory.CreateInstance">
+        <member name="M:System.Text.RegularExpressions.Generated.EncodedWordGapRegex_6.RunnerFactory.CreateInstance">
             <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
         </member>
-        <member name="T:System.Text.RegularExpressions.Generated.EncodedWordGapRegex_7.RunnerFactory.Runner">
+        <member name="T:System.Text.RegularExpressions.Generated.EncodedWordGapRegex_6.RunnerFactory.Runner">
             <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.EncodedWordGapRegex_7.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
+        <member name="M:System.Text.RegularExpressions.Generated.EncodedWordGapRegex_6.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
             <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
             <param name="inputSpan">The text being scanned by the regular expression.</param>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.EncodedWordGapRegex_7.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
+        <member name="M:System.Text.RegularExpressions.Generated.EncodedWordGapRegex_6.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
             <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
             <param name="inputSpan">The text being scanned by the regular expression.</param>
             <returns>true if a possible match was found; false if no more matches are possible.</returns>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.EncodedWordGapRegex_7.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
+        <member name="M:System.Text.RegularExpressions.Generated.EncodedWordGapRegex_6.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
             <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
             <param name="inputSpan">The text being scanned by the regular expression.</param>
             <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
         </member>
-        <member name="T:System.Text.RegularExpressions.Generated.AnsiRegex_8">
+        <member name="T:System.Text.RegularExpressions.Generated.AnsiRegex_7">
             <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the AnsiRegex method.</summary>
         </member>
-        <member name="F:System.Text.RegularExpressions.Generated.AnsiRegex_8.Instance">
+        <member name="F:System.Text.RegularExpressions.Generated.AnsiRegex_7.Instance">
             <summary>Cached, thread-safe singleton instance.</summary>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.AnsiRegex_8.#ctor">
+        <member name="M:System.Text.RegularExpressions.Generated.AnsiRegex_7.#ctor">
             <summary>Initializes the instance.</summary>
         </member>
-        <member name="T:System.Text.RegularExpressions.Generated.AnsiRegex_8.RunnerFactory">
+        <member name="T:System.Text.RegularExpressions.Generated.AnsiRegex_7.RunnerFactory">
             <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.AnsiRegex_8.RunnerFactory.CreateInstance">
+        <member name="M:System.Text.RegularExpressions.Generated.AnsiRegex_7.RunnerFactory.CreateInstance">
             <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
         </member>
-        <member name="T:System.Text.RegularExpressions.Generated.AnsiRegex_8.RunnerFactory.Runner">
+        <member name="T:System.Text.RegularExpressions.Generated.AnsiRegex_7.RunnerFactory.Runner">
             <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.AnsiRegex_8.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
+        <member name="M:System.Text.RegularExpressions.Generated.AnsiRegex_7.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
             <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
             <param name="inputSpan">The text being scanned by the regular expression.</param>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.AnsiRegex_8.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
+        <member name="M:System.Text.RegularExpressions.Generated.AnsiRegex_7.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
             <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
             <param name="inputSpan">The text being scanned by the regular expression.</param>
             <returns>true if a possible match was found; false if no more matches are possible.</returns>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.AnsiRegex_8.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
+        <member name="M:System.Text.RegularExpressions.Generated.AnsiRegex_7.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
             <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
             <param name="inputSpan">The text being scanned by the regular expression.</param>
             <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
         </member>
-        <member name="T:System.Text.RegularExpressions.Generated.StatusCodeRangeRegex_9">
+        <member name="T:System.Text.RegularExpressions.Generated.StatusCodeRangeRegex_8">
             <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the StatusCodeRangeRegex method.</summary>
         </member>
-        <member name="F:System.Text.RegularExpressions.Generated.StatusCodeRangeRegex_9.Instance">
+        <member name="F:System.Text.RegularExpressions.Generated.StatusCodeRangeRegex_8.Instance">
             <summary>Cached, thread-safe singleton instance.</summary>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.StatusCodeRangeRegex_9.#ctor">
+        <member name="M:System.Text.RegularExpressions.Generated.StatusCodeRangeRegex_8.#ctor">
             <summary>Initializes the instance.</summary>
         </member>
-        <member name="T:System.Text.RegularExpressions.Generated.StatusCodeRangeRegex_9.RunnerFactory">
+        <member name="T:System.Text.RegularExpressions.Generated.StatusCodeRangeRegex_8.RunnerFactory">
             <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.StatusCodeRangeRegex_9.RunnerFactory.CreateInstance">
+        <member name="M:System.Text.RegularExpressions.Generated.StatusCodeRangeRegex_8.RunnerFactory.CreateInstance">
             <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
         </member>
-        <member name="T:System.Text.RegularExpressions.Generated.StatusCodeRangeRegex_9.RunnerFactory.Runner">
+        <member name="T:System.Text.RegularExpressions.Generated.StatusCodeRangeRegex_8.RunnerFactory.Runner">
             <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.StatusCodeRangeRegex_9.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
+        <member name="M:System.Text.RegularExpressions.Generated.StatusCodeRangeRegex_8.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
             <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
             <param name="inputSpan">The text being scanned by the regular expression.</param>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.StatusCodeRangeRegex_9.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
+        <member name="M:System.Text.RegularExpressions.Generated.StatusCodeRangeRegex_8.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
             <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
             <param name="inputSpan">The text being scanned by the regular expression.</param>
             <returns>true if a possible match was found; false if no more matches are possible.</returns>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.StatusCodeRangeRegex_9.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
+        <member name="M:System.Text.RegularExpressions.Generated.StatusCodeRangeRegex_8.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
             <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
             <param name="inputSpan">The text being scanned by the regular expression.</param>
             <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
         </member>
-        <member name="T:System.Text.RegularExpressions.Generated.StatusCodeCompareRegex_10">
+        <member name="T:System.Text.RegularExpressions.Generated.StatusCodeCompareRegex_9">
             <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the StatusCodeCompareRegex method.</summary>
         </member>
-        <member name="F:System.Text.RegularExpressions.Generated.StatusCodeCompareRegex_10.Instance">
+        <member name="F:System.Text.RegularExpressions.Generated.StatusCodeCompareRegex_9.Instance">
             <summary>Cached, thread-safe singleton instance.</summary>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.StatusCodeCompareRegex_10.#ctor">
+        <member name="M:System.Text.RegularExpressions.Generated.StatusCodeCompareRegex_9.#ctor">
             <summary>Initializes the instance.</summary>
         </member>
-        <member name="T:System.Text.RegularExpressions.Generated.StatusCodeCompareRegex_10.RunnerFactory">
+        <member name="T:System.Text.RegularExpressions.Generated.StatusCodeCompareRegex_9.RunnerFactory">
             <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.StatusCodeCompareRegex_10.RunnerFactory.CreateInstance">
+        <member name="M:System.Text.RegularExpressions.Generated.StatusCodeCompareRegex_9.RunnerFactory.CreateInstance">
             <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
         </member>
-        <member name="T:System.Text.RegularExpressions.Generated.StatusCodeCompareRegex_10.RunnerFactory.Runner">
+        <member name="T:System.Text.RegularExpressions.Generated.StatusCodeCompareRegex_9.RunnerFactory.Runner">
             <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.StatusCodeCompareRegex_10.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
+        <member name="M:System.Text.RegularExpressions.Generated.StatusCodeCompareRegex_9.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
             <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
             <param name="inputSpan">The text being scanned by the regular expression.</param>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.StatusCodeCompareRegex_10.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
+        <member name="M:System.Text.RegularExpressions.Generated.StatusCodeCompareRegex_9.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
             <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
             <param name="inputSpan">The text being scanned by the regular expression.</param>
             <returns>true if a possible match was found; false if no more matches are possible.</returns>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.StatusCodeCompareRegex_10.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
+        <member name="M:System.Text.RegularExpressions.Generated.StatusCodeCompareRegex_9.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
             <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
             <param name="inputSpan">The text being scanned by the regular expression.</param>
             <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
@@ -22066,6 +22471,12 @@
         </member>
         <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32,System.Int32,System.Int32)">
             <summary>Pushes 3 values onto the backtracking stack.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.WordCategoriesMask">
+            <summary>Provides a mask of Unicode categories that combine to form [\w].</summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.Generated.Utilities.WordCharBitmap">
+            <summary>Gets a bitmap for whether each character 0 through 127 is in [\w]</summary>
         </member>
         <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_ascii_FF0B0000000000000000">
             <summary>Supports searching for characters in or not in "0123456789;".</summary>
@@ -22135,8 +22546,7 @@
         </member>
     </members>
 </doc>
-marks>
-            <param name="serviceProvider">应用程序的根服务提供器，必须已完成 <see cref="T:HttpAgent.IHttpRemoteService" /> 的注册。</param>
+" /> 的注册。</param>
             <returns>
                 <see cref="T:System.IServiceProvider" />
             </returns>

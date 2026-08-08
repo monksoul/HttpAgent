@@ -110,34 +110,10 @@ public class HeaderDeclarativeExtractorTests
         new HeaderDeclarativeExtractor().Extract(httpRequestBuilder7, context7);
 
         Assert.NotNull(httpRequestBuilder7.Headers);
-        Assert.Equal(3, httpRequestBuilder7.Headers.Count);
-        Assert.Equal("application/json", httpRequestBuilder7.Headers["Content-Type"].First());
-    }
-
-    [Fact]
-    public void TrySplitHeader_ReturnOK()
-    {
-        Assert.False(HeaderDeclarativeExtractor.TrySplitHeader(null!, out _, out _));
-        Assert.False(HeaderDeclarativeExtractor.TrySplitHeader(string.Empty, out _, out _));
-        Assert.False(HeaderDeclarativeExtractor.TrySplitHeader(" ", out _, out _));
-        Assert.False(HeaderDeclarativeExtractor.TrySplitHeader("Content-Type", out _, out _));
-
-        Assert.True(HeaderDeclarativeExtractor.TrySplitHeader("Content-Type:", out var key1, out var value1));
-        Assert.Equal("Content-Type", key1);
-        Assert.NotNull(value1);
-        Assert.Empty(value1);
-
-        Assert.True(HeaderDeclarativeExtractor.TrySplitHeader("Content-Type: application/json", out var key2,
-            out var value2));
-        Assert.Equal("Content-Type", key2);
-        Assert.NotNull(value2);
-        Assert.Equal("application/json", value2);
-
-        Assert.True(HeaderDeclarativeExtractor.TrySplitHeader("X-Emoji: :rocket:", out var key3,
-            out var value3));
-        Assert.Equal("X-Emoji", key3);
-        Assert.NotNull(value3);
-        Assert.Equal(":rocket:", value3);
+        Assert.Equal(2, httpRequestBuilder7.Headers.Count);
+        Assert.NotNull(httpRequestBuilder7.ContentHeaders);
+        Assert.Single(httpRequestBuilder7.ContentHeaders);
+        Assert.Equal("application/json", httpRequestBuilder7.ContentHeaders["Content-Type"].First());
     }
 }
 

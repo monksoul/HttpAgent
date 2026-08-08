@@ -5,12 +5,12 @@
 namespace HttpAgent;
 
 /// <summary>
-///     HTTP 声明式提取器
+///     HTTP 声明式提取器接口
 /// </summary>
 public interface IHttpDeclarativeExtractor
 {
     /// <summary>
-    ///     提取方法信息构建 <see cref="HttpRequestBuilder" /> 实例
+    ///     提取方法信息并构建 <see cref="HttpRequestBuilder" /> 实例
     /// </summary>
     /// <param name="httpRequestBuilder">
     ///     <see cref="HttpRequestBuilder" />
@@ -19,4 +19,16 @@ public interface IHttpDeclarativeExtractor
     ///     <see cref="HttpDeclarativeExtractorContext" />
     /// </param>
     void Extract(HttpRequestBuilder httpRequestBuilder, HttpDeclarativeExtractorContext context);
+}
+
+/// <summary>
+///     支持自定义优先级的 HTTP 声明式提取器接口
+/// </summary>
+public interface IFrozenHttpDeclarativeExtractor : IHttpDeclarativeExtractor
+{
+    /// <summary>
+    ///     提取器的优先级
+    /// </summary>
+    /// <remarks>数值越小优先级越高。</remarks>
+    int Order { get; }
 }

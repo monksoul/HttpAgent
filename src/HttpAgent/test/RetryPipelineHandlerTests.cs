@@ -22,7 +22,7 @@ public class RetryPipelineHandlerTests
     }
 
     [Fact]
-    public void GetRetryDelay_Invalid_Parameter() =>
+    public void GetRetryDelay_Invalid_Parameters() =>
         Assert.Throws<ArgumentNullException>(() => RetryPipelineHandler.GetRetryDelay(null!, 0));
 
     [Fact]

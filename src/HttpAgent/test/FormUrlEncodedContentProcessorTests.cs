@@ -31,17 +31,6 @@ public class FormUrlEncodedContentProcessorTests
     }
 
     [Fact]
-    public void Process_Invalid_Parameters()
-    {
-        var processor = new FormUrlEncodedContentProcessor();
-
-        Assert.Throws<NotSupportedException>(() =>
-        {
-            processor.Process(new HttpContentProcessorContext("furion", "application/x-www-form-urlencoded"));
-        });
-    }
-
-    [Fact]
     public void Process_ReturnOK()
     {
         var processor = new FormUrlEncodedContentProcessor();
@@ -77,5 +66,12 @@ public class FormUrlEncodedContentProcessorTests
         Assert.Equal(typeof(FormUrlEncodedContent), httpContent4.GetType());
         Assert.Equal("application/x-www-form-urlencoded", httpContent4.Headers.ContentType?.MediaType);
         Assert.Null(httpContent4.Headers.ContentType?.CharSet);
+
+        var httpContent5 =
+            processor.Process(new HttpContentProcessorContext("id=1&name=furion", "application/x-www-form-urlencoded"));
+        Assert.NotNull(httpContent5);
+        Assert.Equal(typeof(StringContent), httpContent5.GetType());
+        Assert.Equal("application/x-www-form-urlencoded", httpContent5.Headers.ContentType?.MediaType);
+        Assert.Null(httpContent5.Headers.ContentType?.CharSet);
     }
 }

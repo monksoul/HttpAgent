@@ -48,12 +48,6 @@ public class StringContentForFormUrlEncodedContentProcessorTests
         {
             processor.Process(new HttpContentProcessorContext(1, "application/x-www-form-urlencoded"));
         });
-
-        var exception = Assert.Throws<FormatException>(() =>
-        {
-            processor.Process(new HttpContentProcessorContext("furion", "application/x-www-form-urlencoded"));
-        });
-        Assert.Equal("The content must contain only form url encoded string.", exception.Message);
     }
 
     [Fact]
@@ -105,6 +99,14 @@ public class StringContentForFormUrlEncodedContentProcessorTests
                 }, "application/x-www-form-urlencoded"))!;
         Assert.Equal("""id=1&name=fur ion&data={"plateNo":"京A12345","color":"1"}""",
             await httpContent5.ReadAsStringAsync(TestContext.Current.CancellationToken));
+
+        var processor3 = new StringContentForFormUrlEncodedContentProcessor { UrlEncode = true };
+        var httpContent6 =
+            processor3.Process(new HttpContentProcessorContext(
+                "id=1&name=fur ion&data={\"plateNo\":\"京A12345\",\"color\":\"1\"}",
+                "application/x-www-form-urlencoded"))!;
+        Assert.Equal("id=1&name=fur+ion&data=%7B%22plateNo%22%3A%22%E4%BA%ACA12345%22%2C%22color%22%3A%221%22%7D",
+            await httpContent6.ReadAsStringAsync(TestContext.Current.CancellationToken));
     }
 
     [Fact]

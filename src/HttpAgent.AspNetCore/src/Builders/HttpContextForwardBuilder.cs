@@ -39,7 +39,7 @@ public sealed class HttpContextForwardBuilder
     /// </summary>
     internal static readonly HashSet<string> _ignoreRequestHeaders =
     [
-        Constants.X_FORWARD_TO_HEADER, "Host"
+        Constants.X_FORWARD_TO_HEADER, "Host", "Content-Length"
     ];
 
     /// <summary>

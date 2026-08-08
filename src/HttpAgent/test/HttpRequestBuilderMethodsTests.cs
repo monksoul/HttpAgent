@@ -356,6 +356,29 @@ public class HttpRequestBuilderMethodsTests
     }
 
     [Fact]
+    public void AppendContent_ReturnOK()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+
+        httpRequestBuilder.AppendContent(null);
+        Assert.Null(httpRequestBuilder.RawContent);
+
+        httpRequestBuilder.AppendContent(new { });
+        Assert.Null(httpRequestBuilder.RawContent);
+
+        httpRequestBuilder.SetContent("id=1");
+        httpRequestBuilder.AppendContent("name=furion");
+        Assert.Equal("id=1&name=furion", httpRequestBuilder.RawContent);
+
+        httpRequestBuilder.SetContent(new Dictionary<string, object?> { { "id", 1 } });
+        httpRequestBuilder.AppendContent(new Dictionary<string, object?> { { "name", "furion" } });
+        var dic = httpRequestBuilder.RawContent as Dictionary<string, object?>;
+        Assert.NotNull(dic);
+        Assert.Equal(2, dic.Count);
+        Assert.Equal("furion", dic["name"]);
+    }
+
+    [Fact]
     public void RemoveContent_ReturnOK()
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
@@ -476,6 +499,9 @@ public class HttpRequestBuilderMethodsTests
 
         httpRequestBuilder.WithHeader("date", DateTime.Parse("2026-07-01 12:30:00"), format: "yyyy-MM-dd");
         Assert.Equal("2026-07-01", httpRequestBuilder.Headers["date"].First());
+
+        httpRequestBuilder.WithHeader("framework: Furion");
+        Assert.Equal("Furion", httpRequestBuilder.Headers["framework"].First());
     }
 
     [Fact]
@@ -548,6 +574,16 @@ public class HttpRequestBuilderMethodsTests
         Assert.Equal(2, httpRequestBuilder3.Headers!["name"].Count);
         Assert.Equal("furion", httpRequestBuilder3.Headers!["name"].First());
         Assert.Equal("furion2", httpRequestBuilder3.Headers!["name"].Last());
+
+        var httpRequestBuilder4 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+
+        httpRequestBuilder4.WithHeaders(new { name = "furion" }).WithHeader("Content-Type", "application/json");
+        Assert.NotNull(httpRequestBuilder4.Headers);
+        Assert.Single(httpRequestBuilder4.Headers);
+        Assert.NotNull(httpRequestBuilder4.ContentHeaders);
+        Assert.Single(httpRequestBuilder4.ContentHeaders);
+        Assert.Equal("furion", httpRequestBuilder4.Headers["name"].First());
+        Assert.Equal("application/json", httpRequestBuilder4.ContentHeaders["Content-Type"].Last());
     }
 
     [Fact]
@@ -1326,10 +1362,6 @@ public class HttpRequestBuilderMethodsTests
         Assert.Throws<ArgumentNullException>(() => httpRequestBuilder.AddBasicAuthentication(null!, null!));
         Assert.Throws<ArgumentException>(() => httpRequestBuilder.AddBasicAuthentication(string.Empty, null!));
         Assert.Throws<ArgumentException>(() => httpRequestBuilder.AddBasicAuthentication(" ", null!));
-
-        Assert.Throws<ArgumentNullException>(() => httpRequestBuilder.AddBasicAuthentication("furion", null!));
-        Assert.Throws<ArgumentException>(() => httpRequestBuilder.AddBasicAuthentication("furion", string.Empty));
-        Assert.Throws<ArgumentException>(() => httpRequestBuilder.AddBasicAuthentication("furion", " "));
     }
 
     [Fact]
@@ -1342,6 +1374,14 @@ public class HttpRequestBuilderMethodsTests
         Assert.NotNull(httpRequestBuilder.AuthenticationHeader);
         Assert.Equal("Basic " + base64Credentials, httpRequestBuilder.AuthenticationHeader.ToString());
         Assert.Equal("Basic", httpRequestBuilder.AuthenticationHeader.Scheme);
+
+        var httpRequestBuilder2 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        httpRequestBuilder2.AddBasicAuthentication("furion", null);
+        var base64Credentials2 = Convert.ToBase64String("furion:"u8.ToArray());
+
+        Assert.NotNull(httpRequestBuilder2.AuthenticationHeader);
+        Assert.Equal("Basic " + base64Credentials2, httpRequestBuilder2.AuthenticationHeader.ToString());
+        Assert.Equal("Basic", httpRequestBuilder2.AuthenticationHeader.Scheme);
     }
 
     [Fact]
@@ -1862,15 +1902,15 @@ public class HttpRequestBuilderMethodsTests
     }
 
     [Fact]
-    public void PerformanceOptimization_ReturnOK()
+    public void UseStandardRequestHeaders_ReturnOK()
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
-        httpRequestBuilder.PerformanceOptimization();
+        httpRequestBuilder.UseStandardRequestHeaders();
 
-        Assert.True(httpRequestBuilder.PerformanceOptimizationEnabled);
+        Assert.True(httpRequestBuilder.StandardRequestHeadersEnabled);
 
-        httpRequestBuilder.PerformanceOptimization(false);
-        Assert.False(httpRequestBuilder.PerformanceOptimizationEnabled);
+        httpRequestBuilder.UseStandardRequestHeaders(false);
+        Assert.False(httpRequestBuilder.StandardRequestHeadersEnabled);
     }
 
     [Fact]
@@ -2331,6 +2371,32 @@ public class HttpRequestBuilderMethodsTests
     }
 
     [Fact]
+    public void MergeContent_ReturnOK()
+    {
+        Assert.Null(HttpRequestBuilder.MergeContent(null, null));
+        Assert.Equal("id=1&name=furion", HttpRequestBuilder.MergeContent("id=1", "name=furion"));
+
+        var dic = new Dictionary<string, object?> { { "id", 1 } };
+        var dic2 =
+            HttpRequestBuilder.MergeContent(dic, new Dictionary<string, object?> { { "name", "furion" } }) as
+                Dictionary<string, object?>;
+        Assert.NotNull(dic2);
+        Assert.Equal(2, dic2.Count);
+        Assert.Equal("furion", dic2["name"]);
+
+        var list = new List<object> { 1, "furion" };
+        var list2 = HttpRequestBuilder.MergeContent(list, new List<string> { "age" }) as List<object>;
+        Assert.NotNull(list2);
+        Assert.Equal(3, list2.Count);
+        Assert.Equal("age", list2.Last());
+
+        var obj = new { };
+        var obj2 = new { id = 1, name = "furion" };
+        var obj3 = HttpRequestBuilder.MergeContent(obj, obj2);
+        Assert.Same(obj2, obj3);
+    }
+
+    [Fact]
     public void SetHttpMethod_Invalid_Parameters()
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
@@ -2343,5 +2409,16 @@ public class HttpRequestBuilderMethodsTests
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
         httpRequestBuilder.SetHttpMethod(HttpMethod.Post);
         Assert.Equal(HttpMethod.Post, httpRequestBuilder.HttpMethod);
+    }
+
+    [Fact]
+    public void SetSetRequestUri_ReturnOK()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        httpRequestBuilder.SetRequestUri(null);
+        Assert.Null(httpRequestBuilder.RequestUri);
+
+        httpRequestBuilder.SetRequestUri(new Uri("https://furion.net"));
+        Assert.Equal("https://furion.net/", httpRequestBuilder.RequestUri?.ToString());
     }
 }

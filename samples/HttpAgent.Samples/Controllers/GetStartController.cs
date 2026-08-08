@@ -904,4 +904,77 @@ public class GetStartController(
                     FileExistsBehavior.Overwrite, cancellationToken: token);
             });
     }
+
+    [HttpGet]
+    public async Task FromCurl()
+    {
+        var result = await httpRemoteService.SendAsStringAsync(HttpRequestBuilder.FromCurl("""
+            curl https://furion.net
+            """));
+
+        var result1 = await httpRemoteService.SendAsStringAsync(HttpRequestBuilder.FromCurl("""
+            curl -k -X POST 'https://localhost:7044/HttpRemote/AddModel?query1=10&query2=hello' \
+            -H 'Content-Type: application/json' \
+            -d '{
+              "id": 1,
+              "name": "sample"
+            }'
+            """));
+
+        var result2 = await httpRemoteService.SendAsStringAsync(HttpRequestBuilder.FromCurl("""
+            curl -k -X POST 'https://localhost:7044/HttpRemote/AddModels?query1=5&query2=test' \
+            -H 'Content-Type: application/json' \
+            -d '{
+              "id": 2,
+              "name": "another"
+            }'
+            """));
+
+        var result3 = await httpRemoteService.SendAsStringAsync(HttpRequestBuilder.FromCurl("""
+            curl -k -X POST 'https://localhost:7044/HttpRemote/AddForm?id=100' \
+            -F 'Id=100' \
+            -F 'Name=furion' \
+            -F 'File=@C:\Workspaces\httptest.jpg'
+            """));
+
+        var result4 = await httpRemoteService.SendAsStringAsync(HttpRequestBuilder.FromCurl("""
+            curl -k -X POST 'https://localhost:7044/HttpRemote/AddUrlForm' \
+            -H 'Content-Type: application/x-www-form-urlencoded' \
+            -d 'id=200&name=furion'
+            """));
+
+        var result5 = await httpRemoteService.SendAsStringAsync(HttpRequestBuilder.FromCurl("""
+            curl -k -X POST 'https://localhost:7044/HttpRemote/AddUrlForm' \
+            --data-urlencode 'id=200' \
+            --data-urlencode 'name=fu rion'
+            """));
+
+        var result6 = await httpRemoteService.SendAsStringAsync(HttpRequestBuilder.FromCurl("""
+            curl -k -X POST 'https://localhost:7044/HttpRemote/AddFile' \
+            -F 'file=@C:\Workspaces\httptest.jpg'
+            """));
+
+        var result7 = await httpRemoteService.SendAsStringAsync(HttpRequestBuilder.FromCurl("""
+            curl -k -X POST 'https://localhost:7044/HttpRemote/AddFiles' \
+            -F 'files=@C:\Workspaces\httptest.jpg' \
+            -F 'files=@C:\Workspaces\httptest.jpg'
+            """));
+
+        var result8 = await httpRemoteService.SendAsStringAsync(HttpRequestBuilder.FromCurl("""
+            curl -k -X POST 'https://localhost:7044/HttpRemote/RawString' \
+            -H 'Content-Type: application/json' \
+            -d '"This is a raw string"'
+            """));
+
+        var result9 = await httpRemoteService.SendAsStringAsync(HttpRequestBuilder.FromCurl("""
+            curl -X POST https://jsonplaceholder.typicode.com/posts \
+            -H "Content-Type: application/json" \
+            -u testuser:testpass \
+            -d '{"title":"Test"}'
+            """));
+
+        var result10 = await httpRemoteService.SendAsStringAsync(HttpRequestBuilder.FromCurl("""
+            curl -o qr.png "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Hello"
+            """));
+    }
 }

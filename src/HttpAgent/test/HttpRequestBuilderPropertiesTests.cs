@@ -29,6 +29,7 @@ public class HttpRequestBuilderPropertiesTests
         Assert.Null(httpRequestBuilder2.ContentEncoding);
         Assert.Null(httpRequestBuilder2.RawContent);
         Assert.Null(httpRequestBuilder2.Headers);
+        Assert.Null(httpRequestBuilder2.ContentHeaders);
         Assert.Null(httpRequestBuilder2.HeadersToRemove);
         Assert.Null(httpRequestBuilder2.PathSegments);
         Assert.Null(httpRequestBuilder2.PathSegmentsToRemove);
@@ -69,7 +70,7 @@ public class HttpRequestBuilderPropertiesTests
         Assert.False(httpRequestBuilder2.ProfilerDisabled);
         Assert.NotNull(httpRequestBuilder2.Properties);
         Assert.Empty(httpRequestBuilder2.Properties);
-        Assert.False(httpRequestBuilder2.PerformanceOptimizationEnabled);
+        Assert.False(httpRequestBuilder2.StandardRequestHeadersEnabled);
         Assert.False(httpRequestBuilder2.AutoSetHostHeaderEnabled);
         Assert.Null(httpRequestBuilder2.BaseAddress);
         Assert.Null(httpRequestBuilder2.Version);
@@ -85,11 +86,21 @@ public class HttpRequestBuilderPropertiesTests
         Assert.Null(httpRequestBuilder2.OnUriBuilding);
         Assert.Null(httpRequestBuilder2.OnRedirect);
 
-        Assert.NotNull(HttpRequestBuilder._cachedProperties);
-        Assert.Equal(61, HttpRequestBuilder._cachedProperties.Value.Length);
+        Assert.NotNull(HttpRequestBuilder.CachedProperties);
+        Assert.Equal(62, HttpRequestBuilder.CachedProperties.Value.Length);
 
         Assert.Equal(
-            "RequestUri|HttpMethod|TraceIdentifier|ContentType|ContentEncoding|RawContent|Headers|HeadersToRemove|Fragment|PathSegments|PathSegmentsToRemove|QueryParameters|QueryParametersSorter|QueryParametersToRemove|ReplacedQueryParameterKeys|PathParameters|ObjectPathParameters|Cookies|CookiesToRemove|HttpClientName|MaxResponseContentBufferSize|AuthenticationHeader|Properties|BaseAddress|Version|HttpClientProvider|HttpContentProcessorProviders|HttpContentConverterProviders|OnPreSetContent|OnPreSendRequest|OnPostReceiveResponse|OnRequestFailed|MultipartFormDataBuilder|OmitContentType|CompletionOption|RetryOptions|TimeoutOptions|AccessTokenData|QuotaKey|EnsureSuccessStatusCodeEnabled|DisableCacheEnabled|RequestEventHandlerType|Disposables|HttpClientPooling|HttpClientPoolingEnabled|ProfilerEnabled|ProfilerPredicate|PerformanceOptimizationEnabled|AutoSetHostHeaderEnabled|ProfilerDisabled|StatusCodeHandlers|SuppressExceptionTypes|AssertionsEnabled|Assertions|OnUriBuilding|OnRedirect|JsonResponseWrapperEnabled|JsonResponseStringUnwrapEnabled|SuppressTokenManagement|RemoveTrailingSlashEnabled|ETagEnabled",
-            string.Join('|', HttpRequestBuilder._cachedProperties.Value.Select(u => u.Name)));
+            "RequestUri|HttpMethod|TraceIdentifier|ContentType|ContentEncoding|RawContent|Headers|ContentHeaders|HeadersToRemove|Fragment|PathSegments|PathSegmentsToRemove|QueryParameters|QueryParametersSorter|QueryParametersToRemove|ReplacedQueryParameterKeys|PathParameters|ObjectPathParameters|Cookies|CookiesToRemove|HttpClientName|MaxResponseContentBufferSize|AuthenticationHeader|Properties|BaseAddress|Version|HttpClientProvider|HttpContentProcessorProviders|HttpContentConverterProviders|OnPreSetContent|OnPreSendRequest|OnPostReceiveResponse|OnRequestFailed|MultipartFormDataBuilder|OmitContentType|CompletionOption|RetryOptions|TimeoutOptions|AccessTokenData|QuotaKey|EnsureSuccessStatusCodeEnabled|DisableCacheEnabled|RequestEventHandlerType|Disposables|HttpClientPooling|HttpClientPoolingEnabled|ProfilerEnabled|ProfilerPredicate|StandardRequestHeadersEnabled|AutoSetHostHeaderEnabled|ProfilerDisabled|StatusCodeHandlers|SuppressExceptionTypes|AssertionsEnabled|Assertions|OnUriBuilding|OnRedirect|JsonResponseWrapperEnabled|JsonResponseStringUnwrapEnabled|SuppressTokenManagement|RemoveTrailingSlashEnabled|ETagEnabled",
+            string.Join('|', HttpRequestBuilder.CachedProperties.Value.Select(u => u.Name)));
+
+        Assert.Equal([
+            "Content-Type",
+            "Content-Encoding",
+            "Content-Language",
+            "Content-Disposition",
+            "Content-MD5",
+            "Content-Range",
+            "Content-Location"
+        ], HttpRequestBuilder.KnownContentHeaders);
     }
 }

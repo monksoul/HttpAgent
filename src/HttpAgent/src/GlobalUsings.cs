@@ -48,4 +48,5 @@ global using System.Text.Json.Serialization;
 global using System.Text.Json.Serialization.Metadata;
 global using System.Text.RegularExpressions;
 global using System.Threading.Channels;
+global using System.Web;
 global using System.Xml.Serialization;
