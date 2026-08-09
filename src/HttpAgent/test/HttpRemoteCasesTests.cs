@@ -313,6 +313,38 @@ public class HttpRemoteCasesTests
     }
 
     [Fact]
+    public async Task SendFile5_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+
+        builder.Services.AddControllers()
+            .AddApplicationPart(typeof(HttpRemoteController).Assembly);
+        builder.Services.AddHttpRemote();
+
+        await using var app = builder.Build();
+
+        app.MapControllers();
+
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
+        var httpRemoteService = app.Services.GetRequiredService<IHttpRemoteService>();
+
+        var httpRemoteResult =
+            await httpRemoteService.SendAsync<string>(HttpRequestBuilder
+                .Post($"http://localhost:{port}/HttpRemote/SendFile2")
+                .SetFileContent(filePath), TestContext.Current.CancellationToken);
+
+        Assert.Equal(HttpStatusCode.OK, httpRemoteResult?.StatusCode);
+        Assert.NotNull(httpRemoteResult?.Result);
+        Assert.Equal("test.txt", httpRemoteResult.Result);
+
+        await app.StopAsync(TestContext.Current.CancellationToken);
+    }
+
+    [Fact]
     public async Task SendFiles_ReturnOK()
     {
         var port = NetworkUtility.FindAvailableTcpPort();

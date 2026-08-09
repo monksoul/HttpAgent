@@ -50,6 +50,15 @@ public class HttpRemoteController : ControllerBase
         return Task.FromResult(string.Join("; ", files.Select(u => u.FileName)));
     }
 
+    [HttpPost]
+    [RequestSizeLimit(long.MaxValue)]
+    public Task<string> AddFile2()
+    {
+        var contentDisposition = ContentDispositionHeaderValue.Parse(Request.Headers.ContentDisposition!);
+
+        return Task.FromResult(contentDisposition.FileName?.Trim('"') ?? "");
+    }
+
     [HttpGet]
     public async Task<IActionResult> LongPolling([FromServices] IHttpContextAccessor httpContextAccessor)
     {

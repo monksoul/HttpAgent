@@ -22,6 +22,15 @@ public class HttpRemoteController : ControllerBase
 
     [HttpPost]
     [RequestSizeLimit(long.MaxValue)]
+    public Task<string> SendFile2()
+    {
+        var contentDisposition = ContentDispositionHeaderValue.Parse(Request.Headers.ContentDisposition!);
+
+        return Task.FromResult(contentDisposition.FileName?.Trim('"') ?? "");
+    }
+
+    [HttpPost]
+    [RequestSizeLimit(long.MaxValue)]
     [RequestFormLimits(MultipartBodyLengthLimit = long.MaxValue)]
     public Task<string> SendFiles(IFormFileCollection files) =>
         Task.FromResult(string.Join(';', files.Select(u => u.FileName)));

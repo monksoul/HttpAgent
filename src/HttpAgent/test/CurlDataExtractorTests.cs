@@ -17,6 +17,13 @@ public class CurlDataExtractorTests
 
     private static HttpCurlTokenExtractorContext CreateContext(params string[] tokens) => new(tokens);
 
+    private static string CreateTempFile(string content = "hello world", Encoding? encoding = null)
+    {
+        var path = Path.GetTempFileName();
+        File.WriteAllText(path, content, encoding ?? new UTF8Encoding(false));
+        return path;
+    }
+
     [Fact]
     public void Flags_ReturnOK()
     {
@@ -73,6 +80,21 @@ public class CurlDataExtractorTests
     }
 
     [Fact]
+    public void TryExtract_DataAliasFlagDefaultContentType_ReturnOK()
+    {
+        var extractor = new CurlDataExtractor();
+        var builder = CreateBuilder();
+        var context = CreateContext("--data", "key=value");
+
+        var result = extractor.TryExtract(builder, context);
+
+        Assert.True(result);
+        Assert.Equal(2, context.CurrentIndex);
+        Assert.Equal("key=value", builder.RawContent);
+        Assert.Equal(MediaTypeNames.Application.FormUrlEncoded, builder.ContentType);
+    }
+
+    [Fact]
     public void TryExtract_DataBinaryFlagDefaultContentType_ReturnOK()
     {
         var extractor = new CurlDataExtractor();
@@ -99,6 +121,21 @@ public class CurlDataExtractorTests
         Assert.True(result);
         Assert.Equal(2, context.CurrentIndex);
         Assert.Equal("param=value", builder.RawContent);
+        Assert.Equal(MediaTypeNames.Application.FormUrlEncoded, builder.ContentType);
+    }
+
+    [Fact]
+    public void TryExtract_DataAsciiFlagNonFileRead_ReturnOK()
+    {
+        var extractor = new CurlDataExtractor();
+        var builder = CreateBuilder();
+        var context = CreateContext("--data-ascii", "some data");
+
+        var result = extractor.TryExtract(builder, context);
+
+        Assert.True(result);
+        Assert.Equal(2, context.CurrentIndex);
+        Assert.Equal("some data", builder.RawContent);
         Assert.Equal(MediaTypeNames.Application.FormUrlEncoded, builder.ContentType);
     }
 
@@ -218,5 +255,212 @@ public class CurlDataExtractorTests
         var processors = builder.HttpContentProcessorProviders.SelectMany(p => p()).ToList();
         Assert.Contains(processors, p => p is StringContentForFormUrlEncodedContentProcessor { UrlEncode: true });
         Assert.Single(processors);
+    }
+
+    [Fact]
+    public void TryExtract_DataFlagWithFileRead_TextContent_ReturnOK()
+    {
+        var filePath = CreateTempFile("line1\nline2");
+        try
+        {
+            var extractor = new CurlDataExtractor();
+            var builder = CreateBuilder();
+            var context = CreateContext("-d", $"@{filePath}");
+
+            var result = extractor.TryExtract(builder, context);
+
+            Assert.True(result);
+            Assert.Equal(2, context.CurrentIndex);
+            Assert.Equal("line1\nline2", builder.RawContent);
+            Assert.Equal(MediaTypeNames.Application.FormUrlEncoded, builder.ContentType);
+            Assert.Null(builder.HttpContentProcessorProviders);
+        }
+        finally
+        {
+            File.Delete(filePath);
+        }
+    }
+
+    [Fact]
+    public void TryExtract_DataAliasWithFileRead_TextContent_ReturnOK()
+    {
+        var filePath = CreateTempFile("data content");
+        try
+        {
+            var extractor = new CurlDataExtractor();
+            var builder = CreateBuilder();
+            var context = CreateContext("--data", $"@{filePath}");
+
+            var result = extractor.TryExtract(builder, context);
+
+            Assert.True(result);
+            Assert.Equal(2, context.CurrentIndex);
+            Assert.Equal("data content", builder.RawContent);
+            Assert.Equal(MediaTypeNames.Application.FormUrlEncoded, builder.ContentType);
+            Assert.Null(builder.HttpContentProcessorProviders);
+        }
+        finally
+        {
+            File.Delete(filePath);
+        }
+    }
+
+    [Fact]
+    public void TryExtract_DataAsciiFlagWithFileRead_TextContent_ReturnOK()
+    {
+        var filePath = CreateTempFile("ascii data");
+        try
+        {
+            var extractor = new CurlDataExtractor();
+            var builder = CreateBuilder();
+            var context = CreateContext("--data-ascii", $"@{filePath}");
+
+            var result = extractor.TryExtract(builder, context);
+
+            Assert.True(result);
+            Assert.Equal("ascii data", builder.RawContent);
+            Assert.Equal(MediaTypeNames.Application.FormUrlEncoded, builder.ContentType);
+            Assert.Null(builder.HttpContentProcessorProviders);
+        }
+        finally
+        {
+            File.Delete(filePath);
+        }
+    }
+
+    [Fact]
+    public void TryExtract_DataBinaryFlagWithFileRead_BinaryContent_ReturnOK()
+    {
+        var filePath = CreateTempFile("binary bytes");
+        try
+        {
+            var extractor = new CurlDataExtractor();
+            var builder = CreateBuilder();
+            var context = CreateContext("--data-binary", $"@{filePath}");
+
+            var result = extractor.TryExtract(builder, context);
+
+            Assert.True(result);
+            Assert.Equal(2, context.CurrentIndex);
+            var rawContent = Assert.IsType<byte[]>(builder.RawContent);
+            Assert.Equal("binary bytes"u8.ToArray(), rawContent);
+            Assert.Equal(MediaTypeNames.Application.Octet, builder.ContentType);
+            Assert.Null(builder.HttpContentProcessorProviders);
+        }
+        finally
+        {
+            File.Delete(filePath);
+        }
+    }
+
+    [Fact]
+    public void TryExtract_DataUrlencodeFlagWithFileRead_EncodesContent_ReturnOK()
+    {
+        var filePath = CreateTempFile("hello world=foo");
+        try
+        {
+            var extractor = new CurlDataExtractor();
+            var builder = CreateBuilder();
+            var context = CreateContext("--data-urlencode", $"@{filePath}");
+
+            var result = extractor.TryExtract(builder, context);
+
+            Assert.True(result);
+            Assert.Equal(2, context.CurrentIndex);
+            Assert.Equal("hello+world%3Dfoo", builder.RawContent);
+            Assert.Equal(MediaTypeNames.Application.FormUrlEncoded, builder.ContentType);
+            Assert.Null(builder.HttpContentProcessorProviders);
+        }
+        finally
+        {
+            File.Delete(filePath);
+        }
+    }
+
+    [Fact]
+    public void TryExtract_DataRawFlagWithAtSign_NotFileRead_ReturnOK()
+    {
+        var extractor = new CurlDataExtractor();
+        var builder = CreateBuilder();
+        var context = CreateContext("--data-raw", "@some/path");
+
+        var result = extractor.TryExtract(builder, context);
+
+        Assert.True(result);
+        Assert.Equal(2, context.CurrentIndex);
+        Assert.Equal("@some/path", builder.RawContent);
+        Assert.Equal(MediaTypeNames.Application.FormUrlEncoded, builder.ContentType);
+    }
+
+    [Fact]
+    public void TryExtract_FileReadWhenContentTypeAlreadySet_NoOverride_ReturnOK()
+    {
+        var filePath = CreateTempFile("data");
+        try
+        {
+            var extractor = new CurlDataExtractor();
+            var builder = CreateBuilder();
+            builder.SetContentType("application/json");
+            var context = CreateContext("-d", $"@{filePath}");
+
+            var result = extractor.TryExtract(builder, context);
+
+            Assert.True(result);
+            Assert.Equal("data", builder.RawContent);
+            Assert.Equal("application/json", builder.ContentType);
+        }
+        finally
+        {
+            File.Delete(filePath);
+        }
+    }
+
+    [Fact]
+    public void TryExtract_FileReadAppendContent_ReturnOK()
+    {
+        var filePath = CreateTempFile("second");
+        try
+        {
+            var extractor = new CurlDataExtractor();
+            var builder = CreateBuilder();
+            builder.SetContent("first", MediaTypeNames.Application.FormUrlEncoded);
+            var context = CreateContext("-d", $"@{filePath}");
+
+            var result = extractor.TryExtract(builder, context);
+
+            Assert.True(result);
+            Assert.Equal("first&second", builder.RawContent);
+            Assert.Equal(MediaTypeNames.Application.FormUrlEncoded, builder.ContentType);
+        }
+        finally
+        {
+            File.Delete(filePath);
+        }
+    }
+
+    [Fact]
+    public void TryExtract_FileReadWithAtOnly_NotFileRead_ReturnOK()
+    {
+        var extractor = new CurlDataExtractor();
+        var builder = CreateBuilder();
+        var context = CreateContext("-d", "@");
+
+        var result = extractor.TryExtract(builder, context);
+
+        Assert.True(result);
+        Assert.Equal(2, context.CurrentIndex);
+        Assert.Equal("@", builder.RawContent);
+        Assert.Equal(MediaTypeNames.Application.FormUrlEncoded, builder.ContentType);
+    }
+
+    [Fact]
+    public void TryExtract_FileReadNonExistentFile_Invalid_Parameters()
+    {
+        var nonExistentPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+        var extractor = new CurlDataExtractor();
+        var builder = CreateBuilder();
+        var context = CreateContext("--data-binary", $"@{nonExistentPath}");
+
+        Assert.Throws<FileNotFoundException>(() => extractor.TryExtract(builder, context));
     }
 }

@@ -8,6 +8,13 @@ namespace HttpAgent.Tests;
 
 public class HttpRequestBuilderFromCurlTests
 {
+    private static string CreateTempFile(string content)
+    {
+        var path = Path.GetTempFileName();
+        File.WriteAllText(path, content, new UTF8Encoding(false));
+        return path;
+    }
+
     [Fact]
     public void FromCurl_NullCommand_Invalid_Parameters() =>
         Assert.Throws<ArgumentNullException>(() => HttpRequestBuilder.FromCurl(null!));
@@ -191,9 +198,22 @@ public class HttpRequestBuilderFromCurlTests
     [Fact]
     public void FromCurl_DataBinary_ReturnOK()
     {
-        var builder = HttpRequestBuilder.FromCurl("curl --data-binary '@file.bin' http://example.com");
-        Assert.Equal("application/octet-stream", builder.ContentType);
-        Assert.Equal("@file.bin", builder.RawContent);
+        var filePath = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllBytes(filePath, new byte[] { 0x01, 0x02, 0x03 });
+
+            var builder = HttpRequestBuilder.FromCurl(
+                $"curl --data-binary '@{filePath}' http://example.com");
+
+            Assert.Equal("application/octet-stream", builder.ContentType);
+            var rawContent = Assert.IsType<byte[]>(builder.RawContent);
+            Assert.Equal(new byte[] { 0x01, 0x02, 0x03 }, rawContent);
+        }
+        finally
+        {
+            File.Delete(filePath);
+        }
     }
 
     [Fact]
@@ -417,5 +437,148 @@ public class HttpRequestBuilderFromCurlTests
         var builder = HttpRequestBuilder.FromCurl("curl /api/data");
         Assert.Equal("/api/data", builder.RequestUri?.OriginalString);
         Assert.False(builder.RequestUri?.IsAbsoluteUri);
+    }
+
+    [Fact]
+    public void FromCurl_DataFlagWithFileRead_ReturnOK()
+    {
+        var filePath = CreateTempFile("line1\nline2");
+        try
+        {
+            var builder = HttpRequestBuilder.FromCurl($"curl -d @{filePath} http://example.com");
+
+            Assert.Equal("line1\nline2", builder.RawContent);
+            Assert.Equal("application/x-www-form-urlencoded", builder.ContentType);
+        }
+        finally
+        {
+            File.Delete(filePath);
+        }
+    }
+
+    [Fact]
+    public void FromCurl_DataAliasWithFileRead_ReturnOK()
+    {
+        var filePath = CreateTempFile("data content");
+        try
+        {
+            var builder = HttpRequestBuilder.FromCurl($"curl --data @{filePath} http://example.com");
+
+            Assert.Equal("data content", builder.RawContent);
+            Assert.Equal("application/x-www-form-urlencoded", builder.ContentType);
+        }
+        finally
+        {
+            File.Delete(filePath);
+        }
+    }
+
+    [Fact]
+    public void FromCurl_DataAsciiFlagWithFileRead_ReturnOK()
+    {
+        var filePath = CreateTempFile("ascii data");
+        try
+        {
+            var builder = HttpRequestBuilder.FromCurl($"curl --data-ascii @{filePath} http://example.com");
+
+            Assert.Equal("ascii data", builder.RawContent);
+            Assert.Equal("application/x-www-form-urlencoded", builder.ContentType);
+        }
+        finally
+        {
+            File.Delete(filePath);
+        }
+    }
+
+    [Fact]
+    public void FromCurl_DataBinaryFlagWithFileRead_ReturnOK()
+    {
+        var filePath = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllBytes(filePath, "binary bytes"u8.ToArray());
+
+            var builder = HttpRequestBuilder.FromCurl($"curl --data-binary @{filePath} http://example.com");
+
+            var rawContent = Assert.IsType<byte[]>(builder.RawContent);
+            Assert.Equal("binary bytes"u8.ToArray(), rawContent);
+            Assert.Equal("application/octet-stream", builder.ContentType);
+        }
+        finally
+        {
+            File.Delete(filePath);
+        }
+    }
+
+    [Fact]
+    public void FromCurl_DataUrlencodeFlagWithFileRead_EncodesContent_ReturnOK()
+    {
+        var filePath = CreateTempFile("hello world=foo");
+        try
+        {
+            var builder = HttpRequestBuilder.FromCurl($"curl --data-urlencode @{filePath} http://example.com");
+
+            Assert.Equal("hello+world%3Dfoo", builder.RawContent);
+            Assert.Equal("application/x-www-form-urlencoded", builder.ContentType);
+            Assert.Null(builder.HttpContentProcessorProviders);
+        }
+        finally
+        {
+            File.Delete(filePath);
+        }
+    }
+
+    [Fact]
+    public void FromCurl_DataRawFlagWithAtSign_NotFileRead_ReturnOK()
+    {
+        var builder = HttpRequestBuilder.FromCurl("curl --data-raw @some/path http://example.com");
+
+        Assert.Equal("@some/path", builder.RawContent);
+        Assert.Equal("application/x-www-form-urlencoded", builder.ContentType);
+    }
+
+    [Fact]
+    public void FromCurl_FileReadWhenContentTypeAlreadySet_NoOverride_ReturnOK()
+    {
+        var filePath = CreateTempFile("data");
+        try
+        {
+            var builder = HttpRequestBuilder.FromCurl(
+                $"curl -H 'Content-Type: application/json' -d @{filePath} http://example.com");
+
+            Assert.Equal("data", builder.RawContent);
+            Assert.Equal("application/json", builder.ContentType);
+        }
+        finally
+        {
+            File.Delete(filePath);
+        }
+    }
+
+    [Fact]
+    public void FromCurl_FileReadAppendContent_ReturnOK()
+    {
+        var filePath = CreateTempFile("second");
+        try
+        {
+            var builder = HttpRequestBuilder.FromCurl(
+                $"curl -d first -d @{filePath} http://example.com");
+
+            Assert.Equal("first&second", builder.RawContent);
+            Assert.Equal("application/x-www-form-urlencoded", builder.ContentType);
+        }
+        finally
+        {
+            File.Delete(filePath);
+        }
+    }
+
+    [Fact]
+    public void FromCurl_FileReadNonExistentFile_Invalid_Parameters()
+    {
+        var nonExistentPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+
+        Assert.Throws<FileNotFoundException>(() =>
+            HttpRequestBuilder.FromCurl($"curl -d @{nonExistentPath} http://example.com"));
     }
 }

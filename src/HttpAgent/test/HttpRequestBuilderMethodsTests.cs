@@ -2,6 +2,8 @@
 // 
 // 此源代码遵循位于源代码树根目录中的 LICENSE 文件的许可证。
 
+using Microsoft.Net.Http.Headers;
+
 namespace HttpAgent.Tests;
 
 public class HttpRequestBuilderMethodsTests
@@ -300,6 +302,71 @@ public class HttpRequestBuilderMethodsTests
                 StringContentForFormUrlEncodedContentProcessor;
         Assert.NotNull(stringContentForFormUrlEncodedContentProcessor3);
         Assert.False(stringContentForFormUrlEncodedContentProcessor3.UrlEncode);
+    }
+
+    [Fact]
+    public void SetFileContent_Invalid_Parameters()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        Assert.Throws<ArgumentNullException>(() => httpRequestBuilder.SetFileContent(null!));
+        Assert.Throws<ArgumentException>(() => httpRequestBuilder.SetFileContent(string.Empty));
+        Assert.Throws<ArgumentException>(() => httpRequestBuilder.SetFileContent(" "));
+    }
+
+    [Fact]
+    public void SetFileContent_ReturnOK()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        var filePath = Path.Combine(AppContext.BaseDirectory, "test.txt");
+        httpRequestBuilder.SetFileContent(filePath);
+
+        Assert.NotNull(httpRequestBuilder.RawContent);
+        Assert.Equal("text/plain", httpRequestBuilder.ContentType);
+        Assert.True(httpRequestBuilder.RawContent is FileStream);
+        Assert.NotNull(httpRequestBuilder.Disposables);
+        Assert.Single(httpRequestBuilder.Disposables);
+        Assert.Same(httpRequestBuilder.Disposables.First(), httpRequestBuilder.RawContent);
+        Assert.NotNull(httpRequestBuilder.ContentHeaders);
+        Assert.Equal("attachment; filename=\"test.txt\"",
+            httpRequestBuilder.ContentHeaders[HeaderNames.ContentDisposition].FirstOrDefault());
+
+        var httpRequestBuilder2 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        httpRequestBuilder2.SetFileContent("https://furion.net/img/logo.png");
+
+        Assert.NotNull(httpRequestBuilder2.RawContent);
+        Assert.Equal("image/png", httpRequestBuilder2.ContentType);
+        Assert.Contains("ContentLengthReadStream", httpRequestBuilder2.RawContent.GetType().FullName);
+        Assert.NotNull(httpRequestBuilder2.Disposables);
+        Assert.Single(httpRequestBuilder2.Disposables);
+        Assert.Same(httpRequestBuilder2.Disposables.First(), httpRequestBuilder2.RawContent);
+        Assert.NotNull(httpRequestBuilder2.ContentHeaders);
+        Assert.Equal("attachment; filename=\"logo.png\"",
+            httpRequestBuilder2.ContentHeaders[HeaderNames.ContentDisposition].FirstOrDefault());
+    }
+
+    [Fact]
+    public void SetStreamContent_Invalid_Parameters()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        Assert.Throws<ArgumentNullException>(() => httpRequestBuilder.SetStreamContent(null!));
+    }
+
+    [Fact]
+    public void SetStreamContent_ReturnOK()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        httpRequestBuilder.SetStreamContent(File.OpenRead(Path.Combine(AppContext.BaseDirectory, "test.txt")),
+            "test.txt");
+
+        Assert.NotNull(httpRequestBuilder.RawContent);
+        Assert.Equal("text/plain", httpRequestBuilder.ContentType);
+        Assert.True(httpRequestBuilder.RawContent is FileStream);
+        Assert.NotNull(httpRequestBuilder.Disposables);
+        Assert.Single(httpRequestBuilder.Disposables);
+        Assert.Same(httpRequestBuilder.Disposables.First(), httpRequestBuilder.RawContent);
+        Assert.NotNull(httpRequestBuilder.ContentHeaders);
+        Assert.Equal("attachment; filename=\"test.txt\"",
+            httpRequestBuilder.ContentHeaders[HeaderNames.ContentDisposition].FirstOrDefault());
     }
 
     [Fact]

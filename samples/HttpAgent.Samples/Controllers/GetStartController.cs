@@ -178,6 +178,19 @@ public class GetStartController(
     }
 
     /// <summary>
+    ///     发送二进制
+    /// </summary>
+    /// <returns></returns>
+    [HttpPost]
+    public async Task<string?> PostBinary()
+    {
+        var content = await httpRemoteService.PostAsStringAsync("https://localhost:7044/HttpRemote/AddFile2",
+            builder => builder.SetFileContent(@"C:\Workspaces\httptest.jpg"));
+
+        return content;
+    }
+
+    /// <summary>
     ///     URL 编码表单提交
     /// </summary>
     /// <returns></returns>
