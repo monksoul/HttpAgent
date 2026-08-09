@@ -8114,14 +8114,25 @@
                 <see cref="T:System.String" />
             </returns>
         </member>
-        <member name="M:HttpAgent.Core.Utilities.StringUtility.AddTabToEachLine(System.String,System.Boolean)">
+        <member name="M:HttpAgent.Core.Utilities.StringUtility.AddTabToEachLine(System.String,System.Boolean,System.String)">
             <summary>
-                在字符串每一行添加制表符（两个空白）
+                在字符串每一行添加制表符（两个空白）或自定义缩进
             </summary>
             <param name="input">文本</param>
             <param name="skipFirstLine">是否跳过第一行</param>
+            <param name="indent">自定义缩进字符串，为空则默认两个空格</param>
             <returns>
                 <see cref="T:System.String" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Core.Utilities.StringUtility.GetDisplayWidth(System.String)">
+            <summary>
+                获取字符串在控制台中的实际显示宽度
+            </summary>
+            <remarks>中文/全角字符占2个宽度，英文/半角占1个宽度。</remarks>
+            <param name="text">要测量的文本</param>
+            <returns>
+                <see cref="T:System.Int32" />
             </returns>
         </member>
         <member name="T:HttpAgent.Core.Utilities.Throttler">
@@ -12953,11 +12964,11 @@
             ○ Match '\u001b'.<br/>
             ○ Match with 2 alternative expressions, atomically.<br/>
                 ○ Match a sequence of expressions.<br/>
-                    ○ Match '['.<br/>
+                    ○ Match an empty string.<br/>
                     ○ Match a character in the set [0-9;] atomically any number of times.<br/>
                     ○ Match a character in the set [A-Za-z].<br/>
                 ○ Match a sequence of expressions.<br/>
-                    ○ Match ']'.<br/>
+                    ○ Match an empty string.<br/>
                     ○ Match a character other than '\n' lazily any number of times.<br/>
                     ○ Match '\a'.<br/>
             </code>
@@ -22507,6 +22518,21 @@
         <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_ascii_FF0B0000000000000000">
             <summary>Supports searching for characters in or not in "0123456789;".</summary>
         </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfAnyStrings_OrdinalIgnoreCase_F5E0F783171641148150F5FF034A915A46A2F85A3F95E5BE9C3E3713E7208E1F">
+            <summary>Supports searching for the specified strings.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_1F52B1A4D2E82B6FEDE25EC8C55F85BB36775196837076691C96925040F90D32">
+            <summary>Supports searching for the string "\\u".</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_24065539CD2593CB885B6092E92443DA15A8A09A496B09D6CC4B4CECC1ECA7AC">
+            <summary>Supports searching for the string "=?".</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_98B3E663A7AAF3D02DF13A5CC650116209DEF2EA5FBA87F199F35B6DBB3C92E3">
+            <summary>Supports searching for the string "?=".</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_EBC667BDABA1472FA863B5B39B31251EF2B4C95DD643BDECF694CB1CE7BDC178">
+            <summary>Supports searching for the string "[[".</summary>
+        </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions">
             <summary>
                 HTTP 远程请求模块 <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" /> 扩展类
@@ -22539,25 +22565,6 @@
             </returns>
         </member>
         <member name="M:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions.UseHttpRemoteClient(System.IServiceProvider)">
-            <summary>
-                将应用程序的主 <see cref="T:System.IServiceProvider" /> 注入到 <see cref="T:HttpAgent.HttpRemoteClient" />，使其优先使用该容器解析
-                <see cref="T:HttpAgent.IHttpRemoteService" /> 服务
-            </summary>
-            <remarks>
-                <para>
-                    调用此方法后，<see cref="P:HttpAgent.HttpRemoteClient.Service" /> 将从外部容器获取服务实例，而非自行构建独立 DI 容器。注入的容器生命周期由调用方管理，
-                    <see cref="M:HttpAgent.HttpRemoteClient.Dispose" /> 不会释放它。
-                </para>
-                <para>注意：请确保使用的是根容器（Root ServiceProvider），使用作用域容器可能导致对象生命周期异常。</para>
-            </remarks>
-            <param name="serviceProvider">应用程序的根服务提供器，必须已完成 <see cref="T:HttpAgent.IHttpRemoteService" /> 的注册。</param>
-            <returns>
-                <see cref="T:System.IServiceProvider" />
-            </returns>
-        </member>
-    </members>
-</doc>
-mber name="M:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions.UseHttpRemoteClient(System.IServiceProvider)">
             <summary>
                 将应用程序的主 <see cref="T:System.IServiceProvider" /> 注入到 <see cref="T:HttpAgent.HttpRemoteClient" />，使其优先使用该容器解析
                 <see cref="T:HttpAgent.IHttpRemoteService" /> 服务

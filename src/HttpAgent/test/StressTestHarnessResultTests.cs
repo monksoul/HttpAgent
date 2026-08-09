@@ -57,10 +57,8 @@ public class StressTestHarnessResultTests
         var result = new StressTestHarnessResult(10, 0.9282536, 10, 0,
             responseTimes);
 
-        var c = result.ToString();
-
         Assert.Equal(
-            "[36m[1mStress Test Harness Result:[0m \r\n  Total Requests:          10\r\n  Total Time (s):          0.93\r\n  Successful Requests:     10\r\n  Failed Requests:         0\r\n  QPS:                     10.77\r\n  Min RT (ms):             3,655,751.00\r\n  Max RT (ms):             9,209,802.00\r\n  Avg RT (ms):             6,295,236.70\r\n  P10 RT (ms):             3,655,751.00\r\n  P25 RT (ms):             4,388,344.00\r\n  P50 RT (ms):             6,184,336.00\r\n  P75 RT (ms):             7,207,818.00\r\n  P90 RT (ms):             9,191,534.00\r\n  P95 RT (ms):             9,209,802.00\r\n  P99 RT (ms):             9,209,802.00\r\n  P99.99 RT (ms):          9,209,802.00",
+            "[36m[1mStress Test Harness Result:[0m \r\n  Total Requests:           10\r\n  Total Time (s):           0.93\r\n  Successful Requests:      10\r\n  Failed Requests:          0\r\n  QPS:                      10.77\r\n  Min RT (ms):              3,655,751.00\r\n  Max RT (ms):              9,209,802.00\r\n  Avg RT (ms):              6,295,236.70\r\n  P10 RT (ms):              3,655,751.00\r\n  P25 RT (ms):              4,388,344.00\r\n  P50 RT (ms):              6,184,336.00\r\n  P75 RT (ms):              7,207,818.00\r\n  P90 RT (ms):              9,191,534.00\r\n  P95 RT (ms):              9,209,802.00\r\n  P99 RT (ms):              9,209,802.00\r\n  P99.99 RT (ms):           9,209,802.00",
             result.ToString());
     }
 

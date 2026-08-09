@@ -65,9 +65,9 @@ public class HttpRemoteExtensionsTests
         httpRequestMessage.Headers.TryAddWithoutValidation("Accept-Encoding", "gzip, deflate");
 
         Assert.Equal(
-            "\e[36m\e[1mRequest Headers:\e[0m \r\n  Accept:              application/json\r\n  Accept-Encoding:     gzip, deflate",
+            "\e[36m\e[1mRequest Headers:\e[0m \r\n  Accept:               application/json\r\n  Accept-Encoding:      gzip, deflate",
             httpRequestMessage.ProfilerHeaders());
-        Assert.Equal("Accept:              application/json\r\nAccept-Encoding:     gzip, deflate",
+        Assert.Equal("Accept:               application/json\r\nAccept-Encoding:      gzip, deflate",
             httpRequestMessage.ProfilerHeaders(summary: null));
     }
 
@@ -80,10 +80,10 @@ public class HttpRemoteExtensionsTests
         httpRequestMessage.Headers.TryAddWithoutValidation("Accept-Encoding", "gzip, deflate");
 
         Assert.Equal(
-            "\e[36m\e[1mRequest Headers:\e[0m \r\n  Accept:              application/json\r\n  Accept-Encoding:     gzip, deflate\r\n  Content-Type:        application/json; charset=utf-8",
+            "\e[36m\e[1mRequest Headers:\e[0m \r\n  Accept:               application/json\r\n  Accept-Encoding:      gzip, deflate\r\n  Content-Type:         application/json; charset=utf-8",
             httpRequestMessage.ProfilerHeaders());
         Assert.Equal(
-            "Accept:              application/json\r\nAccept-Encoding:     gzip, deflate\r\nContent-Type:        application/json; charset=utf-8",
+            "Accept:               application/json\r\nAccept-Encoding:      gzip, deflate\r\nContent-Type:         application/json; charset=utf-8",
             httpRequestMessage.ProfilerHeaders(summary: null));
     }
 
@@ -98,10 +98,10 @@ public class HttpRemoteExtensionsTests
         httpClient.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", UserAgents.Edge.PC);
 
         Assert.Equal(
-            "\e[36m\e[1mRequest Headers:\e[0m \r\n  User-Agent:          Mozilla/5.0, (Windows NT 10.0; Win64; x64), AppleWebKit/537.36, (KHTML, like Gecko), Chrome/150.0.0.0, Safari/537.36, Edg/150.0.0.0\r\n  Accept:              application/json\r\n  Accept-Encoding:     gzip, deflate",
+            "\e[36m\e[1mRequest Headers:\e[0m \r\n  User-Agent:           Mozilla/5.0, (Windows NT 10.0; Win64; x64), AppleWebKit/537.36, (KHTML, like Gecko), Chrome/150.0.0.0, Safari/537.36, Edg/150.0.0.0\r\n  Accept:               application/json\r\n  Accept-Encoding:      gzip, deflate",
             httpRequestMessage.ProfilerHeaders(httpClient));
         Assert.Equal(
-            "User-Agent:          Mozilla/5.0, (Windows NT 10.0; Win64; x64), AppleWebKit/537.36, (KHTML, like Gecko), Chrome/150.0.0.0, Safari/537.36, Edg/150.0.0.0\r\nAccept:              application/json\r\nAccept-Encoding:     gzip, deflate",
+            "User-Agent:           Mozilla/5.0, (Windows NT 10.0; Win64; x64), AppleWebKit/537.36, (KHTML, like Gecko), Chrome/150.0.0.0, Safari/537.36, Edg/150.0.0.0\r\nAccept:               application/json\r\nAccept-Encoding:      gzip, deflate",
             httpRequestMessage.ProfilerHeaders(httpClient, null));
     }
 
@@ -114,10 +114,10 @@ public class HttpRemoteExtensionsTests
         httpResponseMessage.Content.Headers.TryAddWithoutValidation("Content-Type", "application/json");
 
         Assert.Equal(
-            "\e[36m\e[1mResponse Headers:\e[0m \r\n  Accept:              application/json\r\n  Accept-Encoding:     gzip, deflate\r\n  Content-Type:        application/json",
+            "\e[36m\e[1mResponse Headers:\e[0m \r\n  Accept:               application/json\r\n  Accept-Encoding:      gzip, deflate\r\n  Content-Type:         application/json",
             httpResponseMessage.ProfilerHeaders());
         Assert.Equal(
-            "Accept:              application/json\r\nAccept-Encoding:     gzip, deflate\r\nContent-Type:        application/json",
+            "Accept:               application/json\r\nAccept-Encoding:      gzip, deflate\r\nContent-Type:         application/json",
             httpResponseMessage.ProfilerHeaders(null));
     }
 
@@ -143,11 +143,11 @@ public class HttpRemoteExtensionsTests
         httpResponseMessage.Content.Headers.TryAddWithoutValidation("Content-Type", "application/json");
 
         Assert.Equal(
-            "\e[36m\e[1mGeneral:\e[0m \r\n  Request URL:        http://localhost\r\n  Request Method:     GET\r\n  Status Code:        \e[32m\e[1m200 OK\e[0m\r\n  HTTP Version:       1.1\r\n\e[36m\e[1mResponse Headers:\e[0m \r\n  Accept:              application/json\r\n  Accept-Encoding:     gzip, deflate\r\n  Content-Type:        application/json",
+            "\e[36m\e[1mGeneral:\e[0m \r\n  Request URL:         http://localhost\r\n  Request Method:      GET\r\n  Status Code:         \e[32m\e[1m200 OK\e[0m\r\n  HTTP Version:        1.1\r\n\e[36m\e[1mResponse Headers:\e[0m \r\n  Accept:               application/json\r\n  Accept-Encoding:      gzip, deflate\r\n  Content-Type:         application/json",
             httpResponseMessage.ProfilerGeneralAndHeaders());
 
         Assert.Equal(
-            "\e[36m\e[1mGeneral:\e[0m \r\n  Request URL:          http://localhost\r\n  Request Method:       GET\r\n  Status Code:          \e[32m\e[1m200 OK\e[0m\r\n  HTTP Version:         1.1\r\n  Request Duration:     200ms\r\n\e[36m\e[1mResponse Headers:\e[0m \r\n  Accept:              application/json\r\n  Accept-Encoding:     gzip, deflate\r\n  Content-Type:        application/json",
+            "\e[36m\e[1mGeneral:\e[0m \r\n  Request URL:           http://localhost\r\n  Request Method:        GET\r\n  Status Code:           \e[32m\e[1m200 OK\e[0m\r\n  HTTP Version:          1.1\r\n  Request Duration:      200ms\r\n\e[36m\e[1mResponse Headers:\e[0m \r\n  Accept:               application/json\r\n  Accept-Encoding:      gzip, deflate\r\n  Content-Type:         application/json",
             httpResponseMessage.ProfilerGeneralAndHeaders(generalCustomKeyValues:
                 [new KeyValuePair<string, IEnumerable<string>>("Request Duration", ["200ms"])]));
     }
@@ -452,7 +452,7 @@ public class HttpRemoteExtensionsTests
 
         var streamContent = new StreamContent(nonSeekableStream);
         var result = await streamContent.ProfilerAsync(cancellationToken: TestContext.Current.CancellationToken);
-        Assert.Contains("underlying stream is not seekable and buffering is disabled to protect it", result);
+        Assert.Contains("Forward-only stream, reading would break request", result);
     }
 
     [Fact]
