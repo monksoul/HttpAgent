@@ -23,19 +23,19 @@ public class MultipartDeclarativeExtractorTests
     {
         var method1 =
             typeof(IMultipartDeclarativeExtractorTest).GetMethod(nameof(IMultipartDeclarativeExtractorTest.Test1))!;
-        var context1 = new HttpDeclarativeExtractorContext(method1, [],
-            new HttpDeclarativeMethodMetadata(method1, typeof(IMultipartDeclarativeExtractorTest)));
+        var context1 = new HttpDeclarativeParsingContext(method1, [],
+            new HttpDeclarativeMetadata(method1, typeof(IMultipartDeclarativeExtractorTest)));
         var httpRequestBuilder1 = HttpRequestBuilder.Get("http://localhost");
         new MultipartDeclarativeExtractor().Extract(httpRequestBuilder1, context1);
         Assert.Null(httpRequestBuilder1.MultipartFormDataBuilder);
 
         var method2 =
             typeof(IMultipartDeclarativeExtractorTest).GetMethod(nameof(IMultipartDeclarativeExtractorTest.Test2))!;
-        var context2 = new HttpDeclarativeExtractorContext(method2,
+        var context2 = new HttpDeclarativeParsingContext(method2,
         [
             1, "furion", new { }, new MemoryStream(), Array.Empty<byte>(), new StringContent(""),
             MultipartFile.CreateFromByteArray([])
-        ], new HttpDeclarativeMethodMetadata(method2, typeof(IMultipartDeclarativeExtractorTest)));
+        ], new HttpDeclarativeMetadata(method2, typeof(IMultipartDeclarativeExtractorTest)));
         var httpRequestBuilder2 = HttpRequestBuilder.Get("http://localhost");
         new MultipartDeclarativeExtractor().Extract(httpRequestBuilder2, context2);
         Assert.NotNull(httpRequestBuilder2.MultipartFormDataBuilder);
@@ -66,9 +66,9 @@ public class MultipartDeclarativeExtractorTests
 
         var method3 =
             typeof(IMultipartDeclarativeExtractorTest).GetMethod(nameof(IMultipartDeclarativeExtractorTest.Test3))!;
-        var context3 = new HttpDeclarativeExtractorContext(method3,
+        var context3 = new HttpDeclarativeParsingContext(method3,
             ["furion", "none", filePath, base64String, url],
-            new HttpDeclarativeMethodMetadata(method3, typeof(IMultipartDeclarativeExtractorTest)));
+            new HttpDeclarativeMetadata(method3, typeof(IMultipartDeclarativeExtractorTest)));
         var httpRequestBuilder3 = HttpRequestBuilder.Get("http://localhost");
         new MultipartDeclarativeExtractor().Extract(httpRequestBuilder3, context3);
         Assert.NotNull(httpRequestBuilder3.MultipartFormDataBuilder);
@@ -89,9 +89,9 @@ public class MultipartDeclarativeExtractorTests
 
         var method4 =
             typeof(IMultipartDeclarativeExtractorTest).GetMethod(nameof(IMultipartDeclarativeExtractorTest.Test4))!;
-        var context4 = new HttpDeclarativeExtractorContext(method4,
+        var context4 = new HttpDeclarativeParsingContext(method4,
             [1, CancellationToken.None],
-            new HttpDeclarativeMethodMetadata(method4, typeof(IMultipartDeclarativeExtractorTest)));
+            new HttpDeclarativeMetadata(method4, typeof(IMultipartDeclarativeExtractorTest)));
         var httpRequestBuilder4 = HttpRequestBuilder.Get("http://localhost");
         new MultipartDeclarativeExtractor().Extract(httpRequestBuilder4, context4);
         Assert.NotNull(httpRequestBuilder4.MultipartFormDataBuilder);
@@ -101,7 +101,7 @@ public class MultipartDeclarativeExtractorTests
 
         var method5 =
             typeof(IMultipartDeclarativeExtractorTest).GetMethod(nameof(IMultipartDeclarativeExtractorTest.Test5))!;
-        var context5 = new HttpDeclarativeExtractorContext(method5,
+        var context5 = new HttpDeclarativeParsingContext(method5,
         [
             new HttpRemoteMultipartModel2
             {
@@ -110,7 +110,7 @@ public class MultipartDeclarativeExtractorTests
                 File = MultipartFile.CreateFromPath(Path.Combine(AppContext.BaseDirectory, "test.txt"), "File"),
                 File2 = new FileInfo(Path.Combine(AppContext.BaseDirectory, "test.txt"))
             }
-        ], new HttpDeclarativeMethodMetadata(method5, typeof(IMultipartDeclarativeExtractorTest)));
+        ], new HttpDeclarativeMetadata(method5, typeof(IMultipartDeclarativeExtractorTest)));
         var httpRequestBuilder5 = HttpRequestBuilder.Get("http://localhost");
         new MultipartDeclarativeExtractor().Extract(httpRequestBuilder5, context5);
         Assert.NotNull(httpRequestBuilder5.MultipartFormDataBuilder);
@@ -161,11 +161,11 @@ public class MultipartDeclarativeExtractorTests
     {
         var method2 =
             typeof(IMultipartDeclarativeExtractorTest).GetMethod(nameof(IMultipartDeclarativeExtractorTest.Test2))!;
-        var context2 = new HttpDeclarativeExtractorContext(method2,
+        var context2 = new HttpDeclarativeParsingContext(method2,
         [
             1, "furion", new { }, new MemoryStream(), Array.Empty<byte>(), new StringContent(""),
             MultipartFile.CreateFromByteArray([])
-        ], new HttpDeclarativeMethodMetadata(method2, typeof(IMultipartDeclarativeExtractorTest)));
+        ], new HttpDeclarativeMetadata(method2, typeof(IMultipartDeclarativeExtractorTest)));
         var httpRequestBuilder2 = HttpRequestBuilder.Get("http://localhost");
         var httpMultipartFormDataBuilder = new HttpMultipartFormDataBuilder(httpRequestBuilder2);
 
@@ -201,9 +201,9 @@ public class MultipartDeclarativeExtractorTests
 
         var method3 =
             typeof(IMultipartDeclarativeExtractorTest).GetMethod(nameof(IMultipartDeclarativeExtractorTest.Test3))!;
-        var context3 = new HttpDeclarativeExtractorContext(method3,
+        var context3 = new HttpDeclarativeParsingContext(method3,
             ["furion", "none", filePath, base64String, url],
-            new HttpDeclarativeMethodMetadata(method3, typeof(IMultipartDeclarativeExtractorTest)));
+            new HttpDeclarativeMetadata(method3, typeof(IMultipartDeclarativeExtractorTest)));
         var httpRequestBuilder3 = HttpRequestBuilder.Get("http://localhost");
         var httpMultipartFormDataBuilder2 = new HttpMultipartFormDataBuilder(httpRequestBuilder3);
 
@@ -230,9 +230,9 @@ public class MultipartDeclarativeExtractorTests
 
         var method4 =
             typeof(IMultipartDeclarativeExtractorTest).GetMethod(nameof(IMultipartDeclarativeExtractorTest.Test4))!;
-        var context4 = new HttpDeclarativeExtractorContext(method4,
+        var context4 = new HttpDeclarativeParsingContext(method4,
             [1, CancellationToken.None],
-            new HttpDeclarativeMethodMetadata(method4, typeof(IMultipartDeclarativeExtractorTest)));
+            new HttpDeclarativeMetadata(method4, typeof(IMultipartDeclarativeExtractorTest)));
         var httpRequestBuilder4 = HttpRequestBuilder.Get("http://localhost");
         var httpMultipartFormDataBuilder3 = new HttpMultipartFormDataBuilder(httpRequestBuilder4);
 

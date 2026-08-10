@@ -73,5 +73,23 @@ public class FormUrlEncodedContentProcessorTests
         Assert.Equal(typeof(StringContent), httpContent5.GetType());
         Assert.Equal("application/x-www-form-urlencoded", httpContent5.Headers.ContentType?.MediaType);
         Assert.Null(httpContent5.Headers.ContentType?.CharSet);
+
+        var httpContent6 =
+            processor.Process(new HttpContentProcessorContext(JsonNode.Parse("\"id=1&name=furion\""),
+                "application/x-www-form-urlencoded"));
+        Assert.NotNull(httpContent6);
+        Assert.Equal(typeof(StringContent), httpContent6.GetType());
+        Assert.Equal("application/x-www-form-urlencoded", httpContent6.Headers.ContentType?.MediaType);
+        Assert.Null(httpContent6.Headers.ContentType?.CharSet);
+
+#if NET10_0_OR_GREATER
+        var httpContent7 =
+            processor.Process(new HttpContentProcessorContext(JsonElement.Parse("\"id=1&name=furion\""),
+                "application/x-www-form-urlencoded"));
+        Assert.NotNull(httpContent7);
+        Assert.Equal(typeof(StringContent), httpContent7.GetType());
+        Assert.Equal("application/x-www-form-urlencoded", httpContent7.Headers.ContentType?.MediaType);
+        Assert.Null(httpContent7.Headers.ContentType?.CharSet);
+#endif
     }
 }

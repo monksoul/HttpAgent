@@ -33,12 +33,15 @@ public class StringContentForFormUrlEncodedContentProcessor : FormUrlEncodedCont
         }
 
         string content;
+        var rawContent = context.RawContent;
 
-        // 检查是否是字符串类型
-        if (context.RawContent is string rawString)
+        // 检查是否是字符串类型或字符串存储的 JsonNode 和 JsonElement
+        if (rawContent is string ||
+            (rawContent is JsonNode jsonNode && jsonNode.GetValueKind() == JsonValueKind.String) ||
+            rawContent is JsonElement { ValueKind: JsonValueKind.String })
         {
             // 解析 URL 编码格式字符串
-            var nameValueCollection = HttpUtility.ParseQueryString(rawString);
+            var nameValueCollection = HttpUtility.ParseQueryString(rawContent.ToInvariantCultureString()!);
 
             content = GetContentString(
                 nameValueCollection.AllKeys.Where(k => k is not null).SelectMany(k =>
@@ -48,9 +51,9 @@ public class StringContentForFormUrlEncodedContentProcessor : FormUrlEncodedCont
         else
         {
             // 将原始请求类型转换为字符串字典类型
-            content = GetContentString(
-                context.RawContent.ObjectToDictionary()!.ToDictionary(u => u.Key.ToInvariantCultureString()!,
-                    u => u.Value?.ToInvariantCultureString()), UrlEncode);
+            content = GetContentString(rawContent.ObjectToDictionary()!.ToDictionary(
+                u => u.Key.ToInvariantCultureString()!,
+                u => u.Value?.ToInvariantCultureString()), UrlEncode);
         }
 
         // 初始化 StringContent 实例

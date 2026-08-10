@@ -15,7 +15,7 @@ public class CurlMethodExtractorTests
         return (HttpRequestBuilder)ctor.Invoke(null);
     }
 
-    private static HttpCurlTokenExtractorContext CreateContext(params string[] tokens) => new(tokens);
+    private static HttpCurlParsingContext CreateContext(params string[] tokens) => new(tokens);
 
     [Fact]
     public void Flags_ReturnOK()
@@ -87,15 +87,15 @@ public class CurlMethodExtractorTests
     }
 
     [Fact]
-    public void TryExtract_InvalidMethod_Invalid_Parameters()
+    public void TryExtract_CustomMethod_ReturnOK()
     {
         var extractor = new CurlMethodExtractor();
         var builder = CreateBuilder();
-        var context = CreateContext("-X", "INVALID");
+        var context = CreateContext("-X", "CUSTOM");
 
         var result = extractor.TryExtract(builder, context);
         Assert.True(result);
         Assert.NotNull(builder.HttpMethod);
-        Assert.Equal("INVALID", builder.HttpMethod.ToString());
+        Assert.Equal("CUSTOM", builder.HttpMethod.ToString());
     }
 }

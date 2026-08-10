@@ -347,7 +347,7 @@ public interface IHttpDeclarativeTest1;
 public class CustomHttpDeclarativeExtractor : IHttpDeclarativeExtractor
 {
     /// <inheritdoc />
-    public void Extract(HttpRequestBuilder httpRequestBuilder, HttpDeclarativeExtractorContext context)
+    public void Extract(HttpRequestBuilder httpRequestBuilder, HttpDeclarativeParsingContext context)
     {
     }
 }

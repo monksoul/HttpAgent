@@ -22,8 +22,8 @@ public class HttpClientNameDeclarativeExtractorTests
         var method1 =
             typeof(IHttpClientNameDeclarativeExtractorTest1).GetMethod(
                 nameof(IHttpClientNameDeclarativeExtractorTest1.Test1))!;
-        var context1 = new HttpDeclarativeExtractorContext(method1, [],
-            new HttpDeclarativeMethodMetadata(method1, typeof(IHttpClientNameDeclarativeExtractorTest1)));
+        var context1 = new HttpDeclarativeParsingContext(method1, [],
+            new HttpDeclarativeMetadata(method1, typeof(IHttpClientNameDeclarativeExtractorTest1)));
         var httpRequestBuilder1 = HttpRequestBuilder.Get("http://localhost");
         new HttpClientNameDeclarativeExtractor().Extract(httpRequestBuilder1, context1);
         Assert.Null(httpRequestBuilder1.HttpClientName);
@@ -31,8 +31,8 @@ public class HttpClientNameDeclarativeExtractorTests
         var method2 =
             typeof(IHttpClientNameDeclarativeExtractorTest2).GetMethod(
                 nameof(IHttpClientNameDeclarativeExtractorTest2.Test1))!;
-        var context2 = new HttpDeclarativeExtractorContext(method2, [],
-            new HttpDeclarativeMethodMetadata(method2, typeof(IHttpClientNameDeclarativeExtractorTest2)));
+        var context2 = new HttpDeclarativeParsingContext(method2, [],
+            new HttpDeclarativeMetadata(method2, typeof(IHttpClientNameDeclarativeExtractorTest2)));
         var httpRequestBuilder2 = HttpRequestBuilder.Get("http://localhost");
         new HttpClientNameDeclarativeExtractor().Extract(httpRequestBuilder2, context2);
         Assert.Null(httpRequestBuilder2.HttpClientName);
@@ -40,8 +40,8 @@ public class HttpClientNameDeclarativeExtractorTests
         var method3 =
             typeof(IHttpClientNameDeclarativeExtractorTest2).GetMethod(
                 nameof(IHttpClientNameDeclarativeExtractorTest2.Test2))!;
-        var context3 = new HttpDeclarativeExtractorContext(method3, [],
-            new HttpDeclarativeMethodMetadata(method3, typeof(IHttpClientNameDeclarativeExtractorTest2)));
+        var context3 = new HttpDeclarativeParsingContext(method3, [],
+            new HttpDeclarativeMetadata(method3, typeof(IHttpClientNameDeclarativeExtractorTest2)));
         var httpRequestBuilder3 = HttpRequestBuilder.Get("http://localhost");
         new HttpClientNameDeclarativeExtractor().Extract(httpRequestBuilder3, context3);
         Assert.Equal("github", httpRequestBuilder3.HttpClientName);

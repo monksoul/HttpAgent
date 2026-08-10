@@ -15,7 +15,7 @@ public class CurlAuthExtractorTests
         return (HttpRequestBuilder)ctor.Invoke(null);
     }
 
-    private static HttpCurlTokenExtractorContext CreateContext(params string[] tokens) => new(tokens);
+    private static HttpCurlParsingContext CreateContext(params string[] tokens) => new(tokens);
 
     [Fact]
     public void FlagsWithArgument_ReturnOK() =>

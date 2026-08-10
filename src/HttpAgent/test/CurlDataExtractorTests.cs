@@ -15,7 +15,7 @@ public class CurlDataExtractorTests
         return (HttpRequestBuilder)ctor.Invoke(null);
     }
 
-    private static HttpCurlTokenExtractorContext CreateContext(params string[] tokens) => new(tokens);
+    private static HttpCurlParsingContext CreateContext(params string[] tokens) => new(tokens);
 
     private static string CreateTempFile(string content = "hello world", Encoding? encoding = null)
     {

@@ -990,4 +990,145 @@ public class GetStartController(
             curl -o qr.png "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Hello"
             """));
     }
+
+    [HttpGet]
+    public async Task FromJson()
+    {
+        var result = await httpRemoteService.SendAsStringAsync(HttpRequestBuilder.FromJson("""
+            {
+                "url": "https://furion.net",
+                "method": "GET"
+            }
+            """));
+
+        var result1 = await httpRemoteService.SendAsStringAsync(HttpRequestBuilder.FromJson("""
+            {
+                "url": "https://localhost:7044/HttpRemote/AddModel",
+                "method": "POST",
+                "queries": {
+                    "query1": 10,
+                    "query2": "hello"
+                },
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                "data": {
+                    "id": 1,
+                    "name": "sample"
+                }
+            }
+            """));
+
+        var result2 = await httpRemoteService.SendAsStringAsync(HttpRequestBuilder.FromJson("""
+            {
+                "url": "https://localhost:7044/HttpRemote/AddModels",
+                "method": "POST",
+                "queries": {
+                    "query1": 5,
+                    "query2": "test"
+                },
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                "data": {
+                    "id": 2,
+                    "name": "another"
+                }
+            }
+            """));
+
+        var result3 = await httpRemoteService.SendAsStringAsync(HttpRequestBuilder.FromJson("""
+            {
+                "url": "https://localhost:7044/HttpRemote/AddForm",
+                "method": "POST",
+                "queries": {
+                    "id": 100
+                },
+                "multipart": {
+                    "Id": 100,
+                    "Name": "furion",
+                    "File": "@C:\\Workspaces\\httptest.jpg"
+                }
+            }
+            """));
+
+        var result4 = await httpRemoteService.SendAsStringAsync(HttpRequestBuilder.FromJson("""
+            {
+                "url": "https://localhost:7044/HttpRemote/AddUrlForm",
+                "method": "POST",
+                "headers": {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                "data": "id=200&name=furion"
+            }
+            """));
+
+        var result5 = await httpRemoteService.SendAsStringAsync(HttpRequestBuilder.FromJson("""
+            {
+                "url": "https://localhost:7044/HttpRemote/AddUrlForm",
+                "method": "POST",
+                "data": {
+                    "id": 200,
+                    "name": "fu rion"
+                },
+                "contentType": "application/x-www-form-urlencoded"
+            }
+            """));
+
+        var result6 = await httpRemoteService.SendAsStringAsync(HttpRequestBuilder.FromJson("""
+            {
+                "url": "https://localhost:7044/HttpRemote/AddFile",
+                "method": "POST",
+                "multipart": {
+                    "file": "@C:\\Workspaces\\httptest.jpg"
+                }
+            }
+            """));
+
+        var result7 = await httpRemoteService.SendAsStringAsync(HttpRequestBuilder.FromJson("""
+            {
+                "url": "https://localhost:7044/HttpRemote/AddFiles",
+                "method": "POST",
+                "multipart": {
+                    "files": ["@C:\\Workspaces\\httptest.jpg", "@C:\\Workspaces\\httptest.jpg"]
+                }
+            }
+            """));
+
+        var result8 = await httpRemoteService.SendAsStringAsync(HttpRequestBuilder.FromJson("""
+            {
+                "url": "https://localhost:7044/HttpRemote/RawString",
+                "method": "POST",
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                "data": "\"This is a raw string\""
+            }
+            """));
+
+        var result9 = await httpRemoteService.SendAsStringAsync(HttpRequestBuilder.FromJson("""
+            {
+                "url": "https://jsonplaceholder.typicode.com/posts",
+                "method": "POST",
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                "auth": {
+                    "type": "basic",
+                    "username": "testuser",
+                    "password": "testpass"
+                },
+                "data": {
+                    "title": "Test"
+                }
+            }
+            """));
+
+        var result10 = await httpRemoteService.SendAsStringAsync(HttpRequestBuilder.FromJson("""
+            {
+                "url": "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Hello",
+                "method": "GET"
+            }
+            """));
+    }
 }

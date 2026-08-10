@@ -22,8 +22,8 @@ public class JsonResponseWrapperDeclarativeExtractorTests
         var method1 =
             typeof(IJsonResponseWrapperDeclarativeExtractorTest1).GetMethod(
                 nameof(IJsonResponseWrapperDeclarativeExtractorTest1.Test1))!;
-        var context1 = new HttpDeclarativeExtractorContext(method1, [],
-            new HttpDeclarativeMethodMetadata(method1, typeof(IJsonResponseWrapperDeclarativeExtractorTest1)));
+        var context1 = new HttpDeclarativeParsingContext(method1, [],
+            new HttpDeclarativeMetadata(method1, typeof(IJsonResponseWrapperDeclarativeExtractorTest1)));
         var httpRequestBuilder1 = HttpRequestBuilder.Get("http://localhost");
         new JsonResponseWrapperDeclarativeExtractor().Extract(httpRequestBuilder1, context1);
         Assert.Null(httpRequestBuilder1.JsonResponseWrapperEnabled);
@@ -31,8 +31,8 @@ public class JsonResponseWrapperDeclarativeExtractorTests
         var method2 =
             typeof(IJsonResponseWrapperDeclarativeExtractorTest2).GetMethod(
                 nameof(IJsonResponseWrapperDeclarativeExtractorTest2.Test1))!;
-        var context2 = new HttpDeclarativeExtractorContext(method2, [],
-            new HttpDeclarativeMethodMetadata(method2, typeof(IJsonResponseWrapperDeclarativeExtractorTest2)));
+        var context2 = new HttpDeclarativeParsingContext(method2, [],
+            new HttpDeclarativeMetadata(method2, typeof(IJsonResponseWrapperDeclarativeExtractorTest2)));
         var httpRequestBuilder2 = HttpRequestBuilder.Get("http://localhost");
         new JsonResponseWrapperDeclarativeExtractor().Extract(httpRequestBuilder2, context2);
         Assert.True(httpRequestBuilder2.JsonResponseWrapperEnabled);
@@ -40,8 +40,8 @@ public class JsonResponseWrapperDeclarativeExtractorTests
         var method3 =
             typeof(IJsonResponseWrapperDeclarativeExtractorTest2).GetMethod(
                 nameof(IJsonResponseWrapperDeclarativeExtractorTest2.Test2))!;
-        var context3 = new HttpDeclarativeExtractorContext(method3, [],
-            new HttpDeclarativeMethodMetadata(method3, typeof(IJsonResponseWrapperDeclarativeExtractorTest2)));
+        var context3 = new HttpDeclarativeParsingContext(method3, [],
+            new HttpDeclarativeMetadata(method3, typeof(IJsonResponseWrapperDeclarativeExtractorTest2)));
         var httpRequestBuilder3 = HttpRequestBuilder.Get("http://localhost");
         new JsonResponseWrapperDeclarativeExtractor().Extract(httpRequestBuilder3, context3);
         Assert.False(httpRequestBuilder3.JsonResponseWrapperEnabled);

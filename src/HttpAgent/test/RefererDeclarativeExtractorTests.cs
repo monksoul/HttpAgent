@@ -22,8 +22,8 @@ public class RefererDeclarativeExtractorTests
         var method1 =
             typeof(IRefererDeclarativeExtractorTest1).GetMethod(
                 nameof(IRefererDeclarativeExtractorTest1.Test1))!;
-        var context1 = new HttpDeclarativeExtractorContext(method1, [],
-            new HttpDeclarativeMethodMetadata(method1, typeof(IRefererDeclarativeExtractorTest1)));
+        var context1 = new HttpDeclarativeParsingContext(method1, [],
+            new HttpDeclarativeMetadata(method1, typeof(IRefererDeclarativeExtractorTest1)));
         var httpRequestBuilder1 = HttpRequestBuilder.Get("http://localhost");
         new RefererDeclarativeExtractor().Extract(httpRequestBuilder1, context1);
         Assert.Null(httpRequestBuilder1.Headers);
@@ -31,8 +31,8 @@ public class RefererDeclarativeExtractorTests
         var method2 =
             typeof(IRefererDeclarativeExtractorTest2).GetMethod(
                 nameof(IRefererDeclarativeExtractorTest2.Test1))!;
-        var context2 = new HttpDeclarativeExtractorContext(method2, [],
-            new HttpDeclarativeMethodMetadata(method2, typeof(IRefererDeclarativeExtractorTest2)));
+        var context2 = new HttpDeclarativeParsingContext(method2, [],
+            new HttpDeclarativeMetadata(method2, typeof(IRefererDeclarativeExtractorTest2)));
         var httpRequestBuilder2 = HttpRequestBuilder.Get("http://localhost");
         new RefererDeclarativeExtractor().Extract(httpRequestBuilder2, context2);
         Assert.NotNull(httpRequestBuilder2.Headers);
@@ -41,8 +41,8 @@ public class RefererDeclarativeExtractorTests
         var method3 =
             typeof(IRefererDeclarativeExtractorTest2).GetMethod(
                 nameof(IRefererDeclarativeExtractorTest2.Test2))!;
-        var context3 = new HttpDeclarativeExtractorContext(method3, [],
-            new HttpDeclarativeMethodMetadata(method3, typeof(IRefererDeclarativeExtractorTest2)));
+        var context3 = new HttpDeclarativeParsingContext(method3, [],
+            new HttpDeclarativeMetadata(method3, typeof(IRefererDeclarativeExtractorTest2)));
         var httpRequestBuilder3 = HttpRequestBuilder.Get("http://localhost");
         new RefererDeclarativeExtractor().Extract(httpRequestBuilder3, context3);
         Assert.NotNull(httpRequestBuilder3.Headers);

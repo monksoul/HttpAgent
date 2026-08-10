@@ -19,8 +19,8 @@ public class PathSegmentDeclarativeExtractorTests
     public void Extract_ReturnOK()
     {
         var method1 = typeof(IPathSegmentDeclarativeTest).GetMethod(nameof(IPathSegmentDeclarativeTest.Test1))!;
-        var context1 = new HttpDeclarativeExtractorContext(method1, [],
-            new HttpDeclarativeMethodMetadata(method1, typeof(IPathSegmentDeclarativeTest)));
+        var context1 = new HttpDeclarativeParsingContext(method1, [],
+            new HttpDeclarativeMetadata(method1, typeof(IPathSegmentDeclarativeTest)));
         var httpRequestBuilder1 = HttpRequestBuilder.Get("http://localhost");
         new PathSegmentDeclarativeExtractor().Extract(httpRequestBuilder1, context1);
 
@@ -32,8 +32,8 @@ public class PathSegmentDeclarativeExtractorTests
         Assert.Equal(["segment3", "segment4"], httpRequestBuilder1.PathSegmentsToRemove);
 
         var method2 = typeof(IPathSegmentDeclarativeTest).GetMethod(nameof(IPathSegmentDeclarativeTest.Test2))!;
-        var context2 = new HttpDeclarativeExtractorContext(method2, [],
-            new HttpDeclarativeMethodMetadata(method2, typeof(IPathSegmentDeclarativeTest)));
+        var context2 = new HttpDeclarativeParsingContext(method2, [],
+            new HttpDeclarativeMetadata(method2, typeof(IPathSegmentDeclarativeTest)));
         var httpRequestBuilder2 = HttpRequestBuilder.Get("http://localhost");
         new PathSegmentDeclarativeExtractor().Extract(httpRequestBuilder2, context2);
 
@@ -43,8 +43,8 @@ public class PathSegmentDeclarativeExtractorTests
         Assert.Equal(["segment3"], httpRequestBuilder2.PathSegmentsToRemove);
 
         var method3 = typeof(IPathSegmentDeclarativeTest).GetMethod(nameof(IPathSegmentDeclarativeTest.Test3))!;
-        var context3 = new HttpDeclarativeExtractorContext(method3, [],
-            new HttpDeclarativeMethodMetadata(method3, typeof(IPathSegmentDeclarativeTest)));
+        var context3 = new HttpDeclarativeParsingContext(method3, [],
+            new HttpDeclarativeMetadata(method3, typeof(IPathSegmentDeclarativeTest)));
         var httpRequestBuilder3 = HttpRequestBuilder.Get("http://localhost");
         new PathSegmentDeclarativeExtractor().Extract(httpRequestBuilder3, context3);
 
@@ -53,8 +53,8 @@ public class PathSegmentDeclarativeExtractorTests
         Assert.Equal(["segment1", "segment2", "segment2", "segment4"], httpRequestBuilder3.PathSegments);
 
         var method4 = typeof(IPathSegmentDeclarativeTest).GetMethod(nameof(IPathSegmentDeclarativeTest.Test4))!;
-        var context4 = new HttpDeclarativeExtractorContext(method4, [1, "furion", 31, "广东省", CancellationToken.None],
-            new HttpDeclarativeMethodMetadata(method4, typeof(IPathSegmentDeclarativeTest)));
+        var context4 = new HttpDeclarativeParsingContext(method4, [1, "furion", 31, "广东省", CancellationToken.None],
+            new HttpDeclarativeMetadata(method4, typeof(IPathSegmentDeclarativeTest)));
         var httpRequestBuilder4 = HttpRequestBuilder.Get("http://localhost");
         new PathSegmentDeclarativeExtractor().Extract(httpRequestBuilder4, context4);
 
@@ -63,8 +63,8 @@ public class PathSegmentDeclarativeExtractorTests
         Assert.Equal(["segment1", "segment2", "segment3", "1", "furion", "furion", "31", "广东省"],
             httpRequestBuilder4.PathSegments);
 
-        var context5 = new HttpDeclarativeExtractorContext(method4, [1, "furion", null, "广东省", CancellationToken.None],
-            new HttpDeclarativeMethodMetadata(method4, typeof(IPathSegmentDeclarativeTest)));
+        var context5 = new HttpDeclarativeParsingContext(method4, [1, "furion", null, "广东省", CancellationToken.None],
+            new HttpDeclarativeMetadata(method4, typeof(IPathSegmentDeclarativeTest)));
         var httpRequestBuilder5 = HttpRequestBuilder.Get("http://localhost");
         new PathSegmentDeclarativeExtractor().Extract(httpRequestBuilder5, context5);
 

@@ -107,6 +107,31 @@ public class StringContentForFormUrlEncodedContentProcessorTests
                 "application/x-www-form-urlencoded"))!;
         Assert.Equal("id=1&name=fur+ion&data=%7B%22plateNo%22%3A%22%E4%BA%ACA12345%22%2C%22color%22%3A%221%22%7D",
             await httpContent6.ReadAsStringAsync(TestContext.Current.CancellationToken));
+
+        var httpContent7 =
+            processor.Process(new HttpContentProcessorContext("id=1&name=furion", "application/x-www-form-urlencoded"));
+        Assert.NotNull(httpContent7);
+        Assert.Equal(typeof(StringContent), httpContent7.GetType());
+        Assert.Equal("application/x-www-form-urlencoded", httpContent7.Headers.ContentType?.MediaType);
+        Assert.Null(httpContent7.Headers.ContentType?.CharSet);
+
+        var httpContent8 =
+            processor.Process(new HttpContentProcessorContext(JsonNode.Parse("\"id=1&name=furion\""),
+                "application/x-www-form-urlencoded"));
+        Assert.NotNull(httpContent8);
+        Assert.Equal(typeof(StringContent), httpContent8.GetType());
+        Assert.Equal("application/x-www-form-urlencoded", httpContent8.Headers.ContentType?.MediaType);
+        Assert.Null(httpContent8.Headers.ContentType?.CharSet);
+
+#if NET10_0_OR_GREATER
+        var httpContent9 =
+            processor.Process(new HttpContentProcessorContext(JsonElement.Parse("\"id=1&name=furion\""),
+                "application/x-www-form-urlencoded"));
+        Assert.NotNull(httpContent9);
+        Assert.Equal(typeof(StringContent), httpContent9.GetType());
+        Assert.Equal("application/x-www-form-urlencoded", httpContent9.Headers.ContentType?.MediaType);
+        Assert.Null(httpContent9.Headers.ContentType?.CharSet);
+#endif
     }
 
     [Fact]

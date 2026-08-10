@@ -12,7 +12,7 @@ public class AuthenticationAttribute : Attribute;
 public class AuthenticationDeclarativeExtractor : IHttpDeclarativeExtractor
 {
     /// <inheritdoc />
-    public void Extract(HttpRequestBuilder httpRequestBuilder, HttpDeclarativeExtractorContext context)
+    public void Extract(HttpRequestBuilder httpRequestBuilder, HttpDeclarativeParsingContext context)
     {
         // 如果贴了 [AllowAnonymous] 特性则跳过
         if (context.IsMethodDefined<AllowAnonymousAttribute>(out _, true)) return;
@@ -32,7 +32,7 @@ public class AuthenticationDeclarativeExtractor : IHttpDeclarativeExtractor
 public class AllowAnonymousDeclarativeExtractor : IHttpDeclarativeExtractor
 {
     /// <inheritdoc />
-    public void Extract(HttpRequestBuilder httpRequestBuilder, HttpDeclarativeExtractorContext context)
+    public void Extract(HttpRequestBuilder httpRequestBuilder, HttpDeclarativeParsingContext context)
     {
         // 如果没有贴 [AllowAnonymous] 特性则跳过
         if (!context.IsMethodDefined<AllowAnonymousAttribute>(out _, true)) return;

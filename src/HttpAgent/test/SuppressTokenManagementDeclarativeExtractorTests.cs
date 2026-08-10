@@ -22,8 +22,8 @@ public class SuppressTokenManagementDeclarativeExtractorTests
         var method1 =
             typeof(ISuppressTokenManagementDeclarativeExtractorTest1).GetMethod(
                 nameof(ISuppressTokenManagementDeclarativeExtractorTest1.Test1))!;
-        var context1 = new HttpDeclarativeExtractorContext(method1, [],
-            new HttpDeclarativeMethodMetadata(method1, typeof(ISuppressTokenManagementDeclarativeExtractorTest1)));
+        var context1 = new HttpDeclarativeParsingContext(method1, [],
+            new HttpDeclarativeMetadata(method1, typeof(ISuppressTokenManagementDeclarativeExtractorTest1)));
         var httpRequestBuilder1 = HttpRequestBuilder.Get("http://localhost");
         new SuppressTokenManagementDeclarativeExtractor().Extract(httpRequestBuilder1, context1);
         Assert.False(httpRequestBuilder1.SuppressTokenManagement);
@@ -31,8 +31,8 @@ public class SuppressTokenManagementDeclarativeExtractorTests
         var method2 =
             typeof(ISuppressTokenManagementDeclarativeExtractorTest1).GetMethod(
                 nameof(ISuppressTokenManagementDeclarativeExtractorTest1.Test2))!;
-        var context2 = new HttpDeclarativeExtractorContext(method2, [],
-            new HttpDeclarativeMethodMetadata(method2, typeof(ISuppressTokenManagementDeclarativeExtractorTest1)));
+        var context2 = new HttpDeclarativeParsingContext(method2, [],
+            new HttpDeclarativeMetadata(method2, typeof(ISuppressTokenManagementDeclarativeExtractorTest1)));
         var httpRequestBuilder2 = HttpRequestBuilder.Get("http://localhost");
         new SuppressTokenManagementDeclarativeExtractor().Extract(httpRequestBuilder2, context2);
         Assert.True(httpRequestBuilder2.SuppressTokenManagement);

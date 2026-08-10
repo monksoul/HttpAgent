@@ -86,4 +86,8 @@ public class ConstantsTests
     [Fact]
     public void CURL_COMMAND_KEY() =>
         Assert.Equal("CURL_COMMAND", Constants.CURL_COMMAND_KEY);
+
+    [Fact]
+    public void JSON_COMMAND_KEY() =>
+        Assert.Equal("JSON_COMMAND", Constants.JSON_COMMAND_KEY);
 }

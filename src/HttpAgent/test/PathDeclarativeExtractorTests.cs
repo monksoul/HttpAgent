@@ -19,8 +19,8 @@ public class PathDeclarativeExtractorTests
     public void Extract_ReturnOK()
     {
         var method1 = typeof(IPathDeclarativeTest).GetMethod(nameof(IPathDeclarativeTest.Test1))!;
-        var context1 = new HttpDeclarativeExtractorContext(method1, [],
-            new HttpDeclarativeMethodMetadata(method1, typeof(IPathDeclarativeTest)));
+        var context1 = new HttpDeclarativeParsingContext(method1, [],
+            new HttpDeclarativeMetadata(method1, typeof(IPathDeclarativeTest)));
         var httpRequestBuilder1 = HttpRequestBuilder.Get("http://localhost");
         new PathDeclarativeExtractor().Extract(httpRequestBuilder1, context1);
         Assert.NotNull(httpRequestBuilder1.PathParameters);
@@ -29,8 +29,8 @@ public class PathDeclarativeExtractorTests
         Assert.Null(httpRequestBuilder1.ObjectPathParameters);
 
         var method2 = typeof(IPathDeclarativeTest).GetMethod(nameof(IPathDeclarativeTest.Test2))!;
-        var context2 = new HttpDeclarativeExtractorContext(method2, [null!],
-            new HttpDeclarativeMethodMetadata(method2, typeof(IPathDeclarativeTest)));
+        var context2 = new HttpDeclarativeParsingContext(method2, [null!],
+            new HttpDeclarativeMetadata(method2, typeof(IPathDeclarativeTest)));
         var httpRequestBuilder2 = HttpRequestBuilder.Get("http://localhost");
         new PathDeclarativeExtractor().Extract(httpRequestBuilder2, context2);
         Assert.NotNull(httpRequestBuilder2.PathParameters);
@@ -39,9 +39,9 @@ public class PathDeclarativeExtractorTests
         Assert.Null(httpRequestBuilder2.ObjectPathParameters);
 
         var method3 = typeof(IPathDeclarativeTest).GetMethod(nameof(IPathDeclarativeTest.Test3))!;
-        var context3 = new HttpDeclarativeExtractorContext(method3,
+        var context3 = new HttpDeclarativeParsingContext(method3,
             [1, "furion", new[] { "广东省", "中山市" }, 30, new { id = 10, name = "furion" }, null, CancellationToken.None],
-            new HttpDeclarativeMethodMetadata(method3, typeof(IPathDeclarativeTest)));
+            new HttpDeclarativeMetadata(method3, typeof(IPathDeclarativeTest)));
         var httpRequestBuilder3 = HttpRequestBuilder.Get("http://localhost");
         new PathDeclarativeExtractor().Extract(httpRequestBuilder3, context3);
         Assert.NotNull(httpRequestBuilder3.PathParameters);

@@ -15,7 +15,7 @@ public class CurlFormExtractorTests
         return (HttpRequestBuilder)ctor.Invoke(null);
     }
 
-    private static HttpCurlTokenExtractorContext CreateContext(params string[] tokens) => new(tokens);
+    private static HttpCurlParsingContext CreateContext(params string[] tokens) => new(tokens);
 
     [Fact]
     public void Flags_ReturnOK()
@@ -310,5 +310,23 @@ public class CurlFormExtractorTests
         Assert.Equal("comment", items[0].Name);
         Assert.Equal("hello", items[0].RawContent);
         Assert.Equal("text/plain", items[0].ContentType);
+    }
+
+    [Fact]
+    public void TryExtract_FileUploadFromRemote_ReturnOK()
+    {
+        var extractor = new CurlFormExtractor();
+        var builder = CreateBuilder();
+        var context = CreateContext("-F", "file=@https://furion.net/img/logo.png");
+
+        var result = extractor.TryExtract(builder, context);
+
+        Assert.True(result);
+        Assert.NotNull(builder.MultipartFormDataBuilder);
+        var items = builder.MultipartFormDataBuilder._partContents;
+        Assert.Single(items);
+        Assert.Equal("file", items[0].Name);
+        Assert.NotNull(items[0].FileName);
+        Assert.Equal("logo.png", items[0].FileName);
     }
 }

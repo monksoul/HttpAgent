@@ -19,8 +19,8 @@ public class QueryParamDeclarativeExtractorTests
     public void Extract_ReturnOK()
     {
         var method1 = typeof(IQueryDeclarativeTest).GetMethod(nameof(IQueryDeclarativeTest.Test1))!;
-        var context1 = new HttpDeclarativeExtractorContext(method1, [],
-            new HttpDeclarativeMethodMetadata(method1, typeof(IQueryDeclarativeTest)));
+        var context1 = new HttpDeclarativeParsingContext(method1, [],
+            new HttpDeclarativeMetadata(method1, typeof(IQueryDeclarativeTest)));
         var httpRequestBuilder1 = HttpRequestBuilder.Get("http://localhost");
         new QueryParamDeclarativeExtractor().Extract(httpRequestBuilder1, context1);
 
@@ -34,8 +34,8 @@ public class QueryParamDeclarativeExtractorTests
         Assert.Equal("query4", httpRequestBuilder1.QueryParametersToRemove.Last());
 
         var method2 = typeof(IQueryDeclarativeTest).GetMethod(nameof(IQueryDeclarativeTest.Test2))!;
-        var context2 = new HttpDeclarativeExtractorContext(method2, [],
-            new HttpDeclarativeMethodMetadata(method2, typeof(IQueryDeclarativeTest)));
+        var context2 = new HttpDeclarativeParsingContext(method2, [],
+            new HttpDeclarativeMetadata(method2, typeof(IQueryDeclarativeTest)));
         var httpRequestBuilder2 = HttpRequestBuilder.Get("http://localhost");
         new QueryParamDeclarativeExtractor().Extract(httpRequestBuilder2, context2);
 
@@ -46,8 +46,8 @@ public class QueryParamDeclarativeExtractorTests
         Assert.Equal("value3", httpRequestBuilder2.QueryParameters["query3"].First());
 
         var method3 = typeof(IQueryDeclarativeTest).GetMethod(nameof(IQueryDeclarativeTest.Test3))!;
-        var context3 = new HttpDeclarativeExtractorContext(method3, [],
-            new HttpDeclarativeMethodMetadata(method3, typeof(IQueryDeclarativeTest)));
+        var context3 = new HttpDeclarativeParsingContext(method3, [],
+            new HttpDeclarativeMetadata(method3, typeof(IQueryDeclarativeTest)));
         var httpRequestBuilder3 = HttpRequestBuilder.Get("http://localhost");
         new QueryParamDeclarativeExtractor().Extract(httpRequestBuilder3, context3);
 
@@ -58,8 +58,8 @@ public class QueryParamDeclarativeExtractorTests
         Assert.Equal("value4", httpRequestBuilder3.QueryParameters["query4"].First());
 
         var method4 = typeof(IQueryDeclarativeTest).GetMethod(nameof(IQueryDeclarativeTest.Test4))!;
-        var context4 = new HttpDeclarativeExtractorContext(method4, [1, "furion", 31, "广东省", CancellationToken.None],
-            new HttpDeclarativeMethodMetadata(method4, typeof(IQueryDeclarativeTest)));
+        var context4 = new HttpDeclarativeParsingContext(method4, [1, "furion", 31, "广东省", CancellationToken.None],
+            new HttpDeclarativeMetadata(method4, typeof(IQueryDeclarativeTest)));
         var httpRequestBuilder4 = HttpRequestBuilder.Get("http://localhost");
         new QueryParamDeclarativeExtractor().Extract(httpRequestBuilder4, context4);
 
@@ -74,8 +74,8 @@ public class QueryParamDeclarativeExtractorTests
         Assert.Equal(31, httpRequestBuilder4.QueryParameters["age"].First());
         Assert.Equal("广东省", httpRequestBuilder4.QueryParameters["address"].First());
 
-        var context5 = new HttpDeclarativeExtractorContext(method4, [1, "furion", null, "广东省", CancellationToken.None],
-            new HttpDeclarativeMethodMetadata(method4, typeof(IQueryDeclarativeTest)));
+        var context5 = new HttpDeclarativeParsingContext(method4, [1, "furion", null, "广东省", CancellationToken.None],
+            new HttpDeclarativeMetadata(method4, typeof(IQueryDeclarativeTest)));
         var httpRequestBuilder5 = HttpRequestBuilder.Get("http://localhost");
         new QueryParamDeclarativeExtractor().Extract(httpRequestBuilder5, context5);
 
@@ -91,8 +91,8 @@ public class QueryParamDeclarativeExtractorTests
         Assert.Equal("广东省", httpRequestBuilder5.QueryParameters["address"].First());
 
         var method5 = typeof(IQueryDeclarativeTest).GetMethod(nameof(IQueryDeclarativeTest.Test5))!;
-        var context6 = new HttpDeclarativeExtractorContext(method5, [new { id = 10, name = "furion" }],
-            new HttpDeclarativeMethodMetadata(method5, typeof(IQueryDeclarativeTest)));
+        var context6 = new HttpDeclarativeParsingContext(method5, [new { id = 10, name = "furion" }],
+            new HttpDeclarativeMetadata(method5, typeof(IQueryDeclarativeTest)));
         var httpRequestBuilder6 = HttpRequestBuilder.Get("http://localhost");
         new QueryParamDeclarativeExtractor().Extract(httpRequestBuilder6, context6);
 
@@ -103,8 +103,8 @@ public class QueryParamDeclarativeExtractorTests
 
         var method6 = typeof(IQueryDeclarativeTest).GetMethod(nameof(IQueryDeclarativeTest.Test6))!;
         var context7 =
-            new HttpDeclarativeExtractorContext(method6, [null, "abc"],
-                new HttpDeclarativeMethodMetadata(method6, typeof(IQueryDeclarativeTest)));
+            new HttpDeclarativeParsingContext(method6, [null, "abc"],
+                new HttpDeclarativeMetadata(method6, typeof(IQueryDeclarativeTest)));
         var httpRequestBuilder7 = HttpRequestBuilder.Get("http://localhost");
         new QueryParamDeclarativeExtractor().Extract(httpRequestBuilder7, context7);
 
