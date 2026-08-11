@@ -20,20 +20,22 @@ public class ResponseAssertionPipelineHandlerTests
     public async Task ExecuteAssertionsAsync_ReturnOK()
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
-        httpRequestBuilder.Asserts(u => u.StatusCode(200));
+        httpRequestBuilder.Asserts(u => u.ResponseStatusCode(200));
 
         var services = new ServiceCollection();
         await using var serviceProvider = services.BuildServiceProvider();
 
         var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.NoContent);
-        await ResponseAssertionPipelineHandler.ExecuteAssertionsAsync(httpRequestBuilder, httpResponseMessage, 100,
+        await ResponseAssertionPipelineHandler.ExecuteAssertionsAsync(httpRequestBuilder, httpResponseMessage, null,
+            100,
             serviceProvider);
 
-        httpRequestBuilder.UseAssertions().Asserts(u => u.StatusCode(200));
+        httpRequestBuilder.UseAssertions().Asserts(u => u.ResponseStatusCode(200));
 
         var exception = await Assert.ThrowsAsync<HttpAssertionException>(async () =>
-            await ResponseAssertionPipelineHandler.ExecuteAssertionsAsync(httpRequestBuilder, httpResponseMessage, 100,
+            await ResponseAssertionPipelineHandler.ExecuteAssertionsAsync(httpRequestBuilder, httpResponseMessage, null,
+                100,
                 serviceProvider));
-        Assert.Equal("Expected status code to be 200, but found 204.", exception.Message);
+        Assert.Equal("Expected response status code to be 200, but found 204.", exception.Message);
     }
 }

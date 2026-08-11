@@ -23,7 +23,7 @@ public static class HttpRemoteServerSentEventsExtensions
     /// </returns>
     public static McpMessageData? ToMcpMessage(this ServerSentEventsData serverSentEventsData,
         JsonSerializerOptions? jsonSerializerOptions = null) =>
-        string.IsNullOrWhiteSpace(serverSentEventsData.Data)
+        string.IsNullOrWhiteSpace(serverSentEventsData?.Data)
             ? null
             : JsonSerializer.Deserialize<McpMessageData>(serverSentEventsData.Data,
                 jsonSerializerOptions ?? HttpRemoteOptions.JsonSerializerOptionsDefault);
@@ -43,7 +43,7 @@ public static class HttpRemoteServerSentEventsExtensions
     /// </returns>
     public static T? GetResult<T>(this McpMessageData mcpMessageData,
         JsonSerializerOptions? jsonSerializerOptions = null) =>
-        mcpMessageData.Result is null
+        mcpMessageData?.Result is null
             ? default
             : mcpMessageData.Result.Value.Deserialize<T>(jsonSerializerOptions ??
                                                          HttpRemoteOptions.JsonSerializerOptionsDefault);
@@ -62,7 +62,7 @@ public static class HttpRemoteServerSentEventsExtensions
     ///     <typeparamref name="T" />
     /// </returns>
     public static T? GetData<T>(this McpError mcpError, JsonSerializerOptions? jsonSerializerOptions = null) =>
-        mcpError.Data is null
+        mcpError?.Data is null
             ? default
             : mcpError.Data.Value.Deserialize<T>(
                 jsonSerializerOptions ?? HttpRemoteOptions.JsonSerializerOptionsDefault);

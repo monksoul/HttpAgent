@@ -84,7 +84,6 @@ public class HttpRequestBuilderMethodsTests
         httpRequestBuilder.SetContentEncoding(Encoding.UTF32);
         Assert.Equal(Encoding.UTF32, httpRequestBuilder.ContentEncoding);
 
-        // 该代码会影响全局获取编码测试
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
         httpRequestBuilder.SetContentEncoding("gbk");
@@ -1305,7 +1304,6 @@ public class HttpRequestBuilderMethodsTests
         httpRequestBuilder.SetHttpClientProvider(() => (new HttpClient(), _ => { }));
         Assert.NotNull(httpRequestBuilder.HttpClientProvider);
 
-        // 运行时将抛异常
         httpRequestBuilder.SetHttpClientProvider(() => (null!, _ => { }));
         Assert.NotNull(httpRequestBuilder.HttpClientProvider);
     }
@@ -1329,7 +1327,6 @@ public class HttpRequestBuilderMethodsTests
         httpRequestBuilder.AddHttpContentProcessors(() => [new StringContentProcessor()]);
         Assert.NotNull(httpRequestBuilder.HttpContentProcessorProviders);
 
-        // 运行时将抛异常
         httpRequestBuilder.AddHttpContentProcessors(() => [null!, new StringContentProcessor()]);
         Assert.NotNull(httpRequestBuilder.HttpContentProcessorProviders);
 
@@ -1360,7 +1357,6 @@ public class HttpRequestBuilderMethodsTests
             [new StringContentConverter(), new ObjectContentConverter<int>()]);
         Assert.NotNull(httpRequestBuilder.HttpContentConverterProviders);
 
-        // 运行时将抛异常
         httpRequestBuilder.AddHttpContentConverters(() => [null!, new StringContentConverter()]);
         Assert.NotNull(httpRequestBuilder.HttpContentConverterProviders);
 
@@ -2283,15 +2279,26 @@ public class HttpRequestBuilderMethodsTests
     public void Asserts_ReturnOK()
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
-        Assert.Null(httpRequestBuilder.Assertions);
+        Assert.Null(httpRequestBuilder.RequestAssertions);
+        Assert.Null(httpRequestBuilder.ResponseAssertions);
 
-        httpRequestBuilder.Asserts(builder => builder.StatusCode(200).HeaderExists("framework"));
-        Assert.Null(httpRequestBuilder.Assertions);
+        httpRequestBuilder.Asserts(builder => builder.ResponseStatusCode(200).ResponseHeaderExists("framework"));
+        Assert.Null(httpRequestBuilder.RequestAssertions);
+        Assert.Null(httpRequestBuilder.ResponseAssertions);
 
-        httpRequestBuilder.UseAssertions()
-            .Asserts(builder => builder.StatusCode(200).HeaderExists("framework"));
-        Assert.NotNull(httpRequestBuilder.Assertions);
-        Assert.Equal(2, httpRequestBuilder.Assertions.Count);
+        httpRequestBuilder
+            .UseAssertions()
+            .Asserts(builder => builder.ResponseStatusCode(200).ResponseHeaderExists("framework"));
+        Assert.Null(httpRequestBuilder.RequestAssertions);
+        Assert.NotNull(httpRequestBuilder.ResponseAssertions);
+        Assert.Equal(2, httpRequestBuilder.ResponseAssertions.Count);
+
+        httpRequestBuilder
+            .Asserts(builder => builder.RequestMethod(HttpMethod.Post).RequestUri("https://furion.net/"));
+        Assert.NotNull(httpRequestBuilder.RequestAssertions);
+        Assert.Equal(2, httpRequestBuilder.RequestAssertions.Count);
+        Assert.NotNull(httpRequestBuilder.ResponseAssertions);
+        Assert.Equal(2, httpRequestBuilder.ResponseAssertions.Count);
     }
 
     [Fact]
@@ -2488,7 +2495,35 @@ public class HttpRequestBuilderMethodsTests
     public void MergeContent_ReturnOK()
     {
         Assert.Null(HttpRequestBuilder.MergeContent(null, null));
+
         Assert.Equal("id=1&name=furion", HttpRequestBuilder.MergeContent("id=1", "name=furion"));
+
+        var sb = new StringBuilder("id=1");
+        var resultSb = HttpRequestBuilder.MergeContent(sb, "&name=furion") as StringBuilder;
+        Assert.NotNull(resultSb);
+        Assert.Same(sb, resultSb);
+        Assert.Equal("id=1&name=furion", sb.ToString());
+
+        var nvc1 = new NameValueCollection { { "id", "1" } };
+        var nvc2 = new NameValueCollection { { "name", "furion" }, { "name", "dotnet" } };
+        var resultNvc = HttpRequestBuilder.MergeContent(nvc1, nvc2) as NameValueCollection;
+        Assert.NotNull(resultNvc);
+        Assert.Same(nvc1, resultNvc);
+        Assert.Equal("1", resultNvc["id"]);
+        var nameValues = resultNvc.GetValues("name");
+        Assert.NotNull(nameValues);
+        Assert.Equal(2, nameValues.Length);
+        Assert.Contains("furion", nameValues);
+        Assert.Contains("dotnet", nameValues);
+
+        var nvc3 = new NameValueCollection { { "id", "1" } };
+        var dict = new Dictionary<string, object?> { { "name", "furion" }, { "age", 30 } };
+        var resultNvc2 = HttpRequestBuilder.MergeContent(nvc3, dict) as NameValueCollection;
+        Assert.NotNull(resultNvc2);
+        Assert.Same(nvc3, resultNvc2);
+        Assert.Equal("1", resultNvc2["id"]);
+        Assert.Equal("furion", resultNvc2["name"]);
+        Assert.Equal("30", resultNvc2["age"]);
 
         var dic = new Dictionary<string, object?> { { "id", 1 } };
         var dic2 =

@@ -1401,7 +1401,7 @@ public class HttpRemoteServiceTests
     }
 
     [Fact]
-    public async Task SendAsync_WithAsserts_ReturnOK()
+    public async Task SendAsync_WithResponseAsserts_ReturnOK()
     {
         var port = NetworkUtility.FindAvailableTcpPort();
         var urls = new[] { "--urls", $"http://localhost:{port}" };
@@ -1422,8 +1422,32 @@ public class HttpRemoteServiceTests
 
         var exception = await Assert.ThrowsAsync<HttpAssertionException>(async () => await httpRemoteService.SendAsync(
             HttpRequestBuilder.Get($"http://localhost:{port}/test").UseAssertions()
-                .Asserts(u => u.StatusCode(200)), TestContext.Current.CancellationToken));
-        Assert.Equal("Expected status code to be 200, but found 500.", exception.Message);
+                .Asserts(u => u.ResponseStatusCode(200)), TestContext.Current.CancellationToken));
+        Assert.Equal("Expected response status code to be 200, but found 500.", exception.Message);
+
+        await app.StopAsync(TestContext.Current.CancellationToken);
+    }
+
+    [Fact]
+    public async Task SendAsync_WithRequestAsserts_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        builder.Services.AddHttpRemote();
+
+        await using var app = builder.Build();
+
+        app.MapGet("/test", () => Results.Ok("Hello"));
+
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        var httpRemoteService = app.Services.GetRequiredService<IHttpRemoteService>();
+
+        var exception = await Assert.ThrowsAsync<HttpAssertionException>(async () => await httpRemoteService.SendAsync(
+            HttpRequestBuilder.Get($"http://localhost:{port}/test").UseAssertions()
+                .Asserts(u => u.RequestMethod(HttpMethod.Post)), TestContext.Current.CancellationToken));
+        Assert.Contains("Expected request method to be POST, but found GET.", exception.Message);
 
         await app.StopAsync(TestContext.Current.CancellationToken);
     }

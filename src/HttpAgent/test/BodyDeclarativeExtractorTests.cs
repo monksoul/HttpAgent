@@ -128,6 +128,64 @@ public class BodyDeclarativeExtractorTests
         Assert.NotNull(stringContentForFormUrlEncodedContentProcessor2);
         Assert.False(stringContentForFormUrlEncodedContentProcessor2.UrlEncode);
     }
+
+    [Fact]
+    public void Extract_AsFile_ReturnOK()
+    {
+        var tempFile = Path.GetTempFileName();
+        File.WriteAllText(tempFile, "hello world");
+
+        try
+        {
+            var method12 = typeof(IBodyDeclarativeTest).GetMethod(nameof(IBodyDeclarativeTest.Test12))!;
+            var context12 = new HttpDeclarativeParsingContext(method12, [tempFile],
+                new HttpDeclarativeMetadata(method12, typeof(IBodyDeclarativeTest)));
+            var httpRequestBuilder12 = HttpRequestBuilder.Post("http://localhost");
+            new BodyDeclarativeExtractor().Extract(httpRequestBuilder12, context12);
+
+            Assert.NotNull(httpRequestBuilder12.RawContent);
+            Assert.IsAssignableFrom<Stream>(httpRequestBuilder12.RawContent);
+            Assert.Equal("text/plain", httpRequestBuilder12.ContentType);
+            httpRequestBuilder12.ReleaseResources();
+
+            var payload = new { name = "test" };
+            var method13 = typeof(IBodyDeclarativeTest).GetMethod(nameof(IBodyDeclarativeTest.Test13))!;
+            var context13 = new HttpDeclarativeParsingContext(method13, [payload],
+                new HttpDeclarativeMetadata(method13, typeof(IBodyDeclarativeTest)));
+            var httpRequestBuilder13 = HttpRequestBuilder.Post("http://localhost");
+            new BodyDeclarativeExtractor().Extract(httpRequestBuilder13, context13);
+            Assert.Equal(payload, httpRequestBuilder13.RawContent);
+            Assert.Null(httpRequestBuilder13.ContentType);
+
+            var tempFile2 = Path.GetTempFileName();
+            File.WriteAllText(tempFile2, "another");
+            try
+            {
+                var method14 = typeof(IBodyDeclarativeTest).GetMethod(nameof(IBodyDeclarativeTest.Test14))!;
+                var context14 = new HttpDeclarativeParsingContext(method14, [tempFile2],
+                    new HttpDeclarativeMetadata(method14, typeof(IBodyDeclarativeTest)));
+                var httpRequestBuilder14 = HttpRequestBuilder.Post("http://localhost");
+                new BodyDeclarativeExtractor().Extract(httpRequestBuilder14, context14);
+                Assert.NotNull(httpRequestBuilder14.RawContent);
+                Assert.IsAssignableFrom<Stream>(httpRequestBuilder14.RawContent);
+                httpRequestBuilder14.ReleaseResources();
+            }
+            finally
+            {
+                if (File.Exists(tempFile2))
+                {
+                    File.Delete(tempFile2);
+                }
+            }
+        }
+        finally
+        {
+            if (File.Exists(tempFile))
+            {
+                File.Delete(tempFile);
+            }
+        }
+    }
 }
 
 public interface IBodyDeclarativeTest : IHttpDeclarative
@@ -164,4 +222,13 @@ public interface IBodyDeclarativeTest : IHttpDeclarative
 
     [Post("http://localhost:5000")]
     Task Test11([Body("application/x-www-form-urlencoded; charset=utf-8", UrlEncode = false)] object body);
+
+    [Post("http://localhost:5000")]
+    Task Test12([Body(AsFile = true, ContentType = "text/plain")] string filePath);
+
+    [Post("http://localhost:5000")]
+    Task Test13([Body(AsFile = true)] object notAString);
+
+    [Post("http://localhost:5000")]
+    Task Test14([Body(AsFile = true, RawString = true)] string filePath);
 }

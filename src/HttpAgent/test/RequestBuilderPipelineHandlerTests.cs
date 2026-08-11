@@ -31,4 +31,25 @@ public class RequestBuilderPipelineHandlerTests
         RequestBuilderPipelineHandler.HandlePreSendRequest(httpRequestBuilder, null, new CustomRequestEventHandler(),
             new HttpRequestMessage());
     }
+
+    [Fact]
+    public async Task ExecuteAssertionsAsync_ReturnOK()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        httpRequestBuilder.Asserts(u => u.RequestMethod(HttpMethod.Get));
+
+        var services = new ServiceCollection();
+        await using var serviceProvider = services.BuildServiceProvider();
+
+        var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, "http://localhost/");
+        await RequestBuilderPipelineHandler.ExecuteAssertionsAsync(httpRequestBuilder, httpRequestMessage,
+            serviceProvider);
+
+        httpRequestBuilder.UseAssertions().Asserts(u => u.RequestMethod(HttpMethod.Post));
+
+        var exception = await Assert.ThrowsAsync<HttpAssertionException>(async () =>
+            await RequestBuilderPipelineHandler.ExecuteAssertionsAsync(httpRequestBuilder, httpRequestMessage,
+                serviceProvider));
+        Assert.Equal("Expected request method to be POST, but found GET.", exception.Message);
+    }
 }

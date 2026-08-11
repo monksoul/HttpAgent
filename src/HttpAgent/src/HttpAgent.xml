@@ -435,10 +435,165 @@
                 HTTP 远程请求断言构建器
             </summary>
             <summary>
-                HTTP 远程请求断言构建器
+                HTTP 远程请求请求断言构建器
+            </summary>
+            <summary>
+                HTTP 远程请求响应断言构建器
             </summary>
         </member>
-        <member name="M:HttpAgent.HttpAssertionBuilder.StatusCode(System.Net.HttpStatusCode)">
+        <member name="F:HttpAgent.HttpAssertionBuilder._requestAssertions">
+            <summary>
+                请求断言委托集合
+            </summary>
+            <remarks>在发送请求前执行。</remarks>
+        </member>
+        <member name="F:HttpAgent.HttpAssertionBuilder._responseAssertions">
+            <summary>
+                响应断言委托集合
+            </summary>
+            <remarks>在收到响应后执行。</remarks>
+        </member>
+        <member name="M:HttpAgent.HttpAssertionBuilder.#ctor">
+            <summary>
+                <inheritdoc cref="T:HttpAgent.HttpAssertionBuilder" />
+            </summary>
+        </member>
+        <member name="M:HttpAgent.HttpAssertionBuilder.AddAssertion(HttpAgent.HttpAssertion)">
+            <summary>
+                添加自定义断言委托
+            </summary>
+            <remarks>默认视为响应断言。</remarks>
+            <param name="assertion">
+                <see cref="T:HttpAgent.HttpAssertion" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.HttpAssertionBuilder" />
+            </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:HttpAgent.HttpAssertionBuilder.GetRequestAssertions">
+            <summary>
+                获取请求断言委托集合
+            </summary>
+            <returns>
+                <see cref="T:System.Collections.Generic.IReadOnlyList`1" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpAssertionBuilder.GetResponseAssertions">
+            <summary>
+                获取响应断言委托集合
+            </summary>
+            <returns>
+                <see cref="T:System.Collections.Generic.IReadOnlyList`1" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpAssertionBuilder.RequestUri(System.String)">
+            <summary>
+                断言请求 URI 等于指定字符串
+            </summary>
+            <param name="expectedUri">期望的请求 URI</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpAssertionBuilder" />
+            </returns>
+            <exception cref="T:System.ArgumentException"></exception>
+            <exception cref="T:HttpAgent.HttpAssertionException"></exception>
+        </member>
+        <member name="M:HttpAgent.HttpAssertionBuilder.RequestMethod(System.Net.Http.HttpMethod)">
+            <summary>
+                断言请求 HTTP 方法等于指定的 <see cref="T:System.Net.Http.HttpMethod" />
+            </summary>
+            <param name="expectedMethod">期望的 HTTP 方法</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpAssertionBuilder" />
+            </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:HttpAgent.HttpAssertionException"></exception>
+        </member>
+        <member name="M:HttpAgent.HttpAssertionBuilder.RequestHeaderExists(System.String)">
+            <summary>
+                断言指定的请求标头存在
+            </summary>
+            <param name="name">标头名</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpAssertionBuilder" />
+            </returns>
+            <exception cref="T:System.ArgumentException"></exception>
+            <exception cref="T:HttpAgent.HttpAssertionException"></exception>
+        </member>
+        <member name="M:HttpAgent.HttpAssertionBuilder.RequestHeaderEquals(System.String,System.String)">
+            <summary>
+                断言请求标头的第一个值严格等于指定字符串（区分大小写）
+            </summary>
+            <param name="name">标头名</param>
+            <param name="expectedValue">期望值</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpAssertionBuilder" />
+            </returns>
+            <exception cref="T:System.ArgumentException"></exception>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:HttpAgent.HttpAssertionException"></exception>
+        </member>
+        <member name="M:HttpAgent.HttpAssertionBuilder.RequestHeaderContains(System.String,System.String)">
+            <summary>
+                断言请求标头的任意一个值包含指定子字符串（不区分大小写）
+            </summary>
+            <param name="name">标头名</param>
+            <param name="expectedValue">期望值</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpAssertionBuilder" />
+            </returns>
+            <exception cref="T:System.ArgumentException"></exception>
+            <exception cref="T:HttpAgent.HttpAssertionException"></exception>
+        </member>
+        <member name="M:HttpAgent.HttpAssertionBuilder.RequestContentContains(System.String,System.Threading.CancellationToken)">
+            <summary>
+                断言请求内容包含指定子字符串（不区分大小写）
+            </summary>
+            <param name="expectedSubstring">期望包含的子字符串</param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.HttpAssertionBuilder" />
+            </returns>
+            <exception cref="T:System.ArgumentException"></exception>
+            <exception cref="T:HttpAgent.HttpAssertionException"></exception>
+        </member>
+        <member name="M:HttpAgent.HttpAssertionBuilder.RequestContentEquals(System.String,System.Threading.CancellationToken)">
+            <summary>
+                断言请求内容完全等于指定字符串
+            </summary>
+            <param name="expected">期望完全相等的字符串</param>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.HttpAssertionBuilder" />
+            </returns>
+            <exception cref="T:System.ArgumentException"></exception>
+            <exception cref="T:HttpAgent.HttpAssertionException"></exception>
+        </member>
+        <member name="M:HttpAgent.HttpAssertionBuilder.RequestSatisfies(System.Action{System.Net.Http.HttpRequestMessage})">
+            <summary>
+                自定义请求消息断言（同步检查）
+            </summary>
+            <param name="assertion">断言委托，参数为 <see cref="T:System.Net.Http.HttpRequestMessage" /></param>
+            <returns>
+                <see cref="T:HttpAgent.HttpAssertionBuilder" />
+            </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:HttpAgent.HttpAssertionBuilder.RequestSatisfies(System.Func{System.Net.Http.HttpRequestMessage,System.Threading.Tasks.Task})">
+            <summary>
+                自定义请求消息断言（异步检查）
+            </summary>
+            <param name="assertion">异步断言委托</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpAssertionBuilder" />
+            </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:HttpAgent.HttpAssertionBuilder.ResponseStatusCode(System.Net.HttpStatusCode)">
             <summary>
                 断言响应状态码等于指定的 <see cref="T:System.Net.HttpStatusCode" /> 值
             </summary>
@@ -447,7 +602,7 @@
                 <see cref="T:HttpAgent.HttpAssertionBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpAssertionBuilder.StatusCode(System.Int32)">
+        <member name="M:HttpAgent.HttpAssertionBuilder.ResponseStatusCode(System.Int32)">
             <summary>
                 断言响应状态码等于指定的整数值
             </summary>
@@ -457,7 +612,7 @@
             </returns>
             <exception cref="T:HttpAgent.HttpAssertionException"></exception>
         </member>
-        <member name="M:HttpAgent.HttpAssertionBuilder.StatusCodeIn(System.Int32[])">
+        <member name="M:HttpAgent.HttpAssertionBuilder.ResponseStatusCodeIn(System.Int32[])">
             <summary>
                 断言响应状态码在指定的允许状态码列表中
             </summary>
@@ -469,7 +624,7 @@
             <exception cref="T:System.ArgumentException"></exception>
             <exception cref="T:HttpAgent.HttpAssertionException"></exception>
         </member>
-        <member name="M:HttpAgent.HttpAssertionBuilder.IsSuccessStatusCode">
+        <member name="M:HttpAgent.HttpAssertionBuilder.ResponseIsSuccessStatusCode">
             <summary>
                 断言请求成功（即响应状态码为 2xx 范围）
             </summary>
@@ -478,7 +633,7 @@
             </returns>
             <exception cref="T:HttpAgent.HttpAssertionException"></exception>
         </member>
-        <member name="M:HttpAgent.HttpAssertionBuilder.ContentContains(System.String,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.HttpAssertionBuilder.ResponseContentContains(System.String,System.Threading.CancellationToken)">
             <summary>
                 断言响应内容包含指定的子字符串（不区分大小写）
             </summary>
@@ -492,7 +647,7 @@
             <exception cref="T:System.ArgumentException"></exception>
             <exception cref="T:HttpAgent.HttpAssertionException"></exception>
         </member>
-        <member name="M:HttpAgent.HttpAssertionBuilder.ContentEquals(System.String,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.HttpAssertionBuilder.ResponseContentEquals(System.String,System.Threading.CancellationToken)">
             <summary>
                 断言响应内容完全等于指定的字符串
             </summary>
@@ -505,7 +660,7 @@
             </returns>
             <exception cref="T:System.ArgumentException"></exception>
         </member>
-        <member name="M:HttpAgent.HttpAssertionBuilder.ContentMatches(System.String,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.HttpAssertionBuilder.ResponseContentMatches(System.String,System.Threading.CancellationToken)">
             <summary>
                 断言响应内容与指定的正则表达式匹配
             </summary>
@@ -518,15 +673,18 @@
             </returns>
             <exception cref="T:System.ArgumentException"></exception>
         </member>
-        <member name="M:HttpAgent.HttpAssertionBuilder.ContentNotEmpty">
+        <member name="M:HttpAgent.HttpAssertionBuilder.ResponseContentNotEmpty(System.Threading.CancellationToken)">
             <summary>
                 断言响应内容不为空
             </summary>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
             <returns>
                 <see cref="T:HttpAgent.HttpAssertionBuilder" />
             </returns>
         </member>
-        <member name="M:HttpAgent.HttpAssertionBuilder.HeaderExists(System.String)">
+        <member name="M:HttpAgent.HttpAssertionBuilder.ResponseHeaderExists(System.String)">
             <summary>
                 断言指定的响应标头存在（可在响应标头或内容标头中）
             </summary>
@@ -537,7 +695,7 @@
             <exception cref="T:System.ArgumentException"></exception>
             <exception cref="T:HttpAgent.HttpAssertionException"></exception>
         </member>
-        <member name="M:HttpAgent.HttpAssertionBuilder.HeaderEquals(System.String,System.String)">
+        <member name="M:HttpAgent.HttpAssertionBuilder.ResponseHeaderEquals(System.String,System.String)">
             <summary>
                 断言响应标头的第一个值严格等于指定字符串（区分大小写）
             </summary>
@@ -550,7 +708,7 @@
             <exception cref="T:System.ArgumentNullException"></exception>
             <exception cref="T:HttpAgent.HttpAssertionException"></exception>
         </member>
-        <member name="M:HttpAgent.HttpAssertionBuilder.HeaderContains(System.String,System.String)">
+        <member name="M:HttpAgent.HttpAssertionBuilder.ResponseHeaderContains(System.String,System.String)">
             <summary>
                 断言响应标头的任意一个值包含指定的子字符串（不区分大小写）
             </summary>
@@ -562,7 +720,7 @@
             <exception cref="T:System.ArgumentException"></exception>
             <exception cref="T:HttpAgent.HttpAssertionException"></exception>
         </member>
-        <member name="M:HttpAgent.HttpAssertionBuilder.HeaderNotExists(System.String)">
+        <member name="M:HttpAgent.HttpAssertionBuilder.ResponseHeaderNotExists(System.String)">
             <summary>
                 断言指定的响应标头不存在（可在响应标头或内容标头中）
             </summary>
@@ -573,7 +731,7 @@
             <exception cref="T:System.ArgumentException"></exception>
             <exception cref="T:HttpAgent.HttpAssertionException"></exception>
         </member>
-        <member name="M:HttpAgent.HttpAssertionBuilder.DurationUnder(System.Double)">
+        <member name="M:HttpAgent.HttpAssertionBuilder.ResponseDurationUnder(System.Double)">
             <summary>
                 断言请求耗时低于指定的毫秒数
             </summary>
@@ -583,7 +741,7 @@
             </returns>
             <exception cref="T:System.ArgumentException"></exception>
         </member>
-        <member name="M:HttpAgent.HttpAssertionBuilder.DurationUnder(System.TimeSpan)">
+        <member name="M:HttpAgent.HttpAssertionBuilder.ResponseDurationUnder(System.TimeSpan)">
             <summary>
                 断言请求耗时低于指定的时间跨度
             </summary>
@@ -594,52 +752,50 @@
             <exception cref="T:System.ArgumentException"></exception>
             <exception cref="T:HttpAgent.HttpAssertionException"></exception>
         </member>
-        <member name="F:HttpAgent.HttpAssertionBuilder._assertions">
+        <member name="M:HttpAgent.HttpAssertionBuilder.ResponseSatisfies(System.Action{System.Net.Http.HttpResponseMessage})">
             <summary>
-                断言委托集合
+                自定义响应消息断言（同步检查）
             </summary>
-        </member>
-        <member name="M:HttpAgent.HttpAssertionBuilder.#ctor">
-            <summary>
-                <inheritdoc cref="T:HttpAgent.HttpAssertionBuilder" />
-            </summary>
-        </member>
-        <member name="M:HttpAgent.HttpAssertionBuilder.AddAssertion(HttpAgent.HttpAssertion)">
-            <summary>
-                添加自定义断言委托
-            </summary>
-            <param name="assertion">
-                <see cref="T:HttpAgent.HttpAssertion" />
-            </param>
+            <param name="assertion">断言委托，参数为 <see cref="T:System.Net.Http.HttpResponseMessage" /></param>
             <returns>
                 <see cref="T:HttpAgent.HttpAssertionBuilder" />
             </returns>
             <exception cref="T:System.ArgumentNullException"></exception>
         </member>
-        <member name="M:HttpAgent.HttpAssertionBuilder.GetAssertions">
+        <member name="M:HttpAgent.HttpAssertionBuilder.ResponseSatisfies(System.Func{System.Net.Http.HttpResponseMessage,System.Threading.Tasks.Task})">
             <summary>
-                获取断言委托集合
+                自定义响应消息断言（异步检查）
             </summary>
+            <param name="assertion">异步断言委托</param>
             <returns>
-                <see cref="T:System.Collections.Generic.IReadOnlyList`1" />
+                <see cref="T:HttpAgent.HttpAssertionBuilder" />
             </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="T:HttpAgent.HttpAssertionContext">
             <summary>
                 HTTP 远程请求断言上下文
             </summary>
         </member>
-        <member name="F:HttpAgent.HttpAssertionContext._cachedContent">
+        <member name="F:HttpAgent.HttpAssertionContext._cachedRequestContent">
+            <summary>
+                请求内容字符串缓存
+            </summary>
+        </member>
+        <member name="F:HttpAgent.HttpAssertionContext._cachedResponseContent">
             <summary>
                 响应内容字符串缓存
             </summary>
         </member>
-        <member name="M:HttpAgent.HttpAssertionContext.#ctor(System.Net.Http.HttpResponseMessage,System.Int64,System.IServiceProvider)">
+        <member name="M:HttpAgent.HttpAssertionContext.#ctor(System.Net.Http.HttpResponseMessage,System.Net.Http.HttpRequestMessage,System.Int64,System.IServiceProvider)">
             <summary>
                 <inheritdoc cref="T:HttpAgent.HttpAssertionContext" />
             </summary>
             <param name="httpResponseMessage">
-                <see cref="T:System.Net.Http.HttpResponseMessage" />
+                <see cref="T:System.Net.Http.HttpResponseMessage" />，可为 <c>null</c>（用于请求断言阶段）
+            </param>
+            <param name="httpRequestMessage">
+                <see cref="T:System.Net.Http.HttpRequestMessage" />，可选，用于断言请求内容
             </param>
             <param name="requestDuration">请求耗时（毫秒）</param>
             <param name="serviceProvider">
@@ -649,6 +805,9 @@
         </member>
         <member name="P:HttpAgent.HttpAssertionContext.ResponseMessage">
             <inheritdoc cref="T:System.Net.Http.HttpResponseMessage" />
+        </member>
+        <member name="P:HttpAgent.HttpAssertionContext.RequestMessage">
+            <inheritdoc cref="T:System.Net.Http.HttpRequestMessage" />
         </member>
         <member name="P:HttpAgent.HttpAssertionContext.RequestDuration">
             <summary>
@@ -670,9 +829,22 @@
                 是否请求成功
             </summary>
         </member>
-        <member name="M:HttpAgent.HttpAssertionContext.ReadAsStringAsync(System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.HttpAssertionContext.ReadResponseAsStringAsync(System.Threading.CancellationToken)">
             <summary>
                 读取响应内容字符串
+            </summary>
+            <remarks>支持多次读取。</remarks>
+            <param name="cancellationToken">
+                <see cref="T:System.Threading.CancellationToken" />
+            </param>
+            <returns>
+                <see cref="T:System.String" />
+            </returns>
+            <exception cref="T:System.InvalidOperationException"></exception>
+        </member>
+        <member name="M:HttpAgent.HttpAssertionContext.ReadRequestAsStringAsync(System.Threading.CancellationToken)">
+            <summary>
+                读取请求内容字符串
             </summary>
             <remarks>支持多次读取。</remarks>
             <param name="cancellationToken">
@@ -3151,6 +3323,12 @@
                         <description>字符串 + 字符串：使用 <c>&amp;</c> 拼接</description>
                     </item>
                     <item>
+                        <description><see cref="T:System.Text.StringBuilder" /> + 字符串：追加字符串</description>
+                    </item>
+                    <item>
+                        <description><see cref="T:System.Collections.Specialized.NameValueCollection" /> + <see cref="T:System.Collections.Specialized.NameValueCollection" /> 或字典：合并键值对（同名键保留多个值）</description>
+                    </item>
+                    <item>
                         <description>字典 + 字典：合并键值对（已存在的键更新值）</description>
                     </item>
                     <item>
@@ -4689,10 +4867,17 @@
             </summary>
             <remarks>默认值为：<c>false</c>。</remarks>
         </member>
-        <member name="P:HttpAgent.HttpRequestBuilder.Assertions">
+        <member name="P:HttpAgent.HttpRequestBuilder.RequestAssertions">
             <summary>
-                断言委托集合
+                请求断言委托集合
             </summary>
+            <remarks>在发送请求前执行。</remarks>
+        </member>
+        <member name="P:HttpAgent.HttpRequestBuilder.ResponseAssertions">
+            <summary>
+                响应断言委托集合
+            </summary>
+            <remarks>在收到响应后执行。</remarks>
         </member>
         <member name="P:HttpAgent.HttpRequestBuilder.OnUriBuilding">
             <summary>
@@ -6732,7 +6917,7 @@
         <member name="M:HttpAgent.Core.Converters.Json.FlexibleDateTimeConverter.Regex">
             <remarks>
             Pattern:<br/>
-            <code>^/Date\\(([+-]*\\d+)\\)/$</code><br/>
+            <code>^/Date\(([+-]*\d+)\)/$</code><br/>
             Options:<br/>
             <code>RegexOptions.CultureInvariant</code><br/>
             Explanation:<br/>
@@ -6761,7 +6946,7 @@
         <member name="M:HttpAgent.Core.Converters.Json.FlexibleDateTimeOffsetConverter.Regex">
             <remarks>
             Pattern:<br/>
-            <code>^/Date\\(([+-]*\\d+)([+-])(\\d{2})(\\d{2})\\)/$</code><br/>
+            <code>^/Date\(([+-]*\d+)([+-])(\d{2})(\d{2})\)/$</code><br/>
             Options:<br/>
             <code>RegexOptions.CultureInvariant</code><br/>
             Explanation:<br/>
@@ -7329,7 +7514,7 @@
         <member name="M:HttpAgent.Core.Extensions.StringExtensions.PlaceholderRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\{\\s*(?:\\*\\*)?\\s*(\\w+(?:\\s*\\.\\s*\\w+|\\s*\\[\\s*\\d+\\s*\\])*)\\s*(\\?)?\\s*\\}</code><br/>
+            <code>\{\s*(?:\*\*)?\s*(\w+(?:\s*\.\s*\w+|\s*\[\s*\d+\s*\])*)\s*(\?)?\s*\}</code><br/>
             Explanation:<br/>
             <code>
             ○ Match '{'.<br/>
@@ -7340,14 +7525,13 @@
             ○ 1st capture group.<br/>
                 ○ Match a word character greedily at least once.<br/>
                 ○ Loop greedily any number of times.<br/>
+                    ○ Match a whitespace character atomically any number of times.<br/>
                     ○ Match with 2 alternative expressions.<br/>
                         ○ Match a sequence of expressions.<br/>
-                            ○ Match a whitespace character atomically any number of times.<br/>
                             ○ Match '.'.<br/>
                             ○ Match a whitespace character atomically any number of times.<br/>
                             ○ Match a word character greedily at least once.<br/>
                         ○ Match a sequence of expressions.<br/>
-                            ○ Match a whitespace character atomically any number of times.<br/>
                             ○ Match '['.<br/>
                             ○ Match a whitespace character atomically any number of times.<br/>
                             ○ Match a Unicode digit atomically at least once.<br/>
@@ -7365,7 +7549,7 @@
         <member name="M:HttpAgent.Core.Extensions.StringExtensions.ConfigurationKeyRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\[\\[\\s*(?:\\*\\*)?\\s*([\\w\\-:]+)((?:\\s*\\|\\s*[\\w\\-:]+)*)\\s*(?:\\|\\|\\s*([^\\]]*))?\\s*(\\?)?\\s*\\]\\]</code><br/>
+            <code>\[\[\s*(?:\*\*)?\s*([\w\-:]+)((?:\s*\|\s*[\w\-:]+)*)\s*(?:\|\|\s*([^\]]*))?\s*(\?)?\s*\]\]</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "[[".<br/>
@@ -8854,7 +9038,7 @@
         <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.UnicodeEscapeRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\\\u([0-9a-fA-F]{4})</code><br/>
+            <code>\\u([0-9a-fA-F]{4})</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "\\u".<br/>
@@ -9578,7 +9762,7 @@
         <member name="M:HttpAgent.Helpers.RFC2047Regex">
             <remarks>
             Pattern:<br/>
-            <code>=\\?(?&lt;charset&gt;[^?]+)\\?(?&lt;encoding&gt;[BbQq])\\?(?&lt;text&gt;[^?]*)\\?=</code><br/>
+            <code>=\?(?&lt;charset&gt;[^?]+)\?(?&lt;encoding&gt;[BbQq])\?(?&lt;text&gt;[^?]*)\?=</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "=?".<br/>
@@ -9597,7 +9781,7 @@
         <member name="M:HttpAgent.Helpers.EncodedWordGapRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\?=\\s+=\\?</code><br/>
+            <code>\?=\s+=\?</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "?=".<br/>
@@ -10774,7 +10958,7 @@
         <member name="M:HttpAgent.FileTransferProgress.AnsiRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\x1b\\[[0-9;]*[a-zA-Z]|\\x1b\\].*?\\x07</code><br/>
+            <code>\x1b\[[0-9;]*[a-zA-Z]|\x1b\].*?\x07</code><br/>
             Explanation:<br/>
             <code>
             ○ Match '\u001b'.<br/>
@@ -12965,6 +13149,12 @@
                     <c>false</c>。
                 </para>
             </remarks>
+        </member>
+        <member name="P:HttpAgent.BodyAttribute.AsFile">
+            <summary>
+                表示将字符串作为文件路径（支持互联网地址）
+            </summary>
+            <remarks>当参数类型为 <see cref="T:System.String" /> 时有效。默认值为：<c>false</c>。</remarks>
         </member>
         <member name="P:HttpAgent.BodyAttribute.DisposeResourcesOnRequestCompletion">
             <summary>
@@ -15182,6 +15372,20 @@
                 <see cref="T:System.Net.Http.HttpRequestMessage" />
             </param>
         </member>
+        <member name="M:HttpAgent.RequestBuilderPipelineHandler.ExecuteAssertionsAsync(HttpAgent.HttpRequestBuilder,System.Net.Http.HttpRequestMessage,System.IServiceProvider)">
+            <summary>
+                执行请求断言委托操作
+            </summary>
+            <param name="httpRequestBuilder">
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </param>
+            <param name="httpRequestMessage">
+                <see cref="T:System.Net.Http.HttpRequestMessage" />
+            </param>
+            <param name="serviceProvider">
+                <see cref="T:System.IServiceProvider" />
+            </param>
+        </member>
         <member name="T:HttpAgent.RequestEventPipelineHandler">
             <summary>
                 请求事件管道处理器
@@ -15287,15 +15491,18 @@
         <member name="M:HttpAgent.ResponseAssertionPipelineHandler.HandleAsync(HttpAgent.HttpRequestPipelineContext,System.Func{System.Threading.Tasks.Task{System.Net.Http.HttpResponseMessage}})">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.ResponseAssertionPipelineHandler.ExecuteAssertionsAsync(HttpAgent.HttpRequestBuilder,System.Net.Http.HttpResponseMessage,System.Int64,System.IServiceProvider)">
+        <member name="M:HttpAgent.ResponseAssertionPipelineHandler.ExecuteAssertionsAsync(HttpAgent.HttpRequestBuilder,System.Net.Http.HttpResponseMessage,System.Net.Http.HttpRequestMessage,System.Int64,System.IServiceProvider)">
             <summary>
-                执行断言委托操作
+                执行响应断言委托操作
             </summary>
             <param name="httpRequestBuilder">
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </param>
             <param name="httpResponseMessage">
                 <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </param>
+            <param name="requestMessage">
+                <see cref="T:System.Net.Http.HttpRequestMessage" />
             </param>
             <param name="requestDuration">请求耗时（毫秒）</param>
             <param name="serviceProvider">
@@ -15430,7 +15637,7 @@
         <member name="M:HttpAgent.StatusCodePipelineHandler.StatusCodeRangeRegex">
             <remarks>
             Pattern:<br/>
-            <code>^\\d+[-~]\\d+$</code><br/>
+            <code>^\d+[-~]\d+$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
@@ -15444,7 +15651,7 @@
         <member name="M:HttpAgent.StatusCodePipelineHandler.StatusCodeCompareRegex">
             <remarks>
             Pattern:<br/>
-            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\\d+)$</code><br/>
+            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\d+)$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
@@ -23122,6 +23329,13 @@
                 <para>注意：请确保使用的是根容器（Root ServiceProvider），使用作用域容器可能导致对象生命周期异常。</para>
             </remarks>
             <param name="serviceProvider">应用程序的根服务提供器，必须已完成 <see cref="T:HttpAgent.IHttpRemoteService" /> 的注册。</param>
+            <returns>
+                <see cref="T:System.IServiceProvider" />
+            </returns>
+        </member>
+    </members>
+</doc>
+" /> 的注册。</param>
             <returns>
                 <see cref="T:System.IServiceProvider" />
             </returns>
