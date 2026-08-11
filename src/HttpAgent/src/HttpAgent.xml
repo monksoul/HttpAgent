@@ -3086,6 +3086,32 @@
             </returns>
             <exception cref="T:System.ArgumentNullException"></exception>
         </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.SetMcpContent(System.String,System.String,System.Object,System.String)">
+            <summary>
+                设置 MCP (Model Context Protocol) 2.0 消息内容
+            </summary>
+            <param name="clientName">客户端名称</param>
+            <param name="method">方法名称</param>
+            <param name="params">方法参数</param>
+            <param name="protocolVersion"> MCP (Model Context Protocol) 协议版本，默认为 "2026-07-28"</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.SetMcpContent(System.String,HttpAgent.McpMessageData,System.String)">
+            <summary>
+                设置 MCP (Model Context Protocol) 2.0 消息内容
+            </summary>
+            <param name="clientName">客户端名称</param>
+            <param name="data">
+                <see cref="T:HttpAgent.McpMessageData" />
+            </param>
+            <param name="protocolVersion"> MCP (Model Context Protocol) 协议版本，默认为 "2026-07-28"</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
         <member name="M:HttpAgent.HttpRequestBuilder.SetContent(System.Object,System.String,System.Text.Encoding,System.Boolean)">
             <summary>
                 设置请求内容
@@ -4333,6 +4359,11 @@
             <returns>
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
+        </member>
+        <member name="F:HttpAgent.HttpRequestBuilder._globalRequestId">
+            <summary>
+                内部请求 ID 计数器
+            </summary>
         </member>
         <member name="F:HttpAgent.HttpRequestBuilder.CachedProperties">
             <summary>
@@ -5843,6 +5874,31 @@
                 <see cref="T:HttpAgent.HttpServerSentEventsBuilder" />
             </returns>
         </member>
+        <member name="M:HttpAgent.HttpServerSentEventsBuilder.SetMcpContent(System.String,System.String,System.Object,System.String)">
+            <summary>
+                设置 MCP (Model Context Protocol) 2.0 消息内容
+            </summary>
+            <param name="clientName">客户端名称</param>
+            <param name="method">方法名称</param>
+            <param name="params">方法参数</param>
+            <param name="protocolVersion"> MCP (Model Context Protocol) 协议版本，默认为 "2026-07-28"</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpServerSentEventsBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpServerSentEventsBuilder.SetMcpContent(System.String,HttpAgent.McpMessageData,System.String)">
+            <summary>
+                设置 MCP (Model Context Protocol) 2.0 消息内容
+            </summary>
+            <param name="clientName">客户端名称</param>
+            <param name="data">
+                <see cref="T:HttpAgent.McpMessageData" />
+            </param>
+            <param name="protocolVersion"> MCP (Model Context Protocol) 协议版本，默认为 "2026-07-28"</param>
+            <returns>
+                <see cref="T:HttpAgent.HttpServerSentEventsBuilder" />
+            </returns>
+        </member>
         <member name="M:HttpAgent.HttpServerSentEventsBuilder.Build(HttpAgent.HttpRemoteOptions)">
             <summary>
                 构建 <see cref="T:HttpAgent.HttpRequestBuilder" /> 实例
@@ -6676,7 +6732,7 @@
         <member name="M:HttpAgent.Core.Converters.Json.FlexibleDateTimeConverter.Regex">
             <remarks>
             Pattern:<br/>
-            <code>^/Date\(([+-]*\d+)\)/$</code><br/>
+            <code>^/Date\\(([+-]*\\d+)\\)/$</code><br/>
             Options:<br/>
             <code>RegexOptions.CultureInvariant</code><br/>
             Explanation:<br/>
@@ -6705,7 +6761,7 @@
         <member name="M:HttpAgent.Core.Converters.Json.FlexibleDateTimeOffsetConverter.Regex">
             <remarks>
             Pattern:<br/>
-            <code>^/Date\(([+-]*\d+)([+-])(\d{2})(\d{2})\)/$</code><br/>
+            <code>^/Date\\(([+-]*\\d+)([+-])(\\d{2})(\\d{2})\\)/$</code><br/>
             Options:<br/>
             <code>RegexOptions.CultureInvariant</code><br/>
             Explanation:<br/>
@@ -7273,7 +7329,7 @@
         <member name="M:HttpAgent.Core.Extensions.StringExtensions.PlaceholderRegex">
             <remarks>
             Pattern:<br/>
-            <code>\{\s*(?:\*\*)?\s*(\w+(?:\s*\.\s*\w+|\s*\[\s*\d+\s*\])*)\s*(\?)?\s*\}</code><br/>
+            <code>\\{\\s*(?:\\*\\*)?\\s*(\\w+(?:\\s*\\.\\s*\\w+|\\s*\\[\\s*\\d+\\s*\\])*)\\s*(\\?)?\\s*\\}</code><br/>
             Explanation:<br/>
             <code>
             ○ Match '{'.<br/>
@@ -7284,13 +7340,14 @@
             ○ 1st capture group.<br/>
                 ○ Match a word character greedily at least once.<br/>
                 ○ Loop greedily any number of times.<br/>
-                    ○ Match a whitespace character atomically any number of times.<br/>
                     ○ Match with 2 alternative expressions.<br/>
                         ○ Match a sequence of expressions.<br/>
+                            ○ Match a whitespace character atomically any number of times.<br/>
                             ○ Match '.'.<br/>
                             ○ Match a whitespace character atomically any number of times.<br/>
                             ○ Match a word character greedily at least once.<br/>
                         ○ Match a sequence of expressions.<br/>
+                            ○ Match a whitespace character atomically any number of times.<br/>
                             ○ Match '['.<br/>
                             ○ Match a whitespace character atomically any number of times.<br/>
                             ○ Match a Unicode digit atomically at least once.<br/>
@@ -7308,7 +7365,7 @@
         <member name="M:HttpAgent.Core.Extensions.StringExtensions.ConfigurationKeyRegex">
             <remarks>
             Pattern:<br/>
-            <code>\[\[\s*(?:\*\*)?\s*([\w\-:]+)((?:\s*\|\s*[\w\-:]+)*)\s*(?:\|\|\s*([^\]]*))?\s*(\?)?\s*\]\]</code><br/>
+            <code>\\[\\[\\s*(?:\\*\\*)?\\s*([\\w\\-:]+)((?:\\s*\\|\\s*[\\w\\-:]+)*)\\s*(?:\\|\\|\\s*([^\\]]*))?\\s*(\\?)?\\s*\\]\\]</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "[[".<br/>
@@ -8797,7 +8854,7 @@
         <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.UnicodeEscapeRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\u([0-9a-fA-F]{4})</code><br/>
+            <code>\\\\u([0-9a-fA-F]{4})</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "\\u".<br/>
@@ -8805,6 +8862,55 @@
                 ○ Match a hexadecimal digit exactly 4 times.<br/>
             </code>
             </remarks>
+        </member>
+        <member name="T:HttpAgent.Extensions.HttpRemoteServerSentEventsExtensions">
+            <summary>
+                HTTP 远程服务 Server Sent Events 扩展类
+            </summary>
+        </member>
+        <member name="M:HttpAgent.Extensions.HttpRemoteServerSentEventsExtensions.ToMcpMessage(HttpAgent.ServerSentEventsData,System.Text.Json.JsonSerializerOptions)">
+            <summary>
+                将 <see cref="T:HttpAgent.ServerSentEventsData" /> 解析为 <see cref="T:HttpAgent.McpMessageData" />
+            </summary>
+            <param name="serverSentEventsData">
+                <see cref="T:HttpAgent.ServerSentEventsData" />
+            </param>
+            <param name="jsonSerializerOptions">
+                <see cref="T:System.Text.Json.JsonSerializerOptions" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.McpMessageData" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Extensions.HttpRemoteServerSentEventsExtensions.GetResult``1(HttpAgent.McpMessageData,System.Text.Json.JsonSerializerOptions)">
+            <summary>
+                将 <see cref="P:HttpAgent.McpMessageData.Result" /> 转换为指定类型
+            </summary>
+            <param name="mcpMessageData">
+                <see cref="T:HttpAgent.McpMessageData" />
+            </param>
+            <param name="jsonSerializerOptions">
+                <see cref="T:System.Text.Json.JsonSerializerOptions" />
+            </param>
+            <typeparam name="T">目标类型</typeparam>
+            <returns>
+                <typeparamref name="T" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Extensions.HttpRemoteServerSentEventsExtensions.GetData``1(HttpAgent.McpError,System.Text.Json.JsonSerializerOptions)">
+            <summary>
+                将 <see cref="P:HttpAgent.McpError.Data" /> 转换为指定类型
+            </summary>
+            <param name="mcpError">
+                <see cref="T:HttpAgent.McpError" />
+            </param>
+            <param name="jsonSerializerOptions">
+                <see cref="T:System.Text.Json.JsonSerializerOptions" />
+            </param>
+            <typeparam name="T">目标类型</typeparam>
+            <returns>
+                <typeparamref name="T" />
+            </returns>
         </member>
         <member name="T:HttpAgent.HttpContentConverterFactory">
             <inheritdoc cref="T:HttpAgent.IHttpContentConverterFactory" />
@@ -9472,7 +9578,7 @@
         <member name="M:HttpAgent.Helpers.RFC2047Regex">
             <remarks>
             Pattern:<br/>
-            <code>=\?(?&lt;charset&gt;[^?]+)\?(?&lt;encoding&gt;[BbQq])\?(?&lt;text&gt;[^?]*)\?=</code><br/>
+            <code>=\\?(?&lt;charset&gt;[^?]+)\\?(?&lt;encoding&gt;[BbQq])\\?(?&lt;text&gt;[^?]*)\\?=</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "=?".<br/>
@@ -9491,7 +9597,7 @@
         <member name="M:HttpAgent.Helpers.EncodedWordGapRegex">
             <remarks>
             Pattern:<br/>
-            <code>\?=\s+=\?</code><br/>
+            <code>\\?=\\s+=\\?</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "?=".<br/>
@@ -10668,7 +10774,7 @@
         <member name="M:HttpAgent.FileTransferProgress.AnsiRegex">
             <remarks>
             Pattern:<br/>
-            <code>\x1b\[[0-9;]*[a-zA-Z]|\x1b\].*?\x07</code><br/>
+            <code>\\x1b\\[[0-9;]*[a-zA-Z]|\\x1b\\].*?\\x07</code><br/>
             Explanation:<br/>
             <code>
             ○ Match '\u001b'.<br/>
@@ -11295,6 +11401,82 @@
         </member>
         <member name="P:HttpAgent.JsonSerializationContext.GetResultValue">
             <summary>获取目标类型值的委托</summary>
+        </member>
+        <member name="T:HttpAgent.McpMessageData">
+            <summary>
+                MCP (Model Context Protocol) 2.0 消息数据模型
+            </summary>
+            <remarks>用于表示 JSON-RPC 2.0 格式的请求、响应或通知消息。当作为 Server-Sent Events 事件中的 data 字段解析时，可由此类提供类型化访问。</remarks>
+        </member>
+        <member name="M:HttpAgent.McpMessageData.#ctor">
+            <summary>
+                <inheritdoc cref="T:HttpAgent.McpMessageData" />
+            </summary>
+        </member>
+        <member name="M:HttpAgent.McpMessageData.#ctor(System.String,System.Object)">
+            <summary>
+                <inheritdoc cref="T:HttpAgent.McpMessageData" />
+            </summary>
+            <param name="method">方法名称</param>
+            <param name="params">方法参数</param>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
+        <member name="P:HttpAgent.McpMessageData.JsonRpc">
+            <summary>
+                JSON-RPC 协议版本
+            </summary>
+            <remarks>固定为 "2.0"。</remarks>
+        </member>
+        <member name="P:HttpAgent.McpMessageData.Id">
+            <summary>
+                请求标识符
+            </summary>
+            <remarks>用于匹配请求与响应。若为 <c>null</c>，表示这是一个通知（Notification），无需响应。</remarks>
+        </member>
+        <member name="P:HttpAgent.McpMessageData.Method">
+            <summary>
+                方法名称
+            </summary>
+            <remarks>对于请求或通知，此字段包含要调用的方法名（如 "tools/call"）。对于响应，此字段通常为 <c>null</c>。</remarks>
+        </member>
+        <member name="P:HttpAgent.McpMessageData.Params">
+            <summary>
+                方法参数
+            </summary>
+            <remarks>对于请求或通知，此字段包含调用的参数对象。对于响应，此字段通常为 <c>null</c>。</remarks>
+        </member>
+        <member name="P:HttpAgent.McpMessageData.Result">
+            <summary>
+                成功响应结果
+            </summary>
+            <remarks>当 <see cref="P:HttpAgent.McpMessageData.Id" /> 不为 <c>null</c> 且 <see cref="P:HttpAgent.McpMessageData.Error" /> 为 <c>null</c> 时，此字段包含调用结果。</remarks>
+        </member>
+        <member name="P:HttpAgent.McpMessageData.Error">
+            <summary>
+                错误信息
+            </summary>
+            <remarks>当 <see cref="P:HttpAgent.McpMessageData.Id" /> 不为 <c>null</c> 且 <see cref="P:HttpAgent.McpMessageData.Result" /> 为 <c>null</c> 时，此字段包含错误详情。</remarks>
+        </member>
+        <member name="T:HttpAgent.McpError">
+            <summary>
+                MCP JSON-RPC 错误对象
+            </summary>
+            <remarks>符合 JSON-RPC 2.0 错误对象规范。参考文献：https://www.jsonrpc.org/specification#error_object。</remarks>
+        </member>
+        <member name="P:HttpAgent.McpError.Code">
+            <summary>
+                错误码
+            </summary>
+        </member>
+        <member name="P:HttpAgent.McpError.Message">
+            <summary>
+                错误消息
+            </summary>
+        </member>
+        <member name="P:HttpAgent.McpError.Data">
+            <summary>
+                附加错误数据（可选）
+            </summary>
         </member>
         <member name="T:HttpAgent.MultipartFile">
             <summary>
@@ -15248,7 +15430,7 @@
         <member name="M:HttpAgent.StatusCodePipelineHandler.StatusCodeRangeRegex">
             <remarks>
             Pattern:<br/>
-            <code>^\d+[-~]\d+$</code><br/>
+            <code>^\\d+[-~]\\d+$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
@@ -15262,7 +15444,7 @@
         <member name="M:HttpAgent.StatusCodePipelineHandler.StatusCodeCompareRegex">
             <remarks>
             Pattern:<br/>
-            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\d+)$</code><br/>
+            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\\d+)$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
@@ -22940,13 +23122,6 @@
                 <para>注意：请确保使用的是根容器（Root ServiceProvider），使用作用域容器可能导致对象生命周期异常。</para>
             </remarks>
             <param name="serviceProvider">应用程序的根服务提供器，必须已完成 <see cref="T:HttpAgent.IHttpRemoteService" /> 的注册。</param>
-            <returns>
-                <see cref="T:System.IServiceProvider" />
-            </returns>
-        </member>
-    </members>
-</doc>
-" /> 的注册。</param>
             <returns>
                 <see cref="T:System.IServiceProvider" />
             </returns>

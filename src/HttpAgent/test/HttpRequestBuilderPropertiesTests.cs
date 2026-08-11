@@ -102,5 +102,7 @@ public class HttpRequestBuilderPropertiesTests
             "Content-Range",
             "Content-Location"
         ], HttpRequestBuilder.KnownContentHeaders);
+
+        Assert.Equal(0, HttpRequestBuilder._globalRequestId);
     }
 }

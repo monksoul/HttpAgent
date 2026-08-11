@@ -370,6 +370,53 @@ public class HttpRequestBuilderMethodsTests
     }
 
     [Fact]
+    public void SetMcpContent_Invalid_Parameters()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        Assert.Throws<ArgumentNullException>(() => httpRequestBuilder.SetMcpContent(null!, null!));
+        Assert.Throws<ArgumentException>(() => httpRequestBuilder.SetMcpContent(string.Empty, null!));
+        Assert.Throws<ArgumentException>(() => httpRequestBuilder.SetMcpContent(" ", null!));
+        Assert.Throws<ArgumentNullException>(() => httpRequestBuilder.SetMcpContent("mcptools", null!));
+
+        Assert.Throws<ArgumentNullException>(() => httpRequestBuilder.SetMcpContent("mcptools", new McpMessageData()));
+        Assert.Throws<ArgumentNullException>(() =>
+            httpRequestBuilder.SetMcpContent("mcptools", new McpMessageData(null!)));
+        Assert.Throws<ArgumentException>(() =>
+            httpRequestBuilder.SetMcpContent("mcptools", new McpMessageData(string.Empty)));
+        Assert.Throws<ArgumentException>(() => httpRequestBuilder.SetMcpContent("mcptools", new McpMessageData(" ")));
+    }
+
+    [Fact]
+    public void SetMcpContent_ReturnOK()
+    {
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        httpRequestBuilder.SetMcpContent("mcptools", new McpMessageData("list"));
+
+        Assert.NotNull(httpRequestBuilder.Headers);
+        Assert.Equal(4, httpRequestBuilder.Headers.Count);
+        Assert.Equal("mcptools", httpRequestBuilder.Headers["Mcp-Name"].FirstOrDefault());
+        Assert.Equal("2026-07-28", httpRequestBuilder.Headers["MCP-Protocol-Version"].FirstOrDefault());
+        Assert.Equal("list", httpRequestBuilder.Headers["Mcp-Method"].FirstOrDefault());
+        Assert.Equal("application/json, text/event-stream", httpRequestBuilder.Headers["Accept"].FirstOrDefault());
+        Assert.NotNull(httpRequestBuilder.RawContent);
+        Assert.Equal("{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"list\",\"params\":null}",
+            httpRequestBuilder.RawContent.ToJsonString());
+        Assert.Equal("application/json", httpRequestBuilder.ContentType);
+
+        var httpRequestBuilder2 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        httpRequestBuilder2.SetMcpContent("mcptools", new McpMessageData("list", new { data = "furion" }));
+        Assert.NotNull(httpRequestBuilder2.RawContent);
+        Assert.Equal("{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"list\",\"params\":{\"data\":\"furion\"}}",
+            httpRequestBuilder2.RawContent.ToJsonString());
+
+        var httpRequestBuilder3 = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));
+        httpRequestBuilder3.SetMcpContent("mcptools", "list", new { data = "furion" });
+        Assert.NotNull(httpRequestBuilder3.RawContent);
+        Assert.Equal("{\"jsonrpc\":\"2.0\",\"id\":3,\"method\":\"list\",\"params\":{\"data\":\"furion\"}}",
+            httpRequestBuilder3.RawContent.ToJsonString());
+    }
+
+    [Fact]
     public void SetContent_Invalid_Parameters()
     {
         var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get, new Uri("http://localhost"));

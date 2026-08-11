@@ -257,6 +257,41 @@ public class HttpServerSentEventsBuilderTests
             new HttpServerSentEventsBuilder(new Uri("http://localhost")).Build(null!));
 
     [Fact]
+    public void SetMcpContent_ReturnOK()
+    {
+        var httpRemoteOptions = new HttpRemoteOptions();
+        var httpServerSentEventsBuilder = new HttpServerSentEventsBuilder(new Uri("http://localhost"));
+
+        httpServerSentEventsBuilder.SetMcpContent("mcptools", new McpMessageData("list"));
+        var httpRequestBuilder = httpServerSentEventsBuilder.Build(httpRemoteOptions);
+
+        Assert.NotNull(httpRequestBuilder.Headers);
+        Assert.Equal(4, httpRequestBuilder.Headers.Count);
+        Assert.Equal("mcptools", httpRequestBuilder.Headers["Mcp-Name"].FirstOrDefault());
+        Assert.Equal("2026-07-28", httpRequestBuilder.Headers["MCP-Protocol-Version"].FirstOrDefault());
+        Assert.Equal("list", httpRequestBuilder.Headers["Mcp-Method"].FirstOrDefault());
+        Assert.Equal("application/json, text/event-stream", httpRequestBuilder.Headers["Accept"].FirstOrDefault());
+        Assert.NotNull(httpRequestBuilder.RawContent);
+        Assert.Equal("{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"list\",\"params\":null}",
+            httpRequestBuilder.RawContent.ToJsonString());
+        Assert.Equal("application/json", httpRequestBuilder.ContentType);
+
+        var httpServerSentEventsBuilder2 = new HttpServerSentEventsBuilder(new Uri("http://localhost"));
+        httpServerSentEventsBuilder2.SetMcpContent("mcptools", new McpMessageData("list", new { data = "furion" }));
+        var httpRequestBuilder2 = httpServerSentEventsBuilder2.Build(httpRemoteOptions);
+        Assert.NotNull(httpRequestBuilder2.RawContent);
+        Assert.Equal("{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"list\",\"params\":{\"data\":\"furion\"}}",
+            httpRequestBuilder2.RawContent.ToJsonString());
+
+        var httpServerSentEventsBuilder3 = new HttpServerSentEventsBuilder(new Uri("http://localhost"));
+        httpServerSentEventsBuilder3.SetMcpContent("mcptools", "list", new { data = "furion" });
+        var httpRequestBuilder3 = httpServerSentEventsBuilder3.Build(httpRemoteOptions);
+        Assert.NotNull(httpRequestBuilder3.RawContent);
+        Assert.Equal("{\"jsonrpc\":\"2.0\",\"id\":3,\"method\":\"list\",\"params\":{\"data\":\"furion\"}}",
+            httpRequestBuilder3.RawContent.ToJsonString());
+    }
+
+    [Fact]
     public void Build_ReturnOK()
     {
         var httpRemoteOptions = new HttpRemoteOptions();
