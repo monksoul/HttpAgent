@@ -40,6 +40,7 @@ public class Helpers
                 typeof(RequestBuilderPipelineHandler),
                 typeof(ETagPipelineHandler),
                 typeof(RequestProfilerPipelineHandler),
+                typeof(MockPipelineHandler),
                 typeof(SendCorePipelineHandler)
             ];
         });
@@ -70,6 +71,7 @@ public class Helpers
         services.TryAddSingleton<RequestBuilderPipelineHandler>();
         services.TryAddSingleton<ETagPipelineHandler>();
         services.TryAddSingleton<RequestProfilerPipelineHandler>();
+        services.TryAddSingleton<MockPipelineHandler>();
         services.TryAddSingleton<SendCorePipelineHandler>();
 
         services.TryAddSingleton<IHttpAccessTokenManager, HttpAccessTokenManager>();

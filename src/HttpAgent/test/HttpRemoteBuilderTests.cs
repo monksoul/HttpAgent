@@ -18,9 +18,10 @@ public class HttpRemoteBuilderTests
         Assert.Null(builder._objectContentConverterFactoryType);
         Assert.Null(builder._httpDeclarativeTypes);
         Assert.Null(builder._httpQuotaStrategyTypes);
+        Assert.Null(builder._httpRemoteLoggerType);
 
         Assert.NotNull(builder._httpRequestPipelineHandlerTypes);
-        Assert.Equal(15, builder._httpRequestPipelineHandlerTypes.Count);
+        Assert.Equal(16, builder._httpRequestPipelineHandlerTypes.Count);
         Assert.Equal([
             typeof(SuppressExceptionPipelineHandler),
             typeof(ResponseAssertionPipelineHandler),
@@ -36,6 +37,7 @@ public class HttpRemoteBuilderTests
             typeof(RequestBuilderPipelineHandler),
             typeof(ETagPipelineHandler),
             typeof(RequestProfilerPipelineHandler),
+            typeof(MockPipelineHandler),
             typeof(SendCorePipelineHandler)
         ], builder._httpRequestPipelineHandlerTypes);
     }
@@ -304,7 +306,7 @@ public class HttpRemoteBuilderTests
 
         var exception2 = Assert.Throws<ArgumentOutOfRangeException>(() =>
             builder.AddPipelineHandler(typeof(CustomPipelineHandler), -1));
-        Assert.Equal("Index must be between 0 and 15. (Parameter 'index')", exception2.Message);
+        Assert.Equal("Index must be between 0 and 16. (Parameter 'index')", exception2.Message);
     }
 
     [Fact]
@@ -313,7 +315,7 @@ public class HttpRemoteBuilderTests
         var builder = new HttpRemoteBuilder();
         builder.AddPipelineHandler(typeof(CustomPipelineHandler)).AddPipelineHandler<CustomPipelineHandler>();
 
-        Assert.Equal(17, builder._httpRequestPipelineHandlerTypes.Count);
+        Assert.Equal(18, builder._httpRequestPipelineHandlerTypes.Count);
         Assert.Equal(typeof(CustomPipelineHandler), builder._httpRequestPipelineHandlerTypes.First());
         Assert.Equal(typeof(CustomPipelineHandler), builder._httpRequestPipelineHandlerTypes.Skip(1).First());
 
@@ -362,6 +364,30 @@ public class HttpRemoteBuilderTests
     }
 
     [Fact]
+    public void UseLogger_Invalid_Parameters()
+    {
+        var builder = new HttpRemoteBuilder();
+
+        Assert.Throws<ArgumentNullException>(() => builder.UseLogger(null!));
+
+        var exception = Assert.Throws<ArgumentException>(() =>
+            builder.UseLogger(typeof(NotImplementHttpRemoteLogger)));
+        Assert.Equal(
+            $"`{typeof(NotImplementHttpRemoteLogger)}` type is not assignable from `{typeof(IHttpRemoteLogger)}`. (Parameter 'loggerType')",
+            exception.Message);
+    }
+
+    [Fact]
+    public void UseLogger_ReturnOK()
+    {
+        var builder = new HttpRemoteBuilder();
+        builder.UseLogger(typeof(CustomHttpRemoteLogger)).UseLogger<CustomHttpRemoteLogger>();
+
+        Assert.NotNull(builder._httpRemoteLoggerType);
+        Assert.Equal(typeof(CustomHttpRemoteLogger), builder._httpRemoteLoggerType);
+    }
+
+    [Fact]
     public void Build_Default_ReturnOK()
     {
         var services = new ServiceCollection();
@@ -389,13 +415,14 @@ public class HttpRemoteBuilderTests
         Assert.Contains(services, u => u.ServiceType == typeof(ContentLengthValidationPipelineHandler));
         Assert.Contains(services, u => u.ServiceType == typeof(RequestBuilderPipelineHandler));
         Assert.Contains(services, u => u.ServiceType == typeof(RequestProfilerPipelineHandler));
+        Assert.Contains(services, u => u.ServiceType == typeof(MockPipelineHandler));
         Assert.Contains(services, u => u.ServiceType == typeof(SendCorePipelineHandler));
 
         Assert.Contains(services, u => u.ServiceType == typeof(IHttpAccessTokenManager));
         Assert.Contains(services, u => u.ServiceType == typeof(IHttpQuotaManager));
         Assert.Contains(services, u => u.ServiceType == typeof(IHttpETagCache));
 
-        Assert.Equal(50, services.Count);
+        Assert.Equal(51, services.Count);
     }
 
     [Fact]
@@ -415,7 +442,7 @@ public class HttpRemoteBuilderTests
         Assert.Contains(services, u => u.ServiceType == typeof(IHttpRemoteService));
         Assert.True(services.First(u => u.ServiceType == typeof(IObjectContentConverterFactory)).ImplementationType ==
                     typeof(ObjectContentConverterFactory));
-        Assert.Equal(52, services.Count);
+        Assert.Equal(53, services.Count);
     }
 
     [Fact]
@@ -433,7 +460,7 @@ public class HttpRemoteBuilderTests
         Assert.Contains(services, u => u.ServiceType == typeof(IObjectContentConverterFactory));
         Assert.True(services.First(u => u.ServiceType == typeof(IObjectContentConverterFactory)).ImplementationType ==
                     typeof(CustomObjectContentConverterFactory));
-        Assert.Equal(50, services.Count);
+        Assert.Equal(51, services.Count);
     }
 
     [Fact]
@@ -453,7 +480,7 @@ public class HttpRemoteBuilderTests
         Assert.Contains(services, u => u.ServiceType == typeof(IObjectContentConverterFactory));
         Assert.True(services.First(u => u.ServiceType == typeof(IObjectContentConverterFactory)).ImplementationType ==
                     typeof(CustomObjectContentConverterFactory));
-        Assert.Equal(52, services.Count);
+        Assert.Equal(53, services.Count);
     }
 
     [Fact]
@@ -532,7 +559,7 @@ public class HttpRemoteBuilderTests
         Assert.NotNull(remoteOptions.HttpDeclarativeExtractors);
         Assert.Single(remoteOptions.HttpDeclarativeExtractors);
         Assert.NotNull(remoteOptions.PipelineHandlerTypes);
-        Assert.Equal(15, remoteOptions.PipelineHandlerTypes.Count);
+        Assert.Equal(16, remoteOptions.PipelineHandlerTypes.Count);
         Assert.Equal([
             typeof(SuppressExceptionPipelineHandler),
             typeof(ResponseAssertionPipelineHandler),
@@ -548,6 +575,7 @@ public class HttpRemoteBuilderTests
             typeof(RequestBuilderPipelineHandler),
             typeof(ETagPipelineHandler),
             typeof(RequestProfilerPipelineHandler),
+            typeof(MockPipelineHandler),
             typeof(SendCorePipelineHandler)
         ], remoteOptions.PipelineHandlerTypes);
     }
@@ -624,5 +652,31 @@ public class HttpRemoteBuilderTests
         Assert.Equal(typeof(SuppressExceptionPipelineHandler), httpRemoteOptions.CurrentValue.PipelineHandlerTypes[0]);
         Assert.Equal(typeof(CustomPipelineHandler),
             httpRemoteOptions.CurrentValue.PipelineHandlerTypes.Skip(1).First());
+    }
+
+    [Fact]
+    public void Build_UseLogger_ReturnOK()
+    {
+        var services = new ServiceCollection();
+        var builder = new HttpRemoteBuilder().UseLogger<CustomHttpRemoteLogger>();
+
+        builder.Build(services);
+        Assert.Contains(services, u => u.ServiceType == typeof(IHttpRemoteLogger));
+        Assert.Contains(services, u => u.ImplementationType == typeof(CustomHttpRemoteLogger));
+        Assert.Equal(51, services.Count);
+    }
+
+    [Fact]
+    public void Build_UseLogger_Duplicate_ReturnOK()
+    {
+        var services = new ServiceCollection();
+        var builder = new HttpRemoteBuilder().UseLogger<CustomHttpRemoteLogger>();
+
+        builder.Build(services);
+        builder.Build(services);
+        builder.Build(services);
+        Assert.Contains(services, u => u.ServiceType == typeof(IHttpRemoteLogger));
+        Assert.Contains(services, u => u.ImplementationType == typeof(CustomHttpRemoteLogger));
+        Assert.Equal(53, services.Count);
     }
 }

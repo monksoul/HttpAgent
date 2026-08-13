@@ -41,6 +41,12 @@
             <param name="jwtToken">完整 JWT Token 字符串</param>
             <exception cref="T:System.ArgumentException"></exception>
         </member>
+        <member name="P:HttpAgent.HttpAccessToken.None">
+            <summary>
+                表示没有可用的 Access Token
+            </summary>
+            <remarks>获取失败或结果为空。</remarks>
+        </member>
         <member name="P:HttpAgent.HttpAccessToken.Value">
             <summary>
                 Access Token 值
@@ -2674,6 +2680,11 @@
                 <see cref="T:HttpAgent.IHttpQuotaStrategy" /> 类型集合
             </summary>
         </member>
+        <member name="F:HttpAgent.HttpRemoteBuilder._httpRemoteLoggerType">
+            <summary>
+                <see cref="T:HttpAgent.IHttpRemoteLogger" /> 类型
+            </summary>
+        </member>
         <member name="F:HttpAgent.HttpRemoteBuilder._httpRequestPipelineHandlerTypes">
             <summary>
                 <see cref="T:HttpAgent.IHttpRequestPipelineHandler" /> 类型集合
@@ -2872,6 +2883,32 @@
             <exception cref="T:System.ArgumentNullException"></exception>
             <exception cref="T:System.ArgumentException"></exception>
         </member>
+        <member name="M:HttpAgent.HttpRemoteBuilder.UseLogger``1">
+            <summary>
+                使用自定义的 <see cref="T:HttpAgent.IHttpRemoteLogger" /> 实现
+            </summary>
+            <remarks>可继承 <see cref="T:HttpAgent.HttpRemoteLoggerBase" /> 以实现自定义 <see cref="T:HttpAgent.IHttpRemoteLogger" /> 服务。</remarks>
+            <typeparam name="TLogger">
+                <see cref="T:HttpAgent.IHttpRemoteLogger" />
+            </typeparam>
+            <returns>
+                <see cref="T:HttpAgent.HttpRemoteBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRemoteBuilder.UseLogger(System.Type)">
+            <summary>
+                使用自定义的 <see cref="T:HttpAgent.IHttpRemoteLogger" /> 实现
+            </summary>
+            <remarks>可继承 <see cref="T:HttpAgent.HttpRemoteLoggerBase" /> 以实现自定义 <see cref="T:HttpAgent.IHttpRemoteLogger" /> 服务。</remarks>
+            <param name="loggerType">
+                <see cref="T:HttpAgent.IHttpRemoteLogger" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRemoteBuilder" />
+            </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
         <member name="M:HttpAgent.HttpRemoteBuilder.Build(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
             <summary>
                 构建模块服务
@@ -2916,6 +2953,9 @@
             <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="T:HttpAgent.HttpRequestBuilder">
+            <summary>
+                <see cref="T:System.Net.Http.HttpRequestMessage" /> 构建器
+            </summary>
             <summary>
                 <see cref="T:System.Net.Http.HttpRequestMessage" /> 构建器
             </summary>
@@ -4538,6 +4578,61 @@
                 <see cref="T:HttpAgent.HttpRequestBuilder" />
             </returns>
         </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.MockResponse(System.Net.Http.HttpResponseMessage)">
+            <summary>
+                设置模拟的 <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </summary>
+            <param name="httpResponseMessage">
+                <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.MockResponse``1(``0,System.Net.HttpStatusCode,System.String)">
+            <summary>
+                设置模拟的 <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </summary>
+            <param name="content">
+                <typeparamref name="T" />
+            </param>
+            <param name="statusCode">响应状态码</param>
+            <param name="contentType">内容类型</param>
+            <typeparam name="T">内容对象类型</typeparam>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.MockException(System.Exception)">
+            <summary>
+                设置模拟的异常
+            </summary>
+            <param name="exception">
+                <see cref="T:System.Exception" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.ClearMock">
+            <summary>
+                清除所有模拟设置
+            </summary>
+            <returns>
+                <see cref="T:HttpAgent.HttpRequestBuilder" />
+            </returns>
+        </member>
+        <member name="M:HttpAgent.HttpRequestBuilder.IsMocked">
+            <summary>
+                检查当前构建器是否配置了模拟响应或模拟异常
+            </summary>
+            <returns>
+                <see cref="T:System.Boolean" />
+            </returns>
+        </member>
         <member name="F:HttpAgent.HttpRequestBuilder._globalRequestId">
             <summary>
                 内部请求 ID 计数器
@@ -4922,6 +5017,18 @@
             <summary>
                 是否启用 ETag 缓存处理
             </summary>
+        </member>
+        <member name="P:HttpAgent.HttpRequestBuilder.MockedResponse">
+            <summary>
+                模拟的 <see cref="T:System.Net.Http.HttpResponseMessage" />
+            </summary>
+            <remarks>用于测试，不实际发送请求。</remarks>
+        </member>
+        <member name="P:HttpAgent.HttpRequestBuilder.MockedException">
+            <summary>
+                模拟的异常
+            </summary>
+            <remarks>用于测试错误场景。</remarks>
         </member>
         <member name="M:HttpAgent.HttpRequestBuilder.SetRetryIndefinitely(System.Nullable{System.TimeSpan},System.TimeSpan[])">
             <summary>
@@ -6917,7 +7024,7 @@
         <member name="M:HttpAgent.Core.Converters.Json.FlexibleDateTimeConverter.Regex">
             <remarks>
             Pattern:<br/>
-            <code>^/Date\(([+-]*\d+)\)/$</code><br/>
+            <code>^/Date\\(([+-]*\\d+)\\)/$</code><br/>
             Options:<br/>
             <code>RegexOptions.CultureInvariant</code><br/>
             Explanation:<br/>
@@ -6925,7 +7032,7 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Match the string "/Date(".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [+\-] atomically any number of times.<br/>
+                ○ Match a character in the set [+-] atomically any number of times.<br/>
                 ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match the string ")/".<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
@@ -6946,7 +7053,7 @@
         <member name="M:HttpAgent.Core.Converters.Json.FlexibleDateTimeOffsetConverter.Regex">
             <remarks>
             Pattern:<br/>
-            <code>^/Date\(([+-]*\d+)([+-])(\d{2})(\d{2})\)/$</code><br/>
+            <code>^/Date\\(([+-]*\\d+)([+-])(\\d{2})(\\d{2})\\)/$</code><br/>
             Options:<br/>
             <code>RegexOptions.CultureInvariant</code><br/>
             Explanation:<br/>
@@ -6954,10 +7061,10 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Match the string "/Date(".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [+\-] atomically any number of times.<br/>
+                ○ Match a character in the set [+-] atomically any number of times.<br/>
                 ○ Match a Unicode digit atomically at least once.<br/>
             ○ 2nd capture group.<br/>
-                ○ Match a character in the set [+\-].<br/>
+                ○ Match a character in the set [+-].<br/>
             ○ 3rd capture group.<br/>
                 ○ Match a Unicode digit exactly 2 times.<br/>
             ○ 4th capture group.<br/>
@@ -7514,7 +7621,7 @@
         <member name="M:HttpAgent.Core.Extensions.StringExtensions.PlaceholderRegex">
             <remarks>
             Pattern:<br/>
-            <code>\{\s*(?:\*\*)?\s*(\w+(?:\s*\.\s*\w+|\s*\[\s*\d+\s*\])*)\s*(\?)?\s*\}</code><br/>
+            <code>\\{\\s*(?:\\*\\*)?\\s*(\\w+(?:\\s*\\.\\s*\\w+|\\s*\\[\\s*\\d+\\s*\\])*)\\s*(\\?)?\\s*\\}</code><br/>
             Explanation:<br/>
             <code>
             ○ Match '{'.<br/>
@@ -7525,13 +7632,14 @@
             ○ 1st capture group.<br/>
                 ○ Match a word character greedily at least once.<br/>
                 ○ Loop greedily any number of times.<br/>
-                    ○ Match a whitespace character atomically any number of times.<br/>
                     ○ Match with 2 alternative expressions.<br/>
                         ○ Match a sequence of expressions.<br/>
+                            ○ Match a whitespace character atomically any number of times.<br/>
                             ○ Match '.'.<br/>
                             ○ Match a whitespace character atomically any number of times.<br/>
                             ○ Match a word character greedily at least once.<br/>
                         ○ Match a sequence of expressions.<br/>
+                            ○ Match a whitespace character atomically any number of times.<br/>
                             ○ Match '['.<br/>
                             ○ Match a whitespace character atomically any number of times.<br/>
                             ○ Match a Unicode digit atomically at least once.<br/>
@@ -7549,7 +7657,7 @@
         <member name="M:HttpAgent.Core.Extensions.StringExtensions.ConfigurationKeyRegex">
             <remarks>
             Pattern:<br/>
-            <code>\[\[\s*(?:\*\*)?\s*([\w\-:]+)((?:\s*\|\s*[\w\-:]+)*)\s*(?:\|\|\s*([^\]]*))?\s*(\?)?\s*\]\]</code><br/>
+            <code>\\[\\[\\s*(?:\\*\\*)?\\s*([\\w\\-:]+)((?:\\s*\\|\\s*[\\w\\-:]+)*)\\s*(?:\\|\\|\\s*([^\\]]*))?\\s*(\\?)?\\s*\\]\\]</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "[[".<br/>
@@ -7558,13 +7666,13 @@
                 ○ Match the string "**".<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [\-:\w] greedily at least once.<br/>
+                ○ Match a character in the set [-:\w] greedily at least once.<br/>
             ○ 2nd capture group.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match a whitespace character atomically any number of times.<br/>
                     ○ Match '|'.<br/>
                     ○ Match a whitespace character greedily any number of times.<br/>
-                    ○ Match a character in the set [\-:\w] greedily at least once.<br/>
+                    ○ Match a character in the set [-:\w] greedily at least once.<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ Optional (greedy).<br/>
                 ○ Match the string "||".<br/>
@@ -9038,12 +9146,12 @@
         <member name="M:HttpAgent.Extensions.HttpRemoteExtensions.UnicodeEscapeRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\u([0-9a-fA-F]{4})</code><br/>
+            <code>\\\\u([0-9a-fA-F]{4})</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "\\u".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a hexadecimal digit exactly 4 times.<br/>
+                ○ Match a character in the set [0-9A-Fa-f] exactly 4 times.<br/>
             </code>
             </remarks>
         </member>
@@ -9762,7 +9870,7 @@
         <member name="M:HttpAgent.Helpers.RFC2047Regex">
             <remarks>
             Pattern:<br/>
-            <code>=\?(?&lt;charset&gt;[^?]+)\?(?&lt;encoding&gt;[BbQq])\?(?&lt;text&gt;[^?]*)\?=</code><br/>
+            <code>=\\?(?&lt;charset&gt;[^?]+)\\?(?&lt;encoding&gt;[BbQq])\\?(?&lt;text&gt;[^?]*)\\?=</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "=?".<br/>
@@ -9781,7 +9889,7 @@
         <member name="M:HttpAgent.Helpers.EncodedWordGapRegex">
             <remarks>
             Pattern:<br/>
-            <code>\?=\s+=\?</code><br/>
+            <code>\\?=\\s+=\\?</code><br/>
             Explanation:<br/>
             <code>
             ○ Match the string "?=".<br/>
@@ -9810,34 +9918,42 @@
             </param>
             <param name="isLoggingRegistered">是否配置（注册）了日志程序</param>
         </member>
-        <member name="F:HttpAgent.HttpRemoteLogger._logMessageFormatter">
+        <member name="M:HttpAgent.HttpRemoteLogger.Log(Microsoft.Extensions.Logging.LogLevel,System.Exception,System.String,System.Object[])">
+            <inheritdoc />
+        </member>
+        <member name="T:HttpAgent.HttpRemoteLoggerBase">
+            <summary>
+                HTTP 远程请求日志服务抽象基类
+            </summary>
+        </member>
+        <member name="F:HttpAgent.HttpRemoteLoggerBase.LogMessageFormatter">
             <summary>
                 日志消息格式化器
             </summary>
             <remarks>用于在未注册 <see cref="T:Microsoft.Extensions.Logging.ILogger" /> 时通过 <see cref="P:HttpAgent.HttpRemoteOptions.FallbackLogger" /> 输出结构化日志。</remarks>
         </member>
-        <member name="M:HttpAgent.HttpRemoteLogger.LogInformation(System.String,System.Object[])">
+        <member name="M:HttpAgent.HttpRemoteLoggerBase.LogInformation(System.String,System.Object[])">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpRemoteLogger.LogTrace(System.String,System.Object[])">
+        <member name="M:HttpAgent.HttpRemoteLoggerBase.LogTrace(System.String,System.Object[])">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpRemoteLogger.LogDebug(System.String,System.Object[])">
+        <member name="M:HttpAgent.HttpRemoteLoggerBase.LogDebug(System.String,System.Object[])">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpRemoteLogger.LogWarning(System.String,System.Object[])">
+        <member name="M:HttpAgent.HttpRemoteLoggerBase.LogWarning(System.String,System.Object[])">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpRemoteLogger.LogWarning(System.Exception,System.String,System.Object[])">
+        <member name="M:HttpAgent.HttpRemoteLoggerBase.LogWarning(System.Exception,System.String,System.Object[])">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpRemoteLogger.LogCritical(System.String,System.Object[])">
+        <member name="M:HttpAgent.HttpRemoteLoggerBase.LogCritical(System.String,System.Object[])">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpRemoteLogger.LogError(System.Exception,System.String,System.Object[])">
+        <member name="M:HttpAgent.HttpRemoteLoggerBase.LogError(System.Exception,System.String,System.Object[])">
             <inheritdoc />
         </member>
-        <member name="M:HttpAgent.HttpRemoteLogger.Log(Microsoft.Extensions.Logging.LogLevel,System.Exception,System.String,System.Object[])">
+        <member name="M:HttpAgent.HttpRemoteLoggerBase.Log(Microsoft.Extensions.Logging.LogLevel,System.Exception,System.String,System.Object[])">
             <inheritdoc />
         </member>
         <member name="T:HttpAgent.IHttpRemoteLogger">
@@ -10958,17 +11074,17 @@
         <member name="M:HttpAgent.FileTransferProgress.AnsiRegex">
             <remarks>
             Pattern:<br/>
-            <code>\x1b\[[0-9;]*[a-zA-Z]|\x1b\].*?\x07</code><br/>
+            <code>\\x1b\\[[0-9;]*[a-zA-Z]|\\x1b\\].*?\\x07</code><br/>
             Explanation:<br/>
             <code>
             ○ Match '\u001b'.<br/>
             ○ Match with 2 alternative expressions, atomically.<br/>
                 ○ Match a sequence of expressions.<br/>
-                    ○ Match '['.<br/>
+                    ○ Match an empty string.<br/>
                     ○ Match a character in the set [0-9;] atomically any number of times.<br/>
-                    ○ Match an ASCII letter.<br/>
+                    ○ Match a character in the set [A-Za-z].<br/>
                 ○ Match a sequence of expressions.<br/>
-                    ○ Match ']'.<br/>
+                    ○ Match an empty string.<br/>
                     ○ Match a character other than '\n' lazily any number of times.<br/>
                     ○ Match '\a'.<br/>
             </code>
@@ -15301,6 +15417,14 @@
             </returns>
             <exception cref="T:System.ArgumentNullException"></exception>
         </member>
+        <member name="T:HttpAgent.MockPipelineHandler">
+            <summary>
+                Mock 模拟管道处理器
+            </summary>
+        </member>
+        <member name="M:HttpAgent.MockPipelineHandler.HandleAsync(HttpAgent.HttpRequestPipelineContext,System.Func{System.Threading.Tasks.Task{System.Net.Http.HttpResponseMessage}})">
+            <inheritdoc />
+        </member>
         <member name="T:HttpAgent.QuotaPipelineHandler">
             <summary>
                 配额管道处理器
@@ -15637,12 +15761,12 @@
         <member name="M:HttpAgent.StatusCodePipelineHandler.StatusCodeRangeRegex">
             <remarks>
             Pattern:<br/>
-            <code>^\d+[-~]\d+$</code><br/>
+            <code>^\\d+[-~]\\d+$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
-            ○ Match a character in the set [\-~].<br/>
+            ○ Match a character in the set [-~].<br/>
             ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
@@ -15651,7 +15775,7 @@
         <member name="M:HttpAgent.StatusCodePipelineHandler.StatusCodeCompareRegex">
             <remarks>
             Pattern:<br/>
-            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\d+)$</code><br/>
+            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\\d+)$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
@@ -23261,12 +23385,6 @@
         <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32,System.Int32,System.Int32)">
             <summary>Pushes 3 values onto the backtracking stack.</summary>
         </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.WordCategoriesMask">
-            <summary>Provides a mask of Unicode categories that combine to form [\w].</summary>
-        </member>
-        <member name="P:System.Text.RegularExpressions.Generated.Utilities.WordCharBitmap">
-            <summary>Gets a bitmap for whether each character 0 through 127 is in [\w]</summary>
-        </member>
         <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_ascii_FF0B0000000000000000">
             <summary>Supports searching for characters in or not in "0123456789;".</summary>
         </member>
@@ -23335,7 +23453,9 @@
         </member>
     </members>
 </doc>
-" /> 的注册。</param>
+�致对象生命周期异常。</para>
+            </remarks>
+            <param name="serviceProvider">应用程序的根服务提供器，必须已完成 <see cref="T:HttpAgent.IHttpRemoteService" /> 的注册。</param>
             <returns>
                 <see cref="T:System.IServiceProvider" />
             </returns>

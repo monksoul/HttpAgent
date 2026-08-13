@@ -1836,6 +1836,71 @@ public class HttpRemoteServiceTests
     }
 
     [Fact]
+    public async Task SendCoreAsync_WithMockResponse_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+
+        builder.Services.AddHttpRemote();
+
+        await using var app = builder.Build();
+
+        app.MapGet("/test", () => "Real Response");
+
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        var httpRemoteService = app.Services.GetRequiredService<IHttpRemoteService>();
+
+        var mockData = new { Message = "Mocked Response", Status = "OK" };
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get,
+                new Uri($"http://localhost:{port}/test", UriKind.RelativeOrAbsolute))
+            .MockResponse(mockData);
+
+        var response = await httpRemoteService.SendAsync(httpRequestBuilder, TestContext.Current.CancellationToken);
+        var content = await response!.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Contains("Mocked Response", content);
+        Assert.Contains("OK", content);
+
+        Assert.True(httpRequestBuilder.IsMocked());
+
+        await app.StopAsync(TestContext.Current.CancellationToken);
+    }
+
+    [Fact]
+    public async Task SendCoreAsync_WithMockException_ThrowsException()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+
+        builder.Services.AddHttpRemote();
+
+        await using var app = builder.Build();
+
+        app.MapGet("/test", () => "Real Response");
+
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        var httpRemoteService = app.Services.GetRequiredService<IHttpRemoteService>();
+
+        var expectedException = new InvalidOperationException("Simulated network failure.");
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get,
+                new Uri($"http://localhost:{port}/test", UriKind.RelativeOrAbsolute))
+            .MockException(expectedException);
+
+        var ex = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            httpRemoteService.SendAsync(httpRequestBuilder, TestContext.Current.CancellationToken));
+
+        Assert.Equal("Simulated network failure.", ex.Message);
+        Assert.True(httpRequestBuilder.IsMocked());
+
+        await app.StopAsync(TestContext.Current.CancellationToken);
+    }
+
+    [Fact]
     public void TryHandleSuppressSend_Invalid_Parameters()
     {
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();

@@ -13,6 +13,8 @@ public class HttpAccessTokenTests
     [Fact]
     public void New_ReturnOK()
     {
+        Assert.Null(HttpAccessToken.None);
+
         var now = DateTimeOffset.Now;
         var accessToken = new HttpAccessToken("token value", now);
 

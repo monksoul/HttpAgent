@@ -104,6 +104,15 @@ public class CustomQuotaStrategy : IHttpQuotaStrategy
         throw new NotImplementedException();
 }
 
+public class NotImplementHttpRemoteLogger;
+
+public class CustomHttpRemoteLogger : HttpRemoteLoggerBase
+{
+    /// <inheritdoc />
+    public override void Log(LogLevel logLevel, Exception? exception, string? message, params object?[] args) =>
+        Console.WriteLine(LogMessageFormatter.Value(message, args));
+}
+
 public class MultipartModel
 {
     public int Id { get; set; }

@@ -15,70 +15,10 @@ namespace HttpAgent;
 internal sealed class HttpRemoteLogger(
     ILogger<Logging> logger,
     IOptionsMonitor<HttpRemoteOptions> httpRemoteOptions,
-    bool isLoggingRegistered) : IHttpRemoteLogger
+    bool isLoggingRegistered) : HttpRemoteLoggerBase
 {
-    /// <summary>
-    ///     日志消息格式化器
-    /// </summary>
-    /// <remarks>用于在未注册 <see cref="ILogger" /> 时通过 <see cref="HttpRemoteOptions.FallbackLogger" /> 输出结构化日志。</remarks>
-    internal Lazy<Func<string?, object?[], string?>> _logMessageFormatter = new(() =>
-    {
-        try
-        {
-            // 获取内部的 Microsoft.Extensions.Logging.FormattedLogValues 类型
-            if (Type.GetType(
-                    "Microsoft.Extensions.Logging.FormattedLogValues, Microsoft.Extensions.Logging.Abstractions") is
-                { } formattedLogValuesType)
-            {
-                return (message, args) =>
-                {
-                    try
-                    {
-                        // 初始化 FormattedLogValues 实例
-                        var instance = Activator.CreateInstance(formattedLogValuesType, message, args);
-                        return instance?.ToString();
-                    }
-                    catch
-                    {
-                        return message;
-                    }
-                };
-            }
-        }
-        catch
-        {
-            // ignored
-        }
-
-        return (message, _) => message;
-    });
-
     /// <inheritdoc />
-    public void LogInformation(string? message, params object?[] args) =>
-        Log(LogLevel.Information, null, message, args);
-
-    /// <inheritdoc />
-    public void LogTrace(string? message, params object?[] args) => Log(LogLevel.Trace, null, message, args);
-
-    /// <inheritdoc />
-    public void LogDebug(string? message, params object?[] args) => Log(LogLevel.Debug, null, message, args);
-
-    /// <inheritdoc />
-    public void LogWarning(string? message, params object?[] args) => Log(LogLevel.Warning, null, message, args);
-
-    /// <inheritdoc />
-    public void LogWarning(Exception? exception, string? message, params object?[] args) =>
-        Log(LogLevel.Warning, exception, message, args);
-
-    /// <inheritdoc />
-    public void LogCritical(string? message, params object?[] args) => Log(LogLevel.Critical, null, message, args);
-
-    /// <inheritdoc />
-    public void LogError(Exception? exception, string? message, params object?[] args) =>
-        Log(LogLevel.Error, exception, message, args);
-
-    /// <inheritdoc />
-    public void Log(LogLevel logLevel, Exception? exception, string? message, params object?[] args)
+    public override void Log(LogLevel logLevel, Exception? exception, string? message, params object?[] args)
     {
         // 检查是否注册了日志输出程序
         if (isLoggingRegistered)
@@ -88,7 +28,7 @@ internal sealed class HttpRemoteLogger(
         else
         {
             // 调用备用日志输出委托
-            httpRemoteOptions.CurrentValue.FallbackLogger?.Invoke(_logMessageFormatter.Value(message, args));
+            httpRemoteOptions.CurrentValue.FallbackLogger?.Invoke(LogMessageFormatter.Value(message, args));
         }
     }
 }
