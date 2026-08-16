@@ -74,7 +74,7 @@ dotnet add package HttpAgent
 
 ## Getting Started
 
-We have many examples on our [homepage](https://furion.net/docs/http-agent/). Here's your first one to get you started:
+We have many examples on our [homepage](https://http.furion.net/). Here's your first one to get you started:
 
 1. Register `HttpRemote` service:
 
@@ -94,11 +94,11 @@ public class YourService(IHttpRemoteService httpRemoteService)
 }
 ```
 
-[More Documentation](https://furion.net/docs/http-agent/)
+[More Documentation](https://http.furion.net/)
 
 ## Documentation
 
-You can find the HttpAgent documentation on our [homepage](https://furion.net/docs/http-agent/).
+You can find the HttpAgent documentation on our [homepage](https://http.furion.net/).
 
 ## Contributing
 

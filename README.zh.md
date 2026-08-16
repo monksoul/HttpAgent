@@ -51,7 +51,7 @@ dotnet add package HttpAgent
 
 ## 快速入门
 
-我们在[主页](https://furion.net/docs/http-agent/)上有不少例子，这是让您入门的第一个：
+我们在[主页](https://http.furion.net/)上有不少例子，这是让您入门的第一个：
 
 1. 注册 `HttpRemote` 服务：
 
@@ -71,11 +71,11 @@ public class YourService(IHttpRemoteService httpRemoteService)
 }
 ```
 
-[更多文档](https://furion.net/docs/http-agent/)
+[更多文档](https://http.furion.net/)
 
 ## 文档
 
-您可以在[主页](https://furion.net/docs/http-agent/)找到 HttpAgent 文档。
+您可以在[主页](https://http.furion.net/)找到 HttpAgent 文档。
 
 ## 贡献
 
