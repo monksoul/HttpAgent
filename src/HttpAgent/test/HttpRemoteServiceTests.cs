@@ -1401,6 +1401,36 @@ public class HttpRemoteServiceTests
     }
 
     [Fact]
+    public async Task SendAsync_WithScientificNotation_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        builder.Services.AddHttpRemote();
+
+        await using var app = builder.Build();
+
+        app.MapGet("/test", async httpContext =>
+        {
+            await Task.Delay(50);
+            httpContext.Response.ContentType = "application/json";
+            await httpContext.Response.WriteAsync("""{"Timestamp":1.7828352E12}""");
+        });
+
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        var httpRemoteService = app.Services.GetRequiredService<IHttpRemoteService>();
+
+        var result = await httpRemoteService.SendAsync<ScientificNotationClass>(
+            HttpRequestBuilder.Get($"http://localhost:{port}/test"), TestContext.Current.CancellationToken);
+
+        Assert.NotNull(result?.Result);
+        Assert.Equal(1782835200000L, result.Result.Timestamp);
+
+        await app.StopAsync(TestContext.Current.CancellationToken);
+    }
+
+    [Fact]
     public async Task SendAsync_WithResponseAsserts_ReturnOK()
     {
         var port = NetworkUtility.FindAvailableTcpPort();
@@ -1984,4 +2014,9 @@ public class UnixEpochDateClass
 {
     public DateTime DateTime { get; set; }
     public DateTimeOffset DateTimeOffset { get; set; }
+}
+
+public class ScientificNotationClass
+{
+    public long Timestamp { get; set; }
 }
