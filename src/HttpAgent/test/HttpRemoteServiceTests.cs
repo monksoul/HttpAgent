@@ -1626,6 +1626,102 @@ public class HttpRemoteServiceTests
     }
 
     [Fact]
+    public async Task SendCoreAsync_WithRetryAndTimeout_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        builder.Services.AddHttpClient(string.Empty).ConfigureOptions(options =>
+        {
+            options.HttpAccessTokenProvider = new HttpAccessTokenProvider();
+        });
+        builder.Services.AddHttpRemote();
+        await using var app = builder.Build();
+
+        app.MapGet("/slow", async () =>
+        {
+            await Task.Delay(2000);
+            return "OK";
+        });
+
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        var retryCount = 0;
+        var httpRemoteService = app.Services.GetRequiredService<IHttpRemoteService>();
+
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get,
+                new Uri($"http://localhost:{port}/slow", UriKind.RelativeOrAbsolute))
+            .SetTimeout(500)
+            .SetRetry(2, TimeSpan.FromSeconds(1), _ =>
+            {
+                retryCount++;
+            });
+
+        var stopwatch = Stopwatch.StartNew();
+
+        var ex = await Assert.ThrowsAsync<TaskCanceledException>(() =>
+            httpRemoteService.SendAsync(httpRequestBuilder, TestContext.Current.CancellationToken));
+
+        stopwatch.Stop();
+
+        Assert.IsType<TimeoutException>(ex.InnerException);
+        Assert.Equal(2, retryCount);
+        Assert.True(stopwatch.ElapsedMilliseconds >= 3000);
+        Assert.True(stopwatch.ElapsedMilliseconds < 5000);
+
+        await app.StopAsync(TestContext.Current.CancellationToken);
+    }
+
+    [Fact]
+    public async Task SendCoreAsync_WithGlobalTimeout_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        builder.Services.AddHttpClient(string.Empty).ConfigureOptions(options =>
+        {
+            options.HttpAccessTokenProvider = new HttpAccessTokenProvider();
+        });
+        builder.Services.AddHttpRemote();
+        await using var app = builder.Build();
+
+        app.MapGet("/slow", async () =>
+        {
+            await Task.Delay(2000);
+            return "OK";
+        });
+
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        var retryCount = 0;
+        var httpRemoteService = app.Services.GetRequiredService<IHttpRemoteService>();
+
+        var httpRequestBuilder = new HttpRequestBuilder(HttpMethod.Get,
+                new Uri($"http://localhost:{port}/slow", UriKind.RelativeOrAbsolute))
+            .SetTimeout(500)
+            .SetRetry(2, TimeSpan.FromSeconds(1), _ =>
+            {
+                retryCount++;
+            });
+
+        using var globalCts = new CancellationTokenSource(TimeSpan.FromMilliseconds(1200));
+
+        var stopwatch = Stopwatch.StartNew();
+
+        var ex = await Assert.ThrowsAsync<TaskCanceledException>(() =>
+            httpRemoteService.SendAsync(httpRequestBuilder, globalCts.Token));
+
+        stopwatch.Stop();
+
+        Assert.Equal(1, retryCount);
+        Assert.True(stopwatch.ElapsedMilliseconds >= 1000);
+        Assert.True(stopwatch.ElapsedMilliseconds < 2000);
+        Assert.Null(ex.InnerException as TimeoutException);
+
+        await app.StopAsync(TestContext.Current.CancellationToken);
+    }
+
+    [Fact]
     public async Task SendCoreAsync_NoSendMethod_ReturnOK()
     {
         var port = NetworkUtility.FindAvailableTcpPort();

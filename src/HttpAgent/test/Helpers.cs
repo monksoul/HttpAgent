@@ -31,8 +31,8 @@ public class Helpers
                 typeof(ResponseProfilerPipelineHandler),
                 typeof(RequestEventPipelineHandler),
                 typeof(QuotaPipelineHandler),
-                typeof(TimeoutPipelineHandler),
                 typeof(RetryPipelineHandler),
+                typeof(TimeoutPipelineHandler),
                 typeof(TokenManagementPipelineHandler),
                 typeof(AutoRedirectPipelineHandler),
                 typeof(StatusCodePipelineHandler),
@@ -62,8 +62,8 @@ public class Helpers
         services.TryAddSingleton<ResponseProfilerPipelineHandler>();
         services.TryAddSingleton<RequestEventPipelineHandler>();
         services.TryAddSingleton<QuotaPipelineHandler>();
-        services.TryAddSingleton<TimeoutPipelineHandler>();
         services.TryAddSingleton<RetryPipelineHandler>();
+        services.TryAddSingleton<TimeoutPipelineHandler>();
         services.TryAddSingleton<TokenManagementPipelineHandler>();
         services.TryAddSingleton<AutoRedirectPipelineHandler>();
         services.TryAddSingleton<StatusCodePipelineHandler>();
