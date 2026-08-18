@@ -928,4 +928,50 @@ public class ServerSentEventsManagerTests
         await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
+
+    [Fact]
+    public async Task StartCoreAsync_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        await using var app = builder.Build();
+
+        app.MapGet("/test", async context =>
+        {
+            context.Response.ContentType = "text/event-stream";
+            context.Response.Headers.CacheControl = "no-cache";
+            context.Response.Headers["X-Accel-Buffering"] = "no";
+
+            for (var i = 1; i <= 5; i++)
+            {
+                var message = $"id: {i}\ndata: Message {i}\n\n";
+                await context.Response.WriteAsync(message, context.RequestAborted);
+                await Task.Delay(10, context.RequestAborted);
+            }
+        });
+
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+        var httpServerSentEventsBuilder = new HttpServerSentEventsBuilder(new Uri($"http://localhost:{port}/test"));
+        var serverSentEventsManager = new ServerSentEventsManager(httpRemoteService, httpServerSentEventsBuilder);
+
+        var messageChannel = Channel.CreateUnbounded<ServerSentEventsData>();
+        var producerTask =
+            serverSentEventsManager.StartCoreAsync(messageChannel.Writer, TestContext.Current.CancellationToken);
+
+        var received = new List<ServerSentEventsData>();
+        await foreach (var data in messageChannel.Reader.ReadAllAsync(TestContext.Current.CancellationToken))
+        {
+            received.Add(data);
+        }
+
+        await producerTask;
+
+        Assert.Equal(5, received.Count);
+
+        await app.StopAsync(TestContext.Current.CancellationToken);
+        await serviceProvider.DisposeAsync();
+    }
 }

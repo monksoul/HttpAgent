@@ -20,6 +20,7 @@ public class LongPollingManagerTests
     [Fact]
     public void New_ReturnOK()
     {
+        Assert.Equal(100, LongPollingManager.ChannelCapacity);
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
         var longPollingManager = new LongPollingManager(httpRemoteService,
             new HttpLongPollingBuilder(HttpMethod.Get, new Uri("http://localhost:5000")));
@@ -848,6 +849,83 @@ public class LongPollingManagerTests
         }
 
         Assert.Equal(5, i);
+
+        await app.StopAsync(TestContext.Current.CancellationToken);
+        await serviceProvider.DisposeAsync();
+    }
+
+    [Fact]
+    public async Task DrainAndDispose_ReturnOK()
+    {
+        var dataChannel = Channel.CreateUnbounded<HttpResponseMessage>();
+        var messages = new List<HttpResponseMessage>
+        {
+            new() { Content = new StringContent("test1") },
+            new() { Content = new StringContent("test2") },
+            new() { Content = new StringContent("test3") }
+        };
+
+        foreach (var message in messages)
+        {
+            dataChannel.Writer.TryWrite(message);
+        }
+
+        LongPollingManager.DrainAndDispose(dataChannel);
+
+        Assert.False(dataChannel.Reader.TryRead(out _));
+
+        foreach (var message in messages)
+        {
+            await Assert.ThrowsAsync<ObjectDisposedException>(async () =>
+                await message.Content.ReadAsStringAsync(TestContext.Current.CancellationToken));
+        }
+    }
+
+    [Fact]
+    public async Task StartCoreAsync_ReturnOK()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        await using var app = builder.Build();
+
+        var requestCount = 0;
+        app.MapGet("/test", async context =>
+        {
+            requestCount++;
+            await Task.Delay(30, context.RequestAborted);
+
+            if (requestCount <= 5)
+            {
+                await context.Response.WriteAsync($"Message {requestCount}");
+            }
+            else
+            {
+                context.Response.Headers["X-End-Of-Stream"] = "1";
+            }
+        });
+
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+        var httpLongPollingBuilder =
+            new HttpLongPollingBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"));
+        var longPollingManager = new LongPollingManager(httpRemoteService, httpLongPollingBuilder);
+
+        var dataChannel = Channel.CreateUnbounded<HttpResponseMessage>();
+
+        var producerTask = longPollingManager.StartCoreAsync(dataChannel.Writer, TestContext.Current.CancellationToken);
+
+        var messages = new List<HttpResponseMessage>();
+        await foreach (var message in dataChannel.Reader.ReadAllAsync(TestContext.Current.CancellationToken))
+        {
+            messages.Add(message);
+            message.Dispose();
+        }
+
+        await producerTask;
+
+        Assert.Equal(5, messages.Count);
 
         await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();

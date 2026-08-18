@@ -74,7 +74,6 @@ public class FileDownloadManagerTests
             httpRemoteService.Send(fileDownloadManager.RequestBuilder, HttpCompletionOption.ResponseHeadersRead,
                 TestContext.Current.CancellationToken);
 
-        // 静态方法 ExtractFileName 只根据响应解析，不依赖 DestinationPath
         Assert.Equal("index.html", FileDownloadManager.ExtractFileName(httpResponseMessage!));
 
         serviceProvider.Dispose();
@@ -120,7 +119,6 @@ public class FileDownloadManagerTests
     [InlineData("长风.safetensors", "长风.safetensors", false)]
     [InlineData("test.safetensors", "test.safetensors", false)]
     [InlineData("test中文.safetensors", "test中文.safetensors", false)]
-    // [InlineData("\"é¿é£.safetensors\"", "长风.safetensors", true)]
     public async Task ExtractFileName_IfInContentDispositionAndIso88591FileName_ReturnOK(string fileName,
         string decodedFileName, bool latin1)
     {
@@ -1288,57 +1286,331 @@ public class FileDownloadManagerTests
     [Fact]
     public async Task DownloadInChunksAsync_ReturnOK()
     {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        await using var app = builder.Build();
+
+        var fileBytes = Encoding.UTF8.GetBytes("测试文件内容测试文件内容测试文件内容测试文件内容");
+        var contentLength = fileBytes.LongLength;
+
+        app.MapGet("/test", async context =>
+        {
+            if (context.Request.Headers.Range.Count == 0)
+            {
+                context.Response.StatusCode = 200;
+                context.Response.ContentLength = contentLength;
+                await context.Response.Body.WriteAsync(fileBytes);
+                return;
+            }
+
+            context.Response.StatusCode = 206;
+            var range = context.Request.Headers.Range.ToString();
+            var rangeValue = range.Replace("bytes=", "").Split('-');
+            var start = long.Parse(rangeValue[0]);
+            var end = long.Parse(rangeValue[1]);
+            var length = end - start + 1;
+            context.Response.Headers.ContentRange = new ContentRangeHeaderValue(start, end, contentLength).ToString();
+            context.Response.ContentLength = length;
+            await context.Response.Body.WriteAsync(fileBytes.AsMemory((int)start, (int)length));
+        });
+
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var httpFileDownloadBuilder =
-            new HttpFileDownloadBuilder(HttpMethod.Get,
-                    new Uri(
-                        "https://ts1.tc.mm.bing.net/th/id/R-C.987f582c510be58755c4933cda68d525?rik=C0D21hJDYvXosw&riu=http%3a%2f%2fimg.pconline.com.cn%2fimages%2fupload%2fupc%2ftx%2fwallpaper%2f1305%2f16%2fc4%2f20990657_1368686545122.jpg&ehk=netN2qzcCVS4ALUQfDOwxAwFcy41oxC%2b0xTFvOYy5ds%3d&risl=&pid=ImgRaw&r=0"))
-                .SetDestinationPath(
-                    @"C:\Workspaces\R-C.jpg").SetMaxThreads(2);
-        var fileDownloadManager =
-            new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
+            new HttpFileDownloadBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"))
+                .SetDestinationPath(@"C:\Workspaces\test.bin")
+                .SetMaxThreads(2);
+        var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
-        var httpResponseMessage = new HttpResponseMessage();
-        httpResponseMessage.Content = new StringContent("测试文件内容", Encoding.UTF8, "text/plain");
-
-        await using var fileStream = new FileStream(Path.GetTempFileName(), FileMode.Create, FileAccess.Write,
-            FileShare.Read,
+        var tempFile = Path.GetTempFileName();
+        await using var fileStream = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.Read,
             httpFileDownloadBuilder.BufferSize, true);
 
-        await fileDownloadManager.DownloadInChunksAsync(840749, fileStream,
-            new FileTransferProgress(@"C:\Workspaces\R-C.jpg", 18), new Stopwatch(), CancellationToken.None);
+        var stopwatch = Stopwatch.StartNew();
+        await fileDownloadManager.DownloadInChunksAsync(contentLength, fileStream,
+            new FileTransferProgress(@"C:\Workspaces\test.bin", contentLength), stopwatch, CancellationToken.None);
 
+        Assert.Equal(contentLength, fileStream.Length);
+        fileStream.Close();
+        var downloadedBytes = await File.ReadAllBytesAsync(tempFile, TestContext.Current.CancellationToken);
+        Assert.Equal(fileBytes, downloadedBytes);
+
+        File.Delete(tempFile);
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 
     [Fact]
     public async Task DownloadChunkAsync_ReturnOK()
     {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        await using var app = builder.Build();
+
+        var fileBytes = Encoding.UTF8.GetBytes("测试文件内容测试文件内容测试文件内容测试文件内容");
+        var contentLength = fileBytes.LongLength;
+
+        app.MapGet("/test", async context =>
+        {
+            if (context.Request.Headers.Range.Count == 0)
+            {
+                context.Response.StatusCode = 200;
+                context.Response.ContentLength = contentLength;
+                await context.Response.Body.WriteAsync(fileBytes);
+                return;
+            }
+
+            context.Response.StatusCode = 206;
+            var range = context.Request.Headers.Range.ToString();
+            var rangeValue = range.Replace("bytes=", "").Split('-');
+            var start = long.Parse(rangeValue[0]);
+            var end = long.Parse(rangeValue[1]);
+            var length = end - start + 1;
+            context.Response.Headers.ContentRange = new ContentRangeHeaderValue(start, end, contentLength).ToString();
+            context.Response.ContentLength = length;
+            await context.Response.Body.WriteAsync(fileBytes.AsMemory((int)start, (int)length));
+        });
+
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
         var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
 
         var httpFileDownloadBuilder =
-            new HttpFileDownloadBuilder(HttpMethod.Get,
-                    new Uri(
-                        "https://ts1.tc.mm.bing.net/th/id/R-C.987f582c510be58755c4933cda68d525?rik=C0D21hJDYvXosw&riu=http%3a%2f%2fimg.pconline.com.cn%2fimages%2fupload%2fupc%2ftx%2fwallpaper%2f1305%2f16%2fc4%2f20990657_1368686545122.jpg&ehk=netN2qzcCVS4ALUQfDOwxAwFcy41oxC%2b0xTFvOYy5ds%3d&risl=&pid=ImgRaw&r=0"))
-                .SetDestinationPath(
-                    @"C:\Workspaces\R-C.jpg").SetMaxThreads(2);
-        var fileDownloadManager =
-            new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
+            new HttpFileDownloadBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"))
+                .SetDestinationPath(@"C:\Workspaces\test.bin")
+                .SetMaxThreads(2);
+        var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
 
-        var httpResponseMessage = new HttpResponseMessage();
-        httpResponseMessage.Content = new StringContent("测试文件内容", Encoding.UTF8, "text/plain");
-
+        const long chunkStart = 0L;
+        var chunkEnd = contentLength / 2;
+        var expectedChunkSize = chunkEnd - chunkStart + 1;
         var chunkTempFilePath = Path.GetTempFileName();
 
-        await fileDownloadManager.DownloadChunkAsync(0, 420374, chunkTempFilePath,
-            new FileTransferProgress(@"C:\Workspaces\R-C.jpg", 18), new Stopwatch(), CancellationToken.None);
+        await fileDownloadManager.DownloadChunkAsync(chunkStart, chunkEnd, expectedChunkSize, chunkTempFilePath,
+            contentLength, new FileTransferProgress(@"C:\Workspaces\test.bin", contentLength), new Stopwatch(),
+            CancellationToken.None);
 
-        if (File.Exists(chunkTempFilePath))
+        Assert.Equal(expectedChunkSize, new FileInfo(chunkTempFilePath).Length);
+
+        File.Delete(chunkTempFilePath);
+        await app.StopAsync(TestContext.Current.CancellationToken);
+        await serviceProvider.DisposeAsync();
+    }
+
+    [Fact]
+    public async Task DownloadChunkAsync_ContentRangeMismatch_Invalid_Parameters()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        await using var app = builder.Build();
+
+        var fileBytes = Encoding.UTF8.GetBytes("测试文件内容测试文件内容测试文件内容测试文件内容");
+        var contentLength = fileBytes.LongLength;
+
+        app.MapGet("/test", async context =>
         {
-            File.Delete(chunkTempFilePath);
+            context.Response.StatusCode = 206;
+            context.Response.Headers.ContentRange =
+                new ContentRangeHeaderValue(0, contentLength - 1, contentLength + 10).ToString();
+            context.Response.ContentLength = contentLength;
+            await context.Response.Body.WriteAsync(fileBytes);
+        });
+
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
+        var httpFileDownloadBuilder =
+            new HttpFileDownloadBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"))
+                .SetDestinationPath(@"C:\Workspaces\test.bin")
+                .SetMaxThreads(2);
+        var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
+
+        var chunkTempFilePath = Path.GetTempFileName();
+        await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            await fileDownloadManager.DownloadChunkAsync(0, contentLength - 1, contentLength, chunkTempFilePath,
+                contentLength, new FileTransferProgress(@"C:\Workspaces\test.bin", contentLength), new Stopwatch(),
+                CancellationToken.None));
+
+        File.Delete(chunkTempFilePath);
+        await app.StopAsync(TestContext.Current.CancellationToken);
+        await serviceProvider.DisposeAsync();
+    }
+
+    [Fact]
+    public async Task DownloadChunkAsync_StreamEndsPrematurely_Invalid_Parameters()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        await using var app = builder.Build();
+
+        var fileBytes = Encoding.UTF8.GetBytes("测试文件内容测试文件内容测试文件内容测试文件内容");
+        var contentLength = fileBytes.LongLength;
+
+        app.MapGet("/test", async context =>
+        {
+            context.Response.StatusCode = 206;
+            context.Response.Headers.ContentRange =
+                new ContentRangeHeaderValue(0, contentLength - 1, contentLength).ToString();
+            context.Response.ContentLength = contentLength;
+            await context.Response.Body.WriteAsync(fileBytes, 0, fileBytes.Length / 2);
+            await context.Response.Body.FlushAsync();
+            await context.Response.Body.DisposeAsync();
+        });
+
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
+        var httpFileDownloadBuilder =
+            new HttpFileDownloadBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"))
+                .SetDestinationPath(@"C:\Workspaces\test.bin")
+                .SetMaxThreads(2)
+                .SetChunkMaxRetries(0);
+        var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
+
+        var chunkTempFilePath = Path.GetTempFileName();
+        await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            await fileDownloadManager.DownloadChunkAsync(0, contentLength - 1, contentLength, chunkTempFilePath,
+                contentLength, new FileTransferProgress(@"C:\Workspaces\test.bin", contentLength), new Stopwatch(),
+                CancellationToken.None));
+
+        File.Delete(chunkTempFilePath);
+        await app.StopAsync(TestContext.Current.CancellationToken);
+        await serviceProvider.DisposeAsync();
+    }
+
+    [Fact]
+    public async Task DownloadInChunksAsync_ChunkFileSizeMismatch_Invalid_Parameters()
+    {
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        await using var app = builder.Build();
+
+        var fileBytes = Encoding.UTF8.GetBytes("测试文件内容测试文件内容测试文件内容测试文件内容");
+        var contentLength = fileBytes.LongLength;
+
+        app.MapGet("/test", async context =>
+        {
+            var rangeHeader = context.Request.Headers.Range.ToString();
+            if (string.IsNullOrEmpty(rangeHeader))
+            {
+                context.Response.StatusCode = 200;
+                context.Response.Headers.AcceptRanges = "bytes";
+                context.Response.ContentLength = contentLength;
+                await context.Response.Body.WriteAsync(fileBytes);
+                return;
+            }
+
+            var rangeValue = rangeHeader.Replace("bytes=", "").Split('-');
+            var start = long.Parse(rangeValue[0]);
+            var end = long.Parse(rangeValue[1]);
+            var length = end - start + 1;
+
+            context.Response.StatusCode = 206;
+            context.Response.Headers.ContentRange = new ContentRangeHeaderValue(start, end, contentLength).ToString();
+            context.Response.ContentLength = length;
+
+            var halfLength = (int)length / 2;
+            await context.Response.Body.WriteAsync(fileBytes.AsMemory((int)start, halfLength));
+            await context.Response.Body.FlushAsync();
+            await context.Response.Body.DisposeAsync();
+        });
+
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
+        var httpFileDownloadBuilder =
+            new HttpFileDownloadBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"))
+                .SetDestinationPath(@"C:\Workspaces\test.bin")
+                .SetMaxThreads(2)
+                .SetChunkMaxRetries(0);
+        var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
+
+        var tempFile = Path.GetTempFileName();
+        await using var fileStream = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.Read,
+            httpFileDownloadBuilder.BufferSize, true);
+
+        await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            await fileDownloadManager.DownloadInChunksAsync(contentLength, fileStream,
+                new FileTransferProgress(@"C:\Workspaces\test.bin", contentLength), new Stopwatch(),
+                CancellationToken.None));
+
+        fileStream.Close();
+        File.Delete(tempFile);
+        await app.StopAsync(TestContext.Current.CancellationToken);
+        await serviceProvider.DisposeAsync();
+    }
+
+    [Fact]
+    public async Task StartAsync_FinalLengthMismatch_Invalid_Parameters()
+    {
+        var destinationPath = Path.Combine(AppContext.BaseDirectory, "downloads", "mismatch.bin");
+        if (File.Exists(destinationPath))
+        {
+            File.Delete(destinationPath);
         }
 
+        var port = NetworkUtility.FindAvailableTcpPort();
+        var urls = new[] { "--urls", $"http://localhost:{port}" };
+        var builder = WebApplication.CreateBuilder(urls);
+        await using var app = builder.Build();
+
+        var fileBytes = Encoding.UTF8.GetBytes("测试文件内容测试文件内容测试文件内容测试文件内容");
+        var contentLength = fileBytes.LongLength;
+
+        app.MapGet("/test", async context =>
+        {
+            var rangeHeader = context.Request.Headers.Range.ToString();
+            if (string.IsNullOrEmpty(rangeHeader))
+            {
+                context.Response.StatusCode = 200;
+                context.Response.Headers.AcceptRanges = "bytes";
+                context.Response.ContentLength = contentLength;
+                await context.Response.Body.WriteAsync(fileBytes);
+                return;
+            }
+
+            var rangeValue = rangeHeader.Replace("bytes=", "").Split('-');
+            var start = long.Parse(rangeValue[0]);
+            var end = long.Parse(rangeValue[1]);
+            var length = end - start + 1;
+
+            context.Response.StatusCode = 206;
+            context.Response.Headers.ContentRange = new ContentRangeHeaderValue(start, end, contentLength).ToString();
+            context.Response.ContentLength = length;
+
+            var halfLength = (int)length / 2;
+            await context.Response.Body.WriteAsync(fileBytes.AsMemory((int)start, halfLength));
+            await context.Response.Body.FlushAsync();
+            await context.Response.Body.DisposeAsync();
+        });
+
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        var (httpRemoteService, serviceProvider) = Helpers.CreateHttpRemoteService();
+
+        var httpFileDownloadBuilder =
+            new HttpFileDownloadBuilder(HttpMethod.Get, new Uri($"http://localhost:{port}/test"))
+                .SetDestinationPath(destinationPath)
+                .SetMaxThreads(2)
+                .SetChunkMaxRetries(0);
+        var fileDownloadManager = new FileDownloadManager(httpRemoteService, httpFileDownloadBuilder);
+
+        await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            await fileDownloadManager.StartAsync(TestContext.Current.CancellationToken));
+
+        Assert.False(File.Exists(destinationPath));
+
+        await app.StopAsync(TestContext.Current.CancellationToken);
         await serviceProvider.DisposeAsync();
     }
 

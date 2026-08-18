@@ -9,6 +9,11 @@ namespace HttpAgent;
 /// </summary>
 internal sealed class LongPollingManager
 {
+    /// <summary>
+    ///     通道最大容量，用于背压控制
+    /// </summary>
+    internal const int ChannelCapacity = 100;
+
     /// <inheritdoc cref="HttpLongPollingBuilder" />
     internal readonly HttpLongPollingBuilder _httpLongPollingBuilder;
 
@@ -82,9 +87,12 @@ internal sealed class LongPollingManager
         using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
         // 初始化数据接收传输的通道
-        var dataChannel = Channel.CreateUnbounded<HttpResponseMessage>(new UnboundedChannelOptions
+        var dataChannel = Channel.CreateBounded<HttpResponseMessage>(new BoundedChannelOptions(ChannelCapacity)
         {
-            SingleWriter = true, SingleReader = true, AllowSynchronousContinuations = true
+            SingleWriter = true,
+            SingleReader = true,
+            AllowSynchronousContinuations = true,
+            FullMode = BoundedChannelFullMode.Wait
         });
 
         // 初始化接收服务器响应数据任务
@@ -122,6 +130,11 @@ internal sealed class LongPollingManager
                     originalException = ex;
                 }
             }
+            finally
+            {
+                // 排空通道并释放残留的响应对象
+                DrainAndDispose(dataChannel);
+            }
         }
 
         // 空检查
@@ -147,9 +160,12 @@ internal sealed class LongPollingManager
         using var internalCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
         // 初始化数据接收传输的通道
-        var dataChannel = Channel.CreateUnbounded<HttpResponseMessage>(new UnboundedChannelOptions
+        var dataChannel = Channel.CreateBounded<HttpResponseMessage>(new BoundedChannelOptions(ChannelCapacity)
         {
-            SingleWriter = true, SingleReader = true, AllowSynchronousContinuations = true
+            SingleWriter = true,
+            SingleReader = true,
+            AllowSynchronousContinuations = true,
+            FullMode = BoundedChannelFullMode.Wait
         });
 
         // 开始接收（核心）
@@ -180,6 +196,11 @@ internal sealed class LongPollingManager
             {
                 // 忽略因外部退出导致的取消异常
             }
+            finally
+            {
+                // 排空通道并释放残留的响应对象
+                DrainAndDispose(dataChannel);
+            }
         }
     }
 
@@ -192,7 +213,7 @@ internal sealed class LongPollingManager
     /// <param name="cancellationToken">
     ///     <see cref="CancellationToken" />
     /// </param>
-    private async Task StartCoreAsync(ChannelWriter<HttpResponseMessage> writer, CancellationToken cancellationToken)
+    internal async Task StartCoreAsync(ChannelWriter<HttpResponseMessage> writer, CancellationToken cancellationToken)
     {
         try
         {
@@ -457,5 +478,18 @@ internal sealed class LongPollingManager
         }
 
         await _httpLongPollingBuilder.OnEndOfStream.TryInvokeAsync(httpResponseMessage, cancellationToken);
+    }
+
+    /// <summary>
+    ///     排空通道中未消费的 <see cref="HttpResponseMessage" /> 并释放它们
+    /// </summary>
+    /// <param name="dataChannel">数据接收传输的通道</param>
+    internal static void DrainAndDispose(Channel<HttpResponseMessage> dataChannel)
+    {
+        while (dataChannel.Reader.TryRead(out var httpResponseMessage))
+        {
+            // 释放 httpResponseMessage
+            httpResponseMessage.Dispose();
+        }
     }
 }

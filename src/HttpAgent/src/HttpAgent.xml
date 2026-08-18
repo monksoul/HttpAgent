@@ -7032,7 +7032,7 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Match the string "/Date(".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [+\-] atomically any number of times.<br/>
+                ○ Match a character in the set [+-] atomically any number of times.<br/>
                 ○ Match a Unicode digit atomically at least once.<br/>
             ○ Match the string ")/".<br/>
             ○ Match if at the end of the string or if before an ending newline.<br/>
@@ -7061,10 +7061,10 @@
             ○ Match if at the beginning of the string.<br/>
             ○ Match the string "/Date(".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [+\-] atomically any number of times.<br/>
+                ○ Match a character in the set [+-] atomically any number of times.<br/>
                 ○ Match a Unicode digit atomically at least once.<br/>
             ○ 2nd capture group.<br/>
-                ○ Match a character in the set [+\-].<br/>
+                ○ Match a character in the set [+-].<br/>
             ○ 3rd capture group.<br/>
                 ○ Match a Unicode digit exactly 2 times.<br/>
             ○ 4th capture group.<br/>
@@ -7703,13 +7703,13 @@
                 ○ Match the string "**".<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ 1st capture group.<br/>
-                ○ Match a character in the set [\-:\w] greedily at least once.<br/>
+                ○ Match a character in the set [-:\w] greedily at least once.<br/>
             ○ 2nd capture group.<br/>
                 ○ Loop greedily any number of times.<br/>
                     ○ Match a whitespace character atomically any number of times.<br/>
                     ○ Match '|'.<br/>
                     ○ Match a whitespace character greedily any number of times.<br/>
-                    ○ Match a character in the set [\-:\w] greedily at least once.<br/>
+                    ○ Match a character in the set [-:\w] greedily at least once.<br/>
             ○ Match a whitespace character greedily any number of times.<br/>
             ○ Optional (greedy).<br/>
                 ○ Match the string "||".<br/>
@@ -7791,6 +7791,7 @@
             <param name="type">
                 <see cref="T:System.Type" />
             </param>
+  >
             <returns>
                 <see cref="T:System.Boolean" />
             </returns>
@@ -8410,7 +8411,7 @@
                 并发执行多个不同的异步操作（带返回值）
             </summary>
             <remarks>最大并发数等于操作数量。</remarks>
-            <typeparam name="TResult">返回结果的类型</typeparam>
+            <typeparam name="TResult">返回�的类型</typeparam>
             <param name="operations">要并发执行的异步操作，每个操作接收取消令牌并返回结果</param>
             <returns><typeparamref name="TResult" /> 集合</returns>
             <exception cref="T:System.ArgumentNullException"></exception>
@@ -8472,7 +8473,7 @@
                 并发执行多个不同的同步操作（带返回值）
             </summary>
             <remarks>最大并发数等于操作数量。</remarks>
-            <typeparam name="TResult">返回结果的类型</typeparam>
+            <typeparam name=name="TResult">返回结果的类型</typeparam>
             <param name="operations">要并发执行的操作，每个操作返回结果</param>
             <returns><typeparamref name="TResult" /> 集合</returns>
             <exception cref="T:System.ArgumentNullException"></exception>
@@ -9802,9 +9803,7 @@
             <param name="httpMethod">HTTP 谓词</param>
             <returns>
                 <see cref="T:System.Net.Http.HttpMethod" />
-            </returns>
-        </member>
-        <member name="M:HttpAgent.Helpers.DetermineRedirectMethod(System.Net.HttpStatusCode,System.Net.Http.HttpMethod,System.Net.Http.HttpMethod@)">
+            </rtp.HttpMethod@)">
             <summary>
                 检查 HTTP 状态码是否是重定向状态码并返回重定向时应使用的 HTTP 请求方法
             </summary>
@@ -9893,6 +9892,9 @@
             <param name="escapeChar">转义前缀字符（'=' 或 '%'）</param>
             <returns>
                 <see cref="T:System.Byte" /> 数组
+              <param name="escapeChar">转义前缀字符（'=' 或 '%'）</param>
+            <returns>
+                <see cref="T:System.Byte" /> 数组
             </returns>
         </member>
         <member name="M:HttpAgent.Helpers.GetEncodingSafe(System.String)">
@@ -9976,11 +9978,7 @@
             <inheritdoc />
         </member>
         <member name="M:HttpAgent.HttpRemoteLoggerBase.LogDebug(System.String,System.Object[])">
-            <inheritdoc />
-        </member>
-        <member name="M:HttpAgent.HttpRemoteLoggerBase.LogWarning(System.String,System.Object[])">
-            <inheritdoc />
-        </member>
+                </member>
         <member name="M:HttpAgent.HttpRemoteLoggerBase.LogWarning(System.Exception,System.String,System.Object[])">
             <inheritdoc />
         </member>
@@ -10150,13 +10148,15 @@
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
         </member>
-        <member name="M:HttpAgent.FileDownloadManager.DownloadChunkAsync(System.Int64,System.Int64,System.String,HttpAgent.FileTransferProgress,System.Diagnostics.Stopwatch,System.Threading.CancellationToken)">
+        <member name="M:HttpAgent.FileDownloadManager.DownloadChunkAsync(System.Int64,System.Int64,System.Int64,System.String,System.Int64,HttpAgent.FileTransferProgress,System.Diagnostics.Stopwatch,System.Threading.CancellationToken)">
             <summary>
                 下载单个分块
             </summary>
             <param name="start">分块起始字节位置</param>
             <param name="end">分块结束字节位置</param>
+            <param name="expectedChunkSize">该分块应接收的总字节数</param>
             <param name="chunkTempFilePath">分块专属的临时文件路径</param>
+            <param name="totalContentLength">整个文件的总长度（来自 Content-Length）</param>
             <param name="fileTransferProgress">
                 <see cref="T:HttpAgent.FileTransferProgress" />
             </param>
@@ -10167,6 +10167,8 @@
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
             <exception cref="T:System.InvalidOperationException"></exception>
+            <exception cref="T:System.IO.EndOfStreamException"></exception>
+            <exception cref="T:System.TimeoutException"></exception>
         </member>
         <member name="M:HttpAgent.FileDownloadManager.DownloadSingleThreadedAsync(System.Net.Http.HttpResponseMessage,System.IO.FileStream,HttpAgent.FileTransferProgress,System.Diagnostics.Stopwatch,System.Int64,System.Threading.CancellationToken)">
             <summary>
@@ -10378,6 +10380,11 @@
                 长轮询管理器
             </summary>
         </member>
+        <member name="F:HttpAgent.LongPollingManager.ChannelCapacity">
+            <summary>
+                通道最大容量，用于背压控制
+            </summary>
+        </member>
         <member name="F:HttpAgent.LongPollingManager._httpLongPollingBuilder">
             <inheritdoc cref="T:HttpAgent.HttpLongPollingBuilder" />
         </member>
@@ -10514,6 +10521,12 @@
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
+        </member>
+        <member name="M:HttpAgent.LongPollingManager.DrainAndDispose(System.Threading.Channels.Channel{System.Net.Http.HttpResponseMessage})">
+            <summary>
+                排空通道中未消费的 <see cref="T:System.Net.Http.HttpResponseMessage" /> 并释放它们
+            </summary>
+            <param name="dataChannel">数据接收传输的通道</param>
         </member>
         <member name="T:HttpAgent.ServerSentEventsManager">
             <summary>
@@ -11111,7 +11124,7 @@
         <member name="M:HttpAgent.FileTransferProgress.AnsiRegex">
             <remarks>
             Pattern:<br/>
-            <code>\\x1b\\[[0-9;]*[a-zA-Z]|\\x1b\\].*?\\x07</code><br/>
+            <code>\x1b\[[0-9;]*[a-zA-Z]|\x1b\].*?\x07</code><br/>
             Explanation:<br/>
             <code>
             ○ Match '\u001b'.<br/>
@@ -15798,7 +15811,7 @@
         <member name="M:HttpAgent.StatusCodePipelineHandler.StatusCodeRangeRegex">
             <remarks>
             Pattern:<br/>
-            <code>^\\d+[-~]\\d+$</code><br/>
+            <code>^\d+[-~]\d+$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
@@ -15812,7 +15825,7 @@
         <member name="M:HttpAgent.StatusCodePipelineHandler.StatusCodeCompareRegex">
             <remarks>
             Pattern:<br/>
-            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\\d+)$</code><br/>
+            <code>^([&lt;&gt;]=?|=|&gt;|&lt;)(\d+)$</code><br/>
             Explanation:<br/>
             <code>
             ○ Match if at the beginning of the string.<br/>
@@ -23490,6 +23503,13 @@
                 <para>注意：请确保使用的是根容器（Root ServiceProvider），使用作用域容器可能导致对象生命周期异常。</para>
             </remarks>
             <param name="serviceProvider">应用程序的根服务提供器，必须已完成 <see cref="T:HttpAgent.IHttpRemoteService" /> 的注册。</param>
+            <returns>
+                <see cref="T:System.IServiceProvider" />
+            </returns>
+        </member>
+    </members>
+</doc>
+" /> 的注册。</param>
             <returns>
                 <see cref="T:System.IServiceProvider" />
             </returns>

@@ -101,6 +101,78 @@ public class ETagPipelineHandlerTests
     }
 
     [Fact]
+    public async Task CacheResponseAsync_NoStore_Private_ShouldNotCache_ReturnOK()
+    {
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddOptions<HttpRemoteOptions>();
+        services.TryAddSingleton<IHttpETagCache, MemoryETagCache>();
+        services.TryAddSingleton<IHttpRemoteLogger>(provider =>
+            ActivatorUtilities.CreateInstance<HttpRemoteLogger>(provider, true));
+        await using var serviceProvider = services.BuildServiceProvider();
+
+        var cache = serviceProvider.GetRequiredService<IHttpETagCache>();
+        var handler = new ETagPipelineHandler(cache, serviceProvider.GetRequiredService<IHttpRemoteLogger>());
+
+        var httpResponseMessage1 = new HttpResponseMessage(HttpStatusCode.OK);
+        httpResponseMessage1.Headers.ETag = new EntityTagHeaderValue("\"etag-no-store\"");
+        httpResponseMessage1.Headers.CacheControl = new CacheControlHeaderValue { NoStore = true };
+        httpResponseMessage1.Content = new StringContent("no-store content");
+
+        await handler.CacheResponseAsync("GET:https://furion.net/no-store", httpResponseMessage1,
+            httpResponseMessage1.Headers.ETag);
+
+        var httpResponseMessage2 = new HttpResponseMessage(HttpStatusCode.OK);
+        httpResponseMessage2.Headers.ETag = new EntityTagHeaderValue("\"etag-private\"");
+        httpResponseMessage2.Headers.CacheControl = new CacheControlHeaderValue { Private = true };
+        httpResponseMessage2.Content = new StringContent("private content");
+
+        await handler.CacheResponseAsync("GET:https://furion.net/private", httpResponseMessage2,
+            httpResponseMessage2.Headers.ETag);
+
+        var memoryCache = cache as MemoryETagCache;
+        Assert.NotNull(memoryCache);
+        Assert.Empty(memoryCache._cache);
+    }
+
+    [Fact]
+    public async Task CacheResponseAsync_ShouldReplaceContentWithByteArrayContent_ReturnOK()
+    {
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddOptions<HttpRemoteOptions>();
+        services.TryAddSingleton<IHttpETagCache, MemoryETagCache>();
+        services.TryAddSingleton<IHttpRemoteLogger>(provider =>
+            ActivatorUtilities.CreateInstance<HttpRemoteLogger>(provider, true));
+        await using var serviceProvider = services.BuildServiceProvider();
+
+        var cache = serviceProvider.GetRequiredService<IHttpETagCache>();
+        var handler = new ETagPipelineHandler(cache, serviceProvider.GetRequiredService<IHttpRemoteLogger>());
+
+        const string originalContent = "让 .NET 开发更简单，更通用，更流行。";
+        var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK);
+        httpResponseMessage.Headers.ETag = new EntityTagHeaderValue("\"etag-repeat-read\"");
+        httpResponseMessage.Content = new StringContent(originalContent, Encoding.UTF8, MediaTypeNames.Text.Plain);
+
+        await handler.CacheResponseAsync("GET:https://furion.net/repeat-read", httpResponseMessage,
+            httpResponseMessage.Headers.ETag);
+
+        Assert.IsType<ByteArrayContent>(httpResponseMessage.Content);
+
+        var firstRead = await httpResponseMessage.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+        var secondRead = await httpResponseMessage.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+        Assert.Equal(originalContent, firstRead);
+        Assert.Equal(originalContent, secondRead);
+
+        var memoryCache = cache as MemoryETagCache;
+        Assert.NotNull(memoryCache);
+        Assert.Single(memoryCache._cache);
+        var item = memoryCache._cache.First().Value;
+        Assert.NotNull(item.ContentBytes);
+        Assert.Equal(originalContent, Encoding.UTF8.GetString(item.ContentBytes));
+    }
+
+    [Fact]
     public void BuildResponseFromCacheItem_Invalid_Parameters()
     {
         Assert.Throws<ArgumentNullException>(() => ETagPipelineHandler.BuildResponseFromCacheItem(null!, null!));
