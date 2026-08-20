@@ -662,7 +662,7 @@ public class HttpRemoteBuilderTests
 
         builder.Build(services);
         Assert.Contains(services, u => u.ServiceType == typeof(IHttpRemoteLogger));
-        Assert.Contains(services, u => u.ImplementationType == typeof(CustomHttpRemoteLogger));
+        Assert.Contains(services, u => u.ImplementationFactory is not null);
         Assert.Equal(51, services.Count);
     }
 
@@ -676,7 +676,7 @@ public class HttpRemoteBuilderTests
         builder.Build(services);
         builder.Build(services);
         Assert.Contains(services, u => u.ServiceType == typeof(IHttpRemoteLogger));
-        Assert.Contains(services, u => u.ImplementationType == typeof(CustomHttpRemoteLogger));
+        Assert.Contains(services, u => u.ImplementationFactory is not null);
         Assert.Equal(53, services.Count);
     }
 }

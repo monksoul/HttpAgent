@@ -106,7 +106,9 @@ public class CustomQuotaStrategy : IHttpQuotaStrategy
 
 public class NotImplementHttpRemoteLogger;
 
-public class CustomHttpRemoteLogger : HttpRemoteLoggerBase
+#pragma warning disable CS9113 // 参数未读。
+public class CustomHttpRemoteLogger(bool isLoggingRegistered) : HttpRemoteLoggerBase
+#pragma warning restore CS9113 // 参数未读。
 {
     /// <inheritdoc />
     public override void Log(LogLevel logLevel, Exception? exception, string? message, params object?[] args) =>

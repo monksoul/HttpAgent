@@ -7791,7 +7791,6 @@
             <param name="type">
                 <see cref="T:System.Type" />
             </param>
-  >
             <returns>
                 <see cref="T:System.Boolean" />
             </returns>
@@ -8411,7 +8410,7 @@
                 并发执行多个不同的异步操作（带返回值）
             </summary>
             <remarks>最大并发数等于操作数量。</remarks>
-            <typeparam name="TResult">返回�的类型</typeparam>
+            <typeparam name="TResult">返回结果的类型</typeparam>
             <param name="operations">要并发执行的异步操作，每个操作接收取消令牌并返回结果</param>
             <returns><typeparamref name="TResult" /> 集合</returns>
             <exception cref="T:System.ArgumentNullException"></exception>
@@ -8473,7 +8472,7 @@
                 并发执行多个不同的同步操作（带返回值）
             </summary>
             <remarks>最大并发数等于操作数量。</remarks>
-            <typeparam name=name="TResult">返回结果的类型</typeparam>
+            <typeparam name="TResult">返回结果的类型</typeparam>
             <param name="operations">要并发执行的操作，每个操作返回结果</param>
             <returns><typeparamref name="TResult" /> 集合</returns>
             <exception cref="T:System.ArgumentNullException"></exception>
@@ -9189,7 +9188,7 @@
             <code>
             ○ Match the string "\\u".<br/>
             ○ 1st capture group.<br/>
-                ○ Match a hexadecimal digit exactly 4 times.<br/>
+                ○ Match a character in the set [0-9A-Fa-f] exactly 4 times.<br/>
             </code>
             </remarks>
         </member>
@@ -9803,7 +9802,9 @@
             <param name="httpMethod">HTTP 谓词</param>
             <returns>
                 <see cref="T:System.Net.Http.HttpMethod" />
-            </rtp.HttpMethod@)">
+            </returns>
+        </member>
+        <member name="M:HttpAgent.Helpers.DetermineRedirectMethod(System.Net.HttpStatusCode,System.Net.Http.HttpMethod,System.Net.Http.HttpMethod@)">
             <summary>
                 检查 HTTP 状态码是否是重定向状态码并返回重定向时应使用的 HTTP 请求方法
             </summary>
@@ -9892,9 +9893,6 @@
             <param name="escapeChar">转义前缀字符（'=' 或 '%'）</param>
             <returns>
                 <see cref="T:System.Byte" /> 数组
-              <param name="escapeChar">转义前缀字符（'=' 或 '%'）</param>
-            <returns>
-                <see cref="T:System.Byte" /> 数组
             </returns>
         </member>
         <member name="M:HttpAgent.Helpers.GetEncodingSafe(System.String)">
@@ -9978,7 +9976,11 @@
             <inheritdoc />
         </member>
         <member name="M:HttpAgent.HttpRemoteLoggerBase.LogDebug(System.String,System.Object[])">
-                </member>
+            <inheritdoc />
+        </member>
+        <member name="M:HttpAgent.HttpRemoteLoggerBase.LogWarning(System.String,System.Object[])">
+            <inheritdoc />
+        </member>
         <member name="M:HttpAgent.HttpRemoteLoggerBase.LogWarning(System.Exception,System.String,System.Object[])">
             <inheritdoc />
         </member>
@@ -11124,7 +11126,7 @@
         <member name="M:HttpAgent.FileTransferProgress.AnsiRegex">
             <remarks>
             Pattern:<br/>
-            <code>\x1b\[[0-9;]*[a-zA-Z]|\x1b\].*?\x07</code><br/>
+            <code>\\x1b\\[[0-9;]*[a-zA-Z]|\\x1b\\].*?\\x07</code><br/>
             Explanation:<br/>
             <code>
             ○ Match '\u001b'.<br/>
@@ -11132,7 +11134,7 @@
                 ○ Match a sequence of expressions.<br/>
                     ○ Match '['.<br/>
                     ○ Match a character in the set [0-9;] atomically any number of times.<br/>
-                    ○ Match an ASCII letter.<br/>
+                    ○ Match a character in the set [A-Za-z].<br/>
                 ○ Match a sequence of expressions.<br/>
                     ○ Match ']'.<br/>
                     ○ Match a character other than '\n' lazily any number of times.<br/>
@@ -14837,12 +14839,7 @@
             <param name="interfaceType">实际被代理的接口类型</param>
             <exception cref="T:System.ArgumentNullException">被调用方法</exception>
         </member>
-        <member name="P:HttpAgent.HttpDeclarativeMetadata.Method">
-            <summary>
-                被调用方法
-            </summary>
-        </member>
-        <member name="P:HttpAgent.HttpDeclarativeMetadata.InterfaceType">
+        <member name="P:HttInterfaceType">
             <summary>
                 实际被代理的接口类型
             </summary>
@@ -19442,6 +19439,8 @@
             <param name="configure">
                 自定义配置委托；可直接传入 <c>HttpRequestBuilder.Setup</c>（或 <c>HttpBuilder.Setup</c>）的链式配置结果，替代 <![CDATA[builder => builder]]> 写法
             </param>
+            <p�置委托；可直接传入 <c>HttpRequestBuilder.Setup</c>（或 <c>HttpBuilder.Setup</c>）的链式配置结果，替代 <![CDATA[builder => builder]]> 写法
+            </param>
             <param name="cancellationToken">
                 <see cref="T:System.Threading.CancellationToken" />
             </param>
@@ -23435,29 +23434,8 @@
         <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32,System.Int32,System.Int32)">
             <summary>Pushes 3 values onto the backtracking stack.</summary>
         </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.WordCategoriesMask">
-            <summary>Provides a mask of Unicode categories that combine to form [\w].</summary>
-        </member>
-        <member name="P:System.Text.RegularExpressions.Generated.Utilities.WordCharBitmap">
-            <summary>Gets a bitmap for whether each character 0 through 127 is in [\w]</summary>
-        </member>
         <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_ascii_FF0B0000000000000000">
             <summary>Supports searching for characters in or not in "0123456789;".</summary>
-        </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfAnyStrings_OrdinalIgnoreCase_F5E0F783171641148150F5FF034A915A46A2F85A3F95E5BE9C3E3713E7208E1F">
-            <summary>Supports searching for the specified strings.</summary>
-        </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_1F52B1A4D2E82B6FEDE25EC8C55F85BB36775196837076691C96925040F90D32">
-            <summary>Supports searching for the string "\\u".</summary>
-        </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_24065539CD2593CB885B6092E92443DA15A8A09A496B09D6CC4B4CECC1ECA7AC">
-            <summary>Supports searching for the string "=?".</summary>
-        </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_98B3E663A7AAF3D02DF13A5CC650116209DEF2EA5FBA87F199F35B6DBB3C92E3">
-            <summary>Supports searching for the string "?=".</summary>
-        </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_EBC667BDABA1472FA863B5B39B31251EF2B4C95DD643BDECF694CB1CE7BDC178">
-            <summary>Supports searching for the string "[[".</summary>
         </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions">
             <summary>
@@ -23485,6 +23463,31 @@
             </param>
             <param name="httpRemoteBuilder">
                 <see cref="T:HttpAgent.HttpRemoteBuilder" />
+            </param>
+            <returns>
+                <see cref="T:HttpAgent.IHttpRemoteBuilder" />
+            </returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.HttpRemoteServiceCollectionExtensions.UseHttpRemoteClient(System.IServiceProvider)">
+            <summary>
+                将应用程序的主 <see cref="T:System.IServiceProvider" /> 注入到 <see cref="T:HttpAgent.HttpRemoteClient" />，使其优先使用该容器解析
+                <see cref="T:HttpAgent.IHttpRemoteService" /> 服务
+            </summary>
+            <remarks>
+                <para>
+                    调用此方法后，<see cref="P:HttpAgent.HttpRemoteClient.Service" /> 将从外部容器获取服务实例，而非自行构建独立 DI 容器。注入的容器生命周期由调用方管理，
+                    <see cref="M:HttpAgent.HttpRemoteClient.Dispose" /> 不会释放它。
+                </para>
+                <para>注意：请确保使用的是根容器（Root ServiceProvider），使用作用域容器可能导致对象生命周期异常。</para>
+            </remarks>
+            <param name="serviceProvider">应用程序的根服务提供器，必须已完成 <see cref="T:HttpAgent.IHttpRemoteService" /> 的注册。</param>
+            <returns>
+                <see cref="T:System.IServiceProvider" />
+            </returns>
+        </member>
+    </members>
+</doc>
+="T:HttpAgent.HttpRemoteBuilder" />
             </param>
             <returns>
                 <see cref="T:HttpAgent.IHttpRemoteBuilder" />
